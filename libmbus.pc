@@ -6,7 +6,7 @@ includedir=${prefix}/include
 Name: libmbus
 Description: Open source M-bus (Meter-Bus) library.
 Requires: 
-Version: 0.6.1
+Version: 0.7.0
 URL: http://www.freescada.com/libmbus/
 Libs: -L${libdir} -lmbus
 Cflags: -I${includedir}
