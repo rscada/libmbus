@@ -2767,10 +2767,16 @@ mbus_data_variable_xml(mbus_data_variable *data)
     
         for (record = data->record, i = 0; record; record = record->next, i++)
         {
-            if (record->drh.dib.dif == 0x0F || record->drh.dib.dif == 0x1F) //MBUS_DIB_DIF_VENDOR_SPECIFIC)
+            if (record->drh.dib.dif == 0x0F) //MBUS_DIB_DIF_VENDOR_SPECIFIC)
             {
                 len += snprintf(&buff[len], sizeof(buff) - len, "    <DataRecord id=\"%zd\">\n", i);
                 len += snprintf(&buff[len], sizeof(buff) - len, "        <Function>Manufacturer specific</Function>\n");
+                len += snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");
+            }
+            else if (record->drh.dib.dif == 0x1F)
+            {
+                len += snprintf(&buff[len], sizeof(buff) - len, "    <DataRecord id=\"%zd\">\n", i);
+                len += snprintf(&buff[len], sizeof(buff) - len, "        <Function>More records follow</Function>\n");
                 len += snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");
             }
             else
