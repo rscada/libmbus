@@ -2129,6 +2129,14 @@ mbus_parse(mbus_frame *frame, u_char *data, size_t data_size)
                     return MBUS_FRAME_FIXED_SIZE_LONG + len - data_size;                
                 }
                 
+                if (data_size > (size_t)(MBUS_FRAME_FIXED_SIZE_LONG + len))
+                {
+                    snprintf(error_str, sizeof(error_str), "Too much data in frame.");
+                
+                    // too much data... ?
+                    return -2;
+                }
+                
                 // we got the whole packet, continue parsing
                 frame->start2   = data[3];
                 frame->control  = data[4];
