@@ -187,14 +187,24 @@ int mbus_send_frame(mbus_handle * handle, mbus_frame *frame);
 int mbus_send_select_frame(mbus_handle * handle, const char *secondary_addr_str);
 
 /** 
- * Sends request frame to given slave using "unified" handle
+ * Sends data request frame to given slave using "unified" handle
  * 
  * @param handle  Initialized handle
  * @param address Address (0-255)
  * 
  * @return Zero when successful.
  */
-int mbus_send_data_request_frame(mbus_handle * handle, int address);
+int mbus_send_request_frame(mbus_handle * handle, int address);
+
+/** 
+ * Sends ping frame to given slave using "unified" handle
+ * 
+ * @param handle  Initialized handle
+ * @param address Address (0-255)
+ * 
+ * @return Zero when successful.
+ */
+int mbus_send_ping_frame(mbus_handle *handle, int address);
 
 /** 
  * Probe/address slave by secondary address using "unified" handle
