@@ -27,7 +27,7 @@ main(int argc, char **argv)
     mbus_handle *handle;
     mbus_frame reply;
     char *host, *addr;
-    int port, address, ret;
+    int port, ret;
 
     if (argc != 4)
     {

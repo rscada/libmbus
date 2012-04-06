@@ -361,7 +361,7 @@ mbus_frame_verify(mbus_frame *frame)
 int
 mbus_data_bcd_encode(u_char *bcd_data, size_t bcd_data_size, int value)
 { 
-    int val = 0, v0, v1, v2, x1, x2;
+    int v0, v1, v2, x1, x2;
     size_t i;
 
     v2 = value;
@@ -490,7 +490,7 @@ mbus_data_long_long_decode(u_char *int_data, size_t int_data_size)
 int
 mbus_data_int_encode(u_char *int_data, size_t int_data_size, int value)
 {
-    int val = 0, i;
+    int i;
     
     if (int_data)
     {
@@ -1739,7 +1739,6 @@ mbus_data_record_decode(mbus_data_record *record)
     if (record)
     {
         int val;
-        long val2;
         float val3;
         long long val4;
         struct tm time;
@@ -2476,7 +2475,7 @@ int
 mbus_frame_internal_pack(mbus_frame *frame, mbus_frame_data *frame_data)
 {
     mbus_data_record *record;
-    int i, j;
+    int j;
 
     if (frame == NULL || frame_data == NULL)
         return -1;
@@ -2661,7 +2660,7 @@ int
 mbus_data_variable_print(mbus_data_variable *data)
 {
     mbus_data_record *record;
-    size_t i, j;
+    size_t j;
     
     if (data)
     {   

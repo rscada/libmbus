@@ -27,7 +27,7 @@ main(int argc, char **argv)
     mbus_handle *handle;
     mbus_frame reply;
     char *device, *addr;
-    int address, ret, baudrate = 9600;
+    int ret, baudrate = 9600;
 
     if (argc == 3)
     {
