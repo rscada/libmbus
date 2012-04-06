@@ -512,6 +512,8 @@ long mbus_data_bcd_decode(u_char *bcd_data, size_t bcd_data_size);
 int  mbus_data_int_decode(u_char *int_data, size_t int_data_size);
 long mbus_data_long_decode(u_char *int_data, size_t int_data_size);
 
+float mbus_data_float_decode(u_char *float_data);
+
 void mbus_data_tm_decode(struct tm *t, u_char *t_data, size_t t_data_size);
 
 void mbus_data_str_decode(u_char *dst, const u_char *src, size_t len);
