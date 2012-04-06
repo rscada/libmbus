@@ -271,6 +271,8 @@ mbus_frame_type(mbus_frame *frame)
 int
 mbus_frame_verify(mbus_frame *frame)
 {
+    u_char checksum;
+
     if (frame)
     {
         switch (frame->type)
@@ -280,30 +282,66 @@ mbus_frame_verify(mbus_frame *frame)
 
             case MBUS_FRAME_TYPE_SHORT:
                 if(frame->start1 != MBUS_FRAME_SHORT_START)
+                {
+                    snprintf(error_str, sizeof(error_str), "No frame start");
+                        
                     return -1;
+                }
 
                 break;
 
             case MBUS_FRAME_TYPE_CONTROL:
             case MBUS_FRAME_TYPE_LONG:
                 if(frame->start1  != MBUS_FRAME_CONTROL_START ||
-                   frame->start2  != MBUS_FRAME_CONTROL_START ||
-                   frame->length1 != frame->length2 ||
-                   frame->length1 != calc_length(frame))
-                        return -1;
+                   frame->start2  != MBUS_FRAME_CONTROL_START)
+                {
+                    snprintf(error_str, sizeof(error_str), "No frame start");
+                        
+                    return -1;
+                }
+                
+                if (frame->length1 != frame->length2)
+                {
+                    snprintf(error_str, sizeof(error_str), "Frame length 1 != 2");
+        
+                    return -1;
+                }
+                
+                if (frame->length1 != calc_length(frame))
+                {
+                    snprintf(error_str, sizeof(error_str), "Frame length 1 != calc length");
+                
+                    return -1;
+                }
 
                 break;
 
             default:
+                snprintf(error_str, sizeof(error_str), "Unknown frame type 0x%.2x", frame->type);
+                
                 return -1;
         }
 
-        if(frame->stop != MBUS_FRAME_STOP ||
-            frame->checksum != calc_checksum(frame))
-                return -1;
+        if(frame->stop != MBUS_FRAME_STOP)
+        {
+            snprintf(error_str, sizeof(error_str), "No frame stop");
+                        
+            return -1;
+        }
+        
+        checksum = calc_checksum(frame);
+        
+        if(frame->checksum != checksum)
+        {
+            snprintf(error_str, sizeof(error_str), "Invalid checksum (0x%.2x != 0x%.2x)", frame->checksum, checksum);
+                
+            return -1;
+        }
 
         return 0;
     }
+    
+    snprintf(error_str, sizeof(error_str), "Got null pointer to frame.");
 
     return -1;
 }
@@ -2036,6 +2074,8 @@ mbus_parse(mbus_frame *frame, u_char *data, size_t data_size)
                 
                 if (data_size != MBUS_FRAME_BASE_SIZE_SHORT)
                 {
+                    snprintf(error_str, sizeof(error_str), "Too much data in frame.");
+                
                     // too much data... ?
                     return -2;
                 }
@@ -2074,6 +2114,8 @@ mbus_parse(mbus_frame *frame, u_char *data, size_t data_size)
                 
                 if (frame->length1 != frame->length2)
                 {
+                    snprintf(error_str, sizeof(error_str), "Invalid M-Bus frame length.");
+                
                     // not a valid M-bus frame
                     return -2;
                 }
@@ -2120,11 +2162,15 @@ mbus_parse(mbus_frame *frame, u_char *data, size_t data_size)
                 // successfully parsed data
                 return 0;        
             default:
+                snprintf(error_str, sizeof(error_str), "Invalid M-Bus frame start.");
+                
                 // not a valid M-Bus frame header (start byte)
                 return -4;
         }    
         
     }
+    
+    snprintf(error_str, sizeof(error_str), "Got null pointer to frame, data or zero data_size.");
 
     return -1;
 }
