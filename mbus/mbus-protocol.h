@@ -508,9 +508,10 @@ const char *mbus_decode_manufacturer(u_char byte1, u_char byte2);
 int mbus_data_bcd_encode(u_char *bcd_data, size_t bcd_data_size, int value);
 int mbus_data_int_encode(u_char *int_data, size_t int_data_size, int value);
 
-long mbus_data_bcd_decode(u_char *bcd_data, size_t bcd_data_size);
+long long mbus_data_bcd_decode(u_char *bcd_data, size_t bcd_data_size);
 int  mbus_data_int_decode(u_char *int_data, size_t int_data_size);
 long mbus_data_long_decode(u_char *int_data, size_t int_data_size);
+long long mbus_data_long_long_decode(u_char *int_data, size_t int_data_size);
 
 float mbus_data_float_decode(u_char *float_data);
 

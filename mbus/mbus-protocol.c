@@ -353,10 +353,10 @@ mbus_data_bcd_encode(u_char *bcd_data, size_t bcd_data_size, int value)
 /// Decode BCD data
 ///
 //------------------------------------------------------------------------------
-long
+long long
 mbus_data_bcd_decode(u_char *bcd_data, size_t bcd_data_size)
 {       
-    long val = 0;
+    long long val = 0;
     size_t i;
     
     if (bcd_data)
@@ -408,6 +408,34 @@ mbus_data_long_decode(u_char *int_data, size_t int_data_size)
         for (i = int_data_size; i > 0; i--)
         {
             val = (val << 8) + int_data[i-1];
+        }
+
+        return val;    
+    }
+
+    return -1;
+}
+
+long long
+mbus_data_long_long_decode(u_char *int_data, size_t int_data_size)
+{
+    long long val = 0;
+    size_t i;
+    
+    if (int_data)
+    {
+        for (i = int_data_size; i > 0; i--)
+        {
+            if (int_data_size == 6)
+            {
+                printf("%s: %lld %02X\n", __PRETTY_FUNCTION__, val, int_data[i-1]);
+            }
+            val = (val << 8) + int_data[i-1];
+        }
+  
+        if (int_data_size == 6)
+        {
+            printf("%s: %lld\n", __PRETTY_FUNCTION__, val);
         }
 
         return val;    
@@ -1675,6 +1703,7 @@ mbus_data_record_decode(mbus_data_record *record)
         int val;
         long val2;
         float val3;
+        long long val4;
         struct tm time;
             
         switch (record->drh.dib.dif & 0x0F)
@@ -1772,9 +1801,9 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x06: // 6 byte integer (48 bit)
 
-                val2 = mbus_data_long_decode(record->data, 6);
+                val4 = mbus_data_long_long_decode(record->data, 6);
         
-                snprintf(buff, sizeof(buff), "%lu", val2);
+                snprintf(buff, sizeof(buff), "%lld", val4);
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 6 byte integer\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
@@ -1783,9 +1812,9 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x07: // 8 byte integer (64 bit)
 
-                val2 = mbus_data_long_decode(record->data, 8);
+                val4 = mbus_data_long_long_decode(record->data, 8);
         
-                snprintf(buff, sizeof(buff), "%lu", val2);
+                snprintf(buff, sizeof(buff), "%lld", val4);
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 8 byte integer\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
@@ -1836,8 +1865,8 @@ mbus_data_record_decode(mbus_data_record *record)
                                                                   
             case 0x0E: // 12 digit BCD (48 bit)
 
-                val2 = mbus_data_bcd_decode(record->data, 6);  
-                snprintf(buff, sizeof(buff), "%lu", val2);
+                val4 = mbus_data_bcd_decode(record->data, 6);  
+                snprintf(buff, sizeof(buff), "%lld", val4);
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 12 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
@@ -2553,7 +2582,7 @@ mbus_data_variable_header_print(mbus_data_variable_header *header)
 {
     if (header)
     {
-        printf("%s: ID           = %lu\n", __PRETTY_FUNCTION__, 
+        printf("%s: ID           = %lld\n", __PRETTY_FUNCTION__, 
                mbus_data_bcd_decode(header->id_bcd, 4));
 
         printf("%s: Manufacturer = 0x%.2X%.2X\n", __PRETTY_FUNCTION__,
