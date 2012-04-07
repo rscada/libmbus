@@ -464,16 +464,7 @@ mbus_data_long_long_decode(u_char *int_data, size_t int_data_size)
     {
         for (i = int_data_size; i > 0; i--)
         {
-            if (int_data_size == 6)
-            {
-                printf("%s: %lld %02X\n", __PRETTY_FUNCTION__, val, int_data[i-1]);
-            }
             val = (val << 8) + int_data[i-1];
-        }
-  
-        if (int_data_size == 6)
-        {
-            printf("%s: %lld\n", __PRETTY_FUNCTION__, val);
         }
 
         return val;    
