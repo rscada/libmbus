@@ -519,6 +519,8 @@ void mbus_data_tm_decode(struct tm *t, u_char *t_data, size_t t_data_size);
 
 void mbus_data_str_decode(u_char *dst, const u_char *src, size_t len);
 
+void mbus_data_bin_decode(u_char *dst, const u_char *src, size_t len, size_t max_len);
+
 const char *mbus_data_fixed_medium(mbus_data_fixed *data);
 const char *mbus_data_fixed_unit(int medium_unit_byte);
 const char *mbus_data_variable_medium_lookup(u_char medium);

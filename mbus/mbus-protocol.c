@@ -562,6 +562,33 @@ mbus_data_str_decode(u_char *dst, const u_char *src, size_t len)
 
 //------------------------------------------------------------------------------
 ///
+/// Decode binary data.
+///
+//------------------------------------------------------------------------------
+void
+mbus_data_bin_decode(u_char *dst, const u_char *src, size_t len, size_t max_len)
+{
+    size_t i, pos;
+    
+    i = 0;
+    pos = 0;
+    
+    while((i < len) && ((pos+3) < max_len)) {
+        pos += snprintf(&dst[pos], max_len - pos, "%.2X ", src[i]);
+        i++;
+    }
+    
+    if (pos > 0)
+    {
+        // remove last space
+        pos--;
+    }
+    
+    dst[pos] = '\0';
+}
+
+//------------------------------------------------------------------------------
+///
 /// Decode time data (usable for type f = 4 bytes or type g = 2 bytes)
 ///
 //------------------------------------------------------------------------------
@@ -1720,7 +1747,7 @@ mbus_vib_unit_lookup(mbus_value_information_block *vib)
 const char *
 mbus_data_record_decode(mbus_data_record *record)
 {
-    static char buff[256];
+    static char buff[768];
     u_char vif, vife;
     
     // ignore extension bit
@@ -1902,8 +1929,8 @@ mbus_data_record_decode(mbus_data_record *record)
                 break;
 
             case 0x0F: // special functions
-
-                snprintf(buff, sizeof(buff), "Special functions");
+            
+                mbus_data_bin_decode(buff, record->data, record->data_len, sizeof(buff));
                 break;
 
             case 0x0D: // variable length
@@ -1949,7 +1976,7 @@ mbus_data_record_unit(mbus_data_record *record)
 const char *
 mbus_data_record_value(mbus_data_record *record)
 {
-    static char buff[128];
+    static char buff[768];
     
     if (record)
     {
@@ -2790,7 +2817,7 @@ char *
 mbus_data_variable_header_xml(mbus_data_variable_header *header)
 {
     static char buff[8192];
-    char str_encoded[256];
+    char str_encoded[768];
     size_t len = 0;
     int val;
     
@@ -2828,7 +2855,7 @@ mbus_data_variable_xml(mbus_data_variable *data)
 {
     mbus_data_record *record;
     static char buff[8192];
-    char str_encoded[256];
+    char str_encoded[768];
     size_t len = 0;
     size_t i;
     
@@ -2840,32 +2867,28 @@ mbus_data_variable_xml(mbus_data_variable *data)
     
         for (record = data->record, i = 0; record; record = record->next, i++)
         {
+            len += snprintf(&buff[len], sizeof(buff) - len, "    <DataRecord id=\"%zd\">\n", i);
+        
             if (record->drh.dib.dif == 0x0F) //MBUS_DIB_DIF_VENDOR_SPECIFIC)
             {
-                len += snprintf(&buff[len], sizeof(buff) - len, "    <DataRecord id=\"%zd\">\n", i);
-                len += snprintf(&buff[len], sizeof(buff) - len, "        <Function>Manufacturer specific</Function>\n");
-                len += snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");
+                len += snprintf(&buff[len], sizeof(buff) - len, "        <Function>Manufacturer specific</Function>\n");                
             }
             else if (record->drh.dib.dif == 0x1F)
             {
-                len += snprintf(&buff[len], sizeof(buff) - len, "    <DataRecord id=\"%zd\">\n", i);
                 len += snprintf(&buff[len], sizeof(buff) - len, "        <Function>More records follow</Function>\n");
-                len += snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");
             }
             else
-            {
-                len += snprintf(&buff[len], sizeof(buff) - len, "    <DataRecord id=\"%zd\">\n", i);
-                
+            {   
                 mbus_str_xml_encode(str_encoded, mbus_data_record_function(record), sizeof(str_encoded)); 
                 len += snprintf(&buff[len], sizeof(buff) - len, "        <Function>%s</Function>\n", str_encoded);
                 
                 mbus_str_xml_encode(str_encoded, mbus_data_record_unit(record), sizeof(str_encoded));
                 len += snprintf(&buff[len], sizeof(buff) - len, "        <Unit>%s</Unit>\n", str_encoded);
-                
-                mbus_str_xml_encode(str_encoded, mbus_data_record_value(record), sizeof(str_encoded));
-                len += snprintf(&buff[len], sizeof(buff) - len, "        <Value>%s</Value>\n", str_encoded);
-                len += snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");
             }
+            
+            mbus_str_xml_encode(str_encoded, mbus_data_record_value(record), sizeof(str_encoded));
+            len += snprintf(&buff[len], sizeof(buff) - len, "        <Value>%s</Value>\n", str_encoded);
+            len += snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");
         }
        
         len += snprintf(&buff[len], sizeof(buff) - len, "</MBusData>\n");
