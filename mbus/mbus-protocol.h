@@ -499,6 +499,8 @@ char *mbus_error_str();
 void  mbus_error_str_set(char *message);
 void  mbus_error_reset();
 
+void  mbus_parse_set_debug(int debug);
+
 //
 // data encode/decode functions
 //
