@@ -1254,6 +1254,70 @@ mbus_send_select_frame(mbus_handle * handle, const char *secondary_addr_str)
 }
 
 //------------------------------------------------------------------------------
+// send a user data packet from master to slave: the packet let the
+// adressed slave(s) switch to the given baudrate
+//------------------------------------------------------------------------------
+int
+mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, int baudrate)
+{
+    int retval = 0;
+    int control_information = 0;
+    mbus_frame *frame;
+    
+    switch (baudrate)
+    {
+      case 300:
+        control_information = MBUS_CONTROL_INFO_SET_BAUDRATE_300;
+        break;
+      case 600:
+        control_information = MBUS_CONTROL_INFO_SET_BAUDRATE_600;
+        break;
+      case 1200:
+        control_information = MBUS_CONTROL_INFO_SET_BAUDRATE_1200;
+        break;
+      case 2400:
+        control_information = MBUS_CONTROL_INFO_SET_BAUDRATE_2400;
+        break;
+      case 4800:
+        control_information = MBUS_CONTROL_INFO_SET_BAUDRATE_4800;
+        break;
+      case 9600:
+        control_information = MBUS_CONTROL_INFO_SET_BAUDRATE_9600;
+        break;
+      case 19200:
+        control_information = MBUS_CONTROL_INFO_SET_BAUDRATE_19200;
+        break;
+      case 38400:
+        control_information = MBUS_CONTROL_INFO_SET_BAUDRATE_38400;
+        break;
+      default:
+        MBUS_ERROR("%s: invalid baudrate %d\n", __PRETTY_FUNCTION__, baudrate);
+        return -1;
+    }
+    
+    frame = mbus_frame_new(MBUS_FRAME_TYPE_CONTROL);
+    
+    if (frame == NULL)
+    {
+        MBUS_ERROR("%s: failed to allocate mbus frame.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+    
+    frame->control = MBUS_CONTROL_MASK_SND_UD | MBUS_CONTROL_MASK_DIR_M2S; 
+    frame->address = address;
+    frame->control_information = control_information;
+
+    if (mbus_send_frame(handle, frame) == -1)
+    {
+        MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
+        retval = -1;
+    }
+
+    mbus_frame_free(frame);
+    return retval;
+}
+
+//------------------------------------------------------------------------------
 // send a request packet to from master to slave
 //------------------------------------------------------------------------------
 int

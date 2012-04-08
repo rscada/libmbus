@@ -187,6 +187,17 @@ int mbus_send_frame(mbus_handle * handle, mbus_frame *frame);
 int mbus_send_select_frame(mbus_handle * handle, const char *secondary_addr_str);
 
 /** 
+ * Sends switch baudrate frame using "unified" handle
+ * 
+ * @param handle   Initialized handle
+ * @param address  Address (0-255)
+ * @param baudrate Baudrate (300,600,1200,2400,4800,9600,19200,38400)
+ * 
+ * @return Zero when successful.
+ */
+int mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, int baudrate);
+
+/** 
  * Sends data request frame to given slave using "unified" handle
  * 
  * @param handle  Initialized handle

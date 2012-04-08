@@ -16,7 +16,8 @@ noinst_HEADERS			=
 bin_PROGRAMS			= mbus-tcp-scan mbus-tcp-request-data \
                           mbus-tcp-select-secondary mbus-tcp-scan-secondary \
                           mbus-serial-scan mbus-serial-request-data \
-                          mbus-serial-select-secondary mbus-serial-scan-secondary
+                          mbus-serial-select-secondary mbus-serial-scan-secondary \
+                          mbus-serial-switch-baudrate
 
 # tcp
 mbus_tcp_scan_LDFLAGS	= -L$(top_builddir)/mbus
@@ -51,4 +52,8 @@ mbus_serial_select_secondary_SOURCES = mbus-serial-select-secondary.c
 mbus_serial_scan_secondary_LDFLAGS = -L$(top_builddir)/mbus
 mbus_serial_scan_secondary_LDADD   = -lmbus
 mbus_serial_scan_secondary_SOURCES = mbus-serial-scan-secondary.c
+
+mbus_serial_switch_baudrate_LDFLAGS = -L$(top_builddir)/mbus
+mbus_serial_switch_baudrate_LDADD   = -lmbus
+mbus_serial_switch_baudrate_SOURCES = mbus-serial-switch-baudrate.c
 
