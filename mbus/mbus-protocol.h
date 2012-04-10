@@ -86,6 +86,8 @@ typedef struct _mbus_frame {
     
     //mbus_frame_data frame_data;
 
+    void *next; // pointer to next mbus_frame for multi-telegram replies
+
 } mbus_frame;
 
 typedef struct _mbus_slave_data {
@@ -174,6 +176,8 @@ typedef struct _mbus_data_variable {
     
     u_char *data;
     size_t  data_len;
+    
+    u_char more_records_follow;
     
     // are these needed/used?
     u_char  mdh;

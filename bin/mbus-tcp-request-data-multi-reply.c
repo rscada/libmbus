@@ -25,7 +25,7 @@ static int debug = 0;
 int
 main(int argc, char **argv)
 {
-    mbus_frame reply;
+    mbus_frame reply, *reply_iter;
     mbus_frame_data reply_data;
     mbus_handle *handle = NULL;
 
@@ -86,50 +86,63 @@ main(int argc, char **argv)
             return 1;    
         }
         // else MBUS_PROBE_SINGLE
-
-        if (mbus_send_request_frame(handle, 253) == -1)
-        {
-            fprintf(stderr, "Failed to send M-Bus request frame.\n");
-            return 1;
-        }
+        
+        address = 253;
     } 
     else
     {
         // primary addressing
-
         address = atoi(addr_str);
-        if (mbus_send_request_frame(handle, address) == -1)
-        {
-            fprintf(stderr, "Failed to send M-Bus request frame.\n");
-            return 1;
-        }
     }   
+
+    /*
+    if (mbus_send_request_frame(handle, address) == -1)
+    {
+        fprintf(stderr, "Failed to send M-Bus request frame.\n");
+        return 1;
+    }
 
     if (mbus_recv_frame(handle, &reply) == -1)
     {
         fprintf(stderr, "Failed to receive M-Bus response frame.\n");
         return 1;
     }    
+    */
+    
+    // instead of the send and recv, use this sendrecv function that 
+    // takes care of the possibility of multi-telegram replies (limit = 16 frames)
+    if (mbus_sendrecv_request(handle, address, &reply, 16) == -1)
+    {
+        fprintf(stderr, "Failed to send/receive M-Bus request.\n");
+        return 1;
+    }
 
     //
-    // parse data and print in XML format
+    // dump hex data if debug is true
     //
     if (debug)
     {
         mbus_frame_print(&reply);
     }
 
-    if (mbus_frame_data_parse(&reply, &reply_data) == -1)
+    //
+    // here, figure out how the list of frames should be merged into a single
+    // XML document, but for now let's just dump all frames as independent XMLs
+    //
+    for (reply_iter = &reply; reply_iter; reply_iter = reply_iter->next)
     {
-        fprintf(stderr, "M-bus data parse error.\n");
-        return 1;
-    }
-    printf("%s", mbus_frame_data_xml(&reply_data));
+        if (mbus_frame_data_parse(reply_iter, &reply_data) == -1)
+        {
+            fprintf(stderr, "M-bus data parse error.\n");
+            return 1;
+        }
+        printf("%s", mbus_frame_data_xml(&reply_data));
 
-    // manual free
-    if (reply_data.data_var.record)
-    {
-        mbus_data_record_free(reply_data.data_var.record); // free's up the whole list
+        // manual free, all records in the list
+        if (reply_data.data_var.record)
+        {
+            mbus_data_record_free(reply_data.data_var.record); 
+        }
     }
 
     mbus_disconnect(handle);

@@ -130,6 +130,9 @@ mbus_frame_free(mbus_frame *frame)
 {
     if (frame)
     {
+        if (frame->next != NULL)
+            mbus_frame_free(frame->next);
+    
         free(frame);
         return 0;
     }
@@ -2231,6 +2234,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
     {
         // parse header
         data->nrecords = 0;
+        data->more_records_follow = 0;
         i = sizeof(mbus_data_variable_header);
         if(frame->data_size < i)
             return -1;
@@ -2253,8 +2257,13 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             // DIF
             record->drh.dib.dif = frame->data[i];
 
-            if ((record->drh.dib.dif & 0xFF) == 0x0F || (record->drh.dib.dif & 0xFF) == 0x1F)
+            if (record->drh.dib.dif == 0x0F || record->drh.dib.dif == 0x1F)
             {
+                if ((record->drh.dib.dif & 0xFF) == 0x1F)
+                {
+                  data->more_records_follow = 1;
+                }
+                
                 i++;
                 // just copy the remaining data as it is vendor specific
                 record->data_len = frame->data_size - i;
@@ -2316,7 +2325,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             }
                 
             // re-calculate data length, if of variable length type
-            if((record->drh.dib.dif & 0x0D) == 0x0D) // flag for variable length data
+            if ((record->drh.dib.dif & 0x0F) == 0x0D) // flag for variable length data
             {
                 if(frame->data[i] <= 0xBF)
                     record->data_len = frame->data[i++];
@@ -2708,6 +2717,11 @@ mbus_data_variable_print(mbus_data_variable *data)
                     printf("%.2X ", record->data[j]);        
                 }
                 printf("\n");
+                
+                if (record->drh.dib.dif == 0x1F)
+                {
+                  printf("%s: More records follow in next telegram\n", __PRETTY_FUNCTION__);
+                }
                 continue;
             }
         

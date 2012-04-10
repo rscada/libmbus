@@ -24,6 +24,8 @@
 #define MBUS_DEBUG(...)
 #endif
 
+static int debug = 1;
+
 typedef struct _mbus_variable_vif {
     unsigned     vif;
     double       exponent;
@@ -1341,6 +1343,143 @@ mbus_send_request_frame(mbus_handle * handle, int address)
     {
         MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
         retval = -1;
+    }
+
+    mbus_frame_free(frame);
+    return retval;
+}
+
+//------------------------------------------------------------------------------
+// send a request from master to slave and collect the reply (replies)
+// from the slave.
+//------------------------------------------------------------------------------
+int
+mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int max_frames)
+{
+    int retval = 0, more_frames = 1;
+    mbus_frame_data reply_data;
+    mbus_frame *frame, *next_frame;
+    int frame_count = 0;
+
+    frame = mbus_frame_new(MBUS_FRAME_TYPE_SHORT);
+    
+    if (frame == NULL)
+    {
+        MBUS_ERROR("%s: failed to allocate mbus frame.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+    
+    frame->control = MBUS_CONTROL_MASK_REQ_UD2 | MBUS_CONTROL_MASK_DIR_M2S | MBUS_CONTROL_MASK_FCV; 
+    frame->address = address;
+
+    if (debug)
+        printf("%s: debug: sending request frame\n", __PRETTY_FUNCTION__);
+        
+    if (mbus_send_frame(handle, frame) == -1)
+    {
+        MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
+        mbus_frame_free(frame);
+        retval = -1;
+    }
+    
+    //
+    // continue to read until no more records are available (usually only one
+    // reply frame, but can be more for so-called multi-telegram replies)
+    //
+    next_frame = reply;
+    
+    while (more_frames)
+    {
+        frame_count++;
+        
+        if ((max_frames  > 0) &&
+            (frame_count > max_frames))
+        {
+            // only readout max_frames
+            break;
+        }
+        
+        if (debug)
+            printf("%s: debug: receiving response frame #%d\n", __PRETTY_FUNCTION__, frame_count);
+    
+        if (mbus_recv_frame(handle, next_frame) == -1)
+        {
+            MBUS_ERROR("%s: Failed to receive M-Bus response frame.\n", __PRETTY_FUNCTION__);
+            retval = 1;
+            break;
+        }
+        
+        //
+        // We need to parse the data in the received frame to be able to tell
+        // if more records are available or not.
+        //       
+        if (mbus_frame_data_parse(next_frame, &reply_data) == -1)
+        {
+            MBUS_ERROR("%s: M-bus data parse error.\n", __PRETTY_FUNCTION__);
+            retval = 1;
+            break;
+        }
+        
+        //
+        // Continue a cycle of sending requests and reading replies until the
+        // reply do not have DIF=0x1F in the last record (which signals that 
+        // more records are available.
+        //
+        
+        if (reply_data.type == MBUS_DATA_TYPE_FIXED)
+        {
+            // only single frame replies for FIXED type frames
+            more_frames = 0;
+        }
+        else
+        {
+            more_frames = 0;
+    
+            if (reply_data.data_var.more_records_follow)
+            {
+                if (debug)
+                    printf("%s: debug: expecting more frames\n", __PRETTY_FUNCTION__);
+                
+                more_frames = 1;
+                
+                // allocate new frame and increment next_frame pointer
+                next_frame->next = mbus_frame_new(MBUS_FRAME_TYPE_ANY);
+                
+                if (next_frame->next == NULL)
+                {
+                    MBUS_ERROR("%s: failed to allocate mbus frame.\n", __PRETTY_FUNCTION__);
+                    retval = -1;
+                    more_frames = 0;
+                }
+                
+                next_frame = next_frame->next;
+                        
+                // need to send a new request and receive another reply
+                             
+                if (debug)
+                    printf("%s: debug: resending request frame\n", __PRETTY_FUNCTION__);                
+
+                // toogle FCB bit before
+                frame->control ^= MBUS_CONTROL_MASK_FCB;
+                if (mbus_send_frame(handle, frame) == -1)
+                {
+                    MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
+                    retval = -1;
+                    more_frames = 0;
+                }
+            }
+            else
+            {
+                if (debug)
+                    printf("%s: debug: no more frames\n", __PRETTY_FUNCTION__);
+            }
+        }
+        
+        if (reply_data.data_var.record)
+        {
+            // free's up the whole list
+            mbus_data_record_free(reply_data.data_var.record); 
+        }        
     }
 
     mbus_frame_free(frame);

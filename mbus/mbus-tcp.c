@@ -90,7 +90,7 @@ mbus_tcp_connect(char *host, int port)
     }
 
     // Set a timeout
-    time_out.tv_sec  = 2; //seconds
+    time_out.tv_sec  = 4; //seconds
     time_out.tv_usec = 0;
     setsockopt(handle->sock, SOL_SOCKET, SO_SNDTIMEO, &time_out, sizeof(time_out));
     setsockopt(handle->sock, SOL_SOCKET, SO_RCVTIMEO, &time_out, sizeof(time_out));
@@ -167,17 +167,12 @@ mbus_tcp_recv_frame(mbus_tcp_handle *handle, mbus_frame *frame)
     len = 0;
 
     do {
-        //printf("%s: Attempt to read %d bytes [len = %d]", __PRETTY_FUNCTION__, remaining, len);
 
         if ((nread = read(handle->sock, &buff[len], remaining)) == -1)
         {
             mbus_error_str_set("M-Bus tcp transport layer failed to read data.");
-            //fprintf(stderr, "%s: aborting recv frame (remaining = %d, len = %d, nread = %d)",
-            //       __PRETTY_FUNCTION__, remaining, len, nread);
             return -1;
         }
-
-	    //printf("%s: Got %d byte [remaining %d, len %d]", __PRETTY_FUNCTION__, nread, remaining, len);
 
         len += nread;
 

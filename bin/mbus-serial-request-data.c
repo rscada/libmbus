@@ -133,7 +133,13 @@ main(int argc, char **argv)
     {
         mbus_frame_print(&reply);
     }
-    mbus_frame_data_parse(&reply, &reply_data);
+
+    if (mbus_frame_data_parse(&reply, &reply_data) == -1)
+    {
+        fprintf(stderr, "M-bus data parse error.\n");
+        return 1;
+    }
+
     printf("%s", mbus_frame_data_xml(&reply_data));
 
     // manual free
