@@ -2,9 +2,9 @@
 // Copyright (C) 2011, Robert Johansson, Raditex AB
 // All rights reserved.
 //
-// FreeSCADA 
-// http://www.FreeSCADA.com
-// freescada@freescada.com
+// rSCADA 
+// http://www.rSCADA.se
+// info@rscada.se
 //
 //------------------------------------------------------------------------------
 
@@ -45,13 +45,13 @@ main(int argc, char **argv)
     if ((handle = mbus_connect_serial(device)) == NULL)
     {
         printf("Failed to setup connection to M-bus gateway\n");
-        return -1;
+        return 1;
     }
 
     if (mbus_serial_set_baudrate(handle->m_serial_handle, baudrate) == -1)
     {
         printf("Failed to set baud rate.\n");
-        return -1;
+        return 1;
     }
 
 
@@ -64,7 +64,7 @@ main(int argc, char **argv)
         if (mbus_send_ping_frame(handle, address) == -1)
         {
             printf("Scan failed. Could not send ping frame: %s\n", mbus_error_str());
-            return -1;
+            return 1;
         } 
 
         if (mbus_recv_frame(handle, &reply) == -1)

@@ -2,9 +2,9 @@
 // Copyright (C) 2010-2012, Robert Johansson and contributors, Raditex AB
 // All rights reserved.
 //
-// FreeSCADA 
-// http://www.FreeSCADA.com
-// freescada@freescada.com
+// rSCADA 
+// http://www.rSCADA.se
+// info@rscada.se
 //
 // Contributors:
 // Large parts of this file was contributed by Stefan Wahren.
@@ -55,19 +55,19 @@ main(int argc, char **argv)
     if ((handle = mbus_connect_serial(device)) == NULL)
     {
         printf("Failed to setup connection to M-bus device: %s\n", mbus_error_str());
-        return -1;
+        return 1;
     }
     
     if (mbus_serial_set_baudrate(handle->m_serial_handle, source_baudrate) == -1)
     {
         printf("Failed to set baud rate.\n");
-        return -1;
+        return 1;
     }
 
     if (mbus_send_switch_baudrate_frame(handle, address, target_baudrate) == -1)
     {
         printf("Failed to send switch baudrate frame: %s\n", mbus_error_str());
-        return -1; 
+        return 1; 
     }
 
     ret = mbus_recv_frame(handle, &reply);  
@@ -75,7 +75,7 @@ main(int argc, char **argv)
     if (ret == -1)
     {
         printf("No reply from device\n");
-        return -1;
+        return 1;
     }
 
     if (mbus_frame_type(&reply) != MBUS_FRAME_TYPE_ACK)

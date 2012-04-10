@@ -2,9 +2,9 @@
 // Copyright (C) 2010, Raditex AB
 // All rights reserved.
 //
-// FreeSCADA 
-// http://www.FreeSCADA.com
-// freescada@freescada.com
+// rSCADA 
+// http://www.rSCADA.se
+// info@rscada.se
 //
 //------------------------------------------------------------------------------
 
@@ -32,13 +32,13 @@ main(int argc, char *argv[])
 	if (argc != 2)
     {
         fprintf(stderr, "%s binary-file\n", argv[0]);
-        return -1;
+        return 1;
     }
 
 	if ((fd = open(argv[1], O_RDONLY, 0)) == -1)
     {
 		fprintf(stderr, "%s: failed to open '%s'", argv[0], argv[1]);
-        return -1;
+        return 1;
     }
 
 	bzero(buf, sizeof(buf));

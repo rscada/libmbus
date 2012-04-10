@@ -2,9 +2,9 @@
 // Copyright (C) 2011, Robert Johansson, Raditex AB
 // All rights reserved.
 //
-// FreeSCADA 
-// http://www.FreeSCADA.com
-// freescada@freescada.com
+// rSCADA 
+// http://www.rSCADA.se
+// info@rscada.se
 //
 //------------------------------------------------------------------------------
 
@@ -67,13 +67,13 @@ main(int argc, char **argv)
     if ((handle = mbus_connect_serial(device)) == NULL)
     {
         fprintf(stderr, "Failed to setup connection to M-bus gateway\n");
-        return -1;
+        return 1;
     }
 
     if (mbus_serial_set_baudrate(handle->m_serial_handle, baudrate) == -1)
     {
         printf("Failed to set baud rate.\n");
-        return -1;
+        return 1;
     }
 
 
@@ -88,24 +88,24 @@ main(int argc, char **argv)
         if (probe_ret == MBUS_PROBE_COLLISION)
         {
             fprintf(stderr, "%s: Error: The address mask [%s] matches more than one device.\n", __PRETTY_FUNCTION__, addr_str);
-            return -1;
+            return 1;
         }
         else if (probe_ret == MBUS_PROBE_NOTHING)
         {
             fprintf(stderr, "%s: Error: The selected secondary address does not match any device [%s].\n", __PRETTY_FUNCTION__, addr_str);
-            return -1;
+            return 1;
         }
         else if (probe_ret == MBUS_PROBE_ERROR)
         {
             fprintf(stderr, "%s: Error: Failed to probe secondary address [%s].\n", __PRETTY_FUNCTION__, addr_str);
-            return -1;    
+            return 1;    
         }
         // else MBUS_PROBE_SINGLE
 
         if (mbus_send_request_frame(handle, 253) == -1)
         {
             fprintf(stderr, "Failed to send M-Bus request frame.\n");
-            return -1;
+            return 1;
         }
     } 
     else
@@ -116,14 +116,14 @@ main(int argc, char **argv)
         if (mbus_send_request_frame(handle, address) == -1)
         {
             fprintf(stderr, "Failed to send M-Bus request frame.\n");
-            return -1;
+            return 1;
         }
     }   
 
     if (mbus_recv_frame(handle, &reply) == -1)
     {
         fprintf(stderr, "Failed to receive M-Bus response frame.\n");
-        return -1;
+        return 1;
     }    
 
     //

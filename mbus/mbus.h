@@ -2,9 +2,9 @@
 // Copyright (C) 2010, Raditex AB
 // All rights reserved.
 //
-// FreeSCADA 
-// http://www.FreeSCADA.com
-// freescada@freescada.com
+// rSCADA 
+// http://www.rSCADA.se
+// info@rscada.se
 //
 //------------------------------------------------------------------------------
 
@@ -26,7 +26,7 @@
  * API. For examples on how to use the libmbus library, see the applications
  * in the bin directory in the source code distribution.
  *
- * For more information, see http://www.freescada.com/libmbus
+ * For more information, see http://www.rscada.se/libmbus
  *
  */
 

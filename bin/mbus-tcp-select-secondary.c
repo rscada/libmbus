@@ -2,9 +2,9 @@
 // Copyright (C) 2011, Robert Johansson, Raditex AB
 // All rights reserved.
 //
-// FreeSCADA 
-// http://www.FreeSCADA.com
-// freescada@freescada.com
+// rSCADA 
+// http://www.rSCADA.se
+// info@rscada.se
 //
 //------------------------------------------------------------------------------
 
@@ -42,19 +42,19 @@ main(int argc, char **argv)
     if (strlen(argv[3]) != 16)
     {
         printf("Misformatted secondary address. Must be 16 character HEX number.\n");
-        return -1;
+        return 1;
     }
 
     if ((handle = mbus_connect_tcp(host, port)) == NULL)
     {
         printf("Failed to setup connection to M-bus gateway: %s\n", mbus_error_str());
-        return -1;
+        return 1;
     }
 
     if (mbus_send_select_frame(handle, addr) == -1)
     {
         printf("Failed to send selection frame: %s\n", mbus_error_str());
-        return -1; 
+        return 1; 
     }
 
     ret = mbus_recv_frame(handle, &reply);
@@ -62,13 +62,13 @@ main(int argc, char **argv)
     if (ret == -1)
     {
         printf("No reply from device with secondary address %s: %s\n", argv[3], mbus_error_str());
-        return -1;
+        return 1;
     }    
 
     if (ret == -2)
     {
         printf("Invalid reply from %s: The address address probably match more than one device: %s\n", argv[3], mbus_error_str());
-        return -1;
+        return 1;
     }
 
     if (mbus_frame_type(&reply) == MBUS_FRAME_TYPE_ACK)
@@ -76,13 +76,13 @@ main(int argc, char **argv)
         if (mbus_send_request_frame(handle, 253) == -1)
 	    {
             printf("Failed to send request to selected secondary device: %s\n", mbus_error_str());
-            return -1;
+            return 1;
         }
 
         if (mbus_recv_frame(handle, &reply) == -1)
         {
             printf("Failed to recieve reply from selected secondary device: %s\n", mbus_error_str());
-            return -1;
+            return 1;
         }
 
         if (mbus_frame_type(&reply) != MBUS_FRAME_TYPE_ACK)

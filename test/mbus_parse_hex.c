@@ -2,9 +2,9 @@
 // Copyright (C) 2010, Raditex AB
 // All rights reserved.
 //
-// FreeSCADA 
-// http://www.FreeSCADA.com
-// freescada@freescada.com
+// rSCADA 
+// http://www.rSCADA.se
+// info@rscada.se
 //
 //------------------------------------------------------------------------------
 
@@ -84,7 +84,7 @@ main(int argc, char *argv[])
 	{
 	    mbus_frame_print(&reply);
 	    fprintf(stderr, "mbus_frame_data_parse: %s\n", mbus_error_str());
-        return -1;
+        return 1;
     }
     
     //mbus_frame_print(&reply);

@@ -2,9 +2,9 @@
 // Copyright (C) 2011, Robert Johansson, Raditex AB
 // All rights reserved.
 //
-// FreeSCADA 
-// http://www.FreeSCADA.com
-// freescada@freescada.com
+// rSCADA 
+// http://www.rSCADA.se
+// info@rscada.se
 //
 //------------------------------------------------------------------------------
 
@@ -191,5 +191,4 @@ mbus_tcp_recv_frame(mbus_tcp_handle *handle, mbus_frame *frame)
   
     return 0;
 }
-
 

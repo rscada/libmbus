@@ -2,9 +2,9 @@
 // Copyright (C) 2011, Robert Johansson, Raditex AB
 // All rights reserved.
 //
-// FreeSCADA 
-// http://www.FreeSCADA.com
-// freescada@freescada.com
+// rSCADA 
+// http://www.rSCADA.se
+// info@rscada.se
 //
 //------------------------------------------------------------------------------
 
@@ -40,7 +40,7 @@ main(int argc, char **argv)
     if ((handle = mbus_connect_tcp(host, port)) == NULL)
     {
         printf("Scan failed: Could not setup connection to M-bus gateway: %s\n",  mbus_error_str());
-        return -1;
+        return 1;
     }
 
     for (address = 0; address < 254; address++)
@@ -50,7 +50,7 @@ main(int argc, char **argv)
         if (mbus_send_ping_frame(handle, address) == -1)
         {
             printf("Scan failed. Could not send ping frame: %s\n", mbus_error_str());
-            return -1;
+            return 1;
         } 
 
         if (mbus_recv_frame(handle, &reply) == -1)

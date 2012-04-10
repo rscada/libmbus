@@ -2,9 +2,9 @@
 // Copyright (C) 2010-2011, Robert Johansson and contributors, Raditex AB
 // All rights reserved.
 //
-// FreeSCADA 
-// http://www.FreeSCADA.com
-// freescada@freescada.com
+// rSCADA 
+// http://www.rSCADA.se
+// info@rscada.se
 //
 // Contributors:
 // Large parts of this file was contributed by Tomas Menzl.

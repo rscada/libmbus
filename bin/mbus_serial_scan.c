@@ -1,3 +1,13 @@
+//------------------------------------------------------------------------------
+// Copyright (C) 2011, Robert Johansson, Raditex AB
+// All rights reserved.
+//
+// rSCADA 
+// http://www.rSCADA.se
+// info@rscada.se
+//
+//------------------------------------------------------------------------------
+
 #include <sys/types.h>
 
 #include <err.h>
