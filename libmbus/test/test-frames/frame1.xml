@@ -1,0 +1,17 @@
+<MBusData>
+
+    <SlaveInformation>
+        <Id>10060958</Id>
+        <Manufacturer>LSE</Manufacturer>
+        <Version>22</Version>
+        <Medium>Bus/System</Medium>
+        <AccessNumber>123</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Manufacturer specific</Function>
+    </DataRecord>
+
+</MBusData>

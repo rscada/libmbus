@@ -1,0 +1,19 @@
+<MBusData>
+
+    <SlaveInformation>
+        <Id>12345678</Id>
+        <Manufacturer>PAD</Manufacturer>
+        <Version>1</Version>
+        <Medium>Water</Medium>
+        <AccessNumber>19</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <Unit>Fabrication number</Unit>
+        <Value>1020304</Value>
+    </DataRecord>
+
+</MBusData>
