@@ -27,7 +27,7 @@ int
 main(int argc, char **argv)
 {
     char *host, *addr_mask;
-    int port, address;
+    int port;
 
     if (argc != 4 && argc != 3)
     {

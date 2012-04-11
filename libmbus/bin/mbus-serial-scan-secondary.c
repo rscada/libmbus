@@ -24,7 +24,7 @@ int
 main(int argc, char **argv)
 {
     char *device, *addr_mask;
-    int address, baudrate = 9600;
+    int baudrate = 9600;
     mbus_handle *handle = NULL;
 
     if (argc == 2)

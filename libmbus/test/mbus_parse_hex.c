@@ -24,7 +24,7 @@
 int
 main(int argc, char *argv[])
 {
-	int fd, len, i;
+	int fd, len, i, result;
 	u_char raw_buff[4096], buff[4096], *ptr, *endptr;
 	mbus_frame reply;
 	mbus_frame_data frame_data;
@@ -62,11 +62,32 @@ main(int argc, char *argv[])
 
 	bzero(&reply, sizeof(reply));
 	bzero(&frame_data, sizeof(frame_data));
-
-	mbus_parse(&reply, buff, i);
 	
-	mbus_frame_data_parse(&reply, &frame_data);
-	//mbus_frame_print(&reply);
+	//mbus_parse_set_debug(1);
+	
+	result = mbus_parse(&reply, buff, i);
+
+	if (result < 0)
+	{
+	    fprintf(stderr, "mbus_parse: %s\n", mbus_error_str());
+        return -1;
+    }
+    else if (result > 0)
+    {
+        fprintf(stderr, "mbus_parse: need %d more bytes\n", result);
+        return -1;
+    }
+    
+    result = mbus_frame_data_parse(&reply, &frame_data);
+	
+	if (result != 0)
+	{
+	    mbus_frame_print(&reply);
+	    fprintf(stderr, "mbus_frame_data_parse: %s\n", mbus_error_str());
+        return 1;
+    }
+    
+    //mbus_frame_print(&reply);
     //mbus_frame_data_print(&frame_data);
 	printf("%s", mbus_frame_data_xml(&frame_data));
 }
