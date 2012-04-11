@@ -1,0 +1,36 @@
+Release notes for libmbus
+
+Version 0.7.0 (2012-02-07):
+------------------
+
+Added support for variable-length VIF ASCII encoding. Added support for setting baud rates as command-line argument for the serial communication utilities. Thanks to Stefan Wahren for bug fixes and improvements.
+
+Version 0.6.0 (2011-11-06):
+---------------------------
+
+Added support for decoding of more DIF and VIF types. Thanks to Pelle van der Heide for patches for imporoved support for ABB mbus devices. Several bug fixes, many of which provided by Tomas Menzl. Added a new auxillary API for simplifying development of custom mbus applications, and which contains a unified API for TCP and serial MBUS communication. Many thanks to Tomas Menzl for major contributions.
+
+Version 0.5.0 (2011-08-06):
+---------------------------
+
+Added serial transport layer. Removed unnecessary GLib dependency. Added support for secondary address selection and probing. Many thanks to Uwe Grohnwaldt for assisting with a test environment for devices using secondary addressing. 
+
+Version 0.4.0 (2011-03-21):
+---------------------------
+
+Added unit tests. Some minor backwards-incompatible API changes (related to generation of XML represenation). Support for dynamic number of records in variable-length data frames. Support for more medium and unit types. This release also includes several patches from Markus Bergkvist.
+
+Version 0.3.0 (2010-11-23):
+---------------------------
+
+Added support for CUSTOMER_LOCATION VIF type, activated slave_data status register. Also applied several patches from Markus Bergkvist that improved the API.
+
+Version 0.2.0 (2010-08-07):
+---------------------------
+
+Expanded M-Bus support. Now using autotools.
+
+Version 0.1.0 (2010-04-15):
+---------------------------
+
+Initial release FreeSCADAs Meter-Bus library: libmbus, has been published under an open source license.
