@@ -171,7 +171,7 @@ typedef struct _mbus_data_variable {
   
     mbus_data_variable_header header;
     
-    mbus_data_record *record; // XXX: this max num must be dynamic
+    mbus_data_record *record; 
     size_t nrecords;
     
     u_char *data;

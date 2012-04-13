@@ -94,29 +94,10 @@ main(int argc, char **argv)
         // primary addressing
         address = atoi(addr_str);
     }   
-
-    /*
-    if (mbus_send_request_frame(handle, address) == -1)
-    {
-        fprintf(stderr, "Failed to send M-Bus request frame.\n");
-        return 1;
-    }
-
-    if (mbus_recv_frame(handle, &reply) == -1)
-    {
-        fprintf(stderr, "Failed to receive M-Bus response frame.\n");
-        return 1;
-    }    
-    */
     
     // instead of the send and recv, use this sendrecv function that 
-<<<<<<< HEAD
-    // takes care of the possibility of multi-telegram replies
-    if (mbus_sendrecv_request(handle, address, &reply) == -1)
-=======
     // takes care of the possibility of multi-telegram replies (limit = 16 frames)
     if (mbus_sendrecv_request(handle, address, &reply, 16) == -1)
->>>>>>> 58c2bbe2338cc1c5e30fa4cb1d52f5cb56ae9801
     {
         fprintf(stderr, "Failed to send/receive M-Bus request.\n");
         return 1;
