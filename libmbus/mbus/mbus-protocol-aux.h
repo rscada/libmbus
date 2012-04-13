@@ -187,6 +187,17 @@ int mbus_send_frame(mbus_handle * handle, mbus_frame *frame);
 int mbus_send_select_frame(mbus_handle * handle, const char *secondary_addr_str);
 
 /** 
+ * Sends switch baudrate frame using "unified" handle
+ * 
+ * @param handle   Initialized handle
+ * @param address  Address (0-255)
+ * @param baudrate Baudrate (300,600,1200,2400,4800,9600,19200,38400)
+ * 
+ * @return Zero when successful.
+ */
+int mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, int baudrate);
+
+/** 
  * Sends request frame to given slave using "unified" handle
  * 
  * @param handle  Initialized handle
@@ -194,18 +205,30 @@ int mbus_send_select_frame(mbus_handle * handle, const char *secondary_addr_str)
  * 
  * @return Zero when successful.
  */
-int mbus_send_data_request_frame(mbus_handle * handle, int address);
+int mbus_send_request_frame(mbus_handle * handle, int address);
 
 /** 
- * Sends a request and read replies until no more records available.
+ * Sends a request and read replies until no more records available
+ * or limit is reached.
  * 
- * @param handle  Initialized handle
- * @param address Address (0-255)
- * @param reply   pointer to an mbus frame for the reply
+ * @param handle     Initialized handle
+ * @param address    Address (0-255)
+ * @param reply      pointer to an mbus frame for the reply
+ * @param max_frames limit of frames to readout (0 = no limit)
  * 
  * @return Zero when successful.
  */
-int mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply);
+int mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int max_frames);
+
+/** 
+ * Sends ping frame to given slave using "unified" handle
+ * 
+ * @param handle  Initialized handle
+ * @param address Address (0-255)
+ * 
+ * @return Zero when successful.
+ */
+int mbus_send_ping_frame(mbus_handle *handle, int address);
 
 /** 
  * Probe/address slave by secondary address using "unified" handle

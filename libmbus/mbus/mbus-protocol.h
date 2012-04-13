@@ -177,6 +177,8 @@ typedef struct _mbus_data_variable {
     u_char *data;
     size_t  data_len;
     
+    u_char more_records_follow;
+    
     // are these needed/used?
     u_char  mdh;
     u_char *mfg_data;
@@ -501,6 +503,8 @@ char *mbus_error_str();
 void  mbus_error_str_set(char *message);
 void  mbus_error_reset();
 
+void  mbus_parse_set_debug(int debug);
+
 //
 // data encode/decode functions
 //
@@ -520,6 +524,8 @@ float mbus_data_float_decode(u_char *float_data);
 void mbus_data_tm_decode(struct tm *t, u_char *t_data, size_t t_data_size);
 
 void mbus_data_str_decode(u_char *dst, const u_char *src, size_t len);
+
+void mbus_data_bin_decode(u_char *dst, const u_char *src, size_t len, size_t max_len);
 
 const char *mbus_data_fixed_medium(mbus_data_fixed *data);
 const char *mbus_data_fixed_unit(int medium_unit_byte);
