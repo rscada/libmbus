@@ -32,13 +32,13 @@ main(int argc, char *argv[])
 	if (argc != 2)
     {
         fprintf(stderr, "%s binary-file\n", argv[0]);
-        return -1;
+        return 1;
     }
 
 	if ((fd = open(argv[1], O_RDONLY, 0)) == -1)
     {
 		fprintf(stderr, "%s: failed to open '%s'", argv[0], argv[1]);
-        return -1;
+        return 1;
     }
 
 	bzero(raw_buff, sizeof(raw_buff));
@@ -70,12 +70,12 @@ main(int argc, char *argv[])
 	if (result < 0)
 	{
 	    fprintf(stderr, "mbus_parse: %s\n", mbus_error_str());
-        return -1;
+        return 1;
     }
     else if (result > 0)
     {
         fprintf(stderr, "mbus_parse: need %d more bytes\n", result);
-        return -1;
+        return 1;
     }
     
     result = mbus_frame_data_parse(&reply, &frame_data);
@@ -90,6 +90,7 @@ main(int argc, char *argv[])
     //mbus_frame_print(&reply);
     //mbus_frame_data_print(&frame_data);
 	printf("%s", mbus_frame_data_xml(&frame_data));
+	return 0;
 }
 
 
