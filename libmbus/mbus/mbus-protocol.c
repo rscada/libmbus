@@ -1086,8 +1086,8 @@ mbus_data_variable_medium_lookup(u_char medium)
             snprintf(buff, sizeof(buff), "Gas");
             break;
                                           
-        case MBUS_VARIABLE_DATA_MEDIUM_HEAT:
-            snprintf(buff, sizeof(buff), "Heat");
+        case MBUS_VARIABLE_DATA_MEDIUM_HEAT_OUT:
+            snprintf(buff, sizeof(buff), "Heat: Outlet");
             break;
 
         case MBUS_VARIABLE_DATA_MEDIUM_STEAM:
@@ -1117,9 +1117,21 @@ mbus_data_variable_medium_lookup(u_char medium)
         case MBUS_VARIABLE_DATA_MEDIUM_COOL_IN:
             snprintf(buff, sizeof(buff), "Cooling load meter: Inlet");
             break;
+            
+        case MBUS_VARIABLE_DATA_MEDIUM_HEAT_IN:
+            snprintf(buff, sizeof(buff), "Heat: Inlet");
+            break;
+            
+        case MBUS_VARIABLE_DATA_MEDIUM_HEAT_COOL:
+            snprintf(buff, sizeof(buff), "Heat / Cooling load meter");
+            break;
 
         case MBUS_VARIABLE_DATA_MEDIUM_BUS:
             snprintf(buff, sizeof(buff), "Bus/System");
+            break;
+            
+        case MBUS_VARIABLE_DATA_MEDIUM_UNKNOWN:
+            snprintf(buff, sizeof(buff), "Unknown Medium");
             break;
 
         case MBUS_VARIABLE_DATA_MEDIUM_COLD_WATER:
@@ -1138,10 +1150,7 @@ mbus_data_variable_medium_lookup(u_char medium)
             snprintf(buff, sizeof(buff), "A/D Converter");
             break;
 
-        case 0x0C:
-            snprintf(buff, sizeof(buff), "Heat (Volume measured at flow temperature: inlet)");
-            break;
-
+        case 0x10: // - 0x15
         case 0x20: // - 0xFF
             snprintf(buff, sizeof(buff), "Reserved");
             break;
