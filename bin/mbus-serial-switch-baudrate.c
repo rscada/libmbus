@@ -48,7 +48,7 @@ main(int argc, char **argv)
     }
     else
     {
-        fprintf(stderr, "usage: %s device address target-baudrate\n", argv[0]);
+        fprintf(stderr, "usage: %s [-b BAUDRATE] device address target-baudrate\n", argv[0]);
         return 0;
     }
 
