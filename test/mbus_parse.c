@@ -31,7 +31,7 @@ main(int argc, char *argv[])
 
 	if (argc != 2)
     {
-        fprintf(stderr, "%s binary-file\n", argv[0]);
+        fprintf(stderr, "usage: %s binary-file\n", argv[0]);
         return 1;
     }
 
@@ -52,6 +52,7 @@ main(int argc, char *argv[])
 	mbus_frame_data_parse(&reply, &frame_data);
 	mbus_frame_print(&reply);
 	printf("%s", mbus_frame_data_xml(&frame_data));
+	return 0;
 }
 
 
