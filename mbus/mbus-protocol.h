@@ -520,6 +520,7 @@ char *mbus_frame_data_xml(mbus_frame_data *data);
 
 char *mbus_data_variable_header_xml(mbus_data_variable_header *header);
 
+char *mbus_frame_xml(mbus_frame *frame);
 
 //
 // Debug/dump

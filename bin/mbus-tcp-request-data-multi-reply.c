@@ -112,24 +112,9 @@ main(int argc, char **argv)
     }
 
     //
-    // here, figure out how the list of frames should be merged into a single
-    // XML document, but for now let's just dump all frames as independent XMLs
+    // generate XML and print to standard output
     //
-    for (reply_iter = &reply; reply_iter; reply_iter = reply_iter->next)
-    {
-        if (mbus_frame_data_parse(reply_iter, &reply_data) == -1)
-        {
-            fprintf(stderr, "M-bus data parse error.\n");
-            return 1;
-        }
-        printf("%s", mbus_frame_data_xml(&reply_data));
-
-        // manual free, all records in the list
-        if (reply_data.data_var.record)
-        {
-            mbus_data_record_free(reply_data.data_var.record); 
-        }
-    }
+    printf("%s", mbus_frame_xml(&reply));
 
     mbus_disconnect(handle);
     return 0;

@@ -1618,9 +1618,8 @@ mbus_vif_unit_lookup(u_char vif)
         case 0xFF:
             snprintf(buff, sizeof(buff), "Manufacturer specific");
             break;
-                       
+
         default:
-        
             snprintf(buff, sizeof(buff), "Unknown (VIF=0x%.2X)", vif);
             break;
     }
@@ -3013,6 +3012,62 @@ mbus_data_variable_header_xml(mbus_data_variable_header *header)
 }
 
 //------------------------------------------------------------------------------
+/// Generate XML for a single variable-length data record
+//------------------------------------------------------------------------------
+char *
+mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int frame_cnt)
+{
+    static char buff[8192];
+    char str_encoded[768];
+    size_t len = 0;
+    int val;
+    
+    if (record)
+    {
+        if (frame_cnt >= 0)
+        {
+            len += snprintf(&buff[len], sizeof(buff) - len, 
+                            "    <DataRecord id=\"%d\" frame=\"%d\">\n",
+                            record_cnt, frame_cnt);
+        }
+        else
+        {
+            len += snprintf(&buff[len], sizeof(buff) - len, 
+                            "    <DataRecord id=\"%d\">\n", record_cnt);
+        }
+    
+        if (record->drh.dib.dif == 0x0F) // MBUS_DIB_DIF_VENDOR_SPECIFIC
+        {
+            len += snprintf(&buff[len], sizeof(buff) - len, 
+                            "        <Function>Manufacturer specific</Function>\n");                
+        }
+        else if (record->drh.dib.dif == 0x1F)
+        {
+            len += snprintf(&buff[len], sizeof(buff) - len, 
+                            "        <Function>More records follow</Function>\n");
+        }
+        else
+        {   
+            mbus_str_xml_encode(str_encoded, mbus_data_record_function(record), sizeof(str_encoded)); 
+            len += snprintf(&buff[len], sizeof(buff) - len, 
+                            "        <Function>%s</Function>\n", str_encoded);
+            
+            mbus_str_xml_encode(str_encoded, mbus_data_record_unit(record), sizeof(str_encoded));
+            len += snprintf(&buff[len], sizeof(buff) - len, 
+                            "        <Unit>%s</Unit>\n", str_encoded);
+        }
+        
+        mbus_str_xml_encode(str_encoded, mbus_data_record_value(record), sizeof(str_encoded));
+        len += snprintf(&buff[len], sizeof(buff) - len, "        <Value>%s</Value>\n", str_encoded);
+        len += snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");
+            
+        return buff;
+    }
+    
+    return ""; 
+}
+
+//------------------------------------------------------------------------------
 /// Generate XML for variable-length data 
 //------------------------------------------------------------------------------
 char *
@@ -3022,40 +3077,20 @@ mbus_data_variable_xml(mbus_data_variable *data)
     static char buff[8192];
     char str_encoded[768];
     size_t len = 0;
-    size_t i;
+    int i;
     
     if (data)
     {
         len += snprintf(&buff[len], sizeof(buff) - len, "<MBusData>\n\n");
         
-        len += snprintf(&buff[len], sizeof(buff) - len, "%s", mbus_data_variable_header_xml(&(data->header)));
+        len += snprintf(&buff[len], sizeof(buff) - len, "%s", 
+                        mbus_data_variable_header_xml(&(data->header)));
     
         for (record = data->record, i = 0; record; record = record->next, i++)
         {
-            len += snprintf(&buff[len], sizeof(buff) - len, "    <DataRecord id=\"%zd\">\n", i);
-        
-            if (record->drh.dib.dif == 0x0F) //MBUS_DIB_DIF_VENDOR_SPECIFIC)
-            {
-                len += snprintf(&buff[len], sizeof(buff) - len, "        <Function>Manufacturer specific</Function>\n");                
-            }
-            else if (record->drh.dib.dif == 0x1F)
-            {
-                len += snprintf(&buff[len], sizeof(buff) - len, "        <Function>More records follow</Function>\n");
-            }
-            else
-            {   
-                mbus_str_xml_encode(str_encoded, mbus_data_record_function(record), sizeof(str_encoded)); 
-                len += snprintf(&buff[len], sizeof(buff) - len, "        <Function>%s</Function>\n", str_encoded);
-                
-                mbus_str_xml_encode(str_encoded, mbus_data_record_unit(record), sizeof(str_encoded));
-                len += snprintf(&buff[len], sizeof(buff) - len, "        <Unit>%s</Unit>\n", str_encoded);
-            }
-            
-            mbus_str_xml_encode(str_encoded, mbus_data_record_value(record), sizeof(str_encoded));
-            len += snprintf(&buff[len], sizeof(buff) - len, "        <Value>%s</Value>\n", str_encoded);
-            len += snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");
-        }
-       
+            len += snprintf(&buff[len], sizeof(buff) - len, "%s", 
+                            mbus_data_variable_record_xml(record, i, -1));        
+        }       
         len += snprintf(&buff[len], sizeof(buff) - len, "</MBusData>\n");
 
         return buff;
@@ -3064,9 +3099,9 @@ mbus_data_variable_xml(mbus_data_variable *data)
     return "";
 }
 
-///
+//------------------------------------------------------------------------------
 /// Generate XML representation of fixed-length frame.
-///
+//------------------------------------------------------------------------------
 char *
 mbus_data_fixed_xml(mbus_data_fixed *data)
 {
@@ -3155,7 +3190,7 @@ mbus_data_error_xml(int error)
 }
 
 //------------------------------------------------------------------------------
-/// Return a string containing an XML representation of the M-BUS frame.
+/// Return a string containing an XML representation of the M-BUS frame data.
 //------------------------------------------------------------------------------
 char *
 mbus_frame_data_xml(mbus_frame_data *data)
@@ -3181,6 +3216,111 @@ mbus_frame_data_xml(mbus_frame_data *data)
     return "";
 }
 
+
+//------------------------------------------------------------------------------
+/// Return an XML representation of the M-BUS frame.
+//------------------------------------------------------------------------------
+char *
+mbus_frame_xml(mbus_frame *frame)
+{
+    mbus_frame_data frame_data;
+    mbus_frame *iter;
+     
+    mbus_data_record *record;
+    static char buff[8192];
+
+    size_t len = 0;
+    int record_cnt = 0, frame_cnt;
+
+    if (frame)
+    {
+        if (mbus_frame_data_parse(frame, &frame_data) == -1)
+        {
+            mbus_error_str_set("M-bus data parse error.");
+            return NULL;
+        }
+    
+        if (frame_data.type == MBUS_DATA_TYPE_ERROR)
+        {
+            //
+            // generate XML for error
+            //
+            return mbus_data_error_xml(frame_data.error);
+        }
+    
+        if (frame_data.type == MBUS_DATA_TYPE_FIXED)
+        {
+            //
+            // generate XML for fixed data 
+            //
+            return mbus_data_fixed_xml(&(frame_data.data_fix));
+        }
+        
+        if (frame_data.type == MBUS_DATA_TYPE_VARIABLE)
+        {
+            //
+            // generate XML for a sequence of variable data frames
+            //        
+
+            // include frame counter in XML output if more than one frame
+            // is available (frame_cnt = -1 => not included in output)        
+            frame_cnt = (frame->next == NULL) ? -1 : 0;
+
+            len += snprintf(&buff[len], sizeof(buff) - len, "<MBusData>\n\n");
+            
+            // only print the header info for the first frame (should be 
+            // the same for each frame in a sequence of a multi-telegram 
+            // transfer.
+            len += snprintf(&buff[len], sizeof(buff) - len, "%s", 
+                                    mbus_data_variable_header_xml(&(frame_data.data_var.header)));
+                                    
+            // loop through all records in the current frame, using a global
+            // record count as record ID in the XML output
+            for (record = frame_data.data_var.record; record; record = record->next, record_cnt++)
+            {
+                len += snprintf(&buff[len], sizeof(buff) - len, "%s", 
+                                mbus_data_variable_record_xml(record, record_cnt, frame_cnt));        
+            }       
+
+            // free all records in the list
+            if (frame_data.data_var.record)
+            {
+                mbus_data_record_free(frame_data.data_var.record); 
+            }
+            
+            frame_cnt++;
+                        
+            for (iter = frame->next; iter; iter = iter->next, frame_cnt++)
+            {
+                if (mbus_frame_data_parse(iter, &frame_data) == -1)
+                {
+                    mbus_error_str_set("M-bus variable data parse error.");
+                    return NULL;
+                }
+            
+                // loop through all records in the current frame, using a global
+                // record count as record ID in the XML output
+                for (record = frame_data.data_var.record; record; record = record->next, record_cnt++)
+                {
+                    len += snprintf(&buff[len], sizeof(buff) - len, "%s", 
+                                    mbus_data_variable_record_xml(record, record_cnt, frame_cnt));        
+                }       
+
+                // free all records in the list
+                if (frame_data.data_var.record)
+                {
+                    mbus_data_record_free(frame_data.data_var.record); 
+                }
+            }        
+        
+            len += snprintf(&buff[len], sizeof(buff) - len, "</MBusData>\n");
+                
+            return buff;
+        }
+    }
+        
+    return "";
+}    
 
 
 //------------------------------------------------------------------------------
