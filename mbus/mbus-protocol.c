@@ -2096,7 +2096,7 @@ mbus_data_record_function(mbus_data_record *record)
     
     if (record)
     {
-        switch (record->drh.dib.dif & 0x30)
+        switch (record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_FUNCTION)
         {
             case 0x00:
                 snprintf(buff, sizeof(buff), "Instantaneous value");           
