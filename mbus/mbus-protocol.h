@@ -214,16 +214,19 @@ typedef struct _mbus_data_fixed {
 } mbus_data_fixed;
 
 //
-// ABSTRACT DATA FORMAT (either fixed or variable length)
+// ABSTRACT DATA FORMAT (error, fixed or variable length)
 //
 #define MBUS_DATA_TYPE_FIXED    1
 #define MBUS_DATA_TYPE_VARIABLE 2
+#define MBUS_DATA_TYPE_ERROR    3
+
 typedef struct _mbus_frame_data {
 
     mbus_data_variable data_var;
     mbus_data_fixed    data_fix;
 
     int type;
+    int error;
 
 } mbus_frame_data;
 
@@ -370,6 +373,14 @@ typedef struct _mbus_data_secondary_address {
 #define MBUS_CONTROL_INFO_EEPROM_READ        0xB4
 #define MBUS_CONTROL_INFO_SW_TEST_START      0xB6
 
+//Mode 1 Mode 2                   Application                   Definition in
+// 70h             report of general application errors     Usergroup March 94
+// 71h                      report of alarm status          Usergroup March 94
+// 72h   76h                variable data respond                EN1434-3
+// 73h   77h                 fixed data respond                  EN1434-3
+#define MBUS_CONTROL_INFO_ERROR_GENERAL      0x70
+#define MBUS_CONTROL_INFO_STATUS_ALARM       0x71
+
 #define MBUS_CONTROL_INFO_RESP_FIXED         0x73
 #define MBUS_CONTROL_INFO_RESP_FIXED_MSB     0x77
 
@@ -397,6 +408,19 @@ typedef struct _mbus_data_secondary_address {
 #define MBUS_DATA_RECORD_DIF_MASK_STORAGE_NO     0x40
 #define MBUS_DATA_RECORD_DIF_MASK_EXTENTION      0x80
 
+//
+// GENERAL APPLICATION ERRORS
+//
+#define MBUS_ERROR_DATA_UNSPECIFIED        0x00
+#define MBUS_ERROR_DATA_UNIMPLEMENTED_CI   0x01
+#define MBUS_ERROR_DATA_BUFFER_TOO_LONG    0x02
+#define MBUS_ERROR_DATA_TOO_MANY_RECORDS   0x03
+#define MBUS_ERROR_DATA_PREMATURE_END      0x04
+#define MBUS_ERROR_DATA_TOO_MANY_DIFES     0x05
+#define MBUS_ERROR_DATA_TOO_MANY_VIFES     0x06
+#define MBUS_ERROR_DATA_RESERVED           0x07
+#define MBUS_ERROR_DATA_APPLICATION_BUSY   0x08
+#define MBUS_ERROR_DATA_TOO_MANY_READOUTS  0x09
 
 //
 // FIXED DATA FLAGS
@@ -488,6 +512,7 @@ void  mbus_str_xml_encode(u_char *dst, const u_char *src, size_t max_len);
 char *mbus_data_xml(mbus_frame_data *data);
 char *mbus_data_variable_xml(mbus_data_variable *data);
 char *mbus_data_fixed_xml(mbus_data_fixed *data);
+char *mbus_data_error_xml(int error);
 char *mbus_frame_data_xml(mbus_frame_data *data);
 
 char *mbus_data_variable_header_xml(mbus_data_variable_header *header);
@@ -499,6 +524,7 @@ char *mbus_data_variable_header_xml(mbus_data_variable_header *header);
 int mbus_frame_print(mbus_frame *frame);
 int mbus_frame_data_print(mbus_frame_data *data);
 int mbus_data_fixed_print(mbus_data_fixed *data);
+int mbus_data_error_print(int error);
 int mbus_data_variable_header_print(mbus_data_variable_header *header);
 int mbus_data_variable_print(mbus_data_variable *data);
 
@@ -535,6 +561,7 @@ const char *mbus_data_fixed_unit(int medium_unit_byte);
 const char *mbus_data_variable_medium_lookup(u_char medium);
 const char *mbus_unit_prefix(int exp);
 
+const char *mbus_data_error_lookup(int error);
 
 const char *mbus_vib_unit_lookup(mbus_value_information_block *vib);
 const char *mbus_vif_unit_lookup(u_char vif);

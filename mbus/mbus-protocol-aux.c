@@ -148,17 +148,17 @@ mbus_variable_vif vif_table[] = {
     { 0x56, 1.0e3,  "kg/h", "Mass flow" },
     { 0x57, 1.0e4,  "kg/h", "Mass flow" },
 
-    /* E101 10nn     Flow Temperature °C (0.001°C to 1°C) */
-    { 0x58, 1.0e-3, "°C", "Flow temperature" },
-    { 0x59, 1.0e-2, "°C", "Flow temperature" },
-    { 0x5A, 1.0e-1, "°C", "Flow temperature" },
-    { 0x5B, 1.0e0,  "°C", "Flow temperature" },
+    /* E101 10nn     Flow Temperature ï¿½C (0.001ï¿½C to 1ï¿½C) */
+    { 0x58, 1.0e-3, "ï¿½C", "Flow temperature" },
+    { 0x59, 1.0e-2, "ï¿½C", "Flow temperature" },
+    { 0x5A, 1.0e-1, "ï¿½C", "Flow temperature" },
+    { 0x5B, 1.0e0,  "ï¿½C", "Flow temperature" },
 
-    /* E101 11nn Return Temperature °C (0.001°C to 1°C) */
-    { 0x5C, 1.0e-3, "°C", "Return temperature" },
-    { 0x5D, 1.0e-2, "°C", "Return temperature" },
-    { 0x5E, 1.0e-1, "°C", "Return temperature" },
-    { 0x5F, 1.0e0,  "°C", "Return temperature" },
+    /* E101 11nn Return Temperature ï¿½C (0.001ï¿½C to 1ï¿½C) */
+    { 0x5C, 1.0e-3, "ï¿½C", "Return temperature" },
+    { 0x5D, 1.0e-2, "ï¿½C", "Return temperature" },
+    { 0x5E, 1.0e-1, "ï¿½C", "Return temperature" },
+    { 0x5F, 1.0e0,  "ï¿½C", "Return temperature" },
 
     /* E110 00nn    Temperature Difference  K   (mK to  K) */
     { 0x60, 1.0e-3, "K", "Temperature difference" },
@@ -166,11 +166,11 @@ mbus_variable_vif vif_table[] = {
     { 0x62, 1.0e-1, "K", "Temperature difference" },
     { 0x63, 1.0e0,  "K", "Temperature difference" },
 
-    /* E110 01nn     External Temperature °C (0.001°C to 1°C) */
-    { 0x64, 1.0e-3, "°C", "External temperature" },
-    { 0x65, 1.0e-2, "°C", "External temperature" },
-    { 0x66, 1.0e-1, "°C", "External temperature" },
-    { 0x67, 1.0e0,  "°C", "External temperature" },
+    /* E110 01nn     External Temperature ï¿½C (0.001ï¿½C to 1ï¿½C) */
+    { 0x64, 1.0e-3, "ï¿½C", "External temperature" },
+    { 0x65, 1.0e-2, "ï¿½C", "External temperature" },
+    { 0x66, 1.0e-1, "ï¿½C", "External temperature" },
+    { 0x67, 1.0e0,  "ï¿½C", "External temperature" },
 
     /* E110 10nn     Pressure bar (1mbar to 1000mbar) */
     { 0x68, 1.0e-3, "bar", "Pressure" },
@@ -562,29 +562,29 @@ mbus_variable_vif vif_table[] = {
     { 0x236, 1.0e0, "Reserved", "Reserved" },
     { 0x237, 1.0e0, "Reserved", "Reserved" },
 
-    /* E101 10nn Flow Temperature 10(nn-3) °F 0.001°F to 1°F */
-    { 0x238, 1.0e-3, "°F", "Flow temperature" },
-    { 0x239, 1.0e-2, "°F", "Flow temperature" },
-    { 0x23A, 1.0e-1, "°F", "Flow temperature" },
-    { 0x23B, 1.0e0,  "°F", "Flow temperature" },
+    /* E101 10nn Flow Temperature 10(nn-3) ï¿½F 0.001ï¿½F to 1ï¿½F */
+    { 0x238, 1.0e-3, "ï¿½F", "Flow temperature" },
+    { 0x239, 1.0e-2, "ï¿½F", "Flow temperature" },
+    { 0x23A, 1.0e-1, "ï¿½F", "Flow temperature" },
+    { 0x23B, 1.0e0,  "ï¿½F", "Flow temperature" },
 
-    /* E101 11nn Return Temperature 10(nn-3) °F 0.001°F to 1°F */
-    { 0x23C, 1.0e-3, "°F", "Return temperature" },
-    { 0x23D, 1.0e-2, "°F", "Return temperature" },
-    { 0x23E, 1.0e-1, "°F", "Return temperature" },
-    { 0x23F, 1.0e0,  "°F", "Return temperature" },
+    /* E101 11nn Return Temperature 10(nn-3) ï¿½F 0.001ï¿½F to 1ï¿½F */
+    { 0x23C, 1.0e-3, "ï¿½F", "Return temperature" },
+    { 0x23D, 1.0e-2, "ï¿½F", "Return temperature" },
+    { 0x23E, 1.0e-1, "ï¿½F", "Return temperature" },
+    { 0x23F, 1.0e0,  "ï¿½F", "Return temperature" },
 
-    /* E110 00nn Temperature Difference 10(nn-3) °F 0.001°F to 1°F */
-    { 0x240, 1.0e-3, "°F", "Temperature difference" },
-    { 0x241, 1.0e-2, "°F", "Temperature difference" },
-    { 0x242, 1.0e-1, "°F", "Temperature difference" },
-    { 0x243, 1.0e0,  "°F", "Temperature difference" },
+    /* E110 00nn Temperature Difference 10(nn-3) ï¿½F 0.001ï¿½F to 1ï¿½F */
+    { 0x240, 1.0e-3, "ï¿½F", "Temperature difference" },
+    { 0x241, 1.0e-2, "ï¿½F", "Temperature difference" },
+    { 0x242, 1.0e-1, "ï¿½F", "Temperature difference" },
+    { 0x243, 1.0e0,  "ï¿½F", "Temperature difference" },
 
-    /* E110 01nn External Temperature 10(nn-3) °F 0.001°F to 1°F */
-    { 0x244, 1.0e-3, "°F", "External temperature" },
-    { 0x245, 1.0e-2, "°F", "External temperature" },
-    { 0x246, 1.0e-1, "°F", "External temperature" },
-    { 0x247, 1.0e0,  "°F", "External temperature" },
+    /* E110 01nn External Temperature 10(nn-3) ï¿½F 0.001ï¿½F to 1ï¿½F */
+    { 0x244, 1.0e-3, "ï¿½F", "External temperature" },
+    { 0x245, 1.0e-2, "ï¿½F", "External temperature" },
+    { 0x246, 1.0e-1, "ï¿½F", "External temperature" },
+    { 0x247, 1.0e0,  "ï¿½F", "External temperature" },
 
     /* E110 1nnn Reserved */
     { 0x248, 1.0e0, "Reserved", "Reserved" },
@@ -596,19 +596,19 @@ mbus_variable_vif vif_table[] = {
     { 0x24E, 1.0e0, "Reserved", "Reserved" },
     { 0x24F, 1.0e0, "Reserved", "Reserved" },
 
-    /* E111 00nn Cold / Warm Temperature Limit 10(nn-3) °F 0.001°F to 1°F */
-    { 0x250, 1.0e-3, "°F", "Cold / Warm Temperature Limit" },
-    { 0x251, 1.0e-2, "°F", "Cold / Warm Temperature Limit" },
-    { 0x252, 1.0e-1, "°F", "Cold / Warm Temperature Limit" },
-    { 0x253, 1.0e0,  "°F", "Cold / Warm Temperature Limit" },
+    /* E111 00nn Cold / Warm Temperature Limit 10(nn-3) ï¿½F 0.001ï¿½F to 1ï¿½F */
+    { 0x250, 1.0e-3, "ï¿½F", "Cold / Warm Temperature Limit" },
+    { 0x251, 1.0e-2, "ï¿½F", "Cold / Warm Temperature Limit" },
+    { 0x252, 1.0e-1, "ï¿½F", "Cold / Warm Temperature Limit" },
+    { 0x253, 1.0e0,  "ï¿½F", "Cold / Warm Temperature Limit" },
 
-    /* E111 01nn Cold / Warm Temperature Limit 10(nn-3) °C 0.001°C to 1°C */
-    { 0x254, 1.0e-3, "°C", "Cold / Warm Temperature Limit" },
-    { 0x255, 1.0e-2, "°C", "Cold / Warm Temperature Limit" },
-    { 0x256, 1.0e-1, "°C", "Cold / Warm Temperature Limit" },
-    { 0x257, 1.0e0,  "°C", "Cold / Warm Temperature Limit" },
+    /* E111 01nn Cold / Warm Temperature Limit 10(nn-3) ï¿½C 0.001ï¿½C to 1ï¿½C */
+    { 0x254, 1.0e-3, "ï¿½C", "Cold / Warm Temperature Limit" },
+    { 0x255, 1.0e-2, "ï¿½C", "Cold / Warm Temperature Limit" },
+    { 0x256, 1.0e-1, "ï¿½C", "Cold / Warm Temperature Limit" },
+    { 0x257, 1.0e0,  "ï¿½C", "Cold / Warm Temperature Limit" },
 
-    /* E111 1nnn cumul. count max power § 10(nnn-3) W 0.001W to 10000W */
+    /* E111 1nnn cumul. count max power ï¿½ 10(nnn-3) W 0.001W to 10000W */
     { 0x258, 1.0e-3, "W", "Cumul count max power" },
     { 0x259, 1.0e-3, "W", "Cumul count max power" },
     { 0x25A, 1.0e-1, "W", "Cumul count max power" },
@@ -684,7 +684,7 @@ mbus_variable_vif fixed_table[] = {
     { 0x36, 1.0e1, "m^3/h", "Volume flow" },
     { 0x37, 1.0e2, "m^3/h", "Volume flow" },
 
-    { 0x38, 1.0e-3, "°C", "Temperature" },
+    { 0x38, 1.0e-3, "ï¿½C", "Temperature" },
 
     { 0x39, 1.0e0,  "Units for H.C.A.", "H.C.A." },
 
@@ -1426,7 +1426,7 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
         // more records are available.
         //
         
-        if (reply_data.type == MBUS_DATA_TYPE_FIXED)
+        if (reply_data.type != MBUS_DATA_TYPE_VARIABLE)
         {
             // only single frame replies for FIXED type frames
             more_frames = 0;
