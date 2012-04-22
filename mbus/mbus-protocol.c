@@ -298,7 +298,7 @@ mbus_frame_verify(mbus_frame *frame)
                     (frame->control != MBUS_CONTROL_MASK_REQ_UD2)                         &&
                     (frame->control != MBUS_CONTROL_MASK_REQ_UD2 | MBUS_CONTROL_MASK_FCB))
                 {
-                    snprintf(error_str, sizeof(error_str), "Unknown Control Code for Short Frame");
+                    snprintf(error_str, sizeof(error_str), "Unknown Control Code 0x%.2x", frame->control);
                 
                     return -1;
                 }
@@ -322,7 +322,7 @@ mbus_frame_verify(mbus_frame *frame)
                     (frame->control != MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_ACD) &&
                     (frame->control != MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_DFC | MBUS_CONTROL_MASK_ACD))
                 {
-                    snprintf(error_str, sizeof(error_str), "Unknown Control Code for Long/Control Frame");
+                    snprintf(error_str, sizeof(error_str), "Unknown Control Code 0x%.2x", frame->control);
                 
                     return -1;
                 }
