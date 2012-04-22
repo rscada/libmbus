@@ -1,4 +1,7 @@
+.project
 *~
 *.o
 *.so
+*.la
 *.lo
+.libs/

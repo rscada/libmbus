@@ -265,9 +265,11 @@ mbus_frame_type(mbus_frame *frame)
 //
 // Possible checks:
 //
-// 1) Start/stop bytes
-// 2) length field and actual data size
-// 3) checksum
+// 1) frame type
+// 2) Start/stop bytes
+// 3) control field
+// 4) length field and actual data size
+// 5) checksum
 //
 //------------------------------------------------------------------------------
 int
@@ -289,6 +291,17 @@ mbus_frame_verify(mbus_frame *frame)
                         
                     return -1;
                 }
+                
+                if ((frame->control != MBUS_CONTROL_MASK_SND_NKE)                         &&
+                    (frame->control != MBUS_CONTROL_MASK_REQ_UD1)                         &&
+                    (frame->control != MBUS_CONTROL_MASK_REQ_UD1 | MBUS_CONTROL_MASK_FCB) &&
+                    (frame->control != MBUS_CONTROL_MASK_REQ_UD2)                         &&
+                    (frame->control != MBUS_CONTROL_MASK_REQ_UD2 | MBUS_CONTROL_MASK_FCB))
+                {
+                    snprintf(error_str, sizeof(error_str), "Unknown Control Code 0x%.2x", frame->control);
+                
+                    return -1;
+                }
 
                 break;
 
@@ -299,6 +312,18 @@ mbus_frame_verify(mbus_frame *frame)
                 {
                     snprintf(error_str, sizeof(error_str), "No frame start");
                         
+                    return -1;
+                }
+                
+                if ((frame->control != MBUS_CONTROL_MASK_SND_UD)                         &&
+                    (frame->control != MBUS_CONTROL_MASK_SND_UD | MBUS_CONTROL_MASK_FCB) &&
+                    (frame->control != MBUS_CONTROL_MASK_RSP_UD)                         &&
+                    (frame->control != MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_DFC) &&
+                    (frame->control != MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_ACD) &&
+                    (frame->control != MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_DFC | MBUS_CONTROL_MASK_ACD))
+                {
+                    snprintf(error_str, sizeof(error_str), "Unknown Control Code 0x%.2x", frame->control);
+                
                     return -1;
                 }
                 
@@ -1593,9 +1618,8 @@ mbus_vif_unit_lookup(u_char vif)
         case 0xFF:
             snprintf(buff, sizeof(buff), "Manufacturer specific");
             break;
-                       
+
         default:
-        
             snprintf(buff, sizeof(buff), "Unknown (VIF=0x%.2X)", vif);
             break;
     }
@@ -1603,6 +1627,68 @@ mbus_vif_unit_lookup(u_char vif)
 
     return buff;
 }
+
+
+//------------------------------------------------------------------------------
+// Lookup the error message
+//
+// See section 6.6  Codes for general application errors in the M-BUS spec
+//------------------------------------------------------------------------------
+const char *
+mbus_data_error_lookup(int error)
+{
+    static char buff[256];
+    
+    switch (error)
+    {
+        case MBUS_ERROR_DATA_UNSPECIFIED:
+            snprintf(buff, sizeof(buff), "Unspecified error");
+            break;
+           
+        case MBUS_ERROR_DATA_UNIMPLEMENTED_CI:
+            snprintf(buff, sizeof(buff), "Unimplemented CI-Field");
+            break;
+            
+        case MBUS_ERROR_DATA_BUFFER_TOO_LONG:
+            snprintf(buff, sizeof(buff), "Buffer too long, truncated");
+            break;
+            
+        case MBUS_ERROR_DATA_TOO_MANY_RECORDS:
+            snprintf(buff, sizeof(buff), "Too many records");
+            break;
+            
+        case MBUS_ERROR_DATA_PREMATURE_END:
+            snprintf(buff, sizeof(buff), "Premature end of record");
+            break;
+            
+        case MBUS_ERROR_DATA_TOO_MANY_DIFES:
+            snprintf(buff, sizeof(buff), "More than 10 DIFE´s");
+            break;
+            
+        case MBUS_ERROR_DATA_TOO_MANY_VIFES:
+            snprintf(buff, sizeof(buff), "More than 10 VIFE´s");
+            break;
+            
+        case MBUS_ERROR_DATA_RESERVED:
+            snprintf(buff, sizeof(buff), "Reserved");
+            break;
+            
+        case MBUS_ERROR_DATA_APPLICATION_BUSY:
+            snprintf(buff, sizeof(buff), "Application busy");
+            break;
+            
+        case MBUS_ERROR_DATA_TOO_MANY_READOUTS:
+            snprintf(buff, sizeof(buff), "Too many readouts");
+            break;
+            
+        default:
+            snprintf(buff, sizeof(buff), "Unknown error (0x%.2X)", error);
+            break;
+    }
+    
+    return buff;
+}
+
 
 //------------------------------------------------------------------------------
 /// Lookup the unit from the VIB (VIF or VIFE)
@@ -2009,7 +2095,7 @@ mbus_data_record_function(mbus_data_record *record)
     
     if (record)
     {
-        switch (record->drh.dib.dif & 0x30)
+        switch (record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_FUNCTION)
         {
             case 0x00:
                 snprintf(buff, sizeof(buff), "Instantaneous value");           
@@ -2366,21 +2452,50 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 }
 
 //------------------------------------------------------------------------------
-/// Check the stype of the frame data (fixed or variable) and dispatch to the
+/// Check the stype of the frame data (error, fixed or variable) and dispatch to the
 /// corresponding parser function.
 //------------------------------------------------------------------------------
 int
 mbus_frame_data_parse(mbus_frame *frame, mbus_frame_data *data)
 {
-    if (frame && data && frame->data_size > 0)
+    if (frame && data)
     {
-        if (frame->control_information == MBUS_CONTROL_INFO_RESP_FIXED)
+        if (frame->control_information == MBUS_CONTROL_INFO_ERROR_GENERAL)
         {
+            data->type = MBUS_DATA_TYPE_ERROR;
+            
+            if (frame->data_size > 0)
+            {
+                data->error = (int) frame->data[0];
+            }
+            else
+            {
+                data->error = 0;
+            }
+            
+            return 0;
+        }
+        else if (frame->control_information == MBUS_CONTROL_INFO_RESP_FIXED)
+        {
+            if (frame->data_size == 0)
+            {
+                snprintf(error_str, sizeof(error_str), "Got zero data_size.");
+                
+                return -1;
+            }
+        
             data->type = MBUS_DATA_TYPE_FIXED;
             return mbus_data_fixed_parse(frame, &(data->data_fix));
         }
         else if (frame->control_information == MBUS_CONTROL_INFO_RESP_VARIABLE)
         {
+            if (frame->data_size == 0)
+            {
+                snprintf(error_str, sizeof(error_str), "Got zero data_size.");
+                
+                return -1;
+            }
+            
             data->type = MBUS_DATA_TYPE_VARIABLE;
             return mbus_data_variable_parse(frame, &(data->data_var));
         }
@@ -2392,7 +2507,7 @@ mbus_frame_data_parse(mbus_frame *frame, mbus_frame_data *data)
         }
     }
     
-    snprintf(error_str, sizeof(error_str), "Got null pointer to frame, data or zero data_size.");
+    snprintf(error_str, sizeof(error_str), "Got null pointer to frame or data.");
 
     return -1;
 }
@@ -2519,6 +2634,12 @@ mbus_frame_internal_pack(mbus_frame *frame, mbus_frame_data *frame_data)
 
     switch (frame_data->type)
     {
+        case MBUS_DATA_TYPE_ERROR:
+        
+            frame->data[frame->data_size++] = (char) frame_data->error;
+        
+            break;
+    
         case MBUS_DATA_TYPE_FIXED:
 
             //
@@ -2656,6 +2777,11 @@ mbus_frame_data_print(mbus_frame_data *data)
 {
     if (data)
     {
+        if (data->type == MBUS_DATA_TYPE_ERROR)
+        {
+            return mbus_data_error_print(data->error); 
+        }
+    
         if (data->type == MBUS_DATA_TYPE_FIXED)
         {
             return mbus_data_fixed_print(&(data->data_fix));
@@ -2786,6 +2912,14 @@ mbus_data_fixed_print(mbus_data_fixed *data)
             printf("%s: Counter2 = %d\n", __PRETTY_FUNCTION__, mbus_data_int_decode(data->cnt2_val, 4));        
         }          
     }
+    
+    return -1;
+}
+
+int
+mbus_data_error_print(int error)
+{   
+    printf("%s: Error = %d\n", __PRETTY_FUNCTION__, error);
     
     return -1;
 }
@@ -3032,6 +3166,30 @@ mbus_data_fixed_xml(mbus_data_fixed *data)
 }
 
 //------------------------------------------------------------------------------
+/// Generate XML representation of a general application error.
+//------------------------------------------------------------------------------
+char *
+mbus_data_error_xml(int error)
+{
+    static char buff[512];
+    char str_encoded[256];
+    size_t len = 0;
+
+    len += snprintf(&buff[len], sizeof(buff) - len, "<MBusData>\n\n");
+    
+    len += snprintf(&buff[len], sizeof(buff) - len, "    <SlaveInformation>\n");
+
+    mbus_str_xml_encode(str_encoded, mbus_data_error_lookup(error), sizeof(str_encoded)); 
+    len += snprintf(&buff[len], sizeof(buff) - len, "        <Error>%s</Error>\n", str_encoded);
+    
+    len += snprintf(&buff[len], sizeof(buff) - len, "    </SlaveInformation>\n\n");
+    
+    len += snprintf(&buff[len], sizeof(buff) - len, "</MBusData>\n");
+    
+    return buff;
+}
+
+//------------------------------------------------------------------------------
 /// Return a string containing an XML representation of the M-BUS frame data.
 //------------------------------------------------------------------------------
 char *
@@ -3039,6 +3197,11 @@ mbus_frame_data_xml(mbus_frame_data *data)
 {
     if (data)
     {
+        if (data->type == MBUS_DATA_TYPE_ERROR)
+        {
+            return mbus_data_error_xml(data->error);
+        }
+    
         if (data->type == MBUS_DATA_TYPE_FIXED)
         {
             return mbus_data_fixed_xml(&(data->data_fix));
@@ -3071,20 +3234,29 @@ mbus_frame_xml(mbus_frame *frame)
 
     if (frame)
     {
-        if (frame->type == MBUS_DATA_TYPE_FIXED)
+        if (mbus_frame_data_parse(frame, &frame_data) == -1)
+        {
+            mbus_error_str_set("M-bus data parse error.");
+            return NULL;
+        }
+    
+        if (frame_data.type == MBUS_DATA_TYPE_ERROR)
+        {
+            //
+            // generate XML for error
+            //
+            return mbus_data_error_xml(frame_data.error);
+        }
+    
+        if (frame_data.type == MBUS_DATA_TYPE_FIXED)
         {
             //
             // generate XML for fixed data 
             //
-            if (mbus_frame_data_parse(iter, &frame_data) == -1)
-            {
-                mbus_error_str_set("M-bus data parse error.");
-                return NULL;
-            }
             return mbus_data_fixed_xml(&(frame_data.data_fix));
         }
         
-        if (frame->type == MBUS_DATA_TYPE_VARIABLE)
+        if (frame_data.type == MBUS_DATA_TYPE_VARIABLE)
         {
             //
             // generate XML for a sequence of variable data frames
@@ -3095,22 +3267,35 @@ mbus_frame_xml(mbus_frame *frame)
             frame_cnt = (frame->next == NULL) ? -1 : 0;
 
             len += snprintf(&buff[len], sizeof(buff) - len, "<MBusData>\n\n");
+            
+            // only print the header info for the first frame (should be 
+            // the same for each frame in a sequence of a multi-telegram 
+            // transfer.
+            len += snprintf(&buff[len], sizeof(buff) - len, "%s", 
+                                    mbus_data_variable_header_xml(&(frame_data.data_var.header)));
+                                    
+            // loop through all records in the current frame, using a global
+            // record count as record ID in the XML output
+            for (record = frame_data.data_var.record; record; record = record->next, record_cnt++)
+            {
+                len += snprintf(&buff[len], sizeof(buff) - len, "%s", 
+                                mbus_data_variable_record_xml(record, record_cnt, frame_cnt));        
+            }       
+
+            // free all records in the list
+            if (frame_data.data_var.record)
+            {
+                mbus_data_record_free(frame_data.data_var.record); 
+            }
+            
+            frame_cnt++;
                         
-            for (iter = frame; iter; iter = iter->next, frame_cnt++)
+            for (iter = frame->next; iter; iter = iter->next, frame_cnt++)
             {
                 if (mbus_frame_data_parse(iter, &frame_data) == -1)
                 {
                     mbus_error_str_set("M-bus variable data parse error.");
                     return NULL;
-                }
-
-                // only print the header info for the first frame (should be 
-                // the same for each frame in a sequence of a multi-telegram 
-                // transfer.
-                if (frame_cnt < 1)
-                {               
-                    len += snprintf(&buff[len], sizeof(buff) - len, "%s", 
-                                    mbus_data_variable_header_xml(&(frame_data.data_var.header)));
                 }
             
                 // loop through all records in the current frame, using a global
