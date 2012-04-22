@@ -2639,7 +2639,7 @@ mbus_frame_internal_pack(mbus_frame *frame, mbus_frame_data *frame_data)
         
             frame->data[frame->data_size++] = (char) frame_data->error;
         
-            return -2;
+            break;
     
         case MBUS_DATA_TYPE_FIXED:
 
