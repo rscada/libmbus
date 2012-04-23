@@ -1426,7 +1426,7 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
         // more records are available.
         //
         
-        if (reply_data.type == MBUS_DATA_TYPE_FIXED)
+        if (reply_data.type != MBUS_DATA_TYPE_VARIABLE)
         {
             // only single frame replies for FIXED type frames
             more_frames = 0;
