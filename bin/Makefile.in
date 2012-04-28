@@ -40,8 +40,10 @@ bin_PROGRAMS = mbus-tcp-scan$(EXEEXT) mbus-tcp-request-data$(EXEEXT) \
 	mbus-tcp-select-secondary$(EXEEXT) \
 	mbus-tcp-scan-secondary$(EXEEXT) mbus-serial-scan$(EXEEXT) \
 	mbus-serial-request-data$(EXEEXT) \
+	mbus-serial-request-data-multi-reply$(EXEEXT) \
 	mbus-serial-select-secondary$(EXEEXT) \
-	mbus-serial-scan-secondary$(EXEEXT)
+	mbus-serial-scan-secondary$(EXEEXT) \
+	mbus-serial-switch-baudrate$(EXEEXT)
 subdir = bin
 DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -66,6 +68,16 @@ mbus_serial_request_data_DEPENDENCIES =
 mbus_serial_request_data_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(mbus_serial_request_data_LDFLAGS) $(LDFLAGS) -o $@
+am_mbus_serial_request_data_multi_reply_OBJECTS =  \
+	mbus-serial-request-data-multi-reply.$(OBJEXT)
+mbus_serial_request_data_multi_reply_OBJECTS =  \
+	$(am_mbus_serial_request_data_multi_reply_OBJECTS)
+mbus_serial_request_data_multi_reply_DEPENDENCIES =
+mbus_serial_request_data_multi_reply_LINK = $(LIBTOOL) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) \
+	$(mbus_serial_request_data_multi_reply_LDFLAGS) $(LDFLAGS) -o \
+	$@
 am_mbus_serial_scan_OBJECTS = mbus-serial-scan.$(OBJEXT)
 mbus_serial_scan_OBJECTS = $(am_mbus_serial_scan_OBJECTS)
 mbus_serial_scan_DEPENDENCIES =
@@ -89,6 +101,15 @@ mbus_serial_select_secondary_DEPENDENCIES =
 mbus_serial_select_secondary_LINK = $(LIBTOOL) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(mbus_serial_select_secondary_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am_mbus_serial_switch_baudrate_OBJECTS =  \
+	mbus-serial-switch-baudrate.$(OBJEXT)
+mbus_serial_switch_baudrate_OBJECTS =  \
+	$(am_mbus_serial_switch_baudrate_OBJECTS)
+mbus_serial_switch_baudrate_DEPENDENCIES =
+mbus_serial_switch_baudrate_LINK = $(LIBTOOL) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(mbus_serial_switch_baudrate_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am_mbus_tcp_request_data_OBJECTS = mbus-tcp-request-data.$(OBJEXT)
 mbus_tcp_request_data_OBJECTS = $(am_mbus_tcp_request_data_OBJECTS)
@@ -142,17 +163,21 @@ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(mbus_serial_request_data_SOURCES) \
+	$(mbus_serial_request_data_multi_reply_SOURCES) \
 	$(mbus_serial_scan_SOURCES) \
 	$(mbus_serial_scan_secondary_SOURCES) \
 	$(mbus_serial_select_secondary_SOURCES) \
+	$(mbus_serial_switch_baudrate_SOURCES) \
 	$(mbus_tcp_request_data_SOURCES) \
 	$(mbus_tcp_request_data_multi_reply_SOURCES) \
 	$(mbus_tcp_scan_SOURCES) $(mbus_tcp_scan_secondary_SOURCES) \
 	$(mbus_tcp_select_secondary_SOURCES)
 DIST_SOURCES = $(mbus_serial_request_data_SOURCES) \
+	$(mbus_serial_request_data_multi_reply_SOURCES) \
 	$(mbus_serial_scan_SOURCES) \
 	$(mbus_serial_scan_secondary_SOURCES) \
 	$(mbus_serial_select_secondary_SOURCES) \
+	$(mbus_serial_switch_baudrate_SOURCES) \
 	$(mbus_tcp_request_data_SOURCES) \
 	$(mbus_tcp_request_data_multi_reply_SOURCES) \
 	$(mbus_tcp_scan_SOURCES) $(mbus_tcp_scan_secondary_SOURCES) \
@@ -311,12 +336,18 @@ mbus_serial_scan_SOURCES = mbus-serial-scan.c
 mbus_serial_request_data_LDFLAGS = -L$(top_builddir)/mbus
 mbus_serial_request_data_LDADD = -lmbus
 mbus_serial_request_data_SOURCES = mbus-serial-request-data.c
+mbus_serial_request_data_multi_reply_LDFLAGS = -L$(top_builddir)/mbus
+mbus_serial_request_data_multi_reply_LDADD = -lmbus
+mbus_serial_request_data_multi_reply_SOURCES = mbus-serial-request-data-multi-reply.c
 mbus_serial_select_secondary_LDFLAGS = -L$(top_builddir)/mbus
 mbus_serial_select_secondary_LDADD = -lmbus
 mbus_serial_select_secondary_SOURCES = mbus-serial-select-secondary.c
 mbus_serial_scan_secondary_LDFLAGS = -L$(top_builddir)/mbus
 mbus_serial_scan_secondary_LDADD = -lmbus
 mbus_serial_scan_secondary_SOURCES = mbus-serial-scan-secondary.c
+mbus_serial_switch_baudrate_LDFLAGS = -L$(top_builddir)/mbus
+mbus_serial_switch_baudrate_LDADD = -lmbus
+mbus_serial_switch_baudrate_SOURCES = mbus-serial-switch-baudrate.c
 all: all-am
 
 .SUFFIXES:
@@ -397,6 +428,9 @@ clean-binPROGRAMS:
 mbus-serial-request-data$(EXEEXT): $(mbus_serial_request_data_OBJECTS) $(mbus_serial_request_data_DEPENDENCIES) 
 	@rm -f mbus-serial-request-data$(EXEEXT)
 	$(mbus_serial_request_data_LINK) $(mbus_serial_request_data_OBJECTS) $(mbus_serial_request_data_LDADD) $(LIBS)
+mbus-serial-request-data-multi-reply$(EXEEXT): $(mbus_serial_request_data_multi_reply_OBJECTS) $(mbus_serial_request_data_multi_reply_DEPENDENCIES) 
+	@rm -f mbus-serial-request-data-multi-reply$(EXEEXT)
+	$(mbus_serial_request_data_multi_reply_LINK) $(mbus_serial_request_data_multi_reply_OBJECTS) $(mbus_serial_request_data_multi_reply_LDADD) $(LIBS)
 mbus-serial-scan$(EXEEXT): $(mbus_serial_scan_OBJECTS) $(mbus_serial_scan_DEPENDENCIES) 
 	@rm -f mbus-serial-scan$(EXEEXT)
 	$(mbus_serial_scan_LINK) $(mbus_serial_scan_OBJECTS) $(mbus_serial_scan_LDADD) $(LIBS)
@@ -406,6 +440,9 @@ mbus-serial-scan-secondary$(EXEEXT): $(mbus_serial_scan_secondary_OBJECTS) $(mbu
 mbus-serial-select-secondary$(EXEEXT): $(mbus_serial_select_secondary_OBJECTS) $(mbus_serial_select_secondary_DEPENDENCIES) 
 	@rm -f mbus-serial-select-secondary$(EXEEXT)
 	$(mbus_serial_select_secondary_LINK) $(mbus_serial_select_secondary_OBJECTS) $(mbus_serial_select_secondary_LDADD) $(LIBS)
+mbus-serial-switch-baudrate$(EXEEXT): $(mbus_serial_switch_baudrate_OBJECTS) $(mbus_serial_switch_baudrate_DEPENDENCIES) 
+	@rm -f mbus-serial-switch-baudrate$(EXEEXT)
+	$(mbus_serial_switch_baudrate_LINK) $(mbus_serial_switch_baudrate_OBJECTS) $(mbus_serial_switch_baudrate_LDADD) $(LIBS)
 mbus-tcp-request-data$(EXEEXT): $(mbus_tcp_request_data_OBJECTS) $(mbus_tcp_request_data_DEPENDENCIES) 
 	@rm -f mbus-tcp-request-data$(EXEEXT)
 	$(mbus_tcp_request_data_LINK) $(mbus_tcp_request_data_OBJECTS) $(mbus_tcp_request_data_LDADD) $(LIBS)
@@ -428,10 +465,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mbus-serial-request-data-multi-reply.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mbus-serial-request-data.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mbus-serial-scan-secondary.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mbus-serial-scan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mbus-serial-select-secondary.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mbus-serial-switch-baudrate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mbus-tcp-request-data-multi-reply.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mbus-tcp-request-data.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mbus-tcp-scan-secondary.Po@am__quote@
