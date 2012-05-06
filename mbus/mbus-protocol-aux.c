@@ -1158,6 +1158,92 @@ mbus_parse_variable_record(mbus_data_record *data)
     return record;
 }
 
+//------------------------------------------------------------------------------
+/// Generate XML for variable-length data 
+//------------------------------------------------------------------------------
+char *
+mbus_data_variable_xml_normalized(mbus_data_variable *data)
+{
+    mbus_data_record *record;
+    mbus_record *norm_record;
+    static char buff[8192];
+    char str_encoded[768];
+    size_t len = 0;
+    size_t i;
+    
+    if (data)
+    {
+        len += snprintf(&buff[len], sizeof(buff) - len, "<MBusData>\n\n");
+        
+        len += snprintf(&buff[len], sizeof(buff) - len, "%s", mbus_data_variable_header_xml(&(data->header)));
+    
+        for (record = data->record, i = 0; record; record = record->next, i++)
+        {
+            norm_record = mbus_parse_variable_record(record);
+            
+            len += snprintf(&buff[len], sizeof(buff) - len, "    <DataRecord id=\"%zd\">\n", i);
+            
+            if (norm_record != NULL)
+            {                
+                mbus_str_xml_encode(str_encoded, norm_record->function_medium, sizeof(str_encoded));
+                len += snprintf(&buff[len], sizeof(buff) - len, "        <Function>%s</Function>\n", str_encoded);
+                
+                mbus_str_xml_encode(str_encoded, norm_record->unit, sizeof(str_encoded));
+                
+                len += snprintf(&buff[len], sizeof(buff) - len, "        <Unit>%s</Unit>\n", str_encoded);
+                    
+                mbus_str_xml_encode(str_encoded, norm_record->quantity, sizeof(str_encoded));
+                len += snprintf(&buff[len], sizeof(buff) - len, "        <Quantity>%s</Quantity>\n", str_encoded);
+                
+                
+                if (norm_record->is_numeric)
+                {
+                    len += snprintf(&buff[len], sizeof(buff) - len, "        <Value>%f</Value>\n", norm_record->value.real_val);
+                }
+                else
+                {
+                    mbus_str_xml_encode(str_encoded, norm_record->value.str_val.value, sizeof(str_encoded));
+                    len += snprintf(&buff[len], sizeof(buff) - len, "        <Value>%s</Value>\n", str_encoded);
+                }
+                
+                mbus_record_free(norm_record);
+            }
+            else
+            {
+            }
+            
+            len += snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");
+        }
+       
+        len += snprintf(&buff[len], sizeof(buff) - len, "</MBusData>\n");
+
+        return buff;
+    }
+    
+    return "";
+}
+
+//------------------------------------------------------------------------------
+/// Return a string containing an XML representation of the M-BUS frame data.
+//------------------------------------------------------------------------------
+char *
+mbus_frame_data_xml_normalized(mbus_frame_data *data)
+{
+    if (data)
+    {
+        if (data->type == MBUS_DATA_TYPE_FIXED)
+        {
+            return mbus_data_fixed_xml(&(data->data_fix));
+        }
+        
+        if (data->type == MBUS_DATA_TYPE_VARIABLE)
+        {
+            return mbus_data_variable_xml_normalized(&(data->data_var));
+        }
+    }
+    
+    return "";
+}
 
 mbus_handle *
 mbus_connect_serial(const char * device)
