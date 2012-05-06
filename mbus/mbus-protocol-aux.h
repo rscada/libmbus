@@ -347,6 +347,24 @@ int mbus_vif_unit_normalize(int vif, double value, char **unit_out, double *valu
 int mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **unit_out, double *value_out, char ** quantity_out);
 
 /** 
+ * Generate XML for normalized variable-length data
+ * 
+ * @param data    variable-length data
+ * 
+ * @return string with XML
+ */
+char * mbus_data_variable_xml_normalized(mbus_data_variable *data);
+
+/** 
+ * Return a string containing an XML representation of the normalized M-BUS frame data.
+ * 
+ * @param data    M-Bus frame data
+ * 
+ * @return string with XML
+ */
+char * mbus_frame_data_xml_normalized(mbus_frame_data *data);
+
+/** 
  * Iterate over secondary addresses, send a probe package to all addresses matching
  * the given addresses mask.
  * 
