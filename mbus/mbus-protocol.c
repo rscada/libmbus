@@ -2943,32 +2943,36 @@ mbus_str_xml_encode(u_char *dst, const u_char *src, size_t max_len)
     i = 0;
     len = 0;
     
-    while((len+6) < max_len) {
-        if (src[i] == '\0')
+    if (src != NULL)
+    {
+        while((len+6) < max_len) 
         {
-          break;
-        }
-    
-        switch (src[i])
-        {
-          case '&':
-            len += snprintf(&dst[len], max_len - len, "&amp;");
-            break;
-          case '<':
-            len += snprintf(&dst[len], max_len - len, "&lt;");
-            break;
-          case '>':
-            len += snprintf(&dst[len], max_len - len, "&gt;");
-            break;
-          case '"':
-            len += snprintf(&dst[len], max_len - len, "&quot;");
-            break;
-          default:
-            dst[len++] = src[i];
-            break;
-        }
+            if (src[i] == '\0')
+            {
+                break;
+            }
         
-        i++;
+            switch (src[i])
+            {
+                case '&':
+                    len += snprintf(&dst[len], max_len - len, "&amp;");
+                    break;
+                case '<':
+                    len += snprintf(&dst[len], max_len - len, "&lt;");
+                    break;
+                case '>':
+                    len += snprintf(&dst[len], max_len - len, "&gt;");
+                    break;
+                case '"':
+                    len += snprintf(&dst[len], max_len - len, "&quot;");
+                    break;
+                default:
+                    dst[len++] = src[i];
+                    break;
+            }
+            
+            i++;
+        }
     }
     
     dst[len] = '\0';
