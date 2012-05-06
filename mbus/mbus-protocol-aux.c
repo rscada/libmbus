@@ -179,8 +179,8 @@ mbus_variable_vif vif_table[] = {
     { 0x6B, 1.0e0,  "bar", "Pressure" },
 
     /* E110 110n     Time Point */
-    { 0x6C, 1.0e0, "-", "Time point" },     /* n = 0        date, data type G */
-    { 0x6D, 1.0e0, "-", "Time point" },     /* n = 1 time & date, data type F */
+    { 0x6C, 1.0e0, "-", "Time point (date)" },            /* n = 0        date, data type G */
+    { 0x6D, 1.0e0, "-", "Time point (date & time)" },     /* n = 1 time & date, data type F */
 
     /* E110 1110     Units for H.C.A. dimensionless */
     { 0x6E, 1.0e0,  "Units for H.C.A.", "H.C.A." },
@@ -749,15 +749,23 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
     *value_out_real = 0.0;
     *value_out_str = NULL;
     *value_out_str_size = 0;
+    u_char vif, vife;
+    struct tm time;
 
     if (record)
     {
         MBUS_DEBUG("coding = 0x%02X \n", record->drh.dib.dif);
+        
+        // ignore extension bit
+        vif = (record->drh.vib.vif & 0x7F);       
+        vife = (record->drh.vib.vife[0] & 0x7F);
 
         switch (record->drh.dib.dif & 0x0F)
         {
             case 0x00: /* no data */
-                result = -1;
+                *value_out_str = (char*) malloc(1);
+                *value_out_str_size = 0;
+                result = 0;
                 break; 
 
             case 0x01: /* 1 byte integer (8 bit) */
@@ -766,7 +774,21 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                 break; 
 
             case 0x02: /* 2 byte integer (16 bit) */
-                *value_out_real = mbus_data_int_decode(record->data, 2);
+                // E110 1100  Time Point (date)
+                if (vif == 0x6C)            
+                {
+                    mbus_data_tm_decode(&time, record->data, 2);
+                    *value_out_str = (char*) malloc(11);
+                    *value_out_str_size = snprintf(*value_out_str, 11, "%04d-%02d-%02d", 
+                                                 (time.tm_year + 2000), 
+                                                 (time.tm_mon + 1), 
+                                                  time.tm_mday);
+                }
+                else  // normal integer
+                {
+                    *value_out_real = mbus_data_int_decode(record->data, 2);
+                }
+            
                 result = 0;
                 break; 
 
@@ -776,22 +798,42 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                 break; 
                 
             case 0x04: /* 4 byte integer (32 bit) */
-                *value_out_real = mbus_data_int_decode(record->data, 4);
+                // E110 1101  Time Point (date/time)
+                // E011 0000  Start (date/time) of tariff
+                // E111 0000  Date and time of battery change
+                if ( (vif == 0x6D) ||                                     
+                    ((record->drh.vib.vif == 0xFD) && (vife == 0x30)) ||  
+                    ((record->drh.vib.vif == 0xFD) && (vife == 0x70)))    
+                {
+                    mbus_data_tm_decode(&time, record->data, 4);
+                    *value_out_str = (char*) malloc(20);
+                    *value_out_str_size = snprintf(*value_out_str, 20, "%04d-%02d-%02dT%02d:%02d:%02d", 
+                                                 (time.tm_year + 2000), 
+                                                 (time.tm_mon + 1), 
+                                                  time.tm_mday,
+                                                  time.tm_hour,
+                                                  time.tm_min,
+                                                  time.tm_sec);
+                }
+                else  // normal integer
+                {
+                    *value_out_real = mbus_data_int_decode(record->data, 4);
+                }
                 result = 0;
                 break;  
 
             case 0x05: /* 32b real */
-                result = -2;
-                MBUS_ERROR("32b real not implemented yet\n");
+                *value_out_real = mbus_data_float_decode(record->data);
+                result = 0;
                 break;
 
             case 0x06: /* 6 byte integer (48 bit) */
-                *value_out_real = mbus_data_long_decode(record->data, 6);
+                *value_out_real = mbus_data_long_long_decode(record->data, 6);
                 result = 0;
                 break;          
 
             case 0x07: /* 8 byte integer (64 bit) */
-                *value_out_real = mbus_data_long_decode(record->data, 8);
+                *value_out_real = mbus_data_long_long_decode(record->data, 8);
                 result = 0;
                 break;          
 
@@ -830,13 +872,15 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
             }
 
             case 0x0E: /* 12 digit BCD (40 bit) */
-                result = -2;
-                MBUS_ERROR("12 digit BCD (40 bit) not implemented yet\n");
+                *value_out_real = mbus_data_bcd_decode(record->data, 6);
+                result = 0;
                 break;
 
             case 0x0F: /* Special functions */
-                result = -2;
-                MBUS_ERROR("Special functions not implemented yet");
+                *value_out_str = (char*) malloc(3 * record->data_len + 1);
+                *value_out_str_size = 3 * record->data_len;
+                mbus_data_bin_decode((u_char*)(*value_out_str), record->data, record->data_len, (3 * record->data_len + 1));
+                result = 0;
                 break;
 
             default:
@@ -847,6 +891,7 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
     }
     else
     {
+        MBUS_ERROR("record is null");
         result = -3;
     }
     
@@ -863,59 +908,23 @@ mbus_vif_unit_normalize(int vif, double value, char **unit_out, double *value_ou
     unsigned newVif = vif & 0xF7F; /* clear extension bit */
 
     int i;
-            
-    switch (newVif) /* ignore the extension bit in this selection */
-    {
-        /* E110 110n Time Point
-           n = 0        date
-           n = 1 time & date
-           data type G
-           data type F          */
-        case 0x6C:
-        case 0x6C+1:
-            if (vif & 0x1)
-            {
-                *unit_out = strdup("Time Point (time & date)");
-                *quantity_out = strdup("Time Point (time & date)");
-            }
-            else
-            {
-                *unit_out = strdup("Time Point (date)");
-                *quantity_out = strdup("Time Point (date)");
-            }  
-            break;
-            
-        /* Manufacturer specific: 7Fh / FF */
-        case 0x7F:
-        case 0xFF:
-            *unit_out = strdup("Manufacturer specific");
-            *quantity_out = strdup("Manufacturer specific");
-            exponent = 0.0;
-            *value_out = 0.0;
-            return 0;
-            break;
-                       
-        default:
-            for(i=0; vif_table[i].vif < 0xfff; ++i)
-            {
-                if (vif_table[i].vif == newVif)
-                {
-                    *unit_out = strdup(vif_table[i].unit);
-                    *value_out = value * vif_table[i].exponent;
-                    *quantity_out = strdup(vif_table[i].quantity);
-                    return 0;
-                }
-            }
-
-            *unit_out = strdup("Unknown (VIF=0x%.2X)");
-            *quantity_out = strdup("Unknown");
-            exponent = 0.0;
-            *value_out = 0.0;
-            return -1;
-            break;
-    }
     
-    return -2;
+    for(i=0; vif_table[i].vif < 0xfff; ++i)
+    {
+        if (vif_table[i].vif == newVif)
+        {
+            *unit_out = strdup(vif_table[i].unit);
+            *value_out = value * vif_table[i].exponent;
+            *quantity_out = strdup(vif_table[i].quantity);
+            return 0;
+        }
+    }
+
+    *unit_out = strdup("Unknown (VIF=0x%.2X)");
+    *quantity_out = strdup("Unknown");
+    exponent = 0.0;
+    *value_out = 0.0;
+    return -1;
 }
 
 
@@ -952,7 +961,16 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
                 MBUS_ERROR("%s: Error mbus_vif_unit_normalize\n", __PRETTY_FUNCTION__);
                 return -1;
             }
-        } else {
+        } 
+        else if (vib->vif == 0x7C)
+        {
+            // custom VIF
+            *unit_out = strdup("-");
+            *quantity_out = strdup(vib->custom_vif);
+            *value_out = 0.0;
+        } 
+        else 
+        {
             int code = (vib->vif) & 0x7f;
             if (0 != mbus_vif_unit_normalize(code, value, unit_out, value_out, quantity_out))
             {
@@ -1057,28 +1075,54 @@ mbus_record *
 mbus_parse_variable_record(mbus_data_record *data)
 {
     mbus_record * record = NULL;
+    double value_out_real    = 0.0;  /**< raw value */
+    char * value_out_str     = NULL;
+    int    value_out_str_size = 0;
+    double real_val         = 0.0;  /**< normalized value */
 
     if (!(record = mbus_record_new()))
     {
         MBUS_ERROR("%s: memory allocation error\n", __PRETTY_FUNCTION__);
         return NULL;
     }
-    
+ 
     if (data->drh.dib.dif == 0x0F || data->drh.dib.dif == 0x1F) /* MBUS_DIB_DIF_VENDOR_SPECIFIC */
     {
-        record->function_medium = strdup("Manufacturer specific");
+        if (data->drh.dib.dif == 0x1F)
+        {
+            record->function_medium = strdup("More records follow");
+        }
+        else
+        {
+            record->function_medium = strdup("Manufacturer specific");
+        }
+    
         /* parsing of data not implemented yet
            manufacturer specific data structures to end of user data */
+           
+        if (mbus_variable_value_decode(data, &value_out_real, &value_out_str, &value_out_str_size) != 0)
+        {
+            MBUS_ERROR("%s: problem with mbus_variable_value_decode\n", __PRETTY_FUNCTION__);
+            mbus_record_free(record);
+            return NULL;
+        }
+        
+        if (value_out_str != NULL)
+        {
+            record->is_numeric = 0;
+            (record->value).str_val.value = value_out_str;
+            (record->value).str_val.size = value_out_str_size;
+        }
+        else
+        {
+            record->is_numeric = 1;
+            (record->value).real_val = real_val;
+        }
     }
     else
     {
         record->function_medium = strdup(mbus_data_record_function(data));
-        MBUS_DEBUG("record->function_medium = %s \n", record->function_medium);
-        
-        double value_out_real    = 0.0;  /**< raw value */
-        char * value_out_str     = NULL;
-        int    value_out_str_size = 0;
-        double real_val         = 0.0;  /**< normalized value */
+        MBUS_DEBUG("record->function_medium = %s \n", record->function_medium);     
 
         if (mbus_variable_value_decode(data, &value_out_real, &value_out_str, &value_out_str_size) != 0)
         {
@@ -1110,6 +1154,7 @@ mbus_parse_variable_record(mbus_data_record *data)
             (record->value).real_val = real_val;
         }
     }
+    
     return record;
 }
 
