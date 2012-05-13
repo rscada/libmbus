@@ -3045,7 +3045,7 @@ mbus_data_variable_header_xml(mbus_data_variable_header *header)
 /// Generate XML for a single variable-length data record
 //------------------------------------------------------------------------------
 char *
-mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int frame_cnt)
+mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int frame_cnt, mbus_data_variable_header *header)
 {
     static char buff[8192];
     char str_encoded[768];
@@ -3119,7 +3119,7 @@ mbus_data_variable_xml(mbus_data_variable *data)
         for (record = data->record, i = 0; record; record = record->next, i++)
         {
             len += snprintf(&buff[len], sizeof(buff) - len, "%s", 
-                            mbus_data_variable_record_xml(record, i, -1));        
+                            mbus_data_variable_record_xml(record, i, -1, &(data->header)));        
         }       
         len += snprintf(&buff[len], sizeof(buff) - len, "</MBusData>\n");
 
@@ -3309,7 +3309,7 @@ mbus_frame_xml(mbus_frame *frame)
             for (record = frame_data.data_var.record; record; record = record->next, record_cnt++)
             {
                 len += snprintf(&buff[len], sizeof(buff) - len, "%s", 
-                                mbus_data_variable_record_xml(record, record_cnt, frame_cnt));        
+                                mbus_data_variable_record_xml(record, record_cnt, frame_cnt, &(frame_data.data_var.header)));        
             }       
 
             // free all records in the list
@@ -3333,7 +3333,7 @@ mbus_frame_xml(mbus_frame *frame)
                 for (record = frame_data.data_var.record; record; record = record->next, record_cnt++)
                 {
                     len += snprintf(&buff[len], sizeof(buff) - len, "%s", 
-                                    mbus_data_variable_record_xml(record, record_cnt, frame_cnt));        
+                                    mbus_data_variable_record_xml(record, record_cnt, frame_cnt, &(frame_data.data_var.header)));        
                 }       
 
                 // free all records in the list
