@@ -138,7 +138,15 @@ mbus_tcp_send_frame(mbus_tcp_handle *handle, mbus_frame *frame)
         return -1;
     }
 
-    if ((ret = write(handle->sock, buff, len)) != len)
+    if ((ret = write(handle->sock, buff, len)) == len)
+    {
+        //
+        // call the send event function, if the callback function is registered
+        // 
+        if (_mbus_send_event)
+                _mbus_send_event(MBUS_HANDLE_TYPE_TCP);
+    }
+    else
     {   
         char error_str[128];
         snprintf(error_str, sizeof(error_str), "%s: Failed to write frame to socket (ret = %d)\n", __PRETTY_FUNCTION__, ret);
@@ -167,8 +175,18 @@ mbus_tcp_recv_frame(mbus_tcp_handle *handle, mbus_frame *frame)
     len = 0;
 
     do {
+    
+        nread = read(handle->sock, &buff[len], remaining);
 
-        if ((nread = read(handle->sock, &buff[len], remaining)) == -1)
+        if (nread > 0)
+        {
+            //
+            // call the receive event function, if the callback function is registered
+            // 
+            if (_mbus_recv_event)
+                _mbus_recv_event(MBUS_HANDLE_TYPE_TCP);
+        }
+        else if (nread == -1)
         {
             mbus_error_str_set("M-Bus tcp transport layer failed to read data.");
             return -1;

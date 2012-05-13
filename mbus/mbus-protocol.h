@@ -99,6 +99,12 @@ typedef struct _mbus_slave_data {
 
 #define NITEMS(x) (sizeof(x)/sizeof(x[0]))
 
+//
+// Supported handle types
+//
+#define MBUS_HANDLE_TYPE_TCP    0
+#define MBUS_HANDLE_TYPE_SERIAL 1
+
 //------------------------------------------------------------------------------
 // MBUS FRAME DATA FORMATS
 //
@@ -453,6 +459,17 @@ typedef struct _mbus_data_secondary_address {
 #define MBUS_VARIABLE_DATA_MEDIUM_PRESSURE      0x18
 #define MBUS_VARIABLE_DATA_MEDIUM_ADC           0x19
 
+//
+// Event callback functions
+//
+extern void (*_mbus_recv_event)(u_char src_type);
+extern void (*_mbus_send_event)(u_char src_type);
+
+//
+// Event register functions
+//
+void mbus_register_recv_event(void (*event)(u_char src_type));
+void mbus_register_send_event(void (*event)(u_char src_type));
 
 //
 // variable length records

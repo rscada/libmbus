@@ -25,6 +25,30 @@ static char error_str[512];
 //------------------------------------------------------------------------------
 static mbus_slave_data slave_data[MBUS_MAX_PRIMARY_SLAVES];
 
+//
+// init event callback
+//
+void (*_mbus_recv_event)(u_char src_type) = NULL;
+void (*_mbus_send_event)(u_char src_type) = NULL;
+
+//------------------------------------------------------------------------------
+/// Register a function for receive events.
+//------------------------------------------------------------------------------
+void
+mbus_register_recv_event(void (*event)(u_char src_type))
+{
+    _mbus_recv_event = event;
+}
+
+//------------------------------------------------------------------------------
+/// Register a function for send events.
+//------------------------------------------------------------------------------
+void
+mbus_register_send_event(void (*event)(u_char src_type))
+{
+    _mbus_send_event = event;
+}
+
 //------------------------------------------------------------------------------
 /// Return a string that contains an the latest error message.
 //------------------------------------------------------------------------------

@@ -167,7 +167,15 @@ mbus_serial_send_frame(mbus_serial_handle *handle, mbus_frame *frame)
         return -1;
     }
 
-    if ((ret = write(handle->fd, buff, len)) != len)
+    if ((ret = write(handle->fd, buff, len)) == len)
+    {
+        //
+        // call the send event function, if the callback function is registered
+        // 
+        if (_mbus_send_event)
+                _mbus_send_event(MBUS_HANDLE_TYPE_SERIAL);
+    }
+    else
     {   
         fprintf(stderr, "%s: Failed to write frame to socket (ret = %d: %s)\n", __PRETTY_FUNCTION__, ret, strerror(errno));
         return -1;
@@ -196,7 +204,17 @@ mbus_serial_recv_frame(mbus_serial_handle *handle, mbus_frame *frame)
     do {
         //printf("%s: Attempt to read %d bytes [len = %d]\n", __PRETTY_FUNCTION__, remaining, len);
 
-        if ((nread = read(handle->fd, &buff[len], remaining)) == -1)
+        nread = read(handle->fd, &buff[len], remaining);
+
+        if (nread > 0)
+        {
+            //
+            // call the receive event function, if the callback function is registered
+            // 
+            if (_mbus_recv_event)
+                _mbus_recv_event(MBUS_HANDLE_TYPE_SERIAL);
+        }
+        else if (nread == -1)
         {
        //     fprintf(stderr, "%s: aborting recv frame (remaining = %d, len = %d, nread = %d)\n",
          //          __PRETTY_FUNCTION__, remaining, len, nread);
