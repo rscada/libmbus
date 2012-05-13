@@ -316,11 +316,11 @@ mbus_frame_verify(mbus_frame *frame)
                     return -1;
                 }
                 
-                if ((frame->control != MBUS_CONTROL_MASK_SND_NKE)                         &&
-                    (frame->control != MBUS_CONTROL_MASK_REQ_UD1)                         &&
-                    (frame->control != MBUS_CONTROL_MASK_REQ_UD1 | MBUS_CONTROL_MASK_FCB) &&
-                    (frame->control != MBUS_CONTROL_MASK_REQ_UD2)                         &&
-                    (frame->control != MBUS_CONTROL_MASK_REQ_UD2 | MBUS_CONTROL_MASK_FCB))
+                if ((frame->control !=  MBUS_CONTROL_MASK_SND_NKE)                          &&
+                    (frame->control !=  MBUS_CONTROL_MASK_REQ_UD1)                          &&
+                    (frame->control != (MBUS_CONTROL_MASK_REQ_UD1 | MBUS_CONTROL_MASK_FCB)) &&
+                    (frame->control !=  MBUS_CONTROL_MASK_REQ_UD2)                          &&
+                    (frame->control != (MBUS_CONTROL_MASK_REQ_UD2 | MBUS_CONTROL_MASK_FCB)))
                 {
                     snprintf(error_str, sizeof(error_str), "Unknown Control Code 0x%.2x", frame->control);
                 
@@ -339,12 +339,12 @@ mbus_frame_verify(mbus_frame *frame)
                     return -1;
                 }
                 
-                if ((frame->control != MBUS_CONTROL_MASK_SND_UD)                         &&
-                    (frame->control != MBUS_CONTROL_MASK_SND_UD | MBUS_CONTROL_MASK_FCB) &&
-                    (frame->control != MBUS_CONTROL_MASK_RSP_UD)                         &&
-                    (frame->control != MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_DFC) &&
-                    (frame->control != MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_ACD) &&
-                    (frame->control != MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_DFC | MBUS_CONTROL_MASK_ACD))
+                if ((frame->control !=  MBUS_CONTROL_MASK_SND_UD)                          &&
+                    (frame->control != (MBUS_CONTROL_MASK_SND_UD | MBUS_CONTROL_MASK_FCB)) &&
+                    (frame->control !=  MBUS_CONTROL_MASK_RSP_UD)                          &&
+                    (frame->control != (MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_DFC)) &&
+                    (frame->control != (MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_ACD)) &&
+                    (frame->control != (MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_DFC | MBUS_CONTROL_MASK_ACD)))
                 {
                     snprintf(error_str, sizeof(error_str), "Unknown Control Code 0x%.2x", frame->control);
                 
