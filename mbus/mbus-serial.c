@@ -167,6 +167,16 @@ mbus_serial_send_frame(mbus_serial_handle *handle, mbus_frame *frame)
         return -1;
     }
 
+#ifdef MBUS_SERIAL_DEBUG
+    // if debug, dump in HEX form to stdout what we write to the serial port
+    printf("%s: Dumping M-Bus frame [%d bytes]: ", __PRETTY_FUNCTION__, len);
+    for (i = 0; i < len; i++)
+    {
+       printf("%.2X ", buff[i]);
+    }
+    printf("\n");
+#endif
+
     if ((ret = write(handle->fd, buff, len)) != len)
     {   
         fprintf(stderr, "%s: Failed to write frame to socket (ret = %d: %s)\n", __PRETTY_FUNCTION__, ret, strerror(errno));
