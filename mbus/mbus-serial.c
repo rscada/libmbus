@@ -166,6 +166,16 @@ mbus_serial_send_frame(mbus_serial_handle *handle, mbus_frame *frame)
         fprintf(stderr, "%s: mbus_frame_pack failed\n", __PRETTY_FUNCTION__);
         return -1;
     }
+    
+#ifdef MBUS_SERIAL_DEBUG
+    // if debug, dump in HEX form to stdout what we write to the serial port
+    printf("%s: Dumping M-Bus frame [%d bytes]: ", __PRETTY_FUNCTION__, len);
+    for (i = 0; i < len; i++)
+    {
+       printf("%.2X ", buff[i]);
+    }
+    printf("\n");
+#endif
 
     if ((ret = write(handle->fd, buff, len)) == len)
     {

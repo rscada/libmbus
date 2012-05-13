@@ -24,7 +24,7 @@
 #define MBUS_DEBUG(...)
 #endif
 
-static int debug = 1;
+static int debug = 0;
 
 typedef struct _mbus_variable_vif {
     unsigned     vif;
@@ -1557,14 +1557,7 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
     while (more_frames)
     {
         frame_count++;
-        
-        if ((max_frames  > 0) &&
-            (frame_count > max_frames))
-        {
-            // only readout max_frames
-            break;
-        }
-        
+               
         if (debug)
             printf("%s: debug: receiving response frame #%d\n", __PRETTY_FUNCTION__, frame_count);
     
@@ -1601,7 +1594,8 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
         {
             more_frames = 0;
     
-            if (reply_data.data_var.more_records_follow)
+            if (reply_data.data_var.more_records_follow && 
+                ((max_frames > 0) && (frame_count < max_frames))) // only readout max_frames
             {
                 if (debug)
                     printf("%s: debug: expecting more frames\n", __PRETTY_FUNCTION__);

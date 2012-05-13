@@ -25,20 +25,31 @@ main(int argc, char **argv)
 {
     mbus_handle *handle;
     char *device;
-    int address, baudrate = 9600;
+    int address, baudrate = 9600, debug = 0;
 
     if (argc == 2)
     {
         device = argv[1];
+    }
+    else if (argc == 3 && strcmp(argv[1], "-d") == 0)
+    {
+        debug = 1;
+        device = argv[2];
     }
     else if (argc == 4 && strcmp(argv[1], "-b") == 0)
     {
         baudrate = atoi(argv[2]); 
         device = argv[3];
     }
+    else if (argc == 5 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-b") == 0)
+    {
+        debug = 1;    
+        baudrate = atoi(argv[3]); 
+        device = argv[4];
+    }
     else
     {
-        fprintf(stderr, "usage: %s [-b BAUDRATE] device\n", argv[0]);
+        fprintf(stderr, "usage: %s [-d] [-b BAUDRATE] device\n", argv[0]);
         return 0;
     }
     
@@ -54,12 +65,20 @@ main(int argc, char **argv)
         return 1;
     }
 
+    if (debug)
+        printf("Scanning primary addresses:\n");
 
     for (address = 0; address < 254; address++)
     {
         mbus_frame reply;
 
         memset((void *)&reply, 0, sizeof(mbus_frame));
+
+        if (debug)
+        {
+            printf("%d ", address);
+            fflush(stdout);
+        }
 
         if (mbus_send_ping_frame(handle, address) == -1)
         {
@@ -74,6 +93,9 @@ main(int argc, char **argv)
 
         if (mbus_frame_type(&reply) == MBUS_FRAME_TYPE_ACK)
         {
+            if (debug)
+                printf("\n");
+                
             printf("Found a M-Bus device at address %d\n", address);
         }
     }

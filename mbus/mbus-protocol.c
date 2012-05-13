@@ -2768,27 +2768,29 @@ mbus_parse_set_debug(int debug)
 int
 mbus_frame_print(mbus_frame *frame)
 {
+    mbus_frame *iter;
     u_char data_buff[256];
     int len, i;
-    
-    if (frame)
+
+    if (frame == NULL)
+        return -1;
+
+    for (iter = frame; iter; iter = iter->next)
     {
-        if ((len = mbus_frame_pack(frame, data_buff, sizeof(data_buff))) == -1)
+        if ((len = mbus_frame_pack(iter, data_buff, sizeof(data_buff))) == -1)
         {
             return -2;
         }
-       
-        printf("%s: Dumping M-Bus frame [type %d, %d bytes]: ", __PRETTY_FUNCTION__, frame->type, len);
+
+        printf("%s: Dumping M-Bus frame [type %d, %d bytes]: ", __PRETTY_FUNCTION__, iter->type, len);
         for (i = 0; i < len; i++)
         {
             printf("%.2X ", data_buff[i]);
         }
         printf("\n");
-        
-        return 0;
     }
-    
-    return -1;
+
+    return 0;
 }
 
 //------------------------------------------------------------------------------
