@@ -29,7 +29,7 @@ main(int argc, char **argv)
     mbus_frame_data reply_data;
     mbus_handle *handle = NULL;
 
-    char *device, *addr_str, matching_addr[16];
+    char *device, *addr_str, matching_addr[16], *xml_result;
     int address, baudrate = 9600;
  
     memset((void *)&reply, 0, sizeof(mbus_frame));
@@ -132,7 +132,12 @@ main(int argc, char **argv)
     //
     // generate XML and print to standard output
     //
-    printf("%s", mbus_frame_xml(&reply));
+    if ((xml_result = mbus_frame_xml(&reply)) == NULL)
+    {
+        fprintf(stderr, "Failed to generate XML representation of MBUS frames: %s\n", mbus_error_str());
+        return 1;
+    }
+    printf("%s", xml_result);
 
     mbus_disconnect(handle);
     return 0;
