@@ -25,6 +25,30 @@ static char error_str[512];
 //------------------------------------------------------------------------------
 static mbus_slave_data slave_data[MBUS_MAX_PRIMARY_SLAVES];
 
+//
+// init event callback
+//
+void (*_mbus_recv_event)(u_char src_type) = NULL;
+void (*_mbus_send_event)(u_char src_type) = NULL;
+
+//------------------------------------------------------------------------------
+/// Register a function for receive events.
+//------------------------------------------------------------------------------
+void
+mbus_register_recv_event(void (*event)(u_char src_type))
+{
+    _mbus_recv_event = event;
+}
+
+//------------------------------------------------------------------------------
+/// Register a function for send events.
+//------------------------------------------------------------------------------
+void
+mbus_register_send_event(void (*event)(u_char src_type))
+{
+    _mbus_send_event = event;
+}
+
 //------------------------------------------------------------------------------
 /// Return a string that contains an the latest error message.
 //------------------------------------------------------------------------------
@@ -292,11 +316,11 @@ mbus_frame_verify(mbus_frame *frame)
                     return -1;
                 }
                 
-                if ((frame->control != MBUS_CONTROL_MASK_SND_NKE)                         &&
-                    (frame->control != MBUS_CONTROL_MASK_REQ_UD1)                         &&
-                    (frame->control != MBUS_CONTROL_MASK_REQ_UD1 | MBUS_CONTROL_MASK_FCB) &&
-                    (frame->control != MBUS_CONTROL_MASK_REQ_UD2)                         &&
-                    (frame->control != MBUS_CONTROL_MASK_REQ_UD2 | MBUS_CONTROL_MASK_FCB))
+                if ((frame->control !=  MBUS_CONTROL_MASK_SND_NKE)                          &&
+                    (frame->control !=  MBUS_CONTROL_MASK_REQ_UD1)                          &&
+                    (frame->control != (MBUS_CONTROL_MASK_REQ_UD1 | MBUS_CONTROL_MASK_FCB)) &&
+                    (frame->control !=  MBUS_CONTROL_MASK_REQ_UD2)                          &&
+                    (frame->control != (MBUS_CONTROL_MASK_REQ_UD2 | MBUS_CONTROL_MASK_FCB)))
                 {
                     snprintf(error_str, sizeof(error_str), "Unknown Control Code 0x%.2x", frame->control);
                 
@@ -315,12 +339,12 @@ mbus_frame_verify(mbus_frame *frame)
                     return -1;
                 }
                 
-                if ((frame->control != MBUS_CONTROL_MASK_SND_UD)                         &&
-                    (frame->control != MBUS_CONTROL_MASK_SND_UD | MBUS_CONTROL_MASK_FCB) &&
-                    (frame->control != MBUS_CONTROL_MASK_RSP_UD)                         &&
-                    (frame->control != MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_DFC) &&
-                    (frame->control != MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_ACD) &&
-                    (frame->control != MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_DFC | MBUS_CONTROL_MASK_ACD))
+                if ((frame->control !=  MBUS_CONTROL_MASK_SND_UD)                          &&
+                    (frame->control != (MBUS_CONTROL_MASK_SND_UD | MBUS_CONTROL_MASK_FCB)) &&
+                    (frame->control !=  MBUS_CONTROL_MASK_RSP_UD)                          &&
+                    (frame->control != (MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_DFC)) &&
+                    (frame->control != (MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_ACD)) &&
+                    (frame->control != (MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_DFC | MBUS_CONTROL_MASK_ACD)))
                 {
                     snprintf(error_str, sizeof(error_str), "Unknown Control Code 0x%.2x", frame->control);
                 
@@ -3021,7 +3045,7 @@ mbus_data_variable_header_xml(mbus_data_variable_header *header)
 /// Generate XML for a single variable-length data record
 //------------------------------------------------------------------------------
 char *
-mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int frame_cnt)
+mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int frame_cnt, mbus_data_variable_header *header)
 {
     static char buff[8192];
     char str_encoded[768];
@@ -3095,7 +3119,7 @@ mbus_data_variable_xml(mbus_data_variable *data)
         for (record = data->record, i = 0; record; record = record->next, i++)
         {
             len += snprintf(&buff[len], sizeof(buff) - len, "%s", 
-                            mbus_data_variable_record_xml(record, i, -1));        
+                            mbus_data_variable_record_xml(record, i, -1, &(data->header)));        
         }       
         len += snprintf(&buff[len], sizeof(buff) - len, "</MBusData>\n");
 
@@ -3285,7 +3309,7 @@ mbus_frame_xml(mbus_frame *frame)
             for (record = frame_data.data_var.record; record; record = record->next, record_cnt++)
             {
                 len += snprintf(&buff[len], sizeof(buff) - len, "%s", 
-                                mbus_data_variable_record_xml(record, record_cnt, frame_cnt));        
+                                mbus_data_variable_record_xml(record, record_cnt, frame_cnt, &(frame_data.data_var.header)));        
             }       
 
             // free all records in the list
@@ -3309,7 +3333,7 @@ mbus_frame_xml(mbus_frame *frame)
                 for (record = frame_data.data_var.record; record; record = record->next, record_cnt++)
                 {
                     len += snprintf(&buff[len], sizeof(buff) - len, "%s", 
-                                    mbus_data_variable_record_xml(record, record_cnt, frame_cnt));        
+                                    mbus_data_variable_record_xml(record, record_cnt, frame_cnt, &(frame_data.data_var.header)));        
                 }       
 
                 // free all records in the list

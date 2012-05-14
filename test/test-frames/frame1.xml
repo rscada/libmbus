@@ -12,6 +12,7 @@
 
     <DataRecord id="0">
         <Function>Manufacturer specific</Function>
+        <Value>5F 42 01 11 FF FF FF FF 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</Value>
     </DataRecord>
 
 </MBusData>

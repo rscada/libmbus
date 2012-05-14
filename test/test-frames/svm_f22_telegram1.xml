@@ -4,7 +4,7 @@
         <Id>1006089</Id>
         <Manufacturer>SVM</Manufacturer>
         <Version>9</Version>
-        <Medium>Heat (Volume measured at flow temperature: inlet)</Medium>
+        <Medium>Heat: Inlet</Medium>
         <AccessNumber>148</AccessNumber>
         <Status>70</Status>
         <Signature>0000</Signature>
@@ -89,7 +89,8 @@
     </DataRecord>
 
     <DataRecord id="13">
-        <Function>Manufacturer specific</Function>
+        <Function>More records follow</Function>
+        <Value></Value>
     </DataRecord>
 
 </MBusData>

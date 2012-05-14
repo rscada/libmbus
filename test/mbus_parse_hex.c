@@ -89,7 +89,8 @@ main(int argc, char *argv[])
     
     //mbus_frame_print(&reply);
     //mbus_frame_data_print(&frame_data);
-	printf("%s", mbus_frame_data_xml(&frame_data));
+	printf("%s", mbus_frame_data_xml_normalized(&frame_data));
+	// printf("%s", mbus_frame_data_xml(&frame_data));
 	return 0;
 }
 
