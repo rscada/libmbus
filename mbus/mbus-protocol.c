@@ -28,8 +28,23 @@ static mbus_slave_data slave_data[MBUS_MAX_PRIMARY_SLAVES];
 //
 // init event callback
 //
-void (*_mbus_recv_event)(u_char src_type) = NULL;
-void (*_mbus_send_event)(u_char src_type) = NULL;
+void (*_mbus_recv_event)(u_char src_type, const char *buff, size_t len) = NULL;
+void (*_mbus_send_event)(u_char src_type, const char *buff, size_t len) = NULL;
+
+//
+//  trace callbacks
+//
+void
+mbus_dump_recv_event(u_char src_type, const char *buff, size_t len)
+{
+    mbus_hex_dump("RECV", buff, len);
+}
+
+void
+mbus_dump_send_event(u_char src_type, const char *buff, size_t len)
+{
+    mbus_hex_dump("SEND", buff, len);
+}
 
 //------------------------------------------------------------------------------
 /// Register a function for receive events.
@@ -44,7 +59,7 @@ mbus_register_recv_event(void (*event)(u_char src_type))
 /// Register a function for send events.
 //------------------------------------------------------------------------------
 void
-mbus_register_send_event(void (*event)(u_char src_type))
+mbus_register_send_event(void (*event)(u_char src_type, const char *buff, size_t len))
 {
     _mbus_send_event = event;
 }
@@ -316,11 +331,11 @@ mbus_frame_verify(mbus_frame *frame)
                     return -1;
                 }
                 
-                if ((frame->control != MBUS_CONTROL_MASK_SND_NKE)                         &&
-                    (frame->control != MBUS_CONTROL_MASK_REQ_UD1)                         &&
-                    (frame->control != MBUS_CONTROL_MASK_REQ_UD1 | MBUS_CONTROL_MASK_FCB) &&
-                    (frame->control != MBUS_CONTROL_MASK_REQ_UD2)                         &&
-                    (frame->control != MBUS_CONTROL_MASK_REQ_UD2 | MBUS_CONTROL_MASK_FCB))
+                if ((frame->control !=  MBUS_CONTROL_MASK_SND_NKE)                          &&
+                    (frame->control !=  MBUS_CONTROL_MASK_REQ_UD1)                          &&
+                    (frame->control != (MBUS_CONTROL_MASK_REQ_UD1 | MBUS_CONTROL_MASK_FCB)) &&
+                    (frame->control !=  MBUS_CONTROL_MASK_REQ_UD2)                          &&
+                    (frame->control != (MBUS_CONTROL_MASK_REQ_UD2 | MBUS_CONTROL_MASK_FCB)))
                 {
                     snprintf(error_str, sizeof(error_str), "Unknown Control Code 0x%.2x", frame->control);
                 
@@ -339,12 +354,12 @@ mbus_frame_verify(mbus_frame *frame)
                     return -1;
                 }
                 
-                if ((frame->control != MBUS_CONTROL_MASK_SND_UD)                         &&
-                    (frame->control != MBUS_CONTROL_MASK_SND_UD | MBUS_CONTROL_MASK_FCB) &&
-                    (frame->control != MBUS_CONTROL_MASK_RSP_UD)                         &&
-                    (frame->control != MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_DFC) &&
-                    (frame->control != MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_ACD) &&
-                    (frame->control != MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_DFC | MBUS_CONTROL_MASK_ACD))
+                if ((frame->control !=  MBUS_CONTROL_MASK_SND_UD)                          &&
+                    (frame->control != (MBUS_CONTROL_MASK_SND_UD | MBUS_CONTROL_MASK_FCB)) &&
+                    (frame->control !=  MBUS_CONTROL_MASK_RSP_UD)                          &&
+                    (frame->control != (MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_DFC)) &&
+                    (frame->control != (MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_ACD)) &&
+                    (frame->control != (MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_DFC | MBUS_CONTROL_MASK_ACD)))
                 {
                     snprintf(error_str, sizeof(error_str), "Unknown Control Code 0x%.2x", frame->control);
                 
@@ -2940,6 +2955,28 @@ mbus_data_fixed_print(mbus_data_fixed *data)
     }
     
     return -1;
+}
+
+void
+mbus_hex_dump(const char *label, const char *buff, size_t len)
+{
+    time_t rawtime;
+    struct tm * timeinfo;
+    char timestamp[21];
+    size_t i;
+    
+    time ( &rawtime );
+    timeinfo = gmtime ( &rawtime );
+    
+    strftime(timestamp,20,"%Y-%m-%d %H:%M:%S",timeinfo);
+    fprintf(stderr, "[%s] %s (%03d):", timestamp, label, len);
+    
+    for (i = 0; i < len; i++)
+    {
+       fprintf(stderr, " %02X", (u_char) buff[i]);
+    }
+    
+    fprintf(stderr, "\n");
 }
 
 int

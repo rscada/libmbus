@@ -56,6 +56,12 @@ main(int argc, char **argv)
         return 0;
     }
     
+    if (debug)
+    {
+        mbus_register_send_event(&mbus_dump_send_event);
+        mbus_register_recv_event(&mbus_dump_recv_event);
+    }
+    
     if ((handle = mbus_connect_tcp(host, port)) == NULL)
     {
         fprintf(stderr, "Failed to setup connection to M-bus gateway\n");
