@@ -28,14 +28,29 @@ static mbus_slave_data slave_data[MBUS_MAX_PRIMARY_SLAVES];
 //
 // init event callback
 //
-void (*_mbus_recv_event)(u_char src_type) = NULL;
-void (*_mbus_send_event)(u_char src_type) = NULL;
+void (*_mbus_recv_event)(u_char src_type, const char *buff, size_t len) = NULL;
+void (*_mbus_send_event)(u_char src_type, const char *buff, size_t len) = NULL;
+
+//
+//  trace callbacks
+//
+void
+mbus_dump_recv_event(u_char src_type, const char *buff, size_t len)
+{
+    mbus_hex_dump("RECV", buff, len);
+}
+
+void
+mbus_dump_send_event(u_char src_type, const char *buff, size_t len)
+{
+    mbus_hex_dump("SEND", buff, len);
+}
 
 //------------------------------------------------------------------------------
 /// Register a function for receive events.
 //------------------------------------------------------------------------------
 void
-mbus_register_recv_event(void (*event)(u_char src_type))
+mbus_register_recv_event(void (*event)(u_char src_type, const char *buff, size_t len))
 {
     _mbus_recv_event = event;
 }
@@ -44,7 +59,7 @@ mbus_register_recv_event(void (*event)(u_char src_type))
 /// Register a function for send events.
 //------------------------------------------------------------------------------
 void
-mbus_register_send_event(void (*event)(u_char src_type))
+mbus_register_send_event(void (*event)(u_char src_type, const char *buff, size_t len))
 {
     _mbus_send_event = event;
 }
@@ -2942,6 +2957,28 @@ mbus_data_fixed_print(mbus_data_fixed *data)
     return -1;
 }
 
+void
+mbus_hex_dump(const char *label, const char *buff, size_t len)
+{
+    time_t rawtime;
+    struct tm * timeinfo;
+    char timestamp[21];
+    size_t i;
+    
+    time ( &rawtime );
+    timeinfo = gmtime ( &rawtime );
+    
+    strftime(timestamp,20,"%Y-%m-%d %H:%M:%S",timeinfo);
+    fprintf(stderr, "[%s] %s (%03d):", timestamp, label, len);
+    
+    for (i = 0; i < len; i++)
+    {
+       fprintf(stderr, " %02X", (u_char) buff[i]);
+    }
+    
+    fprintf(stderr, "\n");
+}
+
 int
 mbus_data_error_print(int error)
 {   
@@ -3459,6 +3496,7 @@ mbus_frame_get_secondary_address(mbus_frame *frame)
 {
     static char addr[32];
     mbus_frame_data *data;
+    long id;
 
     if (frame == NULL || (data = mbus_frame_data_new()) == NULL)
     {
@@ -3477,8 +3515,10 @@ mbus_frame_get_secondary_address(mbus_frame *frame)
         return NULL;
     }
 
-    snprintf(addr, sizeof(addr), "%.6d%.2X%.2X%.2X%.2X",
-             (int)mbus_data_bcd_decode(data->data_var.header.id_bcd, 4),
+    id = (long) mbus_data_bcd_decode(data->data_var.header.id_bcd, 4);
+
+    snprintf(addr, sizeof(addr), "%08lu%02X%02X%02X%02X",
+             id,
              data->data_var.header.manufacturer[0],
              data->data_var.header.manufacturer[1],
              data->data_var.header.version,
