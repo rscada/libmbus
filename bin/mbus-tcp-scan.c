@@ -44,6 +44,12 @@ main(int argc, char **argv)
         printf("usage: %s [-d] host port\n", argv[0]);
         return 0;
     }
+    
+    if (debug)
+    {
+        mbus_register_send_event(&mbus_dump_send_event);
+        mbus_register_recv_event(&mbus_dump_recv_event);
+    }
      
     if ((handle = mbus_connect_tcp(host, port)) == NULL)
     {
