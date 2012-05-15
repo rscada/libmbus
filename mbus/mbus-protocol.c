@@ -3496,6 +3496,7 @@ mbus_frame_get_secondary_address(mbus_frame *frame)
 {
     static char addr[32];
     mbus_frame_data *data;
+    long id;
 
     if (frame == NULL || (data = mbus_frame_data_new()) == NULL)
     {
@@ -3514,8 +3515,10 @@ mbus_frame_get_secondary_address(mbus_frame *frame)
         return NULL;
     }
 
-    snprintf(addr, sizeof(addr), "%.6d%.2X%.2X%.2X%.2X",
-             (int)mbus_data_bcd_decode(data->data_var.header.id_bcd, 4),
+    id = (long) mbus_data_bcd_decode(data->data_var.header.id_bcd, 4);
+
+    snprintf(addr, sizeof(addr), "%08lu%02X%02X%02X%02X",
+             id,
              data->data_var.header.manufacturer[0],
              data->data_var.header.manufacturer[1],
              data->data_var.header.version,
