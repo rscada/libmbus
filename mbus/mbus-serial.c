@@ -205,7 +205,7 @@ mbus_serial_send_frame(mbus_serial_handle *handle, mbus_frame *frame)
         // call the send event function, if the callback function is registered
         // 
         if (_mbus_send_event)
-                _mbus_send_event(MBUS_HANDLE_TYPE_SERIAL);
+                _mbus_send_event(MBUS_HANDLE_TYPE_SERIAL, buff, len);
     }
     else
     {   
@@ -236,17 +236,7 @@ mbus_serial_recv_frame(mbus_serial_handle *handle, mbus_frame *frame)
     do {
         //printf("%s: Attempt to read %d bytes [len = %d]\n", __PRETTY_FUNCTION__, remaining, len);
 
-        nread = read(handle->fd, &buff[len], remaining);
-
-        if (nread > 0)
-        {
-            //
-            // call the receive event function, if the callback function is registered
-            // 
-            if (_mbus_recv_event)
-                _mbus_recv_event(MBUS_HANDLE_TYPE_SERIAL);
-        }
-        else if (nread == -1)
+        if ((nread = read(handle->fd, &buff[len], remaining)) == -1)
         {
        //     fprintf(stderr, "%s: aborting recv frame (remaining = %d, len = %d, nread = %d)\n",
          //          __PRETTY_FUNCTION__, remaining, len, nread);
@@ -258,12 +248,24 @@ mbus_serial_recv_frame(mbus_serial_handle *handle, mbus_frame *frame)
         len += nread;
 
     } while ((remaining = mbus_parse(frame, buff, len)) > 0);
+
+    if (len == 0)
+    {
+        // No data received
+        return -1;
+    }
+    
+    //
+    // call the receive event function, if the callback function is registered
+    // 
+    if (_mbus_recv_event)
+        _mbus_recv_event(MBUS_HANDLE_TYPE_SERIAL, buff, len);
       
-    if(remaining < 0)
+    if (remaining < 0)
     {
         // Would be OK when e.g. scanning the bus, otherwise it is a failure.
         // printf("%s: M-Bus layer failed to receive complete data.\n", __PRETTY_FUNCTION__);
-        return -1;
+        return -2;
     }
 
     if (len == -1)
