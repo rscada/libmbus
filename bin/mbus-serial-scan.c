@@ -17,6 +17,8 @@
 #include <stdio.h>
 #include <mbus/mbus.h>
 
+static int debug = 0;
+
 //------------------------------------------------------------------------------
 // Primary addressing scanning of mbus devices.
 //------------------------------------------------------------------------------
@@ -25,7 +27,7 @@ main(int argc, char **argv)
 {
     mbus_handle *handle;
     char *device;
-    int address, baudrate = 9600, debug = 0;
+    int address, baudrate = 9600;
 
     if (argc == 2)
     {
@@ -51,6 +53,12 @@ main(int argc, char **argv)
     {
         fprintf(stderr, "usage: %s [-d] [-b BAUDRATE] device\n", argv[0]);
         return 0;
+    }
+    
+    if (debug)
+    {
+        mbus_register_send_event(&mbus_dump_send_event);
+        mbus_register_recv_event(&mbus_dump_recv_event);
     }
     
     if ((handle = mbus_connect_serial(device)) == NULL)

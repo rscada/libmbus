@@ -63,6 +63,12 @@ main(int argc, char **argv)
         fprintf(stderr, "    optional flag -b for selecting baudrate\n");
         return 0;
     }
+    
+    if (debug)
+    {
+        mbus_register_send_event(&mbus_dump_send_event);
+        mbus_register_recv_event(&mbus_dump_recv_event);
+    }
  
     if ((handle = mbus_connect_serial(device)) == NULL)
     {

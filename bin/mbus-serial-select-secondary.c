@@ -42,7 +42,8 @@ main(int argc, char **argv)
     }
     else
     {
-        fprintf(stderr, "usage: %s device secondary-mbus-address\n", argv[0]);
+        fprintf(stderr, "usage: %s [-b BAUDRATE] device secondary-mbus-address\n", argv[0]);
+        fprintf(stderr, "    optional flag -b for selecting baudrate\n");
         return 0;
     }
  

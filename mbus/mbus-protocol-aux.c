@@ -1711,11 +1711,25 @@ mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *match
 
     if (ret == -2)
     {
+        /* check for more data (collision) */
+        while (mbus_recv_frame(handle, &reply) != -1);
+
         return MBUS_PROBE_COLLISION;
     }
 
     if (mbus_frame_type(&reply) == MBUS_FRAME_TYPE_ACK)
     {
+        /* check for more data (collision) */
+        while (mbus_recv_frame(handle, &reply) != -1)
+        {
+            ret = -2;
+        }
+
+        if (ret == -2)
+        {
+            return MBUS_PROBE_COLLISION;
+        }
+
         /* send a data request command to find out the full address */
         if (mbus_send_request_frame(handle, 253) == -1)
 	    {
@@ -1726,9 +1740,16 @@ mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *match
             return MBUS_PROBE_ERROR;
         }
 
-        if (mbus_recv_frame(handle, &reply) == -1)
+        ret = mbus_recv_frame(handle, &reply);
+
+        if (ret == -1)
         {
             return MBUS_PROBE_NOTHING;
+        }
+
+        if (ret == -2)
+        {
+            return MBUS_PROBE_COLLISION;
         }
 
         if (mbus_frame_type(&reply) != MBUS_FRAME_TYPE_ACK)
