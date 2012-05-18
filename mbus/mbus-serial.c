@@ -224,6 +224,9 @@ mbus_serial_recv_frame(mbus_serial_handle *handle, mbus_frame *frame)
 {
     char buff[PACKET_BUFF_SIZE];
     int len, remaining, nread;
+    
+    if (handle == NULL || frame == NULL)
+        return -1;
 
     bzero((void *)buff, sizeof(buff));
 

@@ -165,6 +165,9 @@ mbus_tcp_recv_frame(mbus_tcp_handle *handle, mbus_frame *frame)
 {
     char buff[PACKET_BUFF_SIZE];
     int len, remaining, nread;
+    
+    if (handle == NULL || frame == NULL)
+        return -1;
 
     bzero((void *)buff, sizeof(buff));
 

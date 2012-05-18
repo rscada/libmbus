@@ -707,6 +707,12 @@ int mbus_fixed_normalize(int medium_unit, long medium_value, char **unit_out, do
     double exponent = 0.0;
     int i;
     medium_unit = medium_unit & 0x3F;
+    
+    if (unit_out == NULL || value_out == NULL || quantity_out == NULL)
+    {
+        MBUS_ERROR("%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
 
     switch (medium_unit)
     {
@@ -909,6 +915,12 @@ mbus_vif_unit_normalize(int vif, double value, char **unit_out, double *value_ou
 
     int i;
     
+    if (unit_out == NULL || value_out == NULL || quantity_out == NULL)
+    {
+        MBUS_ERROR("%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+    
     for(i=0; vif_table[i].vif < 0xfff; ++i)
     {
         if (vif_table[i].vif == newVif)
@@ -932,6 +944,7 @@ int
 mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **unit_out, double *value_out, char **quantity_out)
 {   
     MBUS_DEBUG("%s: vib_unit_normalize - VIF=0x%02X\n", __PRETTY_FUNCTION__, vib->vif);
+    
     if (vib->vif == 0xFD) /* first type of VIF extention: see table 8.4.4 a */
     {
         if (vib->nvife == 0)
@@ -1007,30 +1020,33 @@ mbus_record_new()
 void
 mbus_record_free(mbus_record * rec)
 {
-    if (! rec->is_numeric)
+    if (rec)
     {
-        free((rec->value).str_val.value);
-        (rec->value).str_val.value = NULL;
+        if (! rec->is_numeric)
+        {
+            free((rec->value).str_val.value);
+            (rec->value).str_val.value = NULL;
+        }
+    
+        if (rec->unit)
+        {
+            free(rec->unit);
+            rec->unit = NULL;
+        }
+    
+        if (rec->function_medium)
+        {
+            free(rec->function_medium);
+            rec->function_medium = NULL;
+        }
+    
+        if (rec->quantity)
+        {
+            free(rec->quantity);
+            rec->quantity = NULL;
+        }
+        free(rec);
     }
-
-    if (rec->unit)
-    {
-        free(rec->unit);
-        rec->unit = NULL;
-    }
-
-    if (rec->function_medium)
-    {
-        free(rec->function_medium);
-        rec->function_medium = NULL;
-    }
-
-    if (rec->quantity)
-    {
-        free(rec->quantity);
-        rec->quantity = NULL;
-    }
-    free(rec);
 }
 
 
@@ -1079,6 +1095,12 @@ mbus_parse_variable_record(mbus_data_record *data)
     char * value_out_str     = NULL;
     int    value_out_str_size = 0;
     double real_val         = 0.0;  /**< normalized value */
+    
+    if (data == NULL)
+    {
+        MBUS_ERROR("%s: Invalid record.\n", __PRETTY_FUNCTION__);
+        return NULL;
+    }
 
     if (!(record = mbus_record_new()))
     {
@@ -1773,6 +1795,12 @@ mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *match
 
 int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * reply)
 {
+    if (handle == NULL || address == NULL)
+    {
+        MBUS_ERROR("%s: Invalid handle or address.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+
     if (address->is_primary)
     {
         if (mbus_send_request_frame(handle, address->primary) == -1)
@@ -1846,6 +1874,12 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
 {
     int i, i_start, i_end, probe_ret;
     char *mask, matching_mask[17];
+    
+    if (handle == NULL || addr_mask == NULL)
+    {
+        MBUS_ERROR("%s: Invalid handle or address mask.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
 
     if (strlen(addr_mask) != 16)
     {

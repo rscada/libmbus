@@ -620,9 +620,13 @@ mbus_data_str_decode(u_char *dst, const u_char *src, size_t len)
     size_t i;
 
     i = 0;
-    dst[len] = '\0';
-    while(len > 0) {
-        dst[i++] = src[--len];
+    
+    if (src && dst)
+    {
+        dst[len] = '\0';
+        while(len > 0) {
+            dst[i++] = src[--len];
+        }
     }
 }
 
@@ -639,18 +643,21 @@ mbus_data_bin_decode(u_char *dst, const u_char *src, size_t len, size_t max_len)
     i = 0;
     pos = 0;
     
-    while((i < len) && ((pos+3) < max_len)) {
-        pos += snprintf(&dst[pos], max_len - pos, "%.2X ", src[i]);
-        i++;
-    }
-    
-    if (pos > 0)
+    if (src && dst)
     {
-        // remove last space
-        pos--;
+        while((i < len) && ((pos+3) < max_len)) {
+            pos += snprintf(&dst[pos], max_len - pos, "%.2X ", src[i]);
+            i++;
+        }
+        
+        if (pos > 0)
+        {
+            // remove last space
+            pos--;
+        }
+        
+        dst[pos] = '\0';
     }
-    
-    dst[pos] = '\0';
 }
 
 //------------------------------------------------------------------------------
@@ -661,16 +668,16 @@ mbus_data_bin_decode(u_char *dst, const u_char *src, size_t len, size_t max_len)
 void
 mbus_data_tm_decode(struct tm *t, u_char *t_data, size_t t_data_size)
 {
-    t->tm_sec   = 0;
-    t->tm_min   = 0;
-    t->tm_hour  = 0;
-    t->tm_mday  = 0;
-    t->tm_mon   = 0;
-    t->tm_year  = 0; 
-    t->tm_isdst = 0;
-
     if (t && t_data)
     {
+        t->tm_sec   = 0;
+        t->tm_min   = 0;
+        t->tm_hour  = 0;
+        t->tm_mday  = 0;
+        t->tm_mon   = 0;
+        t->tm_year  = 0; 
+        t->tm_isdst = 0;
+   
         if (t_data_size == 4)                // Type F = Compound CP32: Date and Time
         {     
             if ((t_data[0] & 0x80) == 0)     // Time valid ?
@@ -1747,6 +1754,9 @@ mbus_vib_unit_lookup(mbus_value_information_block *vib)
 {   
     static char buff[256];
     int n;
+    
+    if (vib == NULL)
+        return "";
 
     if (vib->vif == 0xFD || vib->vif == 0xFB) // first type of VIF extention: see table 8.4.4 
     {
@@ -2965,6 +2975,9 @@ mbus_hex_dump(const char *label, const char *buff, size_t len)
     char timestamp[21];
     size_t i;
     
+    if (label == NULL || buff == NULL)
+        return;
+    
     time ( &rawtime );
     timeinfo = gmtime ( &rawtime );
     
@@ -3005,6 +3018,9 @@ mbus_str_xml_encode(u_char *dst, const u_char *src, size_t max_len)
     
     i = 0;
     len = 0;
+    
+    if (dst == NULL)
+        return;
     
     if (src != NULL)
     {
