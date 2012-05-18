@@ -943,6 +943,12 @@ mbus_vif_unit_normalize(int vif, double value, char **unit_out, double *value_ou
 int
 mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **unit_out, double *value_out, char **quantity_out)
 {   
+    if (vib == NULL || unit_out == NULL || value_out == NULL || quantity_out == NULL)
+    {
+        MBUS_ERROR("%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+    
     MBUS_DEBUG("%s: vib_unit_normalize - VIF=0x%02X\n", __PRETTY_FUNCTION__, vib->vif);
     
     if (vib->vif == 0xFD) /* first type of VIF extention: see table 8.4.4 a */
