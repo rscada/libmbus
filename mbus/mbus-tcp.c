@@ -78,7 +78,7 @@ mbus_tcp_connect(char *host, int port)
         return NULL;
     }
 
-    bcopy((void *)(host_addr->h_addr), (void *)(&s.sin_addr), host_addr->h_length);
+    memcpy((void *)(&s.sin_addr), (void *)(host_addr->h_addr), host_addr->h_length);
 
     if (connect(handle->sock, (struct sockaddr *)&s, sizeof(s)) < 0)
     {
@@ -169,7 +169,7 @@ mbus_tcp_recv_frame(mbus_tcp_handle *handle, mbus_frame *frame)
     if (handle == NULL || frame == NULL)
         return -1;
 
-    bzero((void *)buff, sizeof(buff));
+    memset((void *)buff, 0, sizeof(buff));
 
     //
     // read data until a packet is received

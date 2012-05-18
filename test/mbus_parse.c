@@ -41,13 +41,13 @@ main(int argc, char *argv[])
         return 1;
     }
 
-	bzero(buf, sizeof(buf));
+	memset(buf, 0, sizeof(buf));
 	len = read(fd, buf, sizeof(buf));
 
 	close(fd);
 
-	bzero(&reply, sizeof(reply));
-	bzero(&frame_data, sizeof(frame_data));
+	memset(&reply, 0, sizeof(reply));
+	memset(&frame_data, 0, sizeof(frame_data));
 	mbus_parse(&reply, buf, len);
 	mbus_frame_data_parse(&reply, &frame_data);
 	mbus_frame_print(&reply);
