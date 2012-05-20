@@ -243,6 +243,16 @@ int mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, i
 int mbus_send_ping_frame(mbus_handle *handle, int address);
 
 /** 
+ * Select slave by secondary address using "unified" handle
+ * 
+ * @param handle        Initialized handle
+ * @param mask          Address/mask to select
+ * 
+ * @return See MBUS_PROBE_* constants
+ */
+int mbus_select_secondary_address(mbus_handle * handle, const char *mask);
+
+/** 
  * Probe/address slave by secondary address using "unified" handle
  * 
  * @param handle        Initialized handle
