@@ -29,7 +29,7 @@ main(int argc, char **argv)
     mbus_frame_data reply_data;
     mbus_handle *handle = NULL;
 
-    char *device, *addr_str, matching_addr[16], *xml_result;
+    char *device, *addr_str, *xml_result;
     int address, baudrate = 9600;
  
     memset((void *)&reply, 0, sizeof(mbus_frame));
@@ -116,23 +116,23 @@ main(int argc, char **argv)
     {
         // secondary addressing
 
-        int probe_ret;
+        int ret;
 
-        probe_ret = mbus_probe_secondary_address(handle, addr_str, matching_addr);
+        ret = mbus_select_secondary_address(handle, addr_str);
 
-        if (probe_ret == MBUS_PROBE_COLLISION)
+        if (ret == MBUS_PROBE_COLLISION)
         {
             fprintf(stderr, "%s: Error: The address mask [%s] matches more than one device.\n", __PRETTY_FUNCTION__, addr_str);
             return 1;
         }
-        else if (probe_ret == MBUS_PROBE_NOTHING)
+        else if (ret == MBUS_PROBE_NOTHING)
         {
             fprintf(stderr, "%s: Error: The selected secondary address does not match any device [%s].\n", __PRETTY_FUNCTION__, addr_str);
             return 1;
         }
-        else if (probe_ret == MBUS_PROBE_ERROR)
+        else if (ret == MBUS_PROBE_ERROR)
         {
-            fprintf(stderr, "%s: Error: Failed to probe secondary address [%s].\n", __PRETTY_FUNCTION__, addr_str);
+            fprintf(stderr, "%s: Error: Failed to select secondary address [%s].\n", __PRETTY_FUNCTION__, addr_str);
             return 1;    
         }
         // else MBUS_PROBE_SINGLE
