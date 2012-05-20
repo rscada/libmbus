@@ -701,6 +701,26 @@ mbus_variable_vif fixed_table[] = {
     { 0xFFFF, 0.0, "", "" },
 };
 
+void (*_mbus_scan_progress)(mbus_handle * handle, const char *mask) = NULL;
+void (*_mbus_found_event)(mbus_handle * handle, mbus_frame *frame) = NULL;
+
+//------------------------------------------------------------------------------
+/// Register a function for the scan progress.
+//------------------------------------------------------------------------------
+void
+mbus_register_scan_progress(void (*event)(mbus_handle * handle, const char *mask))
+{
+    _mbus_scan_progress = event;
+}
+
+//------------------------------------------------------------------------------
+/// Register a function for the found events.
+//------------------------------------------------------------------------------
+void
+mbus_register_found_event(void (*event)(mbus_handle * handle, mbus_frame *frame))
+{
+    _mbus_found_event = event;
+}
 
 int mbus_fixed_normalize(int medium_unit, long medium_value, char **unit_out, double *value_out, char **quantity_out)
 {
@@ -1783,6 +1803,12 @@ mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *match
         if (mbus_frame_type(&reply) != MBUS_FRAME_TYPE_ACK)
         {
             snprintf(matching_addr, 17, "%s", mbus_frame_get_secondary_address(&reply));
+
+            if (_mbus_found_event)
+            {
+                _mbus_found_event(handle,&reply);
+            }
+
             return MBUS_PROBE_SINGLE;
         }
         else
@@ -1925,12 +1951,18 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
     for (i = 0; i <= 9; i++)
     {
         mask[pos] = '0'+i;
+
+        if (_mbus_scan_progress)
+            _mbus_scan_progress(handle,mask);
     
         probe_ret = mbus_probe_secondary_address(handle, mask, matching_mask);
 
         if (probe_ret == MBUS_PROBE_SINGLE)
         {
-            printf("Found a device on secondary address %s [using address mask %s]\n", matching_mask, mask);
+            if (!_mbus_found_event)
+            {
+                printf("Found a device on secondary address %s [using address mask %s]\n", matching_mask, mask);
+            }
         }
         else if (probe_ret == MBUS_PROBE_COLLISION)
         {
