@@ -28,7 +28,9 @@ main(int argc, char **argv)
     char *device, *addr_mask;
     int baudrate = 9600;
     mbus_handle *handle = NULL;
-    mbus_frame *frame = NULL, *reply = NULL;
+    mbus_frame *frame = NULL, reply;
+    
+    memset((void *)&reply, 0, sizeof(mbus_frame));
 
     if (argc == 2)
     {
@@ -108,7 +110,7 @@ main(int argc, char **argv)
 
     if (mbus_serial_set_baudrate(handle->m_serial_handle, baudrate) == -1)
     {
-        printf("Failed to set baud rate.\n");
+        fprintf(stderr, "Failed to set baud rate.\n");
         return 1;
     }
 
@@ -134,7 +136,7 @@ main(int argc, char **argv)
         return 1;
     }
 
-    (void) mbus_recv_frame(handle, reply);
+    (void) mbus_recv_frame(handle, &reply);
 
     frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
     frame->address = 0xFF;
@@ -146,7 +148,7 @@ main(int argc, char **argv)
         return 1;
     }
 
-    (void) mbus_recv_frame(handle, reply);
+    (void) mbus_recv_frame(handle, &reply);
 
     mbus_scan_2nd_address_range(handle, 0, addr_mask);
 
