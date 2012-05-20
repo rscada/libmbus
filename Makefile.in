@@ -248,7 +248,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libmbus.pc
-SUBDIRS = mbus bin test
+SUBDIRS = mbus bin
 ACLOCAL_AMFLAGS = -Werror -I m4
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
