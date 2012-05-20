@@ -77,11 +77,14 @@ main(int argc, char **argv)
         printf("No reply from device\n");
         return 1;
     }
-
-    if (mbus_frame_type(&reply) != MBUS_FRAME_TYPE_ACK)
+    else if (mbus_frame_type(&reply) != MBUS_FRAME_TYPE_ACK)
     {
         printf("Unknown reply:\n");
         mbus_frame_print(&reply);
+    }
+    else
+    {
+        printf("Switched baud rate of device to %d\n", target_baudrate);
     }
     
     mbus_disconnect(handle);

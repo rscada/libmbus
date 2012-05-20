@@ -128,6 +128,18 @@ typedef struct _mbus_record {
 } mbus_record;
 
 
+/**
+ * Event callback functions
+ */
+extern void (*_mbus_scan_progress)(mbus_handle * handle, const char *mask);
+extern void (*_mbus_found_event)(mbus_handle * handle, mbus_frame *frame);
+
+/**
+ * Event register functions
+ */
+void mbus_register_scan_progress(void (*event)(mbus_handle * handle, const char *mask));
+void mbus_register_found_event(void (*event)(mbus_handle * handle, mbus_frame *frame));
+
 /** 
  * Connects to serial gateway and initializes MBus handle
  * 
@@ -229,6 +241,16 @@ int mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, i
  * @return Zero when successful.
  */
 int mbus_send_ping_frame(mbus_handle *handle, int address);
+
+/** 
+ * Select slave by secondary address using "unified" handle
+ * 
+ * @param handle        Initialized handle
+ * @param mask          Address/mask to select
+ * 
+ * @return See MBUS_PROBE_* constants
+ */
+int mbus_select_secondary_address(mbus_handle * handle, const char *mask);
 
 /** 
  * Probe/address slave by secondary address using "unified" handle

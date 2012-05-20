@@ -25,11 +25,11 @@ static int debug = 0;
 int
 main(int argc, char **argv)
 {
-    mbus_frame reply;
+    mbus_frame *frame, reply;
     mbus_frame_data reply_data;
     mbus_handle *handle = NULL;
 
-    char *device, *addr_str, matching_addr[16], *xml_result;
+    char *device, *addr_str, *xml_result;
     int address, baudrate = 9600;
  
     memset((void *)&reply, 0, sizeof(mbus_frame));
@@ -84,29 +84,55 @@ main(int argc, char **argv)
         printf("Failed to set baud rate.\n");
         return 1;
     }
-
-
+    
+    //
+    // init slave to get really the beginning of the records
+    //
+    
+    frame = mbus_frame_new(MBUS_FRAME_TYPE_SHORT);
+    
+    if (frame == NULL)
+    {
+        fprintf(stderr, "Failed to allocate mbus frame.\n");
+        return 1;
+    }
+    
+    frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
+    frame->address = MBUS_ADDRESS_BROADCAST_NOREPLY;
+    
+    if (debug)
+        printf("%s: debug: sending init frame\n", __PRETTY_FUNCTION__);
+    
+    if (mbus_send_frame(handle, frame) == -1)
+    {
+        fprintf(stderr, "Failed to send mbus frame.\n");
+        mbus_frame_free(frame);
+        return 1;
+    }
+    
+    mbus_recv_frame(handle, &reply);
+    
     if (strlen(addr_str) == 16)
     {
         // secondary addressing
 
-        int probe_ret;
+        int ret;
 
-        probe_ret = mbus_probe_secondary_address(handle, addr_str, matching_addr);
+        ret = mbus_select_secondary_address(handle, addr_str);
 
-        if (probe_ret == MBUS_PROBE_COLLISION)
+        if (ret == MBUS_PROBE_COLLISION)
         {
             fprintf(stderr, "%s: Error: The address mask [%s] matches more than one device.\n", __PRETTY_FUNCTION__, addr_str);
             return 1;
         }
-        else if (probe_ret == MBUS_PROBE_NOTHING)
+        else if (ret == MBUS_PROBE_NOTHING)
         {
             fprintf(stderr, "%s: Error: The selected secondary address does not match any device [%s].\n", __PRETTY_FUNCTION__, addr_str);
             return 1;
         }
-        else if (probe_ret == MBUS_PROBE_ERROR)
+        else if (ret == MBUS_PROBE_ERROR)
         {
-            fprintf(stderr, "%s: Error: Failed to probe secondary address [%s].\n", __PRETTY_FUNCTION__, addr_str);
+            fprintf(stderr, "%s: Error: Failed to select secondary address [%s].\n", __PRETTY_FUNCTION__, addr_str);
             return 1;    
         }
         // else MBUS_PROBE_SINGLE
