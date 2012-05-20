@@ -1548,37 +1548,6 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
         return -1;
     }
     
-    //
-    // init slave to get really the beginning of the records
-    //
-    
-    frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
-    frame->address = address;
-    
-    if (debug)
-        printf("%s: debug: sending init frame\n", __PRETTY_FUNCTION__);
-    
-    if (mbus_send_frame(handle, frame) == -1)
-    {
-        MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
-        mbus_frame_free(frame);
-        return -1;
-    }
-    
-    if (mbus_recv_frame(handle, reply) == -1)
-    {
-        MBUS_ERROR("%s: Failed to receive M-Bus response frame.\n", __PRETTY_FUNCTION__);
-        mbus_frame_free(frame);
-        return -1;
-    }
-    
-    if (mbus_frame_type(reply) != MBUS_FRAME_TYPE_ACK)
-    {
-        MBUS_ERROR("%s: Unknown reply.\n", __PRETTY_FUNCTION__);
-        mbus_frame_free(frame);
-        return -1;
-    }
-    
     frame->control = MBUS_CONTROL_MASK_REQ_UD2 | 
                      MBUS_CONTROL_MASK_DIR_M2S | 
                      MBUS_CONTROL_MASK_FCV     | 
