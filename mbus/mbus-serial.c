@@ -57,7 +57,7 @@ mbus_serial_connect(char *device)
         return NULL;
     }
 
-    bzero(&(handle->t), sizeof(handle->t));
+    memset(&(handle->t), 0, sizeof(handle->t));
     handle->t.c_cflag |= (CS8|CREAD|CLOCAL);
     handle->t.c_cflag |= PARENB;
 
@@ -224,8 +224,14 @@ mbus_serial_recv_frame(mbus_serial_handle *handle, mbus_frame *frame)
 {
     char buff[PACKET_BUFF_SIZE];
     int len, remaining, nread;
+    
+    if (handle == NULL || frame == NULL)
+    {
+        fprintf(stderr, "%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
 
-    bzero((void *)buff, sizeof(buff));
+    memset((void *)buff, 0, sizeof(buff));
 
     //
     // read data until a packet is received

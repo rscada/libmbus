@@ -41,7 +41,7 @@ main(int argc, char *argv[])
         return 1;
     }
 
-	bzero(raw_buff, sizeof(raw_buff));
+	memset(raw_buff, 0, sizeof(raw_buff));
 	len = read(fd, raw_buff, sizeof(raw_buff));
 	close(fd);
 
@@ -60,8 +60,8 @@ main(int argc, char *argv[])
         i++;
     }
 
-	bzero(&reply, sizeof(reply));
-	bzero(&frame_data, sizeof(frame_data));
+	memset(&reply, 0, sizeof(reply));
+	memset(&frame_data, 0, sizeof(frame_data));
 	
 	//mbus_parse_set_debug(1);
 	
@@ -89,8 +89,7 @@ main(int argc, char *argv[])
     
     //mbus_frame_print(&reply);
     //mbus_frame_data_print(&frame_data);
-	printf("%s", mbus_frame_data_xml_normalized(&frame_data));
-	// printf("%s", mbus_frame_data_xml(&frame_data));
+	printf("%s", mbus_frame_data_xml(&frame_data));
 	return 0;
 }
 

@@ -701,12 +701,38 @@ mbus_variable_vif fixed_table[] = {
     { 0xFFFF, 0.0, "", "" },
 };
 
+void (*_mbus_scan_progress)(mbus_handle * handle, const char *mask) = NULL;
+void (*_mbus_found_event)(mbus_handle * handle, mbus_frame *frame) = NULL;
+
+//------------------------------------------------------------------------------
+/// Register a function for the scan progress.
+//------------------------------------------------------------------------------
+void
+mbus_register_scan_progress(void (*event)(mbus_handle * handle, const char *mask))
+{
+    _mbus_scan_progress = event;
+}
+
+//------------------------------------------------------------------------------
+/// Register a function for the found events.
+//------------------------------------------------------------------------------
+void
+mbus_register_found_event(void (*event)(mbus_handle * handle, mbus_frame *frame))
+{
+    _mbus_found_event = event;
+}
 
 int mbus_fixed_normalize(int medium_unit, long medium_value, char **unit_out, double *value_out, char **quantity_out)
 {
     double exponent = 0.0;
     int i;
     medium_unit = medium_unit & 0x3F;
+    
+    if (unit_out == NULL || value_out == NULL || quantity_out == NULL)
+    {
+        MBUS_ERROR("%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
 
     switch (medium_unit)
     {
@@ -909,6 +935,12 @@ mbus_vif_unit_normalize(int vif, double value, char **unit_out, double *value_ou
 
     int i;
     
+    if (unit_out == NULL || value_out == NULL || quantity_out == NULL)
+    {
+        MBUS_ERROR("%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+    
     for(i=0; vif_table[i].vif < 0xfff; ++i)
     {
         if (vif_table[i].vif == newVif)
@@ -931,7 +963,14 @@ mbus_vif_unit_normalize(int vif, double value, char **unit_out, double *value_ou
 int
 mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **unit_out, double *value_out, char **quantity_out)
 {   
+    if (vib == NULL || unit_out == NULL || value_out == NULL || quantity_out == NULL)
+    {
+        MBUS_ERROR("%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+    
     MBUS_DEBUG("%s: vib_unit_normalize - VIF=0x%02X\n", __PRETTY_FUNCTION__, vib->vif);
+    
     if (vib->vif == 0xFD) /* first type of VIF extention: see table 8.4.4 a */
     {
         if (vib->nvife == 0)
@@ -1007,30 +1046,33 @@ mbus_record_new()
 void
 mbus_record_free(mbus_record * rec)
 {
-    if (! rec->is_numeric)
+    if (rec)
     {
-        free((rec->value).str_val.value);
-        (rec->value).str_val.value = NULL;
+        if (! rec->is_numeric)
+        {
+            free((rec->value).str_val.value);
+            (rec->value).str_val.value = NULL;
+        }
+    
+        if (rec->unit)
+        {
+            free(rec->unit);
+            rec->unit = NULL;
+        }
+    
+        if (rec->function_medium)
+        {
+            free(rec->function_medium);
+            rec->function_medium = NULL;
+        }
+    
+        if (rec->quantity)
+        {
+            free(rec->quantity);
+            rec->quantity = NULL;
+        }
+        free(rec);
     }
-
-    if (rec->unit)
-    {
-        free(rec->unit);
-        rec->unit = NULL;
-    }
-
-    if (rec->function_medium)
-    {
-        free(rec->function_medium);
-        rec->function_medium = NULL;
-    }
-
-    if (rec->quantity)
-    {
-        free(rec->quantity);
-        rec->quantity = NULL;
-    }
-    free(rec);
 }
 
 
@@ -1079,6 +1121,12 @@ mbus_parse_variable_record(mbus_data_record *data)
     char * value_out_str     = NULL;
     int    value_out_str_size = 0;
     double real_val         = 0.0;  /**< normalized value */
+    
+    if (data == NULL)
+    {
+        MBUS_ERROR("%s: Invalid record.\n", __PRETTY_FUNCTION__);
+        return NULL;
+    }
 
     if (!(record = mbus_record_new()))
     {
@@ -1500,37 +1548,6 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
         return -1;
     }
     
-    //
-    // init slave to get really the beginning of the records
-    //
-    
-    frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
-    frame->address = address;
-    
-    if (debug)
-        printf("%s: debug: sending init frame\n", __PRETTY_FUNCTION__);
-    
-    if (mbus_send_frame(handle, frame) == -1)
-    {
-        MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
-        mbus_frame_free(frame);
-        return -1;
-    }
-    
-    if (mbus_recv_frame(handle, reply) == -1)
-    {
-        MBUS_ERROR("%s: Failed to receive M-Bus response frame.\n", __PRETTY_FUNCTION__);
-        mbus_frame_free(frame);
-        return -1;
-    }
-    
-    if (mbus_frame_type(reply) != MBUS_FRAME_TYPE_ACK)
-    {
-        MBUS_ERROR("%s: Unknown reply.\n", __PRETTY_FUNCTION__);
-        mbus_frame_free(frame);
-        return -1;
-    }
-    
     frame->control = MBUS_CONTROL_MASK_REQ_UD2 | 
                      MBUS_CONTROL_MASK_DIR_M2S | 
                      MBUS_CONTROL_MASK_FCV     | 
@@ -1678,16 +1695,15 @@ mbus_send_ping_frame(mbus_handle *handle, int address)
 }
 
 //------------------------------------------------------------------------------
-// Prove for the presence of a device(s) using the supplied secondary address 
-// (mask).
+// Select a device using the supplied secondary address  (mask).
 //------------------------------------------------------------------------------
-int 
-mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *matching_addr)
+int
+mbus_select_secondary_address(mbus_handle * handle, const char *mask)
 {
     int ret;
     mbus_frame reply;
 
-    if (mask == NULL || matching_addr == NULL || strlen(mask) != 16)
+    if (mask == NULL || strlen(mask) != 16)
     {
         MBUS_ERROR("%s: Invalid address masks.\n", __PRETTY_FUNCTION__);
         return MBUS_PROBE_ERROR;
@@ -1729,10 +1745,38 @@ mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *match
         {
             return MBUS_PROBE_COLLISION;
         }
+        
+        return MBUS_PROBE_SINGLE;
+    }
+    
+    MBUS_ERROR("%s: Unexpected reply for address [%s].\n", __PRETTY_FUNCTION__, mask);
 
+    return MBUS_PROBE_NOTHING;
+}
+
+//------------------------------------------------------------------------------
+// Prove for the presence of a device(s) using the supplied secondary address 
+// (mask).
+//------------------------------------------------------------------------------
+int 
+mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *matching_addr)
+{
+    int ret;
+    mbus_frame reply;
+
+    if (mask == NULL || matching_addr == NULL || strlen(mask) != 16)
+    {
+        MBUS_ERROR("%s: Invalid address masks.\n", __PRETTY_FUNCTION__);
+        return MBUS_PROBE_ERROR;
+    }
+    
+    ret = mbus_select_secondary_address(handle, mask);
+    
+    if (ret == MBUS_PROBE_SINGLE)
+    {
         /* send a data request command to find out the full address */
         if (mbus_send_request_frame(handle, 253) == -1)
-	    {
+        {
             MBUS_ERROR("%s: Failed to send request to selected secondary device [mask %s]: %s.\n",
                        __PRETTY_FUNCTION__,
                        mask,
@@ -1755,6 +1799,12 @@ mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *match
         if (mbus_frame_type(&reply) != MBUS_FRAME_TYPE_ACK)
         {
             snprintf(matching_addr, 17, "%s", mbus_frame_get_secondary_address(&reply));
+
+            if (_mbus_found_event)
+            {
+                _mbus_found_event(handle,&reply);
+            }
+
             return MBUS_PROBE_SINGLE;
         }
         else
@@ -1764,15 +1814,19 @@ mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *match
             return MBUS_PROBE_NOTHING;
         }
     }
-
-    MBUS_ERROR("%s: Unexpected reply for address [%s].\n", __PRETTY_FUNCTION__, mask);
-
-    return MBUS_PROBE_NOTHING;
+    
+    return ret;
 }
 
 
 int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * reply)
 {
+    if (handle == NULL || address == NULL)
+    {
+        MBUS_ERROR("%s: Invalid handle or address.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+
     if (address->is_primary)
     {
         if (mbus_send_request_frame(handle, address->primary) == -1)
@@ -1846,6 +1900,12 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
 {
     int i, i_start, i_end, probe_ret;
     char *mask, matching_mask[17];
+    
+    if (handle == NULL || addr_mask == NULL)
+    {
+        MBUS_ERROR("%s: Invalid handle or address mask.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
 
     if (strlen(addr_mask) != 16)
     {
@@ -1885,12 +1945,18 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
     for (i = 0; i <= 9; i++)
     {
         mask[pos] = '0'+i;
+
+        if (_mbus_scan_progress)
+            _mbus_scan_progress(handle,mask);
     
         probe_ret = mbus_probe_secondary_address(handle, mask, matching_mask);
 
         if (probe_ret == MBUS_PROBE_SINGLE)
         {
-            printf("Found a device on secondary address %s [using address mask %s]\n", matching_mask, mask);
+            if (!_mbus_found_event)
+            {
+                printf("Found a device on secondary address %s [using address mask %s]\n", matching_mask, mask);
+            }
         }
         else if (probe_ret == MBUS_PROBE_COLLISION)
         {

@@ -620,9 +620,13 @@ mbus_data_str_decode(u_char *dst, const u_char *src, size_t len)
     size_t i;
 
     i = 0;
-    dst[len] = '\0';
-    while(len > 0) {
-        dst[i++] = src[--len];
+    
+    if (src && dst)
+    {
+        dst[len] = '\0';
+        while(len > 0) {
+            dst[i++] = src[--len];
+        }
     }
 }
 
@@ -639,18 +643,21 @@ mbus_data_bin_decode(u_char *dst, const u_char *src, size_t len, size_t max_len)
     i = 0;
     pos = 0;
     
-    while((i < len) && ((pos+3) < max_len)) {
-        pos += snprintf(&dst[pos], max_len - pos, "%.2X ", src[i]);
-        i++;
-    }
-    
-    if (pos > 0)
+    if (src && dst)
     {
-        // remove last space
-        pos--;
+        while((i < len) && ((pos+3) < max_len)) {
+            pos += snprintf(&dst[pos], max_len - pos, "%.2X ", src[i]);
+            i++;
+        }
+        
+        if (pos > 0)
+        {
+            // remove last space
+            pos--;
+        }
+        
+        dst[pos] = '\0';
     }
-    
-    dst[pos] = '\0';
 }
 
 //------------------------------------------------------------------------------
@@ -661,16 +668,16 @@ mbus_data_bin_decode(u_char *dst, const u_char *src, size_t len, size_t max_len)
 void
 mbus_data_tm_decode(struct tm *t, u_char *t_data, size_t t_data_size)
 {
-    t->tm_sec   = 0;
-    t->tm_min   = 0;
-    t->tm_hour  = 0;
-    t->tm_mday  = 0;
-    t->tm_mon   = 0;
-    t->tm_year  = 0; 
-    t->tm_isdst = 0;
-
     if (t && t_data)
     {
+        t->tm_sec   = 0;
+        t->tm_min   = 0;
+        t->tm_hour  = 0;
+        t->tm_mday  = 0;
+        t->tm_mon   = 0;
+        t->tm_year  = 0; 
+        t->tm_isdst = 0;
+   
         if (t_data_size == 4)                // Type F = Compound CP32: Date and Time
         {     
             if ((t_data[0] & 0x80) == 0)     // Time valid ?
@@ -739,6 +746,173 @@ mbus_decode_manufacturer(u_char byte1, u_char byte2)
     m_str[3] = 0;
 
     return m_str;
+}
+
+const char *
+mbus_data_product_name(mbus_data_variable_header *header)
+{
+    static char buff[128];
+    unsigned int manufacturer;
+
+    if (header)
+    {
+        manufacturer = (header->manufacturer[1] << 8) + header->manufacturer[0];
+
+        if (manufacturer == MBUS_VARIABLE_DATA_MAN_ACW) 
+        {
+            switch (header->version)
+            {
+                case 0x09:
+                    strcpy(buff,"Itron CF Echo 2");
+                    break;
+                case 0x0A:
+                    strcpy(buff,"Itron CF 51");
+                    break;
+                case 0x0B:
+                    strcpy(buff,"Itron CF 55");
+                    break;
+                case 0x0E:
+                    strcpy(buff,"Itron BM +m");
+                    break;
+                case 0x0F:
+                    strcpy(buff,"Itron CF 800");
+                    break;
+                case 0x14:
+                    strcpy(buff,"Itron CYBLE M-Bus 1.4");
+                    break;
+            }
+        }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_SLB) 
+        {
+            switch (header->version)
+            {
+                case 0x02:
+                    strcpy(buff,"Allmess Megacontrol CF-50");
+                    break;
+                case 0x06:
+                    strcpy(buff,"CF Compact / Integral MK MaXX");
+                    break;
+            }
+        }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_HYD) 
+        {
+            switch (header->version)
+            {
+                case 0x02:
+                    strcpy(buff,"ABB F95 Typ US770");
+                    break;
+            }
+        }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_LUG) 
+        {
+            switch (header->version)
+            {
+                case 0x02:
+                    strcpy(buff,"Landis & Gyr Ultraheat 2WR5");
+                    break;
+                case 0x03:
+                    strcpy(buff,"Landis & Gyr Ultraheat 2WR6");
+                    break;
+                case 0x04:
+                    strcpy(buff,"Landis & Gyr Ultraheat UH50");
+                    break;
+                case 0x07:
+                    strcpy(buff,"Landis & Gyr Ultraheat T230");
+                    break;
+            }
+        }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_ZRM)
+        {
+            switch (header->version)
+            {
+                case 0x81:
+                    strcpy(buff,"Minol Minocal C2");
+                    break;
+                case 0x82:
+                    strcpy(buff,"Minol Minocal WR3");
+                    break;
+            }
+        }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_SVM) 
+        {
+            switch (header->version)
+            {
+                case 0x08:
+                    strcpy(buff,"Elster F2");
+                    break;
+                case 0x09:
+                    strcpy(buff,"Kamstrup SVM F22");
+                    break;
+            }
+        }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_SON) 
+        {
+            switch (header->version)
+            {
+                case 0x0D:
+                    strcpy(buff,"Sontex Supercal 531");
+                    break;
+            }
+        }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_LSE)
+        {
+            switch (header->version)
+            {
+                case 0x99:
+                    strcpy(buff,"Siemens WFH21");
+                    break;
+            }
+        }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_SPX) 
+        {
+            switch (header->version)
+            {
+                case 0x31:
+                    strcpy(buff,"Sensus PolluTherm");
+                    break;
+            }
+        }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_ELS)
+        {
+            switch (header->version)
+            {
+                case 0x02:
+                    strcpy(buff,"Elster TMP-A");
+                    break;
+            }
+        }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_NZR)
+        {
+            switch (header->version)
+            {
+                case 0x01:
+                    strcpy(buff,"NZR DHZ 5/63");
+                    break;
+            }
+        }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_KAM)
+        {
+            switch (header->version)
+            {
+                case 0x08:
+                    strcpy(buff,"Kamstrup Multical 601");
+                    break;
+            }
+        }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_EMH)
+        {
+            switch (header->version)
+            {
+                case 0x00:
+                    strcpy(buff,"EMH DIZ");
+                    break;
+            }
+        }
+
+        return buff;
+    }
+
+    return "";
 }
 
 //------------------------------------------------------------------------------
@@ -1747,6 +1921,9 @@ mbus_vib_unit_lookup(mbus_value_information_block *vib)
 {   
     static char buff[256];
     int n;
+    
+    if (vib == NULL)
+        return "";
 
     if (vib->vif == 0xFD || vib->vif == 0xFB) // first type of VIF extention: see table 8.4.4 
     {
@@ -2161,6 +2338,7 @@ mbus_data_record_function(mbus_data_record *record)
     
     return NULL;
 }
+
 
 ///
 /// For fixed-length frames, return a string describing the type of value (stored or actual)
@@ -2965,6 +3143,9 @@ mbus_hex_dump(const char *label, const char *buff, size_t len)
     char timestamp[21];
     size_t i;
     
+    if (label == NULL || buff == NULL)
+        return;
+    
     time ( &rawtime );
     timeinfo = gmtime ( &rawtime );
     
@@ -3005,6 +3186,9 @@ mbus_str_xml_encode(u_char *dst, const u_char *src, size_t max_len)
     
     i = 0;
     len = 0;
+    
+    if (dst == NULL)
+        return;
     
     if (src != NULL)
     {
@@ -3062,6 +3246,10 @@ mbus_data_variable_header_xml(mbus_data_variable_header *header)
         len += snprintf(&buff[len], sizeof(buff) - len, "        <Manufacturer>%s</Manufacturer>\n",
                 mbus_decode_manufacturer(header->manufacturer[0], header->manufacturer[1]));               
         len += snprintf(&buff[len], sizeof(buff) - len, "        <Version>%d</Version>\n", header->version);
+        
+        mbus_str_xml_encode(str_encoded, mbus_data_product_name(header), sizeof(str_encoded));
+        
+        len += snprintf(&buff[len], sizeof(buff) - len, "        <ProductName>%s</ProductName>\n", str_encoded);
         
         mbus_str_xml_encode(str_encoded, mbus_data_variable_medium_lookup(header->medium), sizeof(str_encoded)); 
         
