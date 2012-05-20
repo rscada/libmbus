@@ -459,6 +459,25 @@ typedef struct _mbus_data_secondary_address {
 #define MBUS_VARIABLE_DATA_MEDIUM_PRESSURE      0x18
 #define MBUS_VARIABLE_DATA_MEDIUM_ADC           0x19
 
+#define MBUS_VARIABLE_DATA_MAN_ACW              0x0477
+#define MBUS_VARIABLE_DATA_MAN_ABB              0x0442
+#define MBUS_VARIABLE_DATA_MAN_AMT              0x05B4
+#define MBUS_VARIABLE_DATA_MAN_ELS              0x1593
+#define MBUS_VARIABLE_DATA_MAN_EMH              0x15A8
+#define MBUS_VARIABLE_DATA_MAN_HYD              0x2324
+#define MBUS_VARIABLE_DATA_MAN_KAM              0x2C2D
+#define MBUS_VARIABLE_DATA_MAN_LSE              0x3265
+#define MBUS_VARIABLE_DATA_MAN_LUG              0x32A7
+#define MBUS_VARIABLE_DATA_MAN_NZR              0x3B52
+#define MBUS_VARIABLE_DATA_MAN_PAD              0x4024
+#define MBUS_VARIABLE_DATA_MAN_QDS              0x4493
+#define MBUS_VARIABLE_DATA_MAN_SLB              0x4D82
+#define MBUS_VARIABLE_DATA_MAN_SON              0x4DEE
+#define MBUS_VARIABLE_DATA_MAN_SPX              0x4E18
+#define MBUS_VARIABLE_DATA_MAN_SVM              0x4ECD
+#define MBUS_VARIABLE_DATA_MAN_TCM              0x5068
+#define MBUS_VARIABLE_DATA_MAN_ZRM              0x6A4D
+
 //
 // Event callback functions
 //
@@ -564,6 +583,7 @@ void  mbus_hex_dump(const char *label, const char *buff, size_t len);
 //
 int mbus_data_manufacturer_encode(u_char *m_data, u_char *m_code);
 const char *mbus_decode_manufacturer(u_char byte1, u_char byte2);
+const char *mbus_data_product_name(mbus_data_variable_header *header);
  
 int mbus_data_bcd_encode(u_char *bcd_data, size_t bcd_data_size, int value);
 int mbus_data_int_encode(u_char *int_data, size_t int_data_size, int value);

@@ -128,6 +128,18 @@ typedef struct _mbus_record {
 } mbus_record;
 
 
+/**
+ * Event callback functions
+ */
+extern void (*_mbus_scan_progress)(mbus_handle * handle, const char *mask);
+extern void (*_mbus_found_event)(mbus_handle * handle, mbus_frame *frame);
+
+/**
+ * Event register functions
+ */
+void mbus_register_scan_progress(void (*event)(mbus_handle * handle, const char *mask));
+void mbus_register_found_event(void (*event)(mbus_handle * handle, mbus_frame *frame));
+
 /** 
  * Connects to serial gateway and initializes MBus handle
  * 
