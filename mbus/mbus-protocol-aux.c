@@ -1695,16 +1695,15 @@ mbus_send_ping_frame(mbus_handle *handle, int address)
 }
 
 //------------------------------------------------------------------------------
-// Prove for the presence of a device(s) using the supplied secondary address 
-// (mask).
+// Select a device using the supplied secondary address  (mask).
 //------------------------------------------------------------------------------
-int 
-mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *matching_addr)
+int
+mbus_select_secondary_address(mbus_handle * handle, const char *mask)
 {
     int ret;
     mbus_frame reply;
 
-    if (mask == NULL || matching_addr == NULL || strlen(mask) != 16)
+    if (mask == NULL || strlen(mask) != 16)
     {
         MBUS_ERROR("%s: Invalid address masks.\n", __PRETTY_FUNCTION__);
         return MBUS_PROBE_ERROR;
@@ -1746,10 +1745,38 @@ mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *match
         {
             return MBUS_PROBE_COLLISION;
         }
+        
+        return MBUS_PROBE_SINGLE;
+    }
+    
+    MBUS_ERROR("%s: Unexpected reply for address [%s].\n", __PRETTY_FUNCTION__, mask);
 
+    return MBUS_PROBE_NOTHING;
+}
+
+//------------------------------------------------------------------------------
+// Prove for the presence of a device(s) using the supplied secondary address 
+// (mask).
+//------------------------------------------------------------------------------
+int 
+mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *matching_addr)
+{
+    int ret;
+    mbus_frame reply;
+
+    if (mask == NULL || matching_addr == NULL || strlen(mask) != 16)
+    {
+        MBUS_ERROR("%s: Invalid address masks.\n", __PRETTY_FUNCTION__);
+        return MBUS_PROBE_ERROR;
+    }
+    
+    ret = mbus_select_secondary_address(handle, mask);
+    
+    if (ret == MBUS_PROBE_SINGLE)
+    {
         /* send a data request command to find out the full address */
         if (mbus_send_request_frame(handle, 253) == -1)
-	    {
+        {
             MBUS_ERROR("%s: Failed to send request to selected secondary device [mask %s]: %s.\n",
                        __PRETTY_FUNCTION__,
                        mask,
@@ -1787,10 +1814,8 @@ mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *match
             return MBUS_PROBE_NOTHING;
         }
     }
-
-    MBUS_ERROR("%s: Unexpected reply for address [%s].\n", __PRETTY_FUNCTION__, mask);
-
-    return MBUS_PROBE_NOTHING;
+    
+    return ret;
 }
 
 
