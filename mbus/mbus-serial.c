@@ -226,7 +226,10 @@ mbus_serial_recv_frame(mbus_serial_handle *handle, mbus_frame *frame)
     int len, remaining, nread;
     
     if (handle == NULL || frame == NULL)
+    {
+        fprintf(stderr, "%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
         return -1;
+    }
 
     memset((void *)buff, 0, sizeof(buff));
 
