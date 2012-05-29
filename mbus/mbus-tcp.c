@@ -165,7 +165,7 @@ int
 mbus_tcp_recv_frame(mbus_tcp_handle *handle, mbus_frame *frame)
 {
     char buff[PACKET_BUFF_SIZE];
-    int len, remaining, nread;
+    int len, remaining, nread, timeouts;
     
     if (handle == NULL || frame == NULL)
     {
@@ -180,6 +180,7 @@ mbus_tcp_recv_frame(mbus_tcp_handle *handle, mbus_frame *frame)
     //
     remaining = 1; // start by reading 1 byte
     len = 0;
+    timeouts = 0;
 
     do {
     
@@ -187,6 +188,18 @@ mbus_tcp_recv_frame(mbus_tcp_handle *handle, mbus_frame *frame)
         {
             mbus_error_str_set("M-Bus tcp transport layer failed to read data.");
             return -1;
+        }
+        
+        if (nread == 0)
+        {
+            timeouts++;
+            
+            if (timeouts >= 3)
+            {
+                // abort to avoid endless loop
+                fprintf(stderr, "%s: Timeout\n", __PRETTY_FUNCTION__);
+                break;
+            }
         }
 
         len += nread;
@@ -205,7 +218,7 @@ mbus_tcp_recv_frame(mbus_tcp_handle *handle, mbus_frame *frame)
     if (_mbus_recv_event)
         _mbus_recv_event(MBUS_HANDLE_TYPE_TCP, buff, len);
       
-    if (remaining < 0)
+    if (remaining != 0)
     {
         mbus_error_str_set("M-Bus layer failed to parse data.");
         return -2;

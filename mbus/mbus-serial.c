@@ -223,7 +223,7 @@ int
 mbus_serial_recv_frame(mbus_serial_handle *handle, mbus_frame *frame)
 {
     char buff[PACKET_BUFF_SIZE];
-    int len, remaining, nread;
+    int len, remaining, nread, timeouts;
     
     if (handle == NULL || frame == NULL)
     {
@@ -238,6 +238,7 @@ mbus_serial_recv_frame(mbus_serial_handle *handle, mbus_frame *frame)
     //
     remaining = 1; // start by reading 1 byte
     len = 0;
+    timeouts = 0;
 
     do {
         //printf("%s: Attempt to read %d bytes [len = %d]\n", __PRETTY_FUNCTION__, remaining, len);
@@ -249,7 +250,19 @@ mbus_serial_recv_frame(mbus_serial_handle *handle, mbus_frame *frame)
             return -1;
         }
 
-//  printf("%s: Got %d byte [remaining %d, len %d]\n", __PRETTY_FUNCTION__, nread, remaining, len);
+//   printf("%s: Got %d byte [remaining %d, len %d]\n", __PRETTY_FUNCTION__, nread, remaining, len);
+   
+        if (nread == 0)
+        {
+            timeouts++;
+            
+            if (timeouts >= 3)
+            {
+                // abort to avoid endless loop
+                fprintf(stderr, "%s: Timeout\n", __PRETTY_FUNCTION__);
+                break;
+            }
+        }
 
         len += nread;
 
@@ -267,7 +280,7 @@ mbus_serial_recv_frame(mbus_serial_handle *handle, mbus_frame *frame)
     if (_mbus_recv_event)
         _mbus_recv_event(MBUS_HANDLE_TYPE_SERIAL, buff, len);
       
-    if (remaining < 0)
+    if (remaining != 0)
     {
         // Would be OK when e.g. scanning the bus, otherwise it is a failure.
         // printf("%s: M-Bus layer failed to receive complete data.\n", __PRETTY_FUNCTION__);

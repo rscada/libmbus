@@ -754,6 +754,8 @@ mbus_data_product_name(mbus_data_variable_header *header)
     static char buff[128];
     unsigned int manufacturer;
 
+    memset(buff, 0, sizeof(buff));
+
     if (header)
     {
         manufacturer = (header->manufacturer[1] << 8) + header->manufacturer[0];
@@ -779,6 +781,15 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
                 case 0x14:
                     strcpy(buff,"Itron CYBLE M-Bus 1.4");
+                    break;
+            }
+        }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_EFE)
+        {
+            switch (header->version)
+            {
+                case 0x01:
+                    strcpy(buff,"Engelmann SensoStar 2C");
                     break;
             }
         }
@@ -821,18 +832,6 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_ZRM)
-        {
-            switch (header->version)
-            {
-                case 0x81:
-                    strcpy(buff,"Minol Minocal C2");
-                    break;
-                case 0x82:
-                    strcpy(buff,"Minol Minocal WR3");
-                    break;
-            }
-        }
         else if (manufacturer == MBUS_VARIABLE_DATA_MAN_SVM) 
         {
             switch (header->version)
@@ -868,6 +867,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
             switch (header->version)
             {
                 case 0x31:
+                case 0x34:
                     strcpy(buff,"Sensus PolluTherm");
                     break;
             }
@@ -908,11 +908,30 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-
-        return buff;
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_TCH)
+        {
+            switch (header->version)
+            {
+                case 0x26:
+                    strcpy(buff,"Techem m-bus S");
+                    break;
+            }
+        }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_ZRM)
+        {
+            switch (header->version)
+            {
+                case 0x81:
+                    strcpy(buff,"Minol Minocal C2");
+                    break;
+                case 0x82:
+                    strcpy(buff,"Minol Minocal WR3");
+                    break;
+            }
+        }
     }
 
-    return "";
+    return buff;
 }
 
 //------------------------------------------------------------------------------
@@ -2563,6 +2582,9 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 // clean up...
                 return (-2);
             }
+            
+            // copy timestamp
+            memcpy((void *)&(record->timestamp), (void *)&(frame->timestamp), sizeof(time_t));
 
             // read and parse DIB (= DIF + DIFE)
         
@@ -3275,6 +3297,8 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
     static char buff[8192];
     char str_encoded[768];
     size_t len = 0;
+    struct tm * timeinfo;
+    char timestamp[21];
     int val;
     
     if (record)
@@ -3314,6 +3338,11 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
         
         mbus_str_xml_encode(str_encoded, mbus_data_record_value(record), sizeof(str_encoded));
         len += snprintf(&buff[len], sizeof(buff) - len, "        <Value>%s</Value>\n", str_encoded);
+        
+        timeinfo = gmtime ( &(record->timestamp) );
+        strftime(timestamp,20,"%Y-%m-%dT%H:%M:%S",timeinfo);
+        len += snprintf(&buff[len], sizeof(buff) - len, "        <Timestamp>%s</Timestamp>\n", timestamp);
+        
         len += snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");
             
         return buff;
@@ -3329,29 +3358,42 @@ char *
 mbus_data_variable_xml(mbus_data_variable *data)
 {
     mbus_data_record *record;
-    static char buff[8192];
-    char str_encoded[768];
-    size_t len = 0;
+    char *buff = NULL;
+    size_t len = 0, buff_size = 8192;
     int i;
     
     if (data)
     {
-        len += snprintf(&buff[len], sizeof(buff) - len, "<MBusData>\n\n");
+        buff = (char*) malloc(buff_size);
         
-        len += snprintf(&buff[len], sizeof(buff) - len, "%s", 
+        if (buff == NULL)
+            return NULL;
+    
+        len += snprintf(&buff[len], buff_size - len, "<MBusData>\n\n");
+        
+        len += snprintf(&buff[len], buff_size - len, "%s", 
                         mbus_data_variable_header_xml(&(data->header)));
     
         for (record = data->record, i = 0; record; record = record->next, i++)
         {
-            len += snprintf(&buff[len], sizeof(buff) - len, "%s", 
+            if ((buff_size - len) < 1024)
+            {
+                buff_size *= 2;
+                buff = (char*) realloc(buff,buff_size);
+                
+                if (buff == NULL)
+                    return NULL;
+            }
+        
+            len += snprintf(&buff[len], buff_size - len, "%s", 
                             mbus_data_variable_record_xml(record, i, -1, &(data->header)));        
         }       
-        len += snprintf(&buff[len], sizeof(buff) - len, "</MBusData>\n");
+        len += snprintf(&buff[len], buff_size - len, "</MBusData>\n");
 
         return buff;
     }
     
-    return "";
+    return NULL;
 }
 
 //------------------------------------------------------------------------------
@@ -3360,64 +3402,69 @@ mbus_data_variable_xml(mbus_data_variable *data)
 char *
 mbus_data_fixed_xml(mbus_data_fixed *data)
 {
-    static char buff[8192];
+    char *buff = NULL;
     char str_encoded[256];
-    size_t len = 0;
+    size_t len = 0, buff_size = 8192;
 
     if (data)
     {
-        len += snprintf(&buff[len], sizeof(buff) - len, "<MBusData>\n\n");
+        buff = (char*) malloc(buff_size);
+        
+        if (buff == NULL)
+            return NULL;
     
-        len += snprintf(&buff[len], sizeof(buff) - len, "    <SlaveInformation>\n");
-        len += snprintf(&buff[len], sizeof(buff) - len, "        <Id>%d</Id>\n", (int)mbus_data_bcd_decode(data->id_bcd, 4));
+        len += snprintf(&buff[len], buff_size - len, "<MBusData>\n\n");
+    
+        len += snprintf(&buff[len], buff_size - len, "    <SlaveInformation>\n");
+        len += snprintf(&buff[len], buff_size - len, "        <Id>%d</Id>\n", (int)mbus_data_bcd_decode(data->id_bcd, 4));
         
         mbus_str_xml_encode(str_encoded, mbus_data_fixed_medium(data), sizeof(str_encoded)); 
-        len += snprintf(&buff[len], sizeof(buff) - len, "        <Medium>%s</Medium>\n", str_encoded);
+        len += snprintf(&buff[len], buff_size - len, "        <Medium>%s</Medium>\n", str_encoded);
         
-        len += snprintf(&buff[len], sizeof(buff) - len, "        <AccessNumber>%d</AccessNumber>\n", data->tx_cnt);
-        len += snprintf(&buff[len], sizeof(buff) - len, "        <Status>%.2X</Status>\n", data->status);
-        len += snprintf(&buff[len], sizeof(buff) - len, "    </SlaveInformation>\n\n");
+        len += snprintf(&buff[len], buff_size - len, "        <AccessNumber>%d</AccessNumber>\n", data->tx_cnt);
+        len += snprintf(&buff[len], buff_size - len, "        <Status>%.2X</Status>\n", data->status);
+        len += snprintf(&buff[len], buff_size - len, "    </SlaveInformation>\n\n");
              
-        len += snprintf(&buff[len], sizeof(buff) - len, "    <DataRecord id=\"0\">\n");
+        len += snprintf(&buff[len], buff_size - len, "    <DataRecord id=\"0\">\n");
         
         mbus_str_xml_encode(str_encoded, mbus_data_fixed_function(data->status), sizeof(str_encoded));
-        len += snprintf(&buff[len], sizeof(buff) - len, "        <Function>%s</Function>\n", str_encoded);
+        len += snprintf(&buff[len], buff_size - len, "        <Function>%s</Function>\n", str_encoded);
         
         mbus_str_xml_encode(str_encoded, mbus_data_fixed_unit(data->cnt1_type), sizeof(str_encoded));
-        len += snprintf(&buff[len], sizeof(buff) - len, "        <Unit>%s</Unit>\n", str_encoded);
+        len += snprintf(&buff[len], buff_size - len, "        <Unit>%s</Unit>\n", str_encoded);
         if ((data->status & MBUS_DATA_FIXED_STATUS_FORMAT_MASK) == MBUS_DATA_FIXED_STATUS_FORMAT_BCD)
         {
-            len += snprintf(&buff[len], sizeof(buff) - len, "        <Value>%d</Value>\n", (int)mbus_data_bcd_decode(data->cnt1_val, 4));
+            len += snprintf(&buff[len], buff_size - len, "        <Value>%d</Value>\n", (int)mbus_data_bcd_decode(data->cnt1_val, 4));
         }
         else
         {
-            len += snprintf(&buff[len], sizeof(buff) - len, "        <Value>%d</Value>\n", mbus_data_int_decode(data->cnt1_val, 4));
+            len += snprintf(&buff[len], buff_size - len, "        <Value>%d</Value>\n", mbus_data_int_decode(data->cnt1_val, 4));
         }
-        len += snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");      
+        len += snprintf(&buff[len], buff_size - len, "    </DataRecord>\n\n");      
 
-        len += snprintf(&buff[len], sizeof(buff) - len, "    <DataRecord id=\"1\">\n");
+        len += snprintf(&buff[len], buff_size - len, "    <DataRecord id=\"1\">\n");
         
         mbus_str_xml_encode(str_encoded, mbus_data_fixed_function(data->status), sizeof(str_encoded));
-        len += snprintf(&buff[len], sizeof(buff) - len, "        <Function>%s</Function>\n", str_encoded);
+        len += snprintf(&buff[len], buff_size - len, "        <Function>%s</Function>\n", str_encoded);
         
         mbus_str_xml_encode(str_encoded, mbus_data_fixed_unit(data->cnt2_type), sizeof(str_encoded));
-        len += snprintf(&buff[len], sizeof(buff) - len, "        <Unit>%s</Unit>\n", str_encoded);
+        len += snprintf(&buff[len], buff_size - len, "        <Unit>%s</Unit>\n", str_encoded);
         if ((data->status & MBUS_DATA_FIXED_STATUS_FORMAT_MASK) == MBUS_DATA_FIXED_STATUS_FORMAT_BCD)
         {
-            len += snprintf(&buff[len], sizeof(buff) - len, "        <Value>%d</Value>\n", (int)mbus_data_bcd_decode(data->cnt2_val, 4));
+            len += snprintf(&buff[len], buff_size - len, "        <Value>%d</Value>\n", (int)mbus_data_bcd_decode(data->cnt2_val, 4));
         }
         else
         {
-            len += snprintf(&buff[len], sizeof(buff) - len, "        <Value>%d</Value>\n", mbus_data_int_decode(data->cnt2_val, 4));
+            len += snprintf(&buff[len], buff_size - len, "        <Value>%d</Value>\n", mbus_data_int_decode(data->cnt2_val, 4));
         }
-        len += snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");      
+        len += snprintf(&buff[len], buff_size - len, "    </DataRecord>\n\n");      
 
-        len += snprintf(&buff[len], sizeof(buff) - len, "</MBusData>\n");
+        len += snprintf(&buff[len], buff_size - len, "</MBusData>\n");
 
         return buff;
     }
     
-    return "";
+    return NULL;
 }
 
 //------------------------------------------------------------------------------
@@ -3426,20 +3473,25 @@ mbus_data_fixed_xml(mbus_data_fixed *data)
 char *
 mbus_data_error_xml(int error)
 {
-    static char buff[512];
+    char *buff = NULL;
     char str_encoded[256];
-    size_t len = 0;
-
-    len += snprintf(&buff[len], sizeof(buff) - len, "<MBusData>\n\n");
+    size_t len = 0, buff_size = 8192;
     
-    len += snprintf(&buff[len], sizeof(buff) - len, "    <SlaveInformation>\n");
+    buff = (char*) malloc(buff_size);
+        
+    if (buff == NULL)
+        return NULL;
+
+    len += snprintf(&buff[len], buff_size - len, "<MBusData>\n\n");
+    
+    len += snprintf(&buff[len], buff_size - len, "    <SlaveInformation>\n");
 
     mbus_str_xml_encode(str_encoded, mbus_data_error_lookup(error), sizeof(str_encoded)); 
-    len += snprintf(&buff[len], sizeof(buff) - len, "        <Error>%s</Error>\n", str_encoded);
+    len += snprintf(&buff[len], buff_size - len, "        <Error>%s</Error>\n", str_encoded);
     
-    len += snprintf(&buff[len], sizeof(buff) - len, "    </SlaveInformation>\n\n");
+    len += snprintf(&buff[len], buff_size - len, "    </SlaveInformation>\n\n");
     
-    len += snprintf(&buff[len], sizeof(buff) - len, "</MBusData>\n");
+    len += snprintf(&buff[len], buff_size - len, "</MBusData>\n");
     
     return buff;
 }
@@ -3468,7 +3520,7 @@ mbus_frame_data_xml(mbus_frame_data *data)
         }
     }
     
-    return "";
+    return NULL;
 }
 
 
@@ -3482,9 +3534,9 @@ mbus_frame_xml(mbus_frame *frame)
     mbus_frame *iter;
      
     mbus_data_record *record;
-    static char buff[8192];
+    char *buff = NULL;
 
-    size_t len = 0;
+    size_t len = 0, buff_size = 8192;
     int record_cnt = 0, frame_cnt;
 
     if (frame)
@@ -3515,25 +3567,39 @@ mbus_frame_xml(mbus_frame *frame)
         {
             //
             // generate XML for a sequence of variable data frames
-            //        
+            //
+            
+            buff = (char*) malloc(buff_size);
+        
+            if (buff == NULL)
+                return NULL;        
 
             // include frame counter in XML output if more than one frame
             // is available (frame_cnt = -1 => not included in output)        
             frame_cnt = (frame->next == NULL) ? -1 : 0;
 
-            len += snprintf(&buff[len], sizeof(buff) - len, "<MBusData>\n\n");
+            len += snprintf(&buff[len], buff_size - len, "<MBusData>\n\n");
             
             // only print the header info for the first frame (should be 
             // the same for each frame in a sequence of a multi-telegram 
             // transfer.
-            len += snprintf(&buff[len], sizeof(buff) - len, "%s", 
+            len += snprintf(&buff[len], buff_size - len, "%s", 
                                     mbus_data_variable_header_xml(&(frame_data.data_var.header)));
                                     
             // loop through all records in the current frame, using a global
             // record count as record ID in the XML output
             for (record = frame_data.data_var.record; record; record = record->next, record_cnt++)
             {
-                len += snprintf(&buff[len], sizeof(buff) - len, "%s", 
+                if ((buff_size - len) < 1024)
+                {
+                    buff_size *= 2;
+                    buff = (char*) realloc(buff,buff_size);
+                    
+                    if (buff == NULL)
+                        return NULL;
+                }
+            
+                len += snprintf(&buff[len], buff_size - len, "%s", 
                                 mbus_data_variable_record_xml(record, record_cnt, frame_cnt, &(frame_data.data_var.header)));        
             }       
 
@@ -3557,7 +3623,16 @@ mbus_frame_xml(mbus_frame *frame)
                 // record count as record ID in the XML output
                 for (record = frame_data.data_var.record; record; record = record->next, record_cnt++)
                 {
-                    len += snprintf(&buff[len], sizeof(buff) - len, "%s", 
+                    if ((buff_size - len) < 1024)
+                    {
+                        buff_size *= 2;
+                        buff = (char*) realloc(buff,buff_size);
+                        
+                        if (buff == NULL)
+                            return NULL;
+                    }
+                
+                    len += snprintf(&buff[len], buff_size - len, "%s", 
                                     mbus_data_variable_record_xml(record, record_cnt, frame_cnt, &(frame_data.data_var.header)));        
                 }       
 
@@ -3566,15 +3641,15 @@ mbus_frame_xml(mbus_frame *frame)
                 {
                     mbus_data_record_free(frame_data.data_var.record); 
                 }
-            }        
+            } 
         
-            len += snprintf(&buff[len], sizeof(buff) - len, "</MBusData>\n");
+            len += snprintf(&buff[len], buff_size - len, "</MBusData>\n");
                 
             return buff;
         }
     }
         
-    return "";
+    return NULL;
 }    
 
 
@@ -3733,7 +3808,7 @@ mbus_frame_select_secondary_pack(mbus_frame *frame, char *address)
         return -1;
     }
 
-    frame->control  = MBUS_CONTROL_MASK_SND_UD | MBUS_CONTROL_MASK_DIR_M2S;
+    frame->control  = MBUS_CONTROL_MASK_SND_UD | MBUS_CONTROL_MASK_DIR_M2S | MBUS_CONTROL_MASK_FCB;
     frame->address  = 253;             // for addressing secondary slaves 
     frame->control_information = 0x52; // mode 1
 

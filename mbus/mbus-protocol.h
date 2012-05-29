@@ -83,6 +83,7 @@ typedef struct _mbus_frame {
     size_t data_size;
     
     int type;
+    time_t timestamp;
     
     //mbus_frame_data frame_data;
 
@@ -144,6 +145,8 @@ typedef struct _mbus_data_record {
 
     u_char data[234];
     size_t data_len;    
+
+    time_t timestamp;
 
     void *next;
 
@@ -462,6 +465,7 @@ typedef struct _mbus_data_secondary_address {
 #define MBUS_VARIABLE_DATA_MAN_ACW              0x0477
 #define MBUS_VARIABLE_DATA_MAN_ABB              0x0442
 #define MBUS_VARIABLE_DATA_MAN_AMT              0x05B4
+#define MBUS_VARIABLE_DATA_MAN_EFE              0x14C5
 #define MBUS_VARIABLE_DATA_MAN_ELS              0x1593
 #define MBUS_VARIABLE_DATA_MAN_EMH              0x15A8
 #define MBUS_VARIABLE_DATA_MAN_HYD              0x2324
@@ -475,7 +479,7 @@ typedef struct _mbus_data_secondary_address {
 #define MBUS_VARIABLE_DATA_MAN_SON              0x4DEE
 #define MBUS_VARIABLE_DATA_MAN_SPX              0x4E18
 #define MBUS_VARIABLE_DATA_MAN_SVM              0x4ECD
-#define MBUS_VARIABLE_DATA_MAN_TCM              0x5068
+#define MBUS_VARIABLE_DATA_MAN_TCH              0x5068
 #define MBUS_VARIABLE_DATA_MAN_ZRM              0x6A4D
 
 //

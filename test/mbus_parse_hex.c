@@ -28,6 +28,7 @@ main(int argc, char *argv[])
 	u_char raw_buff[4096], buff[4096], *ptr, *endptr;
 	mbus_frame reply;
 	mbus_frame_data frame_data;
+	char *xml_result = NULL;
 
 	if (argc != 2)
     {
@@ -89,7 +90,16 @@ main(int argc, char *argv[])
     
     //mbus_frame_print(&reply);
     //mbus_frame_data_print(&frame_data);
-	printf("%s", mbus_frame_data_xml(&frame_data));
+    
+    if ((xml_result = mbus_frame_data_xml(&frame_data)) == NULL)
+    {
+        fprintf(stderr, "Failed to generate XML representation of MBUS frame: %s\n", mbus_error_str());
+        return 1;
+    }
+	printf("%s", xml_result);
+	free(xml_result);
+
+	
 	return 0;
 }
 
