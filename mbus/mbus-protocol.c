@@ -754,6 +754,8 @@ mbus_data_product_name(mbus_data_variable_header *header)
     static char buff[128];
     unsigned int manufacturer;
 
+    memset(buff, 0, sizeof(buff));
+
     if (header)
     {
         manufacturer = (header->manufacturer[1] << 8) + header->manufacturer[0];
@@ -779,6 +781,15 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
                 case 0x14:
                     strcpy(buff,"Itron CYBLE M-Bus 1.4");
+                    break;
+            }
+        }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_EFE)
+        {
+            switch (header->version)
+            {
+                case 0x01:
+                    strcpy(buff,"Engelmann SensoStar 2C");
                     break;
             }
         }
@@ -821,18 +832,6 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_ZRM)
-        {
-            switch (header->version)
-            {
-                case 0x81:
-                    strcpy(buff,"Minol Minocal C2");
-                    break;
-                case 0x82:
-                    strcpy(buff,"Minol Minocal WR3");
-                    break;
-            }
-        }
         else if (manufacturer == MBUS_VARIABLE_DATA_MAN_SVM) 
         {
             switch (header->version)
@@ -868,6 +867,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
             switch (header->version)
             {
                 case 0x31:
+                case 0x34:
                     strcpy(buff,"Sensus PolluTherm");
                     break;
             }
@@ -908,11 +908,30 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-
-        return buff;
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_TCH)
+        {
+            switch (header->version)
+            {
+                case 0x26:
+                    strcpy(buff,"Techem m-bus S");
+                    break;
+            }
+        }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_ZRM)
+        {
+            switch (header->version)
+            {
+                case 0x81:
+                    strcpy(buff,"Minol Minocal C2");
+                    break;
+                case 0x82:
+                    strcpy(buff,"Minol Minocal WR3");
+                    break;
+            }
+        }
     }
 
-    return "";
+    return buff;
 }
 
 //------------------------------------------------------------------------------
