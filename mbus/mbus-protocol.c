@@ -2563,6 +2563,9 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 // clean up...
                 return (-2);
             }
+            
+            // copy timestamp
+            memcpy((void *)&(record->timestamp), (void *)&(frame->timestamp), sizeof(time_t));
 
             // read and parse DIB (= DIF + DIFE)
         
@@ -3275,6 +3278,8 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
     static char buff[8192];
     char str_encoded[768];
     size_t len = 0;
+    struct tm * timeinfo;
+    char timestamp[21];
     int val;
     
     if (record)
@@ -3314,6 +3319,11 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
         
         mbus_str_xml_encode(str_encoded, mbus_data_record_value(record), sizeof(str_encoded));
         len += snprintf(&buff[len], sizeof(buff) - len, "        <Value>%s</Value>\n", str_encoded);
+        
+        timeinfo = gmtime ( &(record->timestamp) );
+        strftime(timestamp,20,"%Y-%m-%dT%H:%M:%S",timeinfo);
+        len += snprintf(&buff[len], sizeof(buff) - len, "        <Timestamp>%s</Timestamp>\n", timestamp);
+        
         len += snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");
             
         return buff;

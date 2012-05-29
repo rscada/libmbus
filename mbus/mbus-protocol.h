@@ -83,6 +83,7 @@ typedef struct _mbus_frame {
     size_t data_size;
     
     int type;
+    time_t timestamp;
     
     //mbus_frame_data frame_data;
 
@@ -144,6 +145,8 @@ typedef struct _mbus_data_record {
 
     u_char data[234];
     size_t data_len;    
+
+    time_t timestamp;
 
     void *next;
 

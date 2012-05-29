@@ -1367,6 +1367,8 @@ mbus_disconnect(mbus_handle * handle)
 int
 mbus_recv_frame(mbus_handle * handle, mbus_frame *frame)
 {
+    int result = 0;
+
     if (handle == NULL)
     {
         MBUS_ERROR("%s: Invalid M-Bus handle for receive.\n", __PRETTY_FUNCTION__);
@@ -1375,13 +1377,20 @@ mbus_recv_frame(mbus_handle * handle, mbus_frame *frame)
 
     if (handle->is_serial)
     {
-        return mbus_serial_recv_frame(handle->m_serial_handle, frame);
+        result = mbus_serial_recv_frame(handle->m_serial_handle, frame);    
     }
     else
     {
-        return mbus_tcp_recv_frame(handle->m_tcp_handle, frame);
+        result = mbus_tcp_recv_frame(handle->m_tcp_handle, frame);
     }
-    return 0;
+    
+    if (frame != NULL)
+    {
+        /* set timestamp to receive time */
+        time(&(frame->timestamp));
+    }
+    
+    return result;
 }
 
 int
