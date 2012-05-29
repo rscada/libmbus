@@ -169,7 +169,9 @@ main(int argc, char **argv)
         fprintf(stderr, "Failed to generate XML representation of MBUS frames: %s\n", mbus_error_str());
         return 1;
     }
+    
     printf("%s", xml_result);
+    free(xml_result);
 
     mbus_disconnect(handle);
     return 0;
