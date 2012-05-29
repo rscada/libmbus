@@ -20,12 +20,12 @@
 static int debug = 0;
 
 //------------------------------------------------------------------------------
-// Execution starts here:
+// Scan for devices using secondary addressing.
 //------------------------------------------------------------------------------
 int
 main(int argc, char **argv)
 {
-    mbus_frame reply, *reply_iter;
+    mbus_frame *frame, reply;
     mbus_frame_data reply_data;
     mbus_handle *handle = NULL;
 
@@ -67,6 +67,33 @@ main(int argc, char **argv)
         fprintf(stderr, "Failed to setup connection to M-bus gateway\n");
         return 1;
     }
+    
+    //
+    // init slave to get really the beginning of the records
+    //
+    
+    frame = mbus_frame_new(MBUS_FRAME_TYPE_SHORT);
+    
+    if (frame == NULL)
+    {
+        fprintf(stderr, "Failed to allocate mbus frame.\n");
+        return 1;
+    }
+    
+    frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
+    frame->address = MBUS_ADDRESS_BROADCAST_NOREPLY;
+    
+    if (debug)
+        printf("%s: debug: sending init frame\n", __PRETTY_FUNCTION__);
+    
+    if (mbus_send_frame(handle, frame) == -1)
+    {
+        fprintf(stderr, "Failed to send mbus frame.\n");
+        mbus_frame_free(frame);
+        return 1;
+    }
+    
+    mbus_recv_frame(handle, &reply);
 
     if (strlen(addr_str) == 16)
     {
@@ -125,7 +152,9 @@ main(int argc, char **argv)
         fprintf(stderr, "Failed to generate XML representation of MBUS frames: %s\n", mbus_error_str());
         return 1;
     }
+    
     printf("%s", xml_result);
+    free(xml_result);
 
     mbus_disconnect(handle);
     return 0;
