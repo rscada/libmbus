@@ -218,7 +218,7 @@ mbus_tcp_recv_frame(mbus_tcp_handle *handle, mbus_frame *frame)
     if (_mbus_recv_event)
         _mbus_recv_event(MBUS_HANDLE_TYPE_TCP, buff, len);
       
-    if (remaining < 0)
+    if (remaining != 0)
     {
         mbus_error_str_set("M-Bus layer failed to parse data.");
         return -2;

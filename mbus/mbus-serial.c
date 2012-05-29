@@ -280,7 +280,7 @@ mbus_serial_recv_frame(mbus_serial_handle *handle, mbus_frame *frame)
     if (_mbus_recv_event)
         _mbus_recv_event(MBUS_HANDLE_TYPE_SERIAL, buff, len);
       
-    if (remaining < 0)
+    if (remaining != 0)
     {
         // Would be OK when e.g. scanning the bus, otherwise it is a failure.
         // printf("%s: M-Bus layer failed to receive complete data.\n", __PRETTY_FUNCTION__);
