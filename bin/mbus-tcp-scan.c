@@ -27,6 +27,7 @@ main(int argc, char **argv)
     mbus_handle *handle;
     char *host;
     int port, address, debug = 0;
+    int ret;
 
     if (argc == 3)
     {
@@ -59,10 +60,12 @@ main(int argc, char **argv)
 
     if (debug)
         printf("Scanning primary addresses:\n");
-        
-    for (address = 0; address < 254; address++)
+
+    for (address = 0; address <= 250; address++)
     {
         mbus_frame reply;
+
+        memset((void *)&reply, 0, sizeof(mbus_frame));
 
         if (debug)
         {
@@ -75,16 +78,41 @@ main(int argc, char **argv)
             printf("Scan failed. Could not send ping frame: %s\n", mbus_error_str());
             return 1;
         } 
+        
+        ret = mbus_recv_frame(handle, &reply);
 
-        if (mbus_recv_frame(handle, &reply) == -1)
+        if (ret == -1)
         {
             continue;
-        }    
+        }
+        
+        if (debug)
+            printf("\n");
+        
+        if (ret == -2)
+        {
+            /* check for more data (collision) */
+            while (mbus_recv_frame(handle, &reply) != -1);
+            
+            printf("Collision at address %d\n", address);
+            
+            continue;
+        } 
 
         if (mbus_frame_type(&reply) == MBUS_FRAME_TYPE_ACK)
         {
-            if (debug)
-                printf("\n");
+            /* check for more data (collision) */
+            while (mbus_recv_frame(handle, &reply) != -1)
+            {
+                ret = -2;
+            }
+    
+            if (ret == -2)
+            {
+                printf("Collision at address %d\n", address);
+                
+                continue;
+            }
                 
             printf("Found a M-Bus device at address %d\n", address);
         }

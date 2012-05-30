@@ -29,7 +29,7 @@ main(int argc, char **argv)
     mbus_frame_data reply_data;
     mbus_handle *handle = NULL;
 
-    char *host, *addr_str, matching_addr[16];
+    char *host, *addr_str, matching_addr[16], *xml_result;
     int port, address;
  
     memset((void *)&reply, 0, sizeof(mbus_frame));
@@ -130,7 +130,15 @@ main(int argc, char **argv)
         fprintf(stderr, "M-bus data parse error.\n");
         return 1;
     }
-    printf("%s", mbus_frame_data_xml(&reply_data));
+    
+    if ((xml_result = mbus_frame_data_xml(&reply_data)) == NULL)
+    {
+        fprintf(stderr, "Failed to generate XML representation of MBUS frame: %s\n", mbus_error_str());
+        return 1;
+    }
+    
+    printf("%s", xml_result);
+    free(xml_result);
 
     // manual free
     if (reply_data.data_var.record)

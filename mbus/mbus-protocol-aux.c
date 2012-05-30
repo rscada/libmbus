@@ -1214,44 +1214,58 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
 {
     mbus_data_record *record;
     mbus_record *norm_record;
-    static char buff[8192];
+    char *buff = NULL;
     char str_encoded[768];
-    size_t len = 0;
+    size_t len = 0, buff_size = 8192;
     size_t i;
     
     if (data)
     {
-        len += snprintf(&buff[len], sizeof(buff) - len, "<MBusData>\n\n");
+        buff = (char*) malloc(buff_size);
         
-        len += snprintf(&buff[len], sizeof(buff) - len, "%s", mbus_data_variable_header_xml(&(data->header)));
+        if (buff == NULL)
+            return NULL;
+    
+        len += snprintf(&buff[len], buff_size - len, "<MBusData>\n\n");
+        
+        len += snprintf(&buff[len], buff_size - len, "%s", mbus_data_variable_header_xml(&(data->header)));
     
         for (record = data->record, i = 0; record; record = record->next, i++)
         {
             norm_record = mbus_parse_variable_record(record);
             
-            len += snprintf(&buff[len], sizeof(buff) - len, "    <DataRecord id=\"%zd\">\n", i);
+            if ((buff_size - len) < 1024)
+            {
+                buff_size *= 2;
+                buff = (char*) realloc(buff,buff_size);
+                
+                if (buff == NULL)
+                    return NULL;
+            }
+            
+            len += snprintf(&buff[len], buff_size - len, "    <DataRecord id=\"%zd\">\n", i);
             
             if (norm_record != NULL)
             {                
                 mbus_str_xml_encode(str_encoded, norm_record->function_medium, sizeof(str_encoded));
-                len += snprintf(&buff[len], sizeof(buff) - len, "        <Function>%s</Function>\n", str_encoded);
+                len += snprintf(&buff[len], buff_size - len, "        <Function>%s</Function>\n", str_encoded);
                 
                 mbus_str_xml_encode(str_encoded, norm_record->unit, sizeof(str_encoded));
                 
-                len += snprintf(&buff[len], sizeof(buff) - len, "        <Unit>%s</Unit>\n", str_encoded);
+                len += snprintf(&buff[len], buff_size - len, "        <Unit>%s</Unit>\n", str_encoded);
                     
                 mbus_str_xml_encode(str_encoded, norm_record->quantity, sizeof(str_encoded));
-                len += snprintf(&buff[len], sizeof(buff) - len, "        <Quantity>%s</Quantity>\n", str_encoded);
+                len += snprintf(&buff[len], buff_size - len, "        <Quantity>%s</Quantity>\n", str_encoded);
                 
                 
                 if (norm_record->is_numeric)
                 {
-                    len += snprintf(&buff[len], sizeof(buff) - len, "        <Value>%f</Value>\n", norm_record->value.real_val);
+                    len += snprintf(&buff[len], buff_size - len, "        <Value>%f</Value>\n", norm_record->value.real_val);
                 }
                 else
                 {
                     mbus_str_xml_encode(str_encoded, norm_record->value.str_val.value, sizeof(str_encoded));
-                    len += snprintf(&buff[len], sizeof(buff) - len, "        <Value>%s</Value>\n", str_encoded);
+                    len += snprintf(&buff[len], buff_size - len, "        <Value>%s</Value>\n", str_encoded);
                 }
                 
                 mbus_record_free(norm_record);
@@ -1260,15 +1274,15 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
             {
             }
             
-            len += snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");
+            len += snprintf(&buff[len], buff_size - len, "    </DataRecord>\n\n");
         }
        
-        len += snprintf(&buff[len], sizeof(buff) - len, "</MBusData>\n");
+        len += snprintf(&buff[len], buff_size - len, "</MBusData>\n");
 
         return buff;
     }
     
-    return "";
+    return NULL;
 }
 
 //------------------------------------------------------------------------------
@@ -1290,7 +1304,7 @@ mbus_frame_data_xml_normalized(mbus_frame_data *data)
         }
     }
     
-    return "";
+    return NULL;
 }
 
 mbus_handle *
@@ -1367,6 +1381,8 @@ mbus_disconnect(mbus_handle * handle)
 int
 mbus_recv_frame(mbus_handle * handle, mbus_frame *frame)
 {
+    int result = 0;
+
     if (handle == NULL)
     {
         MBUS_ERROR("%s: Invalid M-Bus handle for receive.\n", __PRETTY_FUNCTION__);
@@ -1375,13 +1391,20 @@ mbus_recv_frame(mbus_handle * handle, mbus_frame *frame)
 
     if (handle->is_serial)
     {
-        return mbus_serial_recv_frame(handle->m_serial_handle, frame);
+        result = mbus_serial_recv_frame(handle->m_serial_handle, frame);    
     }
     else
     {
-        return mbus_tcp_recv_frame(handle->m_tcp_handle, frame);
+        result = mbus_tcp_recv_frame(handle->m_tcp_handle, frame);
     }
-    return 0;
+    
+    if (frame != NULL)
+    {
+        /* set timestamp to receive time */
+        time(&(frame->timestamp));
+    }
+    
+    return result;
 }
 
 int

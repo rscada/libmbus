@@ -17,8 +17,7 @@
 #include <stdio.h>
 #include <mbus/mbus.h>
 
-static mbus_handle *handle = NULL;
-
+static int debug = 0;
 
 //------------------------------------------------------------------------------
 // Execution starts here:
@@ -28,6 +27,10 @@ main(int argc, char **argv)
 {
     char *host, *addr_mask;
     int port;
+    mbus_handle *handle = NULL;
+    mbus_frame *frame = NULL, reply;
+    
+    memset((void *)&reply, 0, sizeof(mbus_frame));
 
     if (argc != 4 && argc != 3)
     {
@@ -59,6 +62,43 @@ main(int argc, char **argv)
         fprintf(stderr, "Failed to setup connection to M-bus gateway: %s\n", mbus_error_str());
         return 1;
     }
+    
+    frame = mbus_frame_new(MBUS_FRAME_TYPE_SHORT);
+
+    if (frame == NULL)
+    {
+        fprintf(stderr, "Failed to allocate mbus frame.\n");
+        return 1;
+    }
+
+    //
+    // init slaves
+    //
+    frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
+    frame->address = 0xFD;
+
+    if (mbus_send_frame(handle, frame) == -1)
+    {
+        fprintf(stderr, "Failed to send SND_NKE #1.\n");
+        mbus_frame_free(frame);
+        return 1;
+    }
+
+    (void) mbus_recv_frame(handle, &reply);
+    sleep(1);
+
+    frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
+    frame->address = 0xFF;
+
+    if (mbus_send_frame(handle, frame) == -1)
+    {
+        fprintf(stderr, "Failed to send SND_NKE #2.\n");
+        mbus_frame_free(frame);
+        return 1;
+    }
+
+    (void) mbus_recv_frame(handle, &reply);
+    sleep(1);
 
     mbus_scan_2nd_address_range(handle, 0, addr_mask);
 

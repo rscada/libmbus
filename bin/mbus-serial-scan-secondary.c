@@ -137,6 +137,7 @@ main(int argc, char **argv)
     }
 
     (void) mbus_recv_frame(handle, &reply);
+    sleep(1);
 
     frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
     frame->address = 0xFF;
@@ -149,6 +150,7 @@ main(int argc, char **argv)
     }
 
     (void) mbus_recv_frame(handle, &reply);
+    sleep(1);
 
     mbus_scan_2nd_address_range(handle, 0, addr_mask);
 
