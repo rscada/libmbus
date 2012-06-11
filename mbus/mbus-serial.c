@@ -212,6 +212,11 @@ mbus_serial_send_frame(mbus_serial_handle *handle, mbus_frame *frame)
         fprintf(stderr, "%s: Failed to write frame to socket (ret = %d: %s)\n", __PRETTY_FUNCTION__, ret, strerror(errno));
         return -1;
     }
+    
+    //
+    // wait until complete frame has been transmitted
+    //
+    tcdrain(handle->fd);
 
     return 0;
 }
