@@ -788,6 +788,9 @@ mbus_data_product_name(mbus_data_variable_header *header)
         {
             switch (header->version)
             {
+                case 0x00:
+                    strcpy(buff, ((header->medium == 0x06) ? "Engelmann WaterStar" : "Engelmann SensoStar 2"));
+                    break;
                 case 0x01:
                     strcpy(buff,"Engelmann SensoStar 2C");
                     break;
@@ -809,7 +812,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
         {
             switch (header->version)
             {
-                case 0x02:
+                case 0x28:
                     strcpy(buff,"ABB F95 Typ US770");
                     break;
             }
