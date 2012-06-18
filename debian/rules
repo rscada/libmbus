@@ -1,0 +1,12 @@
+#!/usr/bin/make -f
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+%:
+	dh $@
+
+#override_dh_auto_configure:
+#	dh_auto_configure -- --prefix=/usr/local/freescada
+
+#override_dh_usrlocal:
+#	echo "dh_usrlocal does nothing"

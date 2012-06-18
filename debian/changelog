@@ -1,0 +1,5 @@
+libmbus (0.8.0) precise; urgency=low
+
+  * New official release. Includes support for multi-telegram communication.
+
+ -- Robert Johansson <rob@raditex.nu>  Mon, 18 Jun 2012 20:37:57 +0900
