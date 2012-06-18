@@ -1,2 +1,0 @@
-shlibs:Depends=libc6 (>= 2.4), libmbus1
-misc:Depends=
