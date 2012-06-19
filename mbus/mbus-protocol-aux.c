@@ -1389,6 +1389,12 @@ mbus_recv_frame(mbus_handle * handle, mbus_frame *frame)
         return 0;
     }
 
+    if (frame == NULL)
+    {
+        MBUS_ERROR("%s: Invalid frame.\n", __PRETTY_FUNCTION__);
+        return 0;
+    }
+
     if (handle->is_serial)
     {
         result = mbus_serial_recv_frame(handle->m_serial_handle, frame);    
@@ -1594,6 +1600,8 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
     //
     next_frame = reply;
     
+    memset((void *)&reply_data, 0, sizeof(mbus_frame_data));
+    
     while (more_frames)
     {
         frame_count++;
@@ -1601,7 +1609,7 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
         if (debug)
             printf("%s: debug: receiving response frame #%d\n", __PRETTY_FUNCTION__, frame_count);
     
-        if (mbus_recv_frame(handle, next_frame) == -1)
+        if (mbus_recv_frame(handle, next_frame) != 0)
         {
             MBUS_ERROR("%s: Failed to receive M-Bus response frame.\n", __PRETTY_FUNCTION__);
             retval = 1;
@@ -1905,7 +1913,7 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
         }
     } 
 
-    if (mbus_recv_frame(handle, reply) == -1)
+    if (mbus_recv_frame(handle, reply) != 0)
     {
         MBUS_ERROR("%s: Failed to receive M-Bus response frame.\n",
                    __PRETTY_FUNCTION__);
