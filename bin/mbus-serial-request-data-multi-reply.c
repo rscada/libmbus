@@ -98,7 +98,7 @@ main(int argc, char **argv)
     }
     
     frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
-    frame->address = MBUS_ADDRESS_BROADCAST_NOREPLY;
+    frame->address = MBUS_ADDRESS_NETWORK_LAYER;
     
     if (debug)
         printf("%s: debug: sending init frame\n", __PRETTY_FUNCTION__);
@@ -147,7 +147,7 @@ main(int argc, char **argv)
     
     // instead of the send and recv, use this sendrecv function that 
     // takes care of the possibility of multi-telegram replies (limit = 16 frames)
-    if (mbus_sendrecv_request(handle, address, &reply, 16) == -1)
+    if (mbus_sendrecv_request(handle, address, &reply, 16) != 0)
     {
         fprintf(stderr, "Failed to send/receive M-Bus request.\n");
         return 1;

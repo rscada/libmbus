@@ -130,7 +130,7 @@ main(int argc, char **argv)
     
     // instead of the send and recv, use this sendrecv function that 
     // takes care of the possibility of multi-telegram replies (limit = 16 frames)
-    if (mbus_sendrecv_request(handle, address, &reply, 16) == -1)
+    if (mbus_sendrecv_request(handle, address, &reply, 16) != 0)
     {
         fprintf(stderr, "Failed to send/receive M-Bus request.\n");
         return 1;
