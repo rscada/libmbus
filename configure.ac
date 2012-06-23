@@ -8,14 +8,14 @@ dnl info@rscada.se
 dnl 
 dnl ----------------------------------------------------------------------------
 
-AC_INIT([mbus], [0.7.0], [info@rscada.se], [mbus], [http://www.rscada.se/libmbus/])
+AC_INIT([mbus], [0.8.0], [info@rscada.se], [mbus], [http://www.rscada.se/libmbus/])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
 AC_CONFIG_MACRO_DIR([m4])
 
 AM_PROG_LIBTOOL
 
-LDFLAGS="$LDFLAGS -version-info 0:7:0"
+LDFLAGS="$LDFLAGS -version-info 0:8:0"
 
 dnl ----------------------
 dnl 

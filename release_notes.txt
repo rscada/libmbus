@@ -1,12 +1,11 @@
 Release notes for libmbus
 
-
-Version 0.X.X ():
+Version 0.8.0 (2012-06-18):
 --------------------------
 
-New support for float point number thanks to contribution by Stefan Wahren. 
-Many thanks to Stefan Wahren and Henry N. for contributing patches. 
-
+New support for float point numbers and new support for multi-telegram
+communication, thanks to major contributions from Stefan Wahren. Also, thanks
+to Henry N. for contributing patches. 
 
 Version 0.7.0 (2012-02-07):
 --------------------------
