@@ -1386,7 +1386,7 @@ mbus_recv_frame(mbus_handle * handle, mbus_frame *frame)
     if (handle == NULL)
     {
         MBUS_ERROR("%s: Invalid M-Bus handle for receive.\n", __PRETTY_FUNCTION__);
-        return 0;
+        return -1;
     }
 
     if (handle->is_serial)
