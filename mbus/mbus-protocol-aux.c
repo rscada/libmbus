@@ -1407,6 +1407,24 @@ mbus_recv_frame(mbus_handle * handle, mbus_frame *frame)
     return result;
 }
 
+int mbus_recv_frame_dummy(mbus_handle *handle)
+{
+    int err, received;
+    mbus_frame reply;
+
+    received = 0;
+    while (1)
+    {
+        err = mbus_recv_frame(handle, &reply);
+        if (err != -2 && err != 0)
+            break;
+
+        received = 1;
+    }
+
+    return received;
+}
+
 int
 mbus_send_frame(mbus_handle * handle, mbus_frame *frame)
 {
@@ -1601,7 +1619,7 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
         if (debug)
             printf("%s: debug: receiving response frame #%d\n", __PRETTY_FUNCTION__, frame_count);
     
-        if (mbus_recv_frame(handle, next_frame) == -1)
+        if (mbus_recv_frame(handle, next_frame) != 0)
         {
             MBUS_ERROR("%s: Failed to receive M-Bus response frame.\n", __PRETTY_FUNCTION__);
             retval = 1;
@@ -1743,7 +1761,7 @@ mbus_select_secondary_address(mbus_handle * handle, const char *mask)
 
     ret = mbus_recv_frame(handle, &reply);
 
-    if (ret == -1)
+    if (ret == -3)
     {
         return MBUS_PROBE_NOTHING;
     }    
@@ -1751,20 +1769,14 @@ mbus_select_secondary_address(mbus_handle * handle, const char *mask)
     if (ret == -2)
     {
         /* check for more data (collision) */
-        while (mbus_recv_frame(handle, &reply) != -1);
-
+        mbus_recv_frame_dummy(handle);
         return MBUS_PROBE_COLLISION;
     }
 
     if (mbus_frame_type(&reply) == MBUS_FRAME_TYPE_ACK)
     {
         /* check for more data (collision) */
-        while (mbus_recv_frame(handle, &reply) != -1)
-        {
-            ret = -2;
-        }
-
-        if (ret == -2)
+        if (mbus_recv_frame_dummy(handle))
         {
             return MBUS_PROBE_COLLISION;
         }
@@ -1809,7 +1821,7 @@ mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *match
 
         ret = mbus_recv_frame(handle, &reply);
 
-        if (ret == -1)
+        if (ret == -3)
         {
             return MBUS_PROBE_NOTHING;
         }
@@ -1905,7 +1917,7 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
         }
     } 
 
-    if (mbus_recv_frame(handle, reply) == -1)
+    if (mbus_recv_frame(handle, reply) != 0)
     {
         MBUS_ERROR("%s: Failed to receive M-Bus response frame.\n",
                    __PRETTY_FUNCTION__);

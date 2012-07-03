@@ -97,7 +97,7 @@ main(int argc, char **argv)
         
         ret = mbus_recv_frame(handle, &reply);
 
-        if (ret == -1)
+        if (ret == -3)
         {
             continue;
         }
@@ -108,22 +108,15 @@ main(int argc, char **argv)
         if (ret == -2)
         {
             /* check for more data (collision) */
-            while (mbus_recv_frame(handle, &reply) != -1);
-            
+            mbus_recv_frame_dummy(handle);
             printf("Collision at address %d\n", address);
-            
             continue;
         } 
 
         if (mbus_frame_type(&reply) == MBUS_FRAME_TYPE_ACK)
         {
             /* check for more data (collision) */
-            while (mbus_recv_frame(handle, &reply) != -1)
-            {
-                ret = -2;
-            }
-    
-            if (ret == -2)
+            if (mbus_recv_frame_dummy(handle))
             {
                 printf("Collision at address %d\n", address);
                 

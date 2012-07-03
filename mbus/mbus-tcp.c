@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <strings.h>
+#include <errno.h>
 
 #include <mbus/mbus.h>
 #include <mbus/mbus-tcp.h>
@@ -161,69 +162,59 @@ mbus_tcp_send_frame(mbus_tcp_handle *handle, mbus_frame *frame)
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-int
-mbus_tcp_recv_frame(mbus_tcp_handle *handle, mbus_frame *frame)
+int mbus_tcp_recv_frame(mbus_tcp_handle *handle, mbus_frame *frame)
 {
     char buff[PACKET_BUFF_SIZE];
-    int len, remaining, nread, timeouts;
-    
-    if (handle == NULL || frame == NULL)
-    {
+    int len, remaining, nread;
+
+    if (handle == NULL || frame == NULL) {
         fprintf(stderr, "%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
         return -1;
     }
 
-    memset((void *)buff, 0, sizeof(buff));
+    memset((void *) buff, 0, sizeof(buff));
 
     //
     // read data until a packet is received
     //
     remaining = 1; // start by reading 1 byte
     len = 0;
-    timeouts = 0;
 
     do {
-    
-        if ((nread = read(handle->sock, &buff[len], remaining)) == -1)
-        {
+retry:
+        nread = read(handle->sock, &buff[len], remaining);
+        switch (nread) {
+        case -1:
+            if (errno == EINTR)
+                goto retry;
+
+            if (errno == EAGAIN || errno == EWOULDBLOCK) {
+                mbus_error_str_set("M-Bus tcp transport layer timeout has been reached.");
+                return -3;
+            }
+
             mbus_error_str_set("M-Bus tcp transport layer failed to read data.");
             return -1;
+        case 0:
+            mbus_error_str_set("M-Bus tcp transport layer connection closed by remote host.");
+            return -4;
+        default:
+            len += nread;
         }
-        
-        if (nread == 0)
-        {
-            timeouts++;
-            
-            if (timeouts >= 3)
-            {
-                // abort to avoid endless loop
-                fprintf(stderr, "%s: Timeout\n", __PRETTY_FUNCTION__);
-                break;
-            }
-        }
-
-        len += nread;
-
     } while ((remaining = mbus_parse(frame, buff, len)) > 0);
-    
-    if (len == 0)
-    {
-        // No data received
-        return -1;
-    }
-    
+
     //
     // call the receive event function, if the callback function is registered
-    // 
+    //
     if (_mbus_recv_event)
         _mbus_recv_event(MBUS_HANDLE_TYPE_TCP, buff, len);
-      
-    if (remaining != 0)
-    {
+
+    if (remaining < 0) {
         mbus_error_str_set("M-Bus layer failed to parse data.");
         return -2;
     }
-  
+
     return 0;
 }
+
 

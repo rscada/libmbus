@@ -59,7 +59,7 @@ main(int argc, char **argv)
 
     ret = mbus_recv_frame(handle, &reply);
 
-    if (ret == -1)
+    if (ret == -3)
     {
         printf("No reply from device with secondary address %s: %s\n", argv[3], mbus_error_str());
         return 1;
@@ -79,7 +79,7 @@ main(int argc, char **argv)
             return 1;
         }
 
-        if (mbus_recv_frame(handle, &reply) == -1)
+        if (mbus_recv_frame(handle, &reply) != 0)
         {
             printf("Failed to recieve reply from selected secondary device: %s\n", mbus_error_str());
             return 1;

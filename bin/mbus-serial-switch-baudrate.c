@@ -72,7 +72,7 @@ main(int argc, char **argv)
 
     ret = mbus_recv_frame(handle, &reply);  
     
-    if (ret == -1)
+    if (ret == -3)
     {
         printf("No reply from device\n");
         return 1;

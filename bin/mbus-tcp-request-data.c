@@ -111,11 +111,11 @@ main(int argc, char **argv)
         }
     }   
 
-    if (mbus_recv_frame(handle, &reply) == -1)
+    if (mbus_recv_frame(handle, &reply) != 0)
     {
-        fprintf(stderr, "Failed to receive M-Bus response frame.\n");
+        fprintf(stderr, "Failed to receive M-Bus response frame: %s\n", mbus_error_str());
         return 1;
-    }    
+    }
 
     //
     // parse data and print in XML format

@@ -179,6 +179,15 @@ int mbus_disconnect(mbus_handle * handle);
 int mbus_recv_frame(mbus_handle * handle, mbus_frame *frame);
 
 /** 
+ * Used for handling collisions. Blocks as long as receiving frames or corrupted data.
+ *
+ * @param handle Initialized handle
+ *
+ * @return Zero when nothing received, one otherwise.
+ */
+int mbus_recv_frame_dummy(mbus_handle * handle);
+
+/**
  * Sends frame using "unified" handle
  * 
  * @param handle Initialized handle
