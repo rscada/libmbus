@@ -101,7 +101,7 @@ main(int argc, char **argv)
     frame->address = MBUS_ADDRESS_NETWORK_LAYER;
     
     if (debug)
-        printf("%s: debug: sending init frame #1\n", __PRETTY_FUNCTION__);
+        printf("%s: debug: sending init frame\n", __PRETTY_FUNCTION__);
     
     if (mbus_send_frame(handle, frame) == -1)
     {
@@ -110,27 +110,8 @@ main(int argc, char **argv)
         return 1;
     }
     
-    while (mbus_recv_frame(handle, &reply) != -1);
+    mbus_recv_frame(handle, &reply);
     
-    //
-    // resend SND_NKE, maybe the first get lost
-    //
-    
-    frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
-    frame->address = MBUS_ADDRESS_NETWORK_LAYER;
-
-    if (debug)
-        printf("%s: debug: sending init frame #2\n", __PRETTY_FUNCTION__);
-
-    if (mbus_send_frame(handle, frame) == -1)
-    {
-        fprintf(stderr, "Failed to send mbus frame.\n");
-        mbus_frame_free(frame);
-        return 1;
-    }
-
-    while (mbus_recv_frame(handle, &reply) != -1);
-
     if (strlen(addr_str) == 16)
     {
         // secondary addressing
