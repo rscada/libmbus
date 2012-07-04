@@ -32,65 +32,63 @@
 int
 mbus_serial_connect(mbus_handle *handle)
 {
-//    mbus_serial_handle *serial_data;
-//
-//    if (device == NULL)
-//    {
-//        return NULL;
-//    }
-//
-//    if ((handle = (mbus_serial_handle *)malloc(sizeof(mbus_serial_handle))) == NULL)
-//    {
-//        fprintf(stderr, "%s: failed to allocate memory for handle\n", __PRETTY_FUNCTION__);
-//        return NULL;
-//    }
-//
-//    handle->device = device; // strdup?
-//
-//    //
-//    // create the SERIAL connection
-//    //
-//
-//    // Use blocking read and handle it by serial port VMIN/VTIME setting
-//    if ((handle->fd = open(handle->device, O_RDWR | O_NOCTTY)) < 0)
-//    {
-//        fprintf(stderr, "%s: failed to open tty.", __PRETTY_FUNCTION__);
-//        return NULL;
-//    }
-//
-//    memset(&(handle->t), 0, sizeof(handle->t));
-//    handle->t.c_cflag |= (CS8|CREAD|CLOCAL);
-//    handle->t.c_cflag |= PARENB;
-//
-//    // No received data still OK
-//    handle->t.c_cc[VMIN]  = 0;
-//
-//    // Wait at most 0.2 sec.Note that it starts after first received byte!!
-//    // I.e. if CMIN>0 and there are no data we would still wait forever...
-//    //
-//    // The specification mentions link layer response timeout this way:
-//    // The time structure of various link layer communication types is described in EN60870-5-1. The answer time
-//    // between the end of a master send telegram and the beginning of the response telegram of the slave shall be
-//    // between 11 bit times and (330 bit times + 50ms).
-//    //
-//    // For 2400Bd this means (330 + 11) / 2400 + 0.05 = 188.75 ms (added 11 bit periods to receive first byte).
-//    // I.e. timeout of 0.2s seems appropriate for 2400Bd.
-//
-//    handle->t.c_cc[VTIME] = 2; // Timeout in 1/10 sec
-//
-//    cfsetispeed(&(handle->t), B2400);
-//    cfsetospeed(&(handle->t), B2400);
-//
-//#ifdef MBUS_SERIAL_DEBUG
-//    printf("%s: t.c_cflag = %x\n", __PRETTY_FUNCTION__, handle->t.c_cflag);
-//    printf("%s: t.c_oflag = %x\n", __PRETTY_FUNCTION__, handle->t.c_oflag);
-//    printf("%s: t.c_iflag = %x\n", __PRETTY_FUNCTION__, handle->t.c_iflag);
-//    printf("%s: t.c_lflag = %x\n", __PRETTY_FUNCTION__, handle->t.c_lflag);
-//#endif
-//
-//    tcsetattr(handle->fd, TCSANOW, &(handle->t));
+    mbus_serial_handle *serial_data;
+    const char *device;
+    struct termios *term;
 
-    return 0;
+    if (handle == NULL)
+        return 0;
+
+    serial_data = (mbus_serial_handle *) handle->auxdata;
+    if (serial_data == NULL || serial_data->device == NULL)
+        return 0;
+
+    device = serial_data->device;
+    term = &(serial_data->t);
+    //
+    // create the SERIAL connection
+    //
+
+    // Use blocking read and handle it by serial port VMIN/VTIME setting
+    if ((handle->fd = open(device, O_RDWR | O_NOCTTY)) < 0)
+    {
+        fprintf(stderr, "%s: failed to open tty.", __PRETTY_FUNCTION__);
+        return 0;
+    }
+
+    memset(term, 0, sizeof(*term));
+    term->c_cflag |= (CS8|CREAD|CLOCAL);
+    term->c_cflag |= PARENB;
+
+    // No received data still OK
+    term->c_cc[VMIN]  = 0;
+
+    // Wait at most 0.2 sec.Note that it starts after first received byte!!
+    // I.e. if CMIN>0 and there are no data we would still wait forever...
+    //
+    // The specification mentions link layer response timeout this way:
+    // The time structure of various link layer communication types is described in EN60870-5-1. The answer time
+    // between the end of a master send telegram and the beginning of the response telegram of the slave shall be
+    // between 11 bit times and (330 bit times + 50ms).
+    //
+    // For 2400Bd this means (330 + 11) / 2400 + 0.05 = 188.75 ms (added 11 bit periods to receive first byte).
+    // I.e. timeout of 0.2s seems appropriate for 2400Bd.
+
+    term->c_cc[VTIME] = 2; // Timeout in 1/10 sec
+
+    cfsetispeed(term, B2400);
+    cfsetospeed(term, B2400);
+
+#ifdef MBUS_SERIAL_DEBUG
+    printf("%s: t.c_cflag = %x\n", __PRETTY_FUNCTION__, term->c_cflag);
+    printf("%s: t.c_oflag = %x\n", __PRETTY_FUNCTION__, term->c_oflag);
+    printf("%s: t.c_iflag = %x\n", __PRETTY_FUNCTION__, term->c_iflag);
+    printf("%s: t.c_lflag = %x\n", __PRETTY_FUNCTION__, term->c_lflag);
+#endif
+
+    tcsetattr(handle->fd, TCSANOW, term);
+
+    return 1;
 }
 
 //------------------------------------------------------------------------------
