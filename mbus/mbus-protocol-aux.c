@@ -1336,7 +1336,7 @@ mbus_context_serial(const char *device)
     handle->close = mbus_serial_disconnect;
     handle->recv = mbus_serial_recv_frame;
     handle->send = mbus_serial_send_frame;
-    handle->free_auxdata = mbus_tcp_data_free;
+    handle->free_auxdata = mbus_serial_data_free;
 
     if ((serial_data->device = strdup(device)) == NULL)
     {
@@ -1403,7 +1403,7 @@ mbus_context_free(mbus_handle * handle)
 }
 
 int
-modbus_connect(mbus_handle * handle)
+mbus_connect(mbus_handle * handle)
 {
     if (handle == NULL)
     {

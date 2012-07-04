@@ -81,8 +81,8 @@ mbus_tcp_connect(mbus_handle *handle)
     }
 
     // Set a timeout
-    time_out.tv_sec  = 0; //seconds
-    time_out.tv_usec = 100000;
+    time_out.tv_sec  = 4; //seconds
+    time_out.tv_usec = 0;
     setsockopt(handle->fd, SOL_SOCKET, SO_SNDTIMEO, &time_out, sizeof(time_out));
     setsockopt(handle->fd, SOL_SOCKET, SO_RCVTIMEO, &time_out, sizeof(time_out));
 
@@ -189,7 +189,7 @@ retry:
                 goto retry;
 
             if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                mbus_error_str_set("M-Bus tcp transport layer timeout has been reached.");
+                mbus_error_str_set("M-Bus tcp transport layer response timeout has been reached.");
                 return -3;
             }
 

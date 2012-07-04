@@ -57,9 +57,15 @@ main(int argc, char **argv)
         return 1;
     }
 
-    if ((handle = mbus_connect_tcp(host, port)) == NULL)
+    if ((handle = mbus_context_tcp(host, port)) == NULL)
     {
-        fprintf(stderr, "Failed to setup connection to M-bus gateway: %s\n", mbus_error_str());
+        fprintf(stderr, "Could not initialize M-Bus context: %s\n",  mbus_error_str());
+        return 1;
+    }
+
+    if (!mbus_connect(handle))
+    {
+        fprintf(stderr, "Failed to setup connection to M-bus gateway\n");
         return 1;
     }
     
@@ -103,6 +109,7 @@ main(int argc, char **argv)
     mbus_scan_2nd_address_range(handle, 0, addr_mask);
 
     mbus_disconnect(handle);
+    mbus_context_free(handle);
 
     //printf("Summary: Tried %ld address masks and found %d devices.\n", probe_count, match_count);
 

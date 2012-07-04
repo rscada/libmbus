@@ -20,9 +20,11 @@
  * the data processing.
  * Typical use might be (in oversimplified "pseudocode"):
  * \verbatim
- * mbus_handle = mbus_connect_serial(device);
+ * mbus_handle = mbus_context_serial(device);
  *   or
- * mbus_handle = mbus_connect_tcp(host, port);
+ * mbus_handle = mbus_context_tcp(host, port);
+ *
+ * mbus_connect(mbus_handle);
  *
  *  ...
  *
@@ -45,6 +47,7 @@
  *  ...
  *
  * mbus_disconnect(mbus_handle);
+ * mbus_context_free(mbus_handle);
  * \endverbatim
  *
  * Note that the quantity values are partially "normalized". For example energy

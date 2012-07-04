@@ -45,9 +45,15 @@ main(int argc, char **argv)
         return 1;
     }
 
-    if ((handle = mbus_connect_tcp(host, port)) == NULL)
+    if ((handle = mbus_context_tcp(host, port)) == NULL)
     {
-        printf("Failed to setup connection to M-bus gateway: %s\n", mbus_error_str());
+        fprintf(stderr, "Could not initialize M-Bus context: %s\n",  mbus_error_str());
+        return 1;
+    }
+
+    if (!mbus_connect(handle))
+    {
+        fprintf(stderr, "Failed to setup connection to M-bus gateway\n");
         return 1;
     }
 
@@ -99,6 +105,7 @@ main(int argc, char **argv)
  
     free(addr);
     mbus_disconnect(handle);
+    mbus_context_free(handle);
     return 0;
 }
 
