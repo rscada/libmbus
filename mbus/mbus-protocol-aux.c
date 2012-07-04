@@ -1336,6 +1336,7 @@ mbus_context_serial(const char *device)
     handle->close = mbus_serial_disconnect;
     handle->recv = mbus_serial_recv_frame;
     handle->send = mbus_serial_send_frame;
+    handle->free_auxdata = mbus_tcp_data_free;
 
     if ((serial_data->device = strdup(device)) == NULL)
     {
@@ -1376,6 +1377,7 @@ mbus_context_tcp(const char *host, int port)
     handle->close = mbus_tcp_disconnect;
     handle->recv = mbus_tcp_recv_frame;
     handle->send = mbus_tcp_send_frame;
+    handle->free_auxdata = mbus_tcp_data_free;
 
     tcp_data->port = port;
     if ((tcp_data->host = strdup(host)) == NULL)
@@ -1388,6 +1390,16 @@ mbus_context_tcp(const char *host, int port)
     }
 
     return handle;
+}
+
+void
+mbus_context_free(mbus_handle * handle)
+{
+    if (handle)
+    {
+        handle->free_auxdata(handle);
+        free(handle);
+    }
 }
 
 int

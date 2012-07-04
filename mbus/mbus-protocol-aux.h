@@ -77,6 +77,7 @@ struct _mbus_handle {
     int (*close) (struct _mbus_handle *handle);
     int (*send) (struct _mbus_handle *handle, mbus_frame *frame);
     int (*recv) (struct _mbus_handle *handle, mbus_frame *frame);
+    void (*free_auxdata) (struct _mbus_handle *handle);
     void *auxdata;
 };
 
@@ -159,6 +160,14 @@ mbus_handle * mbus_context_serial(const char *device);
 mbus_handle * mbus_context_tcp(const char *host, int port);
 
 /** 
+ * Deallocate memory used by M-Bus context.
+ *
+ * @param handle Initialized handle
+ *
+ */
+void mbus_context_free(mbus_handle * handle);
+
+/**
  * Connect to serial bus or TCP gateway depending on context.
  *
  * @param handle Initialized handle

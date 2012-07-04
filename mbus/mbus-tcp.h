@@ -31,6 +31,7 @@ int              mbus_tcp_connect(mbus_handle *handle);
 int              mbus_tcp_disconnect(mbus_handle *handle);
 int              mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame);
 int              mbus_tcp_recv_frame(mbus_handle *handle, mbus_frame *frame);
+void             mbus_tcp_data_free(mbus_handle *handle);
 
 #endif /* MBUS_TCP_H */
 

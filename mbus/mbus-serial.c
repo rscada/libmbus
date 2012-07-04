@@ -168,6 +168,19 @@ mbus_serial_disconnect(mbus_handle *handle)
     return 0;
 }
 
+void
+mbus_serial_data_free(mbus_handle *handle)
+{
+    mbus_serial_handle *serial_data;
+
+    if (handle)
+    {
+        serial_data = (mbus_serial_handle *) handle->auxdata;
+        free(serial_data->device);
+        free(serial_data);
+    }
+}
+
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------

@@ -33,6 +33,7 @@ int                 mbus_serial_disconnect(mbus_handle *handle);
 int                 mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame);
 int                 mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame);
 int                 mbus_serial_set_baudrate(mbus_handle *handle, int baudrate);
+void                mbus_serial_data_free(mbus_handle *handle);
 #endif /* MBUS_SERIAL_H */
 
 
