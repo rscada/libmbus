@@ -60,28 +60,27 @@
 #ifndef __MBUS_PROTOCOL_AUX_H__
 #define __MBUS_PROTOCOL_AUX_H__
 
-#include <mbus/mbus.h>
-#include <mbus/mbus-protocol.h>
-#include <mbus/mbus-serial.h>
-#include <mbus/mbus-tcp.h>
+#include "mbus-protocol.h"
 
 #define MBUS_PROBE_NOTHING   0
 #define MBUS_PROBE_SINGLE    1
 #define MBUS_PROBE_COLLISION 2
 #define MBUS_PROBE_ERROR     -1
 
-
 /**
  * Unified MBus handle type encapsulating either Serial or TCP gateway.
  */
-typedef struct _mbus_handle {
-    char is_serial;                           /**< _handle type (non zero for serial) */
-    union {
-        mbus_tcp_handle    * m_tcp_handle;    /**< TCP gateway handle */
-        mbus_serial_handle * m_serial_handle; /**< Serial gateway handle */
-    };
-} mbus_handle;
+struct _mbus_handle {
+    int fd;
+    char is_serial; /**< _handle type (non zero for serial) */
+    int (*open) (struct _mbus_handle *handle);
+    int (*close) (struct _mbus_handle *handle);
+    int (*send) (struct _mbus_handle *handle, mbus_frame *frame);
+    int (*recv) (struct _mbus_handle *handle, mbus_frame *frame);
+    void *auxdata;
+};
 
+typedef struct _mbus_handle mbus_handle;
 
 /**
  * MBus slave address type (primary/secodary address)
@@ -141,25 +140,34 @@ void mbus_register_scan_progress(void (*event)(mbus_handle * handle, const char 
 void mbus_register_found_event(void (*event)(mbus_handle * handle, mbus_frame *frame));
 
 /** 
- * Connects to serial gateway and initializes MBus handle
+ * Allocate and initialize M-Bus serial context.
  * 
  * @param device Serial device (like /dev/ttyUSB0 or /dev/ttyS0)
  * 
  * @return Initialized "unified" handler when successful, NULL otherwise;
  */
-mbus_handle * mbus_connect_serial(const char * device);
+mbus_handle * mbus_context_serial(const char *device);
 
 /** 
- * Connects to TCP gateway and initializes MBus handle
+ * Allocate and initialize M-Bus TCP context.
  * 
  * @param host Gateway host
  * @param port Gateway port
  * 
  * @return Initialized "unified" handler when successful, NULL otherwise;
  */
-mbus_handle * mbus_connect_tcp(const char *host, int port);
+mbus_handle * mbus_context_tcp(const char *host, int port);
 
 /** 
+ * Connect to serial bus or TCP gateway depending on context.
+ *
+ * @param handle Initialized handle
+ *
+ * @return Zero when successful.
+ */
+int mbus_connect(mbus_handle * handle);
+
+/**
  * Disconnects the "unified" handle.
  * 
  * @param handle Initialized handle

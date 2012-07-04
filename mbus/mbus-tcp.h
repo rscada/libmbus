@@ -18,22 +18,19 @@
 #ifndef MBUS_TCP_H
 #define MBUS_TCP_H
 
-#include <mbus/mbus.h>
+#include "mbus-protocol.h"
+#include "mbus-protocol-aux.h"
 
-typedef struct _mbus_tcp_handle {
-
+typedef struct _mbus_tcp_handle
+{
     char *host;
-
     int port;
-    int sock;
-
 } mbus_tcp_handle;
 
-
-mbus_tcp_handle *mbus_tcp_connect(char *host, int port);
-int              mbus_tcp_disconnect(mbus_tcp_handle *handle);
-int              mbus_tcp_send_frame(mbus_tcp_handle *handle, mbus_frame *frame);
-int              mbus_tcp_recv_frame(mbus_tcp_handle *handle, mbus_frame *frame);
+int              mbus_tcp_connect(mbus_handle *handle);
+int              mbus_tcp_disconnect(mbus_handle *handle);
+int              mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame);
+int              mbus_tcp_recv_frame(mbus_handle *handle, mbus_frame *frame);
 
 #endif /* MBUS_TCP_H */
 

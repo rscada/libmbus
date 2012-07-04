@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <mbus/mbus-protocol.h>
+#include "mbus-protocol.h"
 
 static int parse_debug = 0, debug = 0;
 static char error_str[512];

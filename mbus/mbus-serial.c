@@ -20,109 +20,112 @@
 #include <errno.h>
 #include <string.h>
 
-#include <mbus/mbus.h>
-#include <mbus/mbus-serial.h>
+#include "mbus-serial.h"
+#include "mbus-protocol-aux.h"
+#include "mbus-protocol.h"
 
 #define PACKET_BUFF_SIZE 2048
 
 //------------------------------------------------------------------------------
 /// Set up a serial connection handle.
 //------------------------------------------------------------------------------
-mbus_serial_handle *
-mbus_serial_connect(char *device)
+int
+mbus_serial_connect(mbus_handle *handle)
 {
-    mbus_serial_handle *handle;
+//    mbus_serial_handle *serial_data;
+//
+//    if (device == NULL)
+//    {
+//        return NULL;
+//    }
+//
+//    if ((handle = (mbus_serial_handle *)malloc(sizeof(mbus_serial_handle))) == NULL)
+//    {
+//        fprintf(stderr, "%s: failed to allocate memory for handle\n", __PRETTY_FUNCTION__);
+//        return NULL;
+//    }
+//
+//    handle->device = device; // strdup?
+//
+//    //
+//    // create the SERIAL connection
+//    //
+//
+//    // Use blocking read and handle it by serial port VMIN/VTIME setting
+//    if ((handle->fd = open(handle->device, O_RDWR | O_NOCTTY)) < 0)
+//    {
+//        fprintf(stderr, "%s: failed to open tty.", __PRETTY_FUNCTION__);
+//        return NULL;
+//    }
+//
+//    memset(&(handle->t), 0, sizeof(handle->t));
+//    handle->t.c_cflag |= (CS8|CREAD|CLOCAL);
+//    handle->t.c_cflag |= PARENB;
+//
+//    // No received data still OK
+//    handle->t.c_cc[VMIN]  = 0;
+//
+//    // Wait at most 0.2 sec.Note that it starts after first received byte!!
+//    // I.e. if CMIN>0 and there are no data we would still wait forever...
+//    //
+//    // The specification mentions link layer response timeout this way:
+//    // The time structure of various link layer communication types is described in EN60870-5-1. The answer time
+//    // between the end of a master send telegram and the beginning of the response telegram of the slave shall be
+//    // between 11 bit times and (330 bit times + 50ms).
+//    //
+//    // For 2400Bd this means (330 + 11) / 2400 + 0.05 = 188.75 ms (added 11 bit periods to receive first byte).
+//    // I.e. timeout of 0.2s seems appropriate for 2400Bd.
+//
+//    handle->t.c_cc[VTIME] = 2; // Timeout in 1/10 sec
+//
+//    cfsetispeed(&(handle->t), B2400);
+//    cfsetospeed(&(handle->t), B2400);
+//
+//#ifdef MBUS_SERIAL_DEBUG
+//    printf("%s: t.c_cflag = %x\n", __PRETTY_FUNCTION__, handle->t.c_cflag);
+//    printf("%s: t.c_oflag = %x\n", __PRETTY_FUNCTION__, handle->t.c_oflag);
+//    printf("%s: t.c_iflag = %x\n", __PRETTY_FUNCTION__, handle->t.c_iflag);
+//    printf("%s: t.c_lflag = %x\n", __PRETTY_FUNCTION__, handle->t.c_lflag);
+//#endif
+//
+//    tcsetattr(handle->fd, TCSANOW, &(handle->t));
 
-    if (device == NULL)
-    {
-        return NULL;
-    }
-
-    if ((handle = (mbus_serial_handle *)malloc(sizeof(mbus_serial_handle))) == NULL)
-    {
-        fprintf(stderr, "%s: failed to allocate memory for handle\n", __PRETTY_FUNCTION__);
-        return NULL;
-    }
-
-    handle->device = device; // strdup?
-
-    //
-    // create the SERIAL connection
-    //
-
-    // Use blocking read and handle it by serial port VMIN/VTIME setting
-    if ((handle->fd = open(handle->device, O_RDWR | O_NOCTTY)) < 0)
-    {
-        fprintf(stderr, "%s: failed to open tty.", __PRETTY_FUNCTION__);
-        return NULL;
-    }
-
-    memset(&(handle->t), 0, sizeof(handle->t));
-    handle->t.c_cflag |= (CS8|CREAD|CLOCAL);
-    handle->t.c_cflag |= PARENB;
-
-    // No received data still OK
-    handle->t.c_cc[VMIN]  = 0;
-
-    // Wait at most 0.2 sec.Note that it starts after first received byte!!
-    // I.e. if CMIN>0 and there are no data we would still wait forever...
-    //
-    // The specification mentions link layer response timeout this way:
-    // The time structure of various link layer communication types is described in EN60870-5-1. The answer time
-    // between the end of a master send telegram and the beginning of the response telegram of the slave shall be
-    // between 11 bit times and (330 bit times + 50ms).
-    //  
-    // For 2400Bd this means (330 + 11) / 2400 + 0.05 = 188.75 ms (added 11 bit periods to receive first byte).
-    // I.e. timeout of 0.2s seems appropriate for 2400Bd.
-
-    handle->t.c_cc[VTIME] = 2; // Timeout in 1/10 sec
-
-    cfsetispeed(&(handle->t), B2400);
-    cfsetospeed(&(handle->t), B2400);
-
-#ifdef MBUS_SERIAL_DEBUG
-    printf("%s: t.c_cflag = %x\n", __PRETTY_FUNCTION__, handle->t.c_cflag);
-    printf("%s: t.c_oflag = %x\n", __PRETTY_FUNCTION__, handle->t.c_oflag);
-    printf("%s: t.c_iflag = %x\n", __PRETTY_FUNCTION__, handle->t.c_iflag);
-    printf("%s: t.c_lflag = %x\n", __PRETTY_FUNCTION__, handle->t.c_lflag);
-#endif 
-
-    tcsetattr(handle->fd, TCSANOW, &(handle->t));
-
-    return handle;    
+    return 0;
 }
 
 //------------------------------------------------------------------------------
 // Set baud rate for serial connection
 //------------------------------------------------------------------------------
 int
-mbus_serial_set_baudrate(mbus_serial_handle *handle, int baudrate)
+mbus_serial_set_baudrate(mbus_handle *handle, int baudrate)
 {
     speed_t speed;
 
     if (handle == NULL)
         return -1;
 
+    mbus_serial_handle *serial_data = (mbus_serial_handle *) handle->auxdata;
+
     switch (baudrate)
     {
         case 300:
             speed = B300;
-            handle->t.c_cc[VTIME] = 12; // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = 12; // Timeout in 1/10 sec
             break;
 
         case 1200:
             speed = B1200;
-            handle->t.c_cc[VTIME] = 4;  // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = 4;  // Timeout in 1/10 sec
             break;
 
         case 2400:
             speed = B2400;
-            handle->t.c_cc[VTIME] = 2;  // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = 2;  // Timeout in 1/10 sec
             break;
 
         case 9600:
             speed = B9600;
-            handle->t.c_cc[VTIME] = 1;  // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = 1;  // Timeout in 1/10 sec
             break;
 
        default:
@@ -130,19 +133,19 @@ mbus_serial_set_baudrate(mbus_serial_handle *handle, int baudrate)
     }
 
     // Set input baud rate
-    if (cfsetispeed(&(handle->t), speed) != 0)
+    if (cfsetispeed(&(serial_data->t), speed) != 0)
     {
         return -1;
     }
 
     // Set output baud rate
-    if (cfsetospeed(&(handle->t), speed) != 0)
+    if (cfsetospeed(&(serial_data->t), speed) != 0)
     {
         return -1;
     }
 
     // Change baud rate immediately
-    if (tcsetattr(handle->fd, TCSANOW, &(handle->t)) != 0)
+    if (tcsetattr(handle->fd, TCSANOW, &(serial_data->t)) != 0)
     {
         return -1;
     }
@@ -155,7 +158,7 @@ mbus_serial_set_baudrate(mbus_serial_handle *handle, int baudrate)
 //
 //------------------------------------------------------------------------------
 int
-mbus_serial_disconnect(mbus_serial_handle *handle)
+mbus_serial_disconnect(mbus_handle *handle)
 {
     if (handle == NULL)
     {
@@ -163,8 +166,6 @@ mbus_serial_disconnect(mbus_serial_handle *handle)
     }
 
     close(handle->fd);
-    
-    free(handle);
 
     return 0;
 }
@@ -173,7 +174,7 @@ mbus_serial_disconnect(mbus_serial_handle *handle)
 //
 //------------------------------------------------------------------------------
 int
-mbus_serial_send_frame(mbus_serial_handle *handle, mbus_frame *frame)
+mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
 {
     u_char buff[PACKET_BUFF_SIZE];
     int len, ret;
@@ -225,7 +226,7 @@ mbus_serial_send_frame(mbus_serial_handle *handle, mbus_frame *frame)
 //
 //------------------------------------------------------------------------------
 int
-mbus_serial_recv_frame(mbus_serial_handle *handle, mbus_frame *frame)
+mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
 {
     char buff[PACKET_BUFF_SIZE];
     int len, remaining, nread, timeouts;
