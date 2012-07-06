@@ -32,14 +32,14 @@
 int
 mbus_serial_connect(mbus_handle *handle)
 {
-    mbus_serial_handle *serial_data;
+    mbus_serial_data *serial_data;
     const char *device;
     struct termios *term;
 
     if (handle == NULL)
         return 0;
 
-    serial_data = (mbus_serial_handle *) handle->auxdata;
+    serial_data = (mbus_serial_data *) handle->auxdata;
     if (serial_data == NULL || serial_data->device == NULL)
         return 0;
 
@@ -102,7 +102,7 @@ mbus_serial_set_baudrate(mbus_handle *handle, int baudrate)
     if (handle == NULL)
         return -1;
 
-    mbus_serial_handle *serial_data = (mbus_serial_handle *) handle->auxdata;
+    mbus_serial_data *serial_data = (mbus_serial_data *) handle->auxdata;
 
     switch (baudrate)
     {
@@ -171,11 +171,11 @@ mbus_serial_disconnect(mbus_handle *handle)
 void
 mbus_serial_data_free(mbus_handle *handle)
 {
-    mbus_serial_handle *serial_data;
+    mbus_serial_data *serial_data;
 
     if (handle)
     {
-        serial_data = (mbus_serial_handle *) handle->auxdata;
+        serial_data = (mbus_serial_data *) handle->auxdata;
         free(serial_data->device);
         free(serial_data);
     }

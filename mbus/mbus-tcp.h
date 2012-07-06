@@ -21,11 +21,11 @@
 #include "mbus-protocol.h"
 #include "mbus-protocol-aux.h"
 
-typedef struct _mbus_tcp_handle
+typedef struct _mbus_tcp_data
 {
     char *host;
     int port;
-} mbus_tcp_handle;
+} mbus_tcp_data;
 
 int              mbus_tcp_connect(mbus_handle *handle);
 int              mbus_tcp_disconnect(mbus_handle *handle);

@@ -37,13 +37,13 @@ mbus_tcp_connect(mbus_handle *handle)
     struct hostent *host_addr;
     struct sockaddr_in s;
     struct timeval time_out;
-    mbus_tcp_handle *tcp_data;
+    mbus_tcp_data *tcp_data;
     int port;
 
     if (handle == NULL)
         return 0;
 
-    tcp_data = (mbus_tcp_handle *) handle->auxdata;
+    tcp_data = (mbus_tcp_data *) handle->auxdata;
     if (tcp_data == NULL || tcp_data->host == NULL)
         return 0;
 
@@ -92,11 +92,11 @@ mbus_tcp_connect(mbus_handle *handle)
 void
 mbus_tcp_data_free(mbus_handle *handle)
 {
-    mbus_tcp_handle *tcp_data;
+    mbus_tcp_data *tcp_data;
 
     if (handle)
     {
-        tcp_data = (mbus_tcp_handle *) handle->auxdata;
+        tcp_data = (mbus_tcp_data *) handle->auxdata;
         free(tcp_data->host);
         free(tcp_data);
     }

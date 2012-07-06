@@ -1313,7 +1313,7 @@ mbus_handle *
 mbus_context_serial(const char *device)
 {
     mbus_handle *handle;
-    mbus_serial_handle *serial_data;
+    mbus_serial_data *serial_data;
     char error_str[128];
 
     if ((handle = (mbus_handle *) malloc(sizeof(mbus_handle))) == NULL)
@@ -1322,7 +1322,7 @@ mbus_context_serial(const char *device)
         return NULL;
     }
 
-    if ((serial_data = (mbus_serial_handle *)malloc(sizeof(mbus_serial_handle))) == NULL)
+    if ((serial_data = (mbus_serial_data *)malloc(sizeof(mbus_serial_data))) == NULL)
     {
         snprintf(error_str, sizeof(error_str), "%s: failed to allocate memory for handle\n", __PRETTY_FUNCTION__);
         mbus_error_str_set(error_str);
@@ -1354,7 +1354,7 @@ mbus_handle *
 mbus_context_tcp(const char *host, int port)
 {
     mbus_handle *handle;
-    mbus_tcp_handle *tcp_data;
+    mbus_tcp_data *tcp_data;
     char error_str[128];
 
     if ((handle = (mbus_handle *) malloc(sizeof(mbus_handle))) == NULL)
@@ -1363,7 +1363,7 @@ mbus_context_tcp(const char *host, int port)
         return NULL;
     }
 
-    if ((tcp_data = (mbus_tcp_handle *)malloc(sizeof(mbus_tcp_handle))) == NULL)
+    if ((tcp_data = (mbus_tcp_data *)malloc(sizeof(mbus_tcp_data))) == NULL)
     {
         snprintf(error_str, sizeof(error_str), "%s: failed to allocate memory for handle\n", __PRETTY_FUNCTION__);
         mbus_error_str_set(error_str);

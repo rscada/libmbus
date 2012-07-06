@@ -22,11 +22,11 @@
 #include "mbus-protocol-aux.h"
 #include "mbus-protocol.h"
 
-typedef struct _mbus_serial_handle
+typedef struct _mbus_serial_data
 {
     char *device;
     struct termios t;
-} mbus_serial_handle;
+} mbus_serial_data;
 
 int                 mbus_serial_connect(mbus_handle *handle);
 int                 mbus_serial_disconnect(mbus_handle *handle);
