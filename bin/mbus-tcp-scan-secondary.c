@@ -81,7 +81,7 @@ main(int argc, char **argv)
     // init slaves
     //
     frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
-    frame->address = 0xFD;
+    frame->address = MBUS_ADDRESS_NETWORK_LAYER;
 
     if (mbus_send_frame(handle, frame) == -1)
     {
@@ -94,7 +94,7 @@ main(int argc, char **argv)
     sleep(1);
 
     frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
-    frame->address = 0xFF;
+    frame->address = MBUS_ADDRESS_BROADCAST_NOREPLY;
 
     if (mbus_send_frame(handle, frame) == -1)
     {

@@ -1437,8 +1437,14 @@ mbus_recv_frame(mbus_handle * handle, mbus_frame *frame)
         return -1;
     }
 
+    if (frame == NULL)
+    {
+        MBUS_ERROR("%s: Invalid frame.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+
     result = handle->recv(handle, frame);
-    
+
     if (frame != NULL)
     {
         /* set timestamp to receive time */
@@ -1644,6 +1650,8 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
     // reply frame, but can be more for so-called multi-telegram replies)
     //
     next_frame = reply;
+    
+    memset((void *)&reply_data, 0, sizeof(mbus_frame_data));
     
     while (more_frames)
     {
