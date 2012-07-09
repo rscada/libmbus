@@ -20,9 +20,11 @@
  * the data processing.
  * Typical use might be (in oversimplified "pseudocode"):
  * \verbatim
- * mbus_handle = mbus_connect_serial(device);
+ * mbus_handle = mbus_context_serial(device);
  *   or
- * mbus_handle = mbus_connect_tcp(host, port);
+ * mbus_handle = mbus_context_tcp(host, port);
+ *
+ * mbus_connect(mbus_handle);
  *
  *  ...
  *
@@ -45,6 +47,7 @@
  *  ...
  *
  * mbus_disconnect(mbus_handle);
+ * mbus_context_free(mbus_handle);
  * \endverbatim
  *
  * Note that the quantity values are partially "normalized". For example energy
@@ -60,28 +63,28 @@
 #ifndef __MBUS_PROTOCOL_AUX_H__
 #define __MBUS_PROTOCOL_AUX_H__
 
-#include <mbus/mbus.h>
-#include <mbus/mbus-protocol.h>
-#include <mbus/mbus-serial.h>
-#include <mbus/mbus-tcp.h>
+#include "mbus-protocol.h"
 
 #define MBUS_PROBE_NOTHING   0
 #define MBUS_PROBE_SINGLE    1
 #define MBUS_PROBE_COLLISION 2
 #define MBUS_PROBE_ERROR     -1
 
-
 /**
  * Unified MBus handle type encapsulating either Serial or TCP gateway.
  */
-typedef struct _mbus_handle {
-    char is_serial;                           /**< _handle type (non zero for serial) */
-    union {
-        mbus_tcp_handle    * m_tcp_handle;    /**< TCP gateway handle */
-        mbus_serial_handle * m_serial_handle; /**< Serial gateway handle */
-    };
-} mbus_handle;
+struct _mbus_handle {
+    int fd;
+    char is_serial; /**< _handle type (non zero for serial) */
+    int (*open) (struct _mbus_handle *handle);
+    int (*close) (struct _mbus_handle *handle);
+    int (*send) (struct _mbus_handle *handle, mbus_frame *frame);
+    int (*recv) (struct _mbus_handle *handle, mbus_frame *frame);
+    void (*free_auxdata) (struct _mbus_handle *handle);
+    void *auxdata;
+};
 
+typedef struct _mbus_handle mbus_handle;
 
 /**
  * MBus slave address type (primary/secodary address)
@@ -141,25 +144,42 @@ void mbus_register_scan_progress(void (*event)(mbus_handle * handle, const char 
 void mbus_register_found_event(void (*event)(mbus_handle * handle, mbus_frame *frame));
 
 /** 
- * Connects to serial gateway and initializes MBus handle
+ * Allocate and initialize M-Bus serial context.
  * 
  * @param device Serial device (like /dev/ttyUSB0 or /dev/ttyS0)
  * 
  * @return Initialized "unified" handler when successful, NULL otherwise;
  */
-mbus_handle * mbus_connect_serial(const char * device);
+mbus_handle * mbus_context_serial(const char *device);
 
 /** 
- * Connects to TCP gateway and initializes MBus handle
+ * Allocate and initialize M-Bus TCP context.
  * 
  * @param host Gateway host
  * @param port Gateway port
  * 
  * @return Initialized "unified" handler when successful, NULL otherwise;
  */
-mbus_handle * mbus_connect_tcp(const char *host, int port);
+mbus_handle * mbus_context_tcp(const char *host, int port);
 
 /** 
+ * Deallocate memory used by M-Bus context.
+ *
+ * @param handle Initialized handle
+ *
+ */
+void mbus_context_free(mbus_handle * handle);
+
+/**
+ * Connect to serial bus or TCP gateway depending on context.
+ *
+ * @param handle Initialized handle
+ *
+ * @return Zero when successful.
+ */
+int mbus_connect(mbus_handle * handle);
+
+/**
  * Disconnects the "unified" handle.
  * 
  * @param handle Initialized handle
@@ -179,6 +199,15 @@ int mbus_disconnect(mbus_handle * handle);
 int mbus_recv_frame(mbus_handle * handle, mbus_frame *frame);
 
 /** 
+ * Used for handling collisions. Blocks as long as receiving frames or corrupted data.
+ *
+ * @param handle Initialized handle
+ *
+ * @return Zero when nothing received, one otherwise.
+ */
+int mbus_purge_frames(mbus_handle * handle);
+
+/**
  * Sends frame using "unified" handle
  * 
  * @param handle Initialized handle

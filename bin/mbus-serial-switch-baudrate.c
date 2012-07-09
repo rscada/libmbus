@@ -52,13 +52,19 @@ main(int argc, char **argv)
         return 0;
     }
 
-    if ((handle = mbus_connect_serial(device)) == NULL)
+    if ((handle = mbus_context_serial(device)) == NULL)
     {
-        printf("Failed to setup connection to M-bus device: %s\n", mbus_error_str());
+        fprintf(stderr, "Could not initialize M-Bus context: %s\n",  mbus_error_str());
+        return 1;
+    }
+
+    if (mbus_connect(handle) == -1)
+    {
+        printf("Failed to setup connection to M-bus gateway\n");
         return 1;
     }
     
-    if (mbus_serial_set_baudrate(handle->m_serial_handle, source_baudrate) == -1)
+    if (mbus_serial_set_baudrate(handle, source_baudrate) == -1)
     {
         printf("Failed to set baud rate.\n");
         return 1;
@@ -72,7 +78,7 @@ main(int argc, char **argv)
 
     ret = mbus_recv_frame(handle, &reply);  
     
-    if (ret == -1)
+    if (ret == -3)
     {
         printf("No reply from device\n");
         return 1;
@@ -88,6 +94,7 @@ main(int argc, char **argv)
     }
     
     mbus_disconnect(handle);
+    mbus_context_free(handle);
     return 0;
 }
 

@@ -45,9 +45,15 @@ main(int argc, char **argv)
         return 1;
     }
 
-    if ((handle = mbus_connect_tcp(host, port)) == NULL)
+    if ((handle = mbus_context_tcp(host, port)) == NULL)
     {
-        printf("Failed to setup connection to M-bus gateway: %s\n", mbus_error_str());
+        fprintf(stderr, "Could not initialize M-Bus context: %s\n",  mbus_error_str());
+        return 1;
+    }
+
+    if (mbus_connect(handle) == -1)
+    {
+        fprintf(stderr, "Failed to setup connection to M-bus gateway\n");
         return 1;
     }
 
@@ -59,7 +65,7 @@ main(int argc, char **argv)
 
     ret = mbus_recv_frame(handle, &reply);
 
-    if (ret == -1)
+    if (ret == -3)
     {
         printf("No reply from device with secondary address %s: %s\n", argv[3], mbus_error_str());
         return 1;
@@ -79,7 +85,7 @@ main(int argc, char **argv)
             return 1;
         }
 
-        if (mbus_recv_frame(handle, &reply) == -1)
+        if (mbus_recv_frame(handle, &reply) != 0)
         {
             printf("Failed to recieve reply from selected secondary device: %s\n", mbus_error_str());
             return 1;
@@ -99,6 +105,7 @@ main(int argc, char **argv)
  
     free(addr);
     mbus_disconnect(handle);
+    mbus_context_free(handle);
     return 0;
 }
 

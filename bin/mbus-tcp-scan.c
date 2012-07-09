@@ -17,7 +17,6 @@
 #include <stdio.h>
 #include <mbus/mbus.h>
 
-
 //------------------------------------------------------------------------------
 // Execution starts here:
 //------------------------------------------------------------------------------
@@ -52,7 +51,13 @@ main(int argc, char **argv)
         mbus_register_recv_event(&mbus_dump_recv_event);
     }
      
-    if ((handle = mbus_connect_tcp(host, port)) == NULL)
+    if ((handle = mbus_context_tcp(host, port)) == NULL)
+    {
+        printf("Scan failed: Could not initialize M-Bus context: %s\n",  mbus_error_str());
+        return 1;
+    }
+
+    if (mbus_connect(handle) == -1)
     {
         printf("Scan failed: Could not setup connection to M-bus gateway: %s\n",  mbus_error_str());
         return 1;
@@ -81,7 +86,7 @@ main(int argc, char **argv)
         
         ret = mbus_recv_frame(handle, &reply);
 
-        if (ret == -1)
+        if (ret == -3)
         {
             continue;
         }
@@ -92,33 +97,26 @@ main(int argc, char **argv)
         if (ret == -2)
         {
             /* check for more data (collision) */
-            while (mbus_recv_frame(handle, &reply) != -1);
-            
+            mbus_purge_frames(handle);
             printf("Collision at address %d\n", address);
-            
             continue;
         } 
 
         if (mbus_frame_type(&reply) == MBUS_FRAME_TYPE_ACK)
         {
             /* check for more data (collision) */
-            while (mbus_recv_frame(handle, &reply) != -1)
-            {
-                ret = -2;
-            }
-    
-            if (ret == -2)
+            if (mbus_purge_frames(handle))
             {
                 printf("Collision at address %d\n", address);
-                
                 continue;
             }
-                
+
             printf("Found a M-Bus device at address %d\n", address);
         }
     }
 
     mbus_disconnect(handle);
+    mbus_context_free(handle);
     return 0;
 }
 

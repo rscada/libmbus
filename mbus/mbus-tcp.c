@@ -21,49 +21,43 @@
 #include <stdio.h>
 #include <string.h>
 #include <strings.h>
+#include <errno.h>
 
-#include <mbus/mbus.h>
-#include <mbus/mbus-tcp.h>
+#include "mbus-tcp.h"
 
 #define PACKET_BUFF_SIZE 2048
 
 //------------------------------------------------------------------------------
 /// Setup a TCP/IP handle.
 //------------------------------------------------------------------------------
-mbus_tcp_handle *
-mbus_tcp_connect(char *host, int port)
+int
+mbus_tcp_connect(mbus_handle *handle)
 {
-    mbus_tcp_handle *handle;
-
+    char error_str[128], *host;
     struct hostent *host_addr;
     struct sockaddr_in s;
     struct timeval time_out;
+    mbus_tcp_data *tcp_data;
+    int port;
 
-    if (host == NULL)
-    {
-        return NULL;
-    }
+    if (handle == NULL)
+        return -1;
 
-    if ((handle = (mbus_tcp_handle *)malloc(sizeof(mbus_tcp_handle))) == NULL)
-    {
-        char error_str[128];
-        snprintf(error_str, sizeof(error_str), "%s: failed to allocate memory for handle\n", __PRETTY_FUNCTION__);
-        mbus_error_str_set(error_str);
-        return NULL;
-    }
+    tcp_data = (mbus_tcp_data *) handle->auxdata;
+    if (tcp_data == NULL || tcp_data->host == NULL)
+        return -1;
 
-    handle->host = host; // strdup ?
-    handle->port = port;
+    host = tcp_data->host;
+    port = tcp_data->port;
 
     //
     // create the TCP connection
     //
-    if ((handle->sock = socket(AF_INET,SOCK_STREAM, 0)) < 0)
+    if ((handle->fd = socket(AF_INET,SOCK_STREAM, 0)) < 0)
     {
-        char error_str[128];
         snprintf(error_str, sizeof(error_str), "%s: failed to setup a socket.", __PRETTY_FUNCTION__);
         mbus_error_str_set(error_str);
-        return NULL;
+        return -1;
     }
 
     s.sin_family = AF_INET;
@@ -72,47 +66,54 @@ mbus_tcp_connect(char *host, int port)
     /* resolve hostname */
     if ((host_addr = gethostbyname(host)) == NULL)
     {
-        char error_str[128];
         snprintf(error_str, sizeof(error_str), "%s: unknown host: %s", __PRETTY_FUNCTION__, host);
         mbus_error_str_set(error_str);
-        free(handle);
-        return NULL;
+        return -1;
     }
 
     memcpy((void *)(&s.sin_addr), (void *)(host_addr->h_addr), host_addr->h_length);
 
-    if (connect(handle->sock, (struct sockaddr *)&s, sizeof(s)) < 0)
+    if (connect(handle->fd, (struct sockaddr *)&s, sizeof(s)) < 0)
     {
-        char error_str[128];
         snprintf(error_str, sizeof(error_str), "%s: Failed to establish connection to %s:%d", __PRETTY_FUNCTION__, host, port);
         mbus_error_str_set(error_str);
-        free(handle);
-        return NULL;
+        return -1;
     }
 
     // Set a timeout
     time_out.tv_sec  = 4; //seconds
     time_out.tv_usec = 0;
-    setsockopt(handle->sock, SOL_SOCKET, SO_SNDTIMEO, &time_out, sizeof(time_out));
-    setsockopt(handle->sock, SOL_SOCKET, SO_RCVTIMEO, &time_out, sizeof(time_out));
+    setsockopt(handle->fd, SOL_SOCKET, SO_SNDTIMEO, &time_out, sizeof(time_out));
+    setsockopt(handle->fd, SOL_SOCKET, SO_RCVTIMEO, &time_out, sizeof(time_out));
 
-    return handle;    
+    return 0;
+}
+
+void
+mbus_tcp_data_free(mbus_handle *handle)
+{
+    mbus_tcp_data *tcp_data;
+
+    if (handle)
+    {
+        tcp_data = (mbus_tcp_data *) handle->auxdata;
+        free(tcp_data->host);
+        free(tcp_data);
+    }
 }
 
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
 int
-mbus_tcp_disconnect(mbus_tcp_handle *handle)
+mbus_tcp_disconnect(mbus_handle *handle)
 {
     if (handle == NULL)
     {
         return -1;
     }
 
-    close(handle->sock);
-    
-    free(handle);
+    close(handle->fd);
 
     return 0;
 }
@@ -121,7 +122,7 @@ mbus_tcp_disconnect(mbus_tcp_handle *handle)
 //
 //------------------------------------------------------------------------------
 int
-mbus_tcp_send_frame(mbus_tcp_handle *handle, mbus_frame *frame)
+mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
 {
     u_char buff[PACKET_BUFF_SIZE];
     int len, ret;
@@ -139,7 +140,7 @@ mbus_tcp_send_frame(mbus_tcp_handle *handle, mbus_frame *frame)
         return -1;
     }
 
-    if ((ret = write(handle->sock, buff, len)) == len)
+    if ((ret = write(handle->fd, buff, len)) == len)
     {
         //
         // call the send event function, if the callback function is registered
@@ -161,69 +162,59 @@ mbus_tcp_send_frame(mbus_tcp_handle *handle, mbus_frame *frame)
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-int
-mbus_tcp_recv_frame(mbus_tcp_handle *handle, mbus_frame *frame)
+int mbus_tcp_recv_frame(mbus_handle *handle, mbus_frame *frame)
 {
     char buff[PACKET_BUFF_SIZE];
-    int len, remaining, nread, timeouts;
-    
-    if (handle == NULL || frame == NULL)
-    {
+    int len, remaining, nread;
+
+    if (handle == NULL || frame == NULL) {
         fprintf(stderr, "%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
         return -1;
     }
 
-    memset((void *)buff, 0, sizeof(buff));
+    memset((void *) buff, 0, sizeof(buff));
 
     //
     // read data until a packet is received
     //
     remaining = 1; // start by reading 1 byte
     len = 0;
-    timeouts = 0;
 
     do {
-    
-        if ((nread = read(handle->sock, &buff[len], remaining)) == -1)
-        {
+retry:
+        nread = read(handle->fd, &buff[len], remaining);
+        switch (nread) {
+        case -1:
+            if (errno == EINTR)
+                goto retry;
+
+            if (errno == EAGAIN || errno == EWOULDBLOCK) {
+                mbus_error_str_set("M-Bus tcp transport layer response timeout has been reached.");
+                return -3;
+            }
+
             mbus_error_str_set("M-Bus tcp transport layer failed to read data.");
             return -1;
+        case 0:
+            mbus_error_str_set("M-Bus tcp transport layer connection closed by remote host.");
+            return -4;
+        default:
+            len += nread;
         }
-        
-        if (nread == 0)
-        {
-            timeouts++;
-            
-            if (timeouts >= 3)
-            {
-                // abort to avoid endless loop
-                fprintf(stderr, "%s: Timeout\n", __PRETTY_FUNCTION__);
-                break;
-            }
-        }
-
-        len += nread;
-
     } while ((remaining = mbus_parse(frame, buff, len)) > 0);
-    
-    if (len == 0)
-    {
-        // No data received
-        return -1;
-    }
-    
+
     //
     // call the receive event function, if the callback function is registered
-    // 
+    //
     if (_mbus_recv_event)
         _mbus_recv_event(MBUS_HANDLE_TYPE_TCP, buff, len);
-      
-    if (remaining != 0)
-    {
+
+    if (remaining < 0) {
         mbus_error_str_set("M-Bus layer failed to parse data.");
         return -2;
     }
-  
+
     return 0;
 }
+
 
