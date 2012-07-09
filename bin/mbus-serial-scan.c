@@ -62,13 +62,19 @@ main(int argc, char **argv)
         mbus_register_recv_event(&mbus_dump_recv_event);
     }
     
-    if ((handle = mbus_connect_serial(device)) == NULL)
+    if ((handle = mbus_context_serial(device)) == NULL)
+    {
+        fprintf(stderr, "Could not initialize M-Bus context: %s\n",  mbus_error_str());
+        return 1;
+    }
+
+    if (mbus_connect(handle) == -1)
     {
         printf("Failed to setup connection to M-bus gateway\n");
         return 1;
     }
 
-    if (mbus_serial_set_baudrate(handle->m_serial_handle, baudrate) == -1)
+    if (mbus_serial_set_baudrate(handle, baudrate) == -1)
     {
         printf("Failed to set baud rate.\n");
         return 1;
@@ -97,7 +103,7 @@ main(int argc, char **argv)
         
         ret = mbus_recv_frame(handle, &reply);
 
-        if (ret == -1)
+        if (ret == -3)
         {
             continue;
         }
@@ -108,22 +114,15 @@ main(int argc, char **argv)
         if (ret == -2)
         {
             /* check for more data (collision) */
-            while (mbus_recv_frame(handle, &reply) != -1);
-            
+            mbus_purge_frames(handle);
             printf("Collision at address %d\n", address);
-            
             continue;
         } 
 
         if (mbus_frame_type(&reply) == MBUS_FRAME_TYPE_ACK)
         {
             /* check for more data (collision) */
-            while (mbus_recv_frame(handle, &reply) != -1)
-            {
-                ret = -2;
-            }
-    
-            if (ret == -2)
+            if (mbus_purge_frames(handle))
             {
                 printf("Collision at address %d\n", address);
                 
@@ -135,6 +134,7 @@ main(int argc, char **argv)
     }
 
     mbus_disconnect(handle);
+    mbus_context_free(handle);
     return 0;
 }
 

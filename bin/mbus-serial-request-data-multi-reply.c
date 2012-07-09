@@ -73,13 +73,19 @@ main(int argc, char **argv)
         mbus_register_recv_event(&mbus_dump_recv_event);
     }
  
-    if ((handle = mbus_connect_serial(device)) == NULL)
+    if ((handle = mbus_context_serial(device)) == NULL)
     {
-        fprintf(stderr, "Failed to setup connection to M-bus gateway\n");
+        fprintf(stderr, "Could not initialize M-Bus context: %s\n",  mbus_error_str());
         return 1;
     }
 
-    if (mbus_serial_set_baudrate(handle->m_serial_handle, baudrate) == -1)
+    if (!mbus_connect(handle))
+    {
+        printf("Failed to setup connection to M-bus gateway\n");
+        return 1;
+    }
+
+    if (mbus_serial_set_baudrate(handle, baudrate) == -1)
     {
         printf("Failed to set baud rate.\n");
         return 1;
@@ -110,7 +116,7 @@ main(int argc, char **argv)
         return 1;
     }
     
-    while (mbus_recv_frame(handle, &reply) != -1);
+    mbus_purge_frames(handle);
     
     //
     // resend SND_NKE, maybe the first get lost
@@ -129,7 +135,7 @@ main(int argc, char **argv)
         return 1;
     }
 
-    while (mbus_recv_frame(handle, &reply) != -1);
+    mbus_purge_frames(handle);
 
     if (strlen(addr_str) == 16)
     {
@@ -193,6 +199,7 @@ main(int argc, char **argv)
     free(xml_result);
 
     mbus_disconnect(handle);
+    mbus_context_free(handle);
     return 0;
 }
 

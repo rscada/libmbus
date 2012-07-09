@@ -62,7 +62,13 @@ main(int argc, char **argv)
         mbus_register_recv_event(&mbus_dump_recv_event);
     }
     
-    if ((handle = mbus_connect_tcp(host, port)) == NULL)
+    if ((handle = mbus_context_tcp(host, port)) == NULL)
+    {
+        fprintf(stderr, "Could not initialize M-Bus context: %s\n",  mbus_error_str());
+        return 1;
+    }
+
+    if (mbus_connect(handle) == -1)
     {
         fprintf(stderr, "Failed to setup connection to M-bus gateway\n");
         return 1;
@@ -157,6 +163,7 @@ main(int argc, char **argv)
     free(xml_result);
 
     mbus_disconnect(handle);
+    mbus_context_free(handle);
     return 0;
 }
 
