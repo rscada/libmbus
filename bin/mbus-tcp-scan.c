@@ -57,7 +57,7 @@ main(int argc, char **argv)
         return 1;
     }
 
-    if (!mbus_connect(handle))
+    if (mbus_connect(handle) == -1)
     {
         printf("Scan failed: Could not setup connection to M-bus gateway: %s\n",  mbus_error_str());
         return 1;

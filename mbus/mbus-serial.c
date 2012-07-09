@@ -37,11 +37,11 @@ mbus_serial_connect(mbus_handle *handle)
     struct termios *term;
 
     if (handle == NULL)
-        return 0;
+        return -1;
 
     serial_data = (mbus_serial_data *) handle->auxdata;
     if (serial_data == NULL || serial_data->device == NULL)
-        return 0;
+        return -1;
 
     device = serial_data->device;
     term = &(serial_data->t);
@@ -53,7 +53,7 @@ mbus_serial_connect(mbus_handle *handle)
     if ((handle->fd = open(device, O_RDWR | O_NOCTTY)) < 0)
     {
         fprintf(stderr, "%s: failed to open tty.", __PRETTY_FUNCTION__);
-        return 0;
+        return -1;
     }
 
     memset(term, 0, sizeof(*term));
@@ -88,7 +88,7 @@ mbus_serial_connect(mbus_handle *handle)
 
     tcsetattr(handle->fd, TCSANOW, term);
 
-    return 1;
+    return 0;
 }
 
 //------------------------------------------------------------------------------

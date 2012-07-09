@@ -1408,7 +1408,7 @@ mbus_connect(mbus_handle * handle)
     if (handle == NULL)
     {
         MBUS_ERROR("%s: Invalid M-Bus handle for disconnect.\n", __PRETTY_FUNCTION__);
-        return 0;
+        return -1;
     }
 
     return handle->open(handle);
@@ -1420,7 +1420,7 @@ mbus_disconnect(mbus_handle * handle)
     if (handle == NULL)
     {
         MBUS_ERROR("%s: Invalid M-Bus handle for disconnect.\n", __PRETTY_FUNCTION__);
-        return 0;
+        return -1;
     }
 
     return handle->close(handle);

@@ -41,11 +41,11 @@ mbus_tcp_connect(mbus_handle *handle)
     int port;
 
     if (handle == NULL)
-        return 0;
+        return -1;
 
     tcp_data = (mbus_tcp_data *) handle->auxdata;
     if (tcp_data == NULL || tcp_data->host == NULL)
-        return 0;
+        return -1;
 
     host = tcp_data->host;
     port = tcp_data->port;
@@ -57,7 +57,7 @@ mbus_tcp_connect(mbus_handle *handle)
     {
         snprintf(error_str, sizeof(error_str), "%s: failed to setup a socket.", __PRETTY_FUNCTION__);
         mbus_error_str_set(error_str);
-        return 0;
+        return -1;
     }
 
     s.sin_family = AF_INET;
@@ -68,7 +68,7 @@ mbus_tcp_connect(mbus_handle *handle)
     {
         snprintf(error_str, sizeof(error_str), "%s: unknown host: %s", __PRETTY_FUNCTION__, host);
         mbus_error_str_set(error_str);
-        return 0;
+        return -1;
     }
 
     memcpy((void *)(&s.sin_addr), (void *)(host_addr->h_addr), host_addr->h_length);
@@ -77,7 +77,7 @@ mbus_tcp_connect(mbus_handle *handle)
     {
         snprintf(error_str, sizeof(error_str), "%s: Failed to establish connection to %s:%d", __PRETTY_FUNCTION__, host, port);
         mbus_error_str_set(error_str);
-        return 0;
+        return -1;
     }
 
     // Set a timeout
@@ -86,7 +86,7 @@ mbus_tcp_connect(mbus_handle *handle)
     setsockopt(handle->fd, SOL_SOCKET, SO_SNDTIMEO, &time_out, sizeof(time_out));
     setsockopt(handle->fd, SOL_SOCKET, SO_RCVTIMEO, &time_out, sizeof(time_out));
 
-    return 1;
+    return 0;
 }
 
 void
