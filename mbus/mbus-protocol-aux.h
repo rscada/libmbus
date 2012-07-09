@@ -205,7 +205,7 @@ int mbus_recv_frame(mbus_handle * handle, mbus_frame *frame);
  *
  * @return Zero when nothing received, one otherwise.
  */
-int mbus_recv_frame_dummy(mbus_handle * handle);
+int mbus_purge_frames(mbus_handle * handle);
 
 /**
  * Sends frame using "unified" handle

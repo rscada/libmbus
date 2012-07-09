@@ -1454,7 +1454,7 @@ mbus_recv_frame(mbus_handle * handle, mbus_frame *frame)
     return result;
 }
 
-int mbus_recv_frame_dummy(mbus_handle *handle)
+int mbus_purge_frames(mbus_handle *handle)
 {
     int err, received;
     mbus_frame reply;
@@ -1810,14 +1810,14 @@ mbus_select_secondary_address(mbus_handle * handle, const char *mask)
     if (ret == -2)
     {
         /* check for more data (collision) */
-        mbus_recv_frame_dummy(handle);
+        mbus_purge_frames(handle);
         return MBUS_PROBE_COLLISION;
     }
 
     if (mbus_frame_type(&reply) == MBUS_FRAME_TYPE_ACK)
     {
         /* check for more data (collision) */
-        if (mbus_recv_frame_dummy(handle))
+        if (mbus_purge_frames(handle))
         {
             return MBUS_PROBE_COLLISION;
         }

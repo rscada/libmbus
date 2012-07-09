@@ -116,7 +116,7 @@ main(int argc, char **argv)
         return 1;
     }
     
-    mbus_recv_frame_dummy(handle);
+    mbus_purge_frames(handle);
     
     //
     // resend SND_NKE, maybe the first get lost
@@ -135,7 +135,7 @@ main(int argc, char **argv)
         return 1;
     }
 
-    mbus_recv_frame_dummy(handle);
+    mbus_purge_frames(handle);
 
     if (strlen(addr_str) == 16)
     {
