@@ -1,4 +1,4 @@
-Copyright (C) 2010-2012, Raditex AB
+Copyright (C) 2010-2012, Raditex AB and contributors
 All rights reserved.
 
 rSCADA 
@@ -11,13 +11,11 @@ Main developer and maintainer:
 
  * Robert Johansson <rob@raditex.nu>
 
-Major contributers:
+Contributers:
 
  * Stefan Wahren
  * Tomas Menzl
-
-Other contributers:
-
+ * Milosz Jakubowski
  * Henry N.
  * Pelle van der Heide
  * James Michael DuPont
