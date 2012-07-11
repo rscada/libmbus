@@ -1434,13 +1434,13 @@ mbus_recv_frame(mbus_handle * handle, mbus_frame *frame)
     if (handle == NULL)
     {
         MBUS_ERROR("%s: Invalid M-Bus handle for receive.\n", __PRETTY_FUNCTION__);
-        return -1;
+        return MBUS_RECV_RESULT_ERROR;
     }
 
     if (frame == NULL)
     {
         MBUS_ERROR("%s: Invalid frame.\n", __PRETTY_FUNCTION__);
-        return -1;
+        return MBUS_RECV_RESULT_ERROR;
     }
 
     result = handle->recv(handle, frame);
@@ -1463,7 +1463,8 @@ int mbus_purge_frames(mbus_handle *handle)
     while (1)
     {
         err = mbus_recv_frame(handle, &reply);
-        if (err != -2 && err != 0)
+        if (err != MBUS_RECV_RESULT_OK && 
+            err != MBUS_RECV_RESULT_INVALID)
             break;
 
         received = 1;
@@ -1660,7 +1661,7 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
         if (debug)
             printf("%s: debug: receiving response frame #%d\n", __PRETTY_FUNCTION__, frame_count);
     
-        if (mbus_recv_frame(handle, next_frame) != 0)
+        if (mbus_recv_frame(handle, next_frame) != MBUS_RECV_RESULT_OK)
         {
             MBUS_ERROR("%s: Failed to receive M-Bus response frame.\n", __PRETTY_FUNCTION__);
             retval = 1;
@@ -1802,12 +1803,12 @@ mbus_select_secondary_address(mbus_handle * handle, const char *mask)
 
     ret = mbus_recv_frame(handle, &reply);
 
-    if (ret == -3)
+    if (ret == MBUS_RECV_RESULT_TIMEOUT)
     {
         return MBUS_PROBE_NOTHING;
     }    
 
-    if (ret == -2)
+    if (ret == MBUS_RECV_RESULT_INVALID)
     {
         /* check for more data (collision) */
         mbus_purge_frames(handle);
@@ -1862,12 +1863,12 @@ mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *match
 
         ret = mbus_recv_frame(handle, &reply);
 
-        if (ret == -3)
+        if (ret == MBUS_RECV_RESULT_TIMEOUT)
         {
             return MBUS_PROBE_NOTHING;
         }
 
-        if (ret == -2)
+        if (ret == MBUS_RECV_RESULT_INVALID)
         {
             return MBUS_PROBE_COLLISION;
         }
