@@ -106,6 +106,15 @@ typedef struct _mbus_slave_data {
 #define MBUS_HANDLE_TYPE_TCP    0
 #define MBUS_HANDLE_TYPE_SERIAL 1
 
+//
+// Resultcodes for mbus_recv_frame
+//
+#define MBUS_RECV_RESULT_OK        0
+#define MBUS_RECV_RESULT_ERROR     -1
+#define MBUS_RECV_RESULT_INVALID   -2
+#define MBUS_RECV_RESULT_TIMEOUT   -3
+#define MBUS_RECV_RESULT_RESET     -4
+
 //------------------------------------------------------------------------------
 // MBUS FRAME DATA FORMATS
 //
