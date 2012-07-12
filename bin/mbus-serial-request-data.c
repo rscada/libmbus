@@ -132,7 +132,7 @@ main(int argc, char **argv)
         }
     }   
 
-    if (mbus_recv_frame(handle, &reply) != 0)
+    if (mbus_recv_frame(handle, &reply) != MBUS_RECV_RESULT_OK)
     {
         fprintf(stderr, "Failed to receive M-Bus response frame.\n");
         return 1;

@@ -169,7 +169,7 @@ int mbus_tcp_recv_frame(mbus_handle *handle, mbus_frame *frame)
 
     if (handle == NULL || frame == NULL) {
         fprintf(stderr, "%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
-        return -1;
+        return MBUS_RECV_RESULT_ERROR;
     }
 
     memset((void *) buff, 0, sizeof(buff));
@@ -190,14 +190,14 @@ retry:
 
             if (errno == EAGAIN || errno == EWOULDBLOCK) {
                 mbus_error_str_set("M-Bus tcp transport layer response timeout has been reached.");
-                return -3;
+                return MBUS_RECV_RESULT_TIMEOUT;
             }
 
             mbus_error_str_set("M-Bus tcp transport layer failed to read data.");
-            return -1;
+            return MBUS_RECV_RESULT_ERROR;
         case 0:
             mbus_error_str_set("M-Bus tcp transport layer connection closed by remote host.");
-            return -4;
+            return MBUS_RECV_RESULT_RESET;
         default:
             len += nread;
         }
@@ -211,10 +211,10 @@ retry:
 
     if (remaining < 0) {
         mbus_error_str_set("M-Bus layer failed to parse data.");
-        return -2;
+        return MBUS_RECV_RESULT_INVALID;
     }
 
-    return 0;
+    return MBUS_RECV_RESULT_OK;
 }
 
 

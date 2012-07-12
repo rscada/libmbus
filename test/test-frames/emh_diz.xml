@@ -1,0 +1,31 @@
+<MBusData>
+
+    <SlaveInformation>
+        <Id>623702</Id>
+        <Manufacturer>EMH</Manufacturer>
+        <Version>0</Version>
+        <Medium>Electricity</Medium>
+        <AccessNumber>7</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <Unit>Energy (10 Wh)</Unit>
+        <Value>409</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <Unit>Power (1e-1 W)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <Unit>Error flags</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+</MBusData>

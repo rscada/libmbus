@@ -86,7 +86,7 @@ main(int argc, char **argv)
         
         ret = mbus_recv_frame(handle, &reply);
 
-        if (ret == -3)
+        if (ret == MBUS_RECV_RESULT_TIMEOUT)
         {
             continue;
         }
@@ -94,7 +94,7 @@ main(int argc, char **argv)
         if (debug)
             printf("\n");
         
-        if (ret == -2)
+        if (ret == MBUS_RECV_RESULT_INVALID)
         {
             /* check for more data (collision) */
             mbus_purge_frames(handle);
