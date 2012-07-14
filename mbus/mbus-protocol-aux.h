@@ -75,6 +75,7 @@
  */
 struct _mbus_handle {
     int fd;
+    int max_retry;
     char is_serial; /**< _handle type (non zero for serial) */
     int (*open) (struct _mbus_handle *handle);
     int (*close) (struct _mbus_handle *handle);
