@@ -10,9 +10,13 @@ else
 	#
 	# regenerate automake files
 	#
-	automake --add-missing
-	autoreconf --install
-	./configure
+
+    autoheader \
+        && aclocal \
+        && libtoolize --ltdl --copy --force \
+        && automake --add-missing --copy \
+        && autoconf \
+        && ./configure
 fi
 
 make

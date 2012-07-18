@@ -3,21 +3,21 @@ Makefile.in
 bin/Makefile.in
 mbus/Makefile.in
 test/Makefile.in
-autom4te.cache
 
 /INSTALL
 /aclocal.m4
 /autom4te.cache
 /compile
-/config.guess
-/config.sub
-/configure
+config.guess
+config.sub
+configure
 /depcomp
 /install-sh
 /libltdl/
 /ltmain.sh
 /missing
 src/config.h.in
+/m4
 
 # configure stuff:
 Makefile
