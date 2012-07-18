@@ -10,6 +10,7 @@ else
 	#
 	# regenerate automake files
 	#
+    echo "Running autotools..."
 
     autoheader \
         && aclocal \
