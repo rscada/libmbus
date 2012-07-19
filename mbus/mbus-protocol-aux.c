@@ -1672,6 +1672,7 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
 
         if (result == MBUS_RECV_RESULT_OK)
         {
+            retry = 0;
             mbus_purge_frames(handle);
         }
         else if (result == MBUS_RECV_RESULT_TIMEOUT)
