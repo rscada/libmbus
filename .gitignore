@@ -1,3 +1,43 @@
+# autoconf, etc.
+Makefile.in
+bin/Makefile.in
+mbus/Makefile.in
+test/Makefile.in
+
+/INSTALL
+/aclocal.m4
+/autom4te.cache
+/compile
+config.guess
+config.sub
+config.h.in
+configure
+/depcomp
+/install-sh
+/libltdl/
+/ltmain.sh
+/missing
+src/config.h.in
+/m4
+
+# configure stuff:
+Makefile
+bin/Makefile
+mbus/Makefile
+test/Makefile
+config.log
+config.status
+libtool
+stamp-h1
+libmbus.pc
+config.h
+
+# make:
+bin/.deps
+mbus/.deps
+test/.deps
+
+# make stuff:
 .project
 *~
 *.o
@@ -5,3 +45,15 @@
 *.la
 *.lo
 .libs/
+bin/libmbus.1
+bin/mbus-serial-request-data
+bin/mbus-serial-request-data-multi-reply
+bin/mbus-serial-scan
+bin/mbus-serial-scan-secondary
+bin/mbus-serial-select-secondary
+bin/mbus-serial-switch-baudrate
+bin/mbus-tcp-request-data
+bin/mbus-tcp-request-data-multi-reply
+bin/mbus-tcp-scan
+bin/mbus-tcp-scan-secondary
+bin/mbus-tcp-select-secondary
