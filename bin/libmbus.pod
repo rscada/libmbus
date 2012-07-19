@@ -62,6 +62,11 @@ There are following options/parameters:
 
 For serial communication, use given I<BAUDRATE> (integer in Bd). If not used then
 default baudrate of 9600 will be used.
+libmbus supports following baud rates: 300, 600, 1200, 2400, 4800, 9600, 19200,
+38400.
+Note that your MBus gateway and/or MBus device will most likely support only
+a subset of these. The most commonlu used/supported rates are probably 9600, 2400
+and 300.
 
 =item B<-d>
 
@@ -92,8 +97,13 @@ character.
 
 =item B<mbus-address>
 
-MBus device address. Could be a primary address (an integer between 1 and 250) or 
-a secondary address (sixteen digit hexadecimal number).
+MBus device address. Could be a primary address or a secondary address (sixteen
+digit hexadecimal number).
+
+The primary address should be an integer between 1 and 250 for addressing
+individual devices. However the program does allow using any one byte number (i.e.
+0 to 255) so that you can also use addresses reserved for physical or data link
+layers management, secondary addressing, broadcasts, etc.
 
 =item B<secondary-mbus-address>
 
@@ -115,6 +125,10 @@ Scan for MBus devices on the serial port:
 Try to switch baud rate of a device on address 59 from 2400Bd to 9600Bd:
 
   mbus-serial-switch-baudrate -b 2400 /dev/ttyUSB0 59 9600
+
+Readout a MBus device on address 59 at 2400Bd:
+
+  mbus-serial-request-data-multi-reply -b 2400 /dev/ttyS0 59
 
 =head1 SEE ALSO
 
