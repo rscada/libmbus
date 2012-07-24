@@ -601,7 +601,7 @@ mbus_data_float_decode(u_char *float_data)
         }
   
         // calculate float value
-        val = (float) sign * fraction * pow(2.0f, -23.0f) * (1 << exponent);
+        val = (float) sign * fraction * pow(2.0f, -23.0f + exponent);
 
         return val;    
     }
