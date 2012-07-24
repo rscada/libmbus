@@ -3175,7 +3175,7 @@ mbus_hex_dump(const char *label, const char *buff, size_t len)
     timeinfo = gmtime ( &rawtime );
     
     strftime(timestamp,20,"%Y-%m-%d %H:%M:%S",timeinfo);
-    fprintf(stderr, "[%s] %s (%03d):", timestamp, label, len);
+    fprintf(stderr, "[%s] %s (%03zu):", timestamp, label, len);
     
     for (i = 0; i < len; i++)
     {
