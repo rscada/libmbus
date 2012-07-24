@@ -111,6 +111,11 @@ mbus_serial_set_baudrate(mbus_handle *handle, int baudrate)
             serial_data->t.c_cc[VTIME] = 12; // Timeout in 1/10 sec
             break;
 
+        case 600:
+            speed = B600;
+            serial_data->t.c_cc[VTIME] = 6;  // Timeout in 1/10 sec
+            break;
+
         case 1200:
             speed = B1200;
             serial_data->t.c_cc[VTIME] = 4;  // Timeout in 1/10 sec
@@ -121,8 +126,23 @@ mbus_serial_set_baudrate(mbus_handle *handle, int baudrate)
             serial_data->t.c_cc[VTIME] = 2;  // Timeout in 1/10 sec
             break;
 
+        case 4800:
+            speed = B4800;
+            serial_data->t.c_cc[VTIME] = 2;  // Timeout in 1/10 sec
+            break;
+
         case 9600:
             speed = B9600;
+            serial_data->t.c_cc[VTIME] = 1;  // Timeout in 1/10 sec
+            break;
+
+        case 19200:
+            speed = B19200;
+            serial_data->t.c_cc[VTIME] = 1;  // Timeout in 1/10 sec
+            break;
+
+        case 38400:
+            speed = B38400;
             serial_data->t.c_cc[VTIME] = 1;  // Timeout in 1/10 sec
             break;
 
@@ -245,7 +265,7 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
     if (handle == NULL || frame == NULL)
     {
         fprintf(stderr, "%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
-        return -1;
+        return MBUS_RECV_RESULT_ERROR;
     }
 
     memset((void *)buff, 0, sizeof(buff));
@@ -264,7 +284,7 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
         {
        //     fprintf(stderr, "%s: aborting recv frame (remaining = %d, len = %d, nread = %d)\n",
          //          __PRETTY_FUNCTION__, remaining, len, nread);
-            return -1;
+            return MBUS_RECV_RESULT_ERROR;
         }
 
 //   printf("%s: Got %d byte [remaining %d, len %d]\n", __PRETTY_FUNCTION__, nread, remaining, len);
@@ -288,7 +308,7 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
     if (len == 0)
     {
         // No data received
-        return -1;
+        return MBUS_RECV_RESULT_TIMEOUT;
     }
     
     //
@@ -301,16 +321,16 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
     {
         // Would be OK when e.g. scanning the bus, otherwise it is a failure.
         // printf("%s: M-Bus layer failed to receive complete data.\n", __PRETTY_FUNCTION__);
-        return -2;
+        return MBUS_RECV_RESULT_INVALID;
     }
 
     if (len == -1)
     {
         fprintf(stderr, "%s: M-Bus layer failed to parse data.\n", __PRETTY_FUNCTION__);
-        return -1;
+        return MBUS_RECV_RESULT_ERROR;
     }
   
-    return 0;
+    return MBUS_RECV_RESULT_OK;
 }
 
 

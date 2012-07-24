@@ -65,13 +65,13 @@ main(int argc, char **argv)
 
     ret = mbus_recv_frame(handle, &reply);
 
-    if (ret == -3)
+    if (ret == MBUS_RECV_RESULT_TIMEOUT)
     {
         printf("No reply from device with secondary address %s: %s\n", argv[3], mbus_error_str());
         return 1;
     }    
 
-    if (ret == -2)
+    if (ret == MBUS_RECV_RESULT_INVALID)
     {
         printf("Invalid reply from %s: The address address probably match more than one device: %s\n", argv[3], mbus_error_str());
         return 1;
@@ -85,7 +85,7 @@ main(int argc, char **argv)
             return 1;
         }
 
-        if (mbus_recv_frame(handle, &reply) != 0)
+        if (mbus_recv_frame(handle, &reply) != MBUS_RECV_RESULT_OK)
         {
             printf("Failed to recieve reply from selected secondary device: %s\n", mbus_error_str());
             return 1;

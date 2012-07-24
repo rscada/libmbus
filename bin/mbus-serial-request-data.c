@@ -31,6 +31,9 @@ main(int argc, char **argv)
 
     char *device, *addr_str, *xml_result;
     int address, baudrate = 9600;
+    
+    memset((void *)&reply, 0, sizeof(mbus_frame));
+    memset((void *)&reply_data, 0, sizeof(mbus_frame_data));
 
     if (argc == 3)
     {
@@ -132,7 +135,7 @@ main(int argc, char **argv)
         }
     }   
 
-    if (mbus_recv_frame(handle, &reply) != 0)
+    if (mbus_recv_frame(handle, &reply) != MBUS_RECV_RESULT_OK)
     {
         fprintf(stderr, "Failed to receive M-Bus response frame.\n");
         return 1;

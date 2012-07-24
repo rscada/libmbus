@@ -78,7 +78,7 @@ main(int argc, char **argv)
 
     ret = mbus_recv_frame(handle, &reply);  
     
-    if (ret == -3)
+    if (ret == MBUS_RECV_RESULT_TIMEOUT)
     {
         printf("No reply from device\n");
         return 1;

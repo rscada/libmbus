@@ -65,3 +65,24 @@ mbus_serial_switch_baudrate_LDFLAGS = -L$(top_builddir)/mbus
 mbus_serial_switch_baudrate_LDADD   = -lmbus -lm
 mbus_serial_switch_baudrate_SOURCES = mbus-serial-switch-baudrate.c
 
+# man pages
+dist_man_MANS = libmbus.1 \
+                mbus-tcp-scan.1 \
+                mbus-tcp-request-data.1 \
+                mbus-tcp-request-data-multi-reply.1 \
+                mbus-tcp-select-secondary.1 \
+                mbus-tcp-scan-secondary.1 \
+                mbus-serial-scan.1 \
+                mbus-serial-request-data.1 \
+                mbus-serial-request-data-multi-reply.1 \
+                mbus-serial-select-secondary.1 \
+                mbus-serial-scan-secondary.1 \
+                mbus-serial-switch-baudrate.1
+
+.pod.1:
+	pod2man --release=$(VERSION) --center=$(PACKAGE) $< \
+		>.pod2man.tmp.$$$$ 2>/dev/null && mv -f .pod2man.tmp.$$$$ $@ || true
+	@if grep '\<POD ERRORS\>' $@ >/dev/null 2>&1; \
+	then \
+		echo "$@ has some POD errors!"; false; \
+	fi

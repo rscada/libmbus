@@ -1330,6 +1330,7 @@ mbus_context_serial(const char *device)
         return NULL;
     }
 
+    handle->max_retry = 3;
     handle->is_serial = 1;
     handle->auxdata = serial_data;
     handle->open = mbus_serial_connect;
@@ -1371,6 +1372,7 @@ mbus_context_tcp(const char *host, int port)
         return NULL;
     }
 
+    handle->max_retry = 3;
     handle->is_serial = 0;
     handle->auxdata = tcp_data;
     handle->open = mbus_tcp_connect;
@@ -1434,13 +1436,13 @@ mbus_recv_frame(mbus_handle * handle, mbus_frame *frame)
     if (handle == NULL)
     {
         MBUS_ERROR("%s: Invalid M-Bus handle for receive.\n", __PRETTY_FUNCTION__);
-        return -1;
+        return MBUS_RECV_RESULT_ERROR;
     }
 
     if (frame == NULL)
     {
         MBUS_ERROR("%s: Invalid frame.\n", __PRETTY_FUNCTION__);
-        return -1;
+        return MBUS_RECV_RESULT_ERROR;
     }
 
     result = handle->recv(handle, frame);
@@ -1463,7 +1465,8 @@ int mbus_purge_frames(mbus_handle *handle)
     while (1)
     {
         err = mbus_recv_frame(handle, &reply);
-        if (err != -2 && err != 0)
+        if (err != MBUS_RECV_RESULT_OK && 
+            err != MBUS_RECV_RESULT_INVALID)
             break;
 
         received = 1;
@@ -1615,10 +1618,10 @@ mbus_send_request_frame(mbus_handle * handle, int address)
 int
 mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int max_frames)
 {
-    int retval = 0, more_frames = 1;
+    int retval = 0, more_frames = 1, retry = 0;
     mbus_frame_data reply_data;
     mbus_frame *frame, *next_frame;
-    int frame_count = 0;
+    int frame_count = 0, result;
 
     frame = mbus_frame_new(MBUS_FRAME_TYPE_SHORT);
     
@@ -1634,16 +1637,6 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
                      MBUS_CONTROL_MASK_FCB;
                      
     frame->address = address; 
-   
-    if (debug)
-        printf("%s: debug: sending request frame\n", __PRETTY_FUNCTION__);
-        
-    if (mbus_send_frame(handle, frame) == -1)
-    {
-        MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
-        mbus_frame_free(frame);
-        return -1;
-    }
     
     //
     // continue to read until no more records are available (usually only one
@@ -1655,18 +1648,55 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
     
     while (more_frames)
     {
-        frame_count++;
-               
+        if (retry > handle->max_retry)
+        {
+            // Give up
+            retval = 1;
+            break;
+        }
+    
+        if (debug)
+            printf("%s: debug: sending request frame\n", __PRETTY_FUNCTION__);
+        
+        if (mbus_send_frame(handle, frame) == -1)
+        {
+            MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
+            retval = -1;
+            break;
+        }
+           
         if (debug)
             printf("%s: debug: receiving response frame #%d\n", __PRETTY_FUNCTION__, frame_count);
-    
-        if (mbus_recv_frame(handle, next_frame) != 0)
+            
+        result = mbus_recv_frame(handle, next_frame);
+
+        if (result == MBUS_RECV_RESULT_OK)
+        {
+            retry = 0;
+            mbus_purge_frames(handle);
+        }
+        else if (result == MBUS_RECV_RESULT_TIMEOUT)
+        {
+            MBUS_ERROR("%s: No M-Bus response frame received.\n", __PRETTY_FUNCTION__);
+            retry++;
+            continue;
+        }
+        else if (result == MBUS_RECV_RESULT_INVALID)
+        {
+            MBUS_ERROR("%s: Received invalid M-Bus response frame.\n", __PRETTY_FUNCTION__);
+            retry++;
+            mbus_purge_frames(handle);
+            continue;
+        }
+        else
         {
             MBUS_ERROR("%s: Failed to receive M-Bus response frame.\n", __PRETTY_FUNCTION__);
             retval = 1;
             break;
         }
         
+        frame_count++;
+    
         //
         // We need to parse the data in the received frame to be able to tell
         // if more records are available or not.
@@ -1712,20 +1742,9 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
                 }
                 
                 next_frame = next_frame->next;
-                        
-                // need to send a new request and receive another reply
-                             
-                if (debug)
-                    printf("%s: debug: resending request frame\n", __PRETTY_FUNCTION__);                
-
-                // toogle FCB bit before
+                
+                // toogle FCB bit
                 frame->control ^= MBUS_CONTROL_MASK_FCB;
-                if (mbus_send_frame(handle, frame) == -1)
-                {
-                    MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
-                    retval = -1;
-                    more_frames = 0;
-                }
             }
             else
             {
@@ -1802,12 +1821,12 @@ mbus_select_secondary_address(mbus_handle * handle, const char *mask)
 
     ret = mbus_recv_frame(handle, &reply);
 
-    if (ret == -3)
+    if (ret == MBUS_RECV_RESULT_TIMEOUT)
     {
         return MBUS_PROBE_NOTHING;
     }    
 
-    if (ret == -2)
+    if (ret == MBUS_RECV_RESULT_INVALID)
     {
         /* check for more data (collision) */
         mbus_purge_frames(handle);
@@ -1862,12 +1881,12 @@ mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *match
 
         ret = mbus_recv_frame(handle, &reply);
 
-        if (ret == -3)
+        if (ret == MBUS_RECV_RESULT_TIMEOUT)
         {
             return MBUS_PROBE_NOTHING;
         }
 
-        if (ret == -2)
+        if (ret == MBUS_RECV_RESULT_INVALID)
         {
             return MBUS_PROBE_COLLISION;
         }

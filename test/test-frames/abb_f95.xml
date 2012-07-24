@@ -1,0 +1,97 @@
+<MBusData>
+
+    <SlaveInformation>
+        <Id>26718590</Id>
+        <Manufacturer>HYD</Manufacturer>
+        <Version>40</Version>
+        <Medium>Heat: Outlet</Medium>
+        <AccessNumber>115</AccessNumber>
+        <Status>50</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <Unit>Energy (100 Wh)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <Unit>Volume (1e-4  m^3)</Unit>
+        <Value>742</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Value during error state</Function>
+        <Unit>Power (1e-1 W)</Unit>
+        <Value>144521543</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Value during error state</Function>
+        <Unit>Volume flow (1e-4  m^3/h)</Unit>
+        <Value>1521543</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <Unit>Flow temperature (1e-1 deg C)</Unit>
+        <Value>204</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Instantaneous value</Function>
+        <Unit>Return temperature (1e-1 deg C)</Unit>
+        <Value>204</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Instantaneous value</Function>
+        <Unit>Temperature Difference (1e-1  deg C)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Instantaneous value</Function>
+        <Unit>Time Point (time &amp; date)</Unit>
+        <Value>2012-01-13T16:34:00</Value>
+    </DataRecord>
+
+    <DataRecord id="8">
+        <Function>Instantaneous value</Function>
+        <Unit>Energy (100 Wh)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="9">
+        <Function>Instantaneous value</Function>
+        <Unit>Time Point (time &amp; date)</Unit>
+        <Value>2011-04-30T23:59:00</Value>
+    </DataRecord>
+
+    <DataRecord id="10">
+        <Function>Instantaneous value</Function>
+        <Unit>Time Point (time &amp; date)</Unit>
+        <Value>2012-04-30T23:59:00</Value>
+    </DataRecord>
+
+    <DataRecord id="11">
+        <Function>Instantaneous value</Function>
+        <Unit>Energy (100 Wh)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="12">
+        <Function>Instantaneous value</Function>
+        <Unit>Time Point (time &amp; date)</Unit>
+        <Value>2011-12-31T23:59:00</Value>
+    </DataRecord>
+
+    <DataRecord id="13">
+        <Function>Instantaneous value</Function>
+        <Unit>Operating time (hours)</Unit>
+        <Value>86553</Value>
+    </DataRecord>
+
+</MBusData>

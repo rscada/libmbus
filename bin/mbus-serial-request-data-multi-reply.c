@@ -79,7 +79,7 @@ main(int argc, char **argv)
         return 1;
     }
 
-    if (!mbus_connect(handle))
+    if (mbus_connect(handle) == -1)
     {
         printf("Failed to setup connection to M-bus gateway\n");
         return 1;

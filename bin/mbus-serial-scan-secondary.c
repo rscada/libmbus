@@ -50,8 +50,8 @@ main(int argc, char **argv)
     }
     else if (argc == 4 && strcmp(argv[1], "-d") == 0)
     {
-        device = argv[1];   
-        addr_mask = strdup(argv[2]);
+        device = argv[2];   
+        addr_mask = strdup(argv[3]);
         debug = 1;
     }
     else if (argc == 4 && strcmp(argv[1], "-b") == 0)
@@ -108,7 +108,7 @@ main(int argc, char **argv)
         return 1;
     }
 
-    if (!mbus_connect(handle))
+    if (mbus_connect(handle) == -1)
     {
         printf("Failed to setup connection to M-bus gateway\n");
         return 1;
