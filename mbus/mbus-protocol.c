@@ -3706,6 +3706,8 @@ mbus_data_record_new()
         return NULL;
     }
 
+    memset(record, 0, sizeof(mbus_data_record));
+
     record->next = NULL;
     return record;    
 }
