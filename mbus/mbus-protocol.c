@@ -649,41 +649,10 @@ mbus_data_int_encode(unsigned char *int_data, size_t int_data_size, int value)
 float
 mbus_data_float_decode(unsigned char *float_data)
 {
-    float val = 0.0f;
-    long temp = 0, fraction;
-    int sign,exponent;
-    size_t i;
-
     if (float_data)
-    {
-        for (i = 4; i > 0; i--)
-        {
-            temp = (temp << 8) + float_data[i-1];
-        }
+        return *(float *) float_data;
 
-        // first bit = sign bit
-        sign     = (temp >> 31) ? -1 : 1;
-
-        // decode 8 bit exponent
-        exponent = ((temp & 0x7F800000) >> 23) - 127;
-
-        // decode explicit 23 bit fraction
-        fraction = temp & 0x007FFFFF;
-
-        if ((exponent != -127) &&
-            (exponent != 128))
-        {
-            // normalized value, add bit 24
-            fraction |= 0x800000;
-        }
-
-        // calculate float value
-        val = (float) sign * fraction * pow(2.0f, -23.0f + exponent);
-
-        return val;
-    }
-
-    return -1.0;
+    return -1.0f;
 }
 
 //------------------------------------------------------------------------------
