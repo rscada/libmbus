@@ -16,14 +16,14 @@ noinst_HEADERS			=
 noinst_PROGRAMS			= mbus_unit_test1 mbus_parse mbus_parse_hex
 
 mbus_unit_test1_LDFLAGS	= -L$(top_builddir)/mbus
-mbus_unit_test1_LDADD	= -lmbus -lcunit -lncurses
+mbus_unit_test1_LDADD	= -lmbus -lcunit -lncurses -lm
 mbus_unit_test1_SOURCES	= mbus_unit_test1.c
 
 mbus_parse_LDFLAGS	= -L$(top_builddir)/mbus
-mbus_parse_LDADD	= -lmbus
+mbus_parse_LDADD	= -lmbus -lm
 mbus_parse_SOURCES	= mbus_parse.c
 
 mbus_parse_hex_LDFLAGS	= -L$(top_builddir)/mbus
-mbus_parse_hex_LDADD	= -lmbus
+mbus_parse_hex_LDADD	= -lmbus -lm
 mbus_parse_hex_SOURCES	= mbus_parse_hex.c
 

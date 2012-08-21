@@ -1,0 +1,139 @@
+=head1 NAME
+
+libmbus (utilities) - support utilities to the libmbus. libmbus is an open
+source M-bus (Meter-Bus) library. The Meter-Bus is a standard for reading out
+meter data from electricity meters, heat meters, gas meters, etc. The role
+of the libmbus library is to decode/encode M-bus data, and to handle 
+the communication with M-Bus devices.
+
+=head1 SYNOPSIS
+
+B<mbus-serial-switch-baudrate> [-b BAUDRATE] device address target-baudrate
+
+B<mbus-serial-scan> [-d] [-b BAUDRATE] device
+
+B<mbus-tcp-scan> [-d] host port
+
+B<mbus-serial-scan-secondary> [-d] [-b BAUDRATE] device [address-mask]
+
+B<mbus-tcp-scan-secondary> host port [address-mask]
+
+B<mbus-serial-request-data> [-d] [-b BAUDRATE] device mbus-address
+
+B<mbus-tcp-request-data> [-d] host port mbus-address
+
+B<mbus-serial-request-data-multi-reply> [-d] [-b BAUDRATE] device mbus-address
+
+B<mbus-tcp-request-data-multi-reply> [-d] host port mbus-address
+
+B<mbus-serial-select-secondary> [-b BAUDRATE] device secondary-mbus-address
+
+B<mbus-tcp-select-secondary> host port secondary-mbus-address
+
+=head1 DESCRIPTION
+
+B<mbus-serial-switch-baudrate> - attempts to switch the communication speed of
+the MBus device.
+
+B<mbus-serial-scan>, B<mbus-tcp-scan> - sequentially scan for devices on MBus bus
+using primary addresses.
+
+B<mbus-serial-scan-secondary>, B<mbus-tcp-scan-secondary>  - scan for devices on
+MBus bus using secondary addresses. The scan is not sequential.
+
+B<mbus-serial-request-data>, B<mbus-tcp-request-data> - read data from given device.
+Supports both primary and secondary address types.
+
+B<mbus-serial-request-data-multi-reply>, B<mbus-tcp-request-data-multi-reply> - read
+data from given device supporting multi-telegram (up to 16 frames) reply. Can be also
+used for single telegram as mbus-serial-request-data or mbus-tcp-request-data.
+Supports both primary and secondary address types.
+
+B<mbus-serial-select-secondary>, B<mbus-tcp-select-secondary> - perform single secondary
+address select to check what device responds.
+
+=head1 OPTIONS
+
+There are following options/parameters:
+
+=over 4
+
+=item B<-b> I<BAUDRATE>
+
+For serial communication, use given I<BAUDRATE> (integer in Bd). If not used then
+default baudrate of 9600 will be used.
+libmbus supports following baud rates: 300, 600, 1200, 2400, 4800, 9600, 19200,
+38400.
+Note that your MBus gateway and/or MBus device will most likely support only
+a subset of these. The most commonlu used/supported rates are probably 9600, 2400
+and 300.
+
+=item B<-d>
+
+Enable debugging messages.
+
+=item B<device>
+
+For serial communication, the serial device which represents the MBus (gateway).
+Typically something like /dev/ttyS0, /dev/ttyUSB0, etc.
+
+=item B<host>
+
+For TCP communciation, the host which represents the MBus (gateway).
+
+=item B<port>
+
+For TCP communciation, the port on the host which represents the MBus (gateway).
+
+=item B<address>
+
+MBus device primary address. An integer between 1 and 250.
+
+=item B<address-mask>
+
+Address mask for secondary address scan - you can restrict the search by supplying
+an optional address mask on the form 'FFFFFFFFFFFFFFFF' where F is a wildcard
+character.
+
+=item B<mbus-address>
+
+MBus device address. Could be a primary address or a secondary address (sixteen
+digit hexadecimal number).
+
+The primary address should be an integer between 1 and 250 for addressing
+individual devices. However the program does allow using any one byte number (i.e.
+0 to 255) so that you can also use addresses reserved for physical or data link
+layers management, secondary addressing, broadcasts, etc.
+
+=item B<secondary-mbus-address>
+
+MBus secondary address of the device. Sixteen digit hexadecimal number.
+
+=item B<target-baudrate>
+
+For serial communication, the baudrate to which the device should be switched.
+
+=back
+
+
+=head1 EXAMPLES
+
+Scan for MBus devices on the serial port:
+
+  mbus-serial-scan -d -b 2400 /dev/ttyS0
+
+Try to switch baud rate of a device on address 59 from 2400Bd to 9600Bd:
+
+  mbus-serial-switch-baudrate -b 2400 /dev/ttyUSB0 59 9600
+
+Readout a MBus device on address 59 at 2400Bd:
+
+  mbus-serial-request-data-multi-reply -b 2400 /dev/ttyS0 59
+
+=head1 SEE ALSO
+
+S<http://www.rscada.se/libmbus> and S<http://www.m-bus.com>
+
+=head1 AUTHORS
+
+See S<http://www.rscada.se/libmbus> and S<https://github.com/rscada/libmbus>  

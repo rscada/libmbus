@@ -601,7 +601,7 @@ mbus_data_float_decode(u_char *float_data)
         }
   
         // calculate float value
-        val = (float) sign * fraction * pow(2.0f, -23.0f) * (1 << exponent);
+        val = (float) sign * fraction * pow(2.0f, -23.0f + exponent);
 
         return val;    
     }
@@ -3175,7 +3175,7 @@ mbus_hex_dump(const char *label, const char *buff, size_t len)
     timeinfo = gmtime ( &rawtime );
     
     strftime(timestamp,20,"%Y-%m-%d %H:%M:%S",timeinfo);
-    fprintf(stderr, "[%s] %s (%03d):", timestamp, label, len);
+    fprintf(stderr, "[%s] %s (%03zu):", timestamp, label, len);
     
     for (i = 0; i < len; i++)
     {
@@ -3705,6 +3705,8 @@ mbus_data_record_new()
     {
         return NULL;
     }
+
+    memset(record, 0, sizeof(mbus_data_record));
 
     record->next = NULL;
     return record;    
