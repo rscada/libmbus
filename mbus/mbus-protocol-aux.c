@@ -1786,10 +1786,10 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
 
 
 //------------------------------------------------------------------------------
-// send a data request packet to from master to slave
+// send a data request packet to from master to slave and optional purge response
 //------------------------------------------------------------------------------
 int
-mbus_send_ping_frame(mbus_handle *handle, int address)
+mbus_send_ping_frame(mbus_handle *handle, int address, char purge_response)
 {
     int retval = 0;
     mbus_frame *frame;
@@ -1808,8 +1808,14 @@ mbus_send_ping_frame(mbus_handle *handle, int address)
     if (mbus_send_frame(handle, frame) == -1)
     {
         MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
-        retval = -1;
-    }    
+        mbus_frame_free(frame);
+        return -1;
+    }
+    
+    if (purge_response)
+    {
+        mbus_purge_frames(handle);
+    }
 	
     mbus_frame_free(frame);
     return retval;

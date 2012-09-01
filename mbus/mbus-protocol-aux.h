@@ -265,12 +265,13 @@ int mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, i
 /** 
  * Sends ping frame to given slave using "unified" handle
  * 
- * @param handle  Initialized handle
- * @param address Address (0-255)
+ * @param handle         Initialized handle
+ * @param address        Address (0-255)
+ * @param purge_response Response flag (=0 don't receive response, >0 purge response)
  * 
  * @return Zero when successful.
  */
-int mbus_send_ping_frame(mbus_handle *handle, int address);
+int mbus_send_ping_frame(mbus_handle *handle, int address, char purge_response);
 
 /** 
  * Select slave by secondary address using "unified" handle

@@ -78,7 +78,7 @@ main(int argc, char **argv)
             fflush(stdout);
         }
 
-        if (mbus_send_ping_frame(handle, address) == -1)
+        if (mbus_send_ping_frame(handle, address, 0) == -1)
         {
             printf("Scan failed. Could not send ping frame: %s\n", mbus_error_str());
             return 1;
