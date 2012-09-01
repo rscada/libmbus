@@ -25,7 +25,7 @@ static int debug = 0;
 int
 main(int argc, char **argv)
 {
-    char *device, *addr_mask;
+    char *device, *addr_mask = NULL;
     int baudrate = 9600;
     mbus_handle *handle = NULL;
     mbus_frame *frame = NULL, reply;
@@ -95,28 +95,38 @@ main(int argc, char **argv)
         mbus_register_send_event(&mbus_dump_send_event);
         mbus_register_recv_event(&mbus_dump_recv_event);
     }
+    
+    if (addr_mask == NULL)
+    {
+        fprintf(stderr, "Failed to allocate address mask.\n");
+        return 1;
+    }
  
     if (strlen(addr_mask) != 16)
     {
         fprintf(stderr, "Misformatted secondary address mask. Must be 16 character HEX number.\n");
+        free(addr_mask);
         return 1;
     }
 
     if ((handle = mbus_context_serial(device)) == NULL)
     {
         fprintf(stderr, "Could not initialize M-Bus context: %s\n",  mbus_error_str());
+        free(addr_mask);
         return 1;
     }
 
     if (mbus_connect(handle) == -1)
     {
         printf("Failed to setup connection to M-bus gateway\n");
+        free(addr_mask);
         return 1;
     }
 
     if (mbus_serial_set_baudrate(handle, baudrate) == -1)
     {
         fprintf(stderr, "Failed to set baud rate.\n");
+        free(addr_mask);
         return 1;
     }
 
@@ -126,6 +136,7 @@ main(int argc, char **argv)
     if (frame == NULL)
     {
         fprintf(stderr, "Failed to allocate mbus frame.\n");
+        free(addr_mask);
         return 1;
     }
 

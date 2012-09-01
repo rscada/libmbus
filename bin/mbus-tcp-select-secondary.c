@@ -26,7 +26,7 @@ main(int argc, char **argv)
 {
     mbus_handle *handle;
     mbus_frame reply;
-    char *host, *addr;
+    char *host, *addr = NULL;
     int port, ret;
 
     if (argc != 4)
@@ -37,9 +37,14 @@ main(int argc, char **argv)
  
     host = argv[1];   
     port = atoi(argv[2]);
-    addr = strdup(argv[3]);
+    
+    if ((addr = strdup(argv[3])) == NULL)
+    {
+        fprintf(stderr, "Failed to allocate address.\n");
+        return 1;
+    }
 
-    if (strlen(argv[3]) != 16)
+    if (strlen(addr) != 16)
     {
         printf("Misformatted secondary address. Must be 16 character HEX number.\n");
         return 1;

@@ -26,7 +26,7 @@ main(int argc, char **argv)
 {
     mbus_handle *handle;
     mbus_frame reply;
-    char *device, *addr;
+    char *device, *addr = NULL;
     int ret, baudrate = 9600;
 
     if (argc == 3)
@@ -45,6 +45,12 @@ main(int argc, char **argv)
         fprintf(stderr, "usage: %s [-b BAUDRATE] device secondary-mbus-address\n", argv[0]);
         fprintf(stderr, "    optional flag -b for selecting baudrate\n");
         return 0;
+    }
+    
+    if (addr == NULL)
+    {
+        fprintf(stderr, "Failed to allocate address.\n");
+        return 1;
     }
  
     if (strlen(addr) != 16)

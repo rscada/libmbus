@@ -25,7 +25,7 @@ static int debug = 0;
 int
 main(int argc, char **argv)
 {
-    char *host, *addr_mask;
+    char *host, *addr_mask = NULL;
     int port;
     mbus_handle *handle = NULL;
     mbus_frame *frame = NULL, reply;
@@ -49,6 +49,12 @@ main(int argc, char **argv)
     else
     {
         addr_mask = strdup("FFFFFFFFFFFFFFFF");
+    }
+    
+    if (addr_mask == NULL)
+    {
+        fprintf(stderr, "Failed to allocate address mask.\n");
+        return 1;
     }
 
     if (strlen(addr_mask) != 16)
@@ -97,8 +103,7 @@ main(int argc, char **argv)
 
     if (mbus_send_frame(handle, frame) == -1)
     {
-        fprintf(stderr, "Failed to send SND_NKE #2.\n");
-        mbus_frame_free(frame);
+        free(addr_mask);
         return 1;
     }
 

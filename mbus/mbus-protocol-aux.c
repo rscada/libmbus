@@ -791,7 +791,11 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
         switch (record->drh.dib.dif & 0x0F)
         {
             case 0x00: /* no data */
-                *value_out_str = (char*) malloc(1);
+                if ((*value_out_str = (char*) malloc(1)) == NULL)
+                {
+                    MBUS_ERROR("Unable to allocate memory");
+                    return -1;
+                }
                 *value_out_str_size = 0;
                 result = 0;
                 break; 
@@ -806,7 +810,11 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                 if (vif == 0x6C)            
                 {
                     mbus_data_tm_decode(&time, record->data, 2);
-                    *value_out_str = (char*) malloc(11);
+                    if ((*value_out_str = (char*) malloc(11)) == NULL)
+                    {
+                        MBUS_ERROR("Unable to allocate memory");
+                        return -1;
+                    }
                     *value_out_str_size = snprintf(*value_out_str, 11, "%04d-%02d-%02d", 
                                                  (time.tm_year + 2000), 
                                                  (time.tm_mon + 1), 
@@ -834,7 +842,11 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                     ((record->drh.vib.vif == 0xFD) && (vife == 0x70)))    
                 {
                     mbus_data_tm_decode(&time, record->data, 4);
-                    *value_out_str = (char*) malloc(20);
+                    if ((*value_out_str = (char*) malloc(20)) == NULL)
+                    {
+                        MBUS_ERROR("Unable to allocate memory");
+                        return -1;
+                    }
                     *value_out_str_size = snprintf(*value_out_str, 20, "%04d-%02d-%02dT%02d:%02d:%02d", 
                                                  (time.tm_year + 2000), 
                                                  (time.tm_mon + 1), 
@@ -888,7 +900,11 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
             case 0x0D: /* variable length */
             {
                 if (record->data_len <= 0xBF) {
-                    *value_out_str = (char*) malloc(record->data_len + 1);
+                    if ((*value_out_str = (char*) malloc(record->data_len + 1)) == NULL)
+                    {
+                        MBUS_ERROR("Unable to allocate memory");
+                        return -1;
+                    }
                     *value_out_str_size = record->data_len;
                     mbus_data_str_decode((u_char*)(*value_out_str), record->data, record->data_len);
                     result = 0;
@@ -905,7 +921,11 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                 break;
 
             case 0x0F: /* Special functions */
-                *value_out_str = (char*) malloc(3 * record->data_len + 1);
+                if ((*value_out_str = (char*) malloc(3 * record->data_len + 1)) == NULL)
+                {
+                    MBUS_ERROR("Unable to allocate memory");
+                    return -1;
+                }
                 *value_out_str_size = 3 * record->data_len;
                 mbus_data_bin_decode((u_char*)(*value_out_str), record->data, record->data_len, (3 * record->data_len + 1));
                 result = 0;
