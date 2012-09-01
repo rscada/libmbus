@@ -74,40 +74,30 @@ main(int argc, char **argv)
         fprintf(stderr, "Failed to setup connection to M-bus gateway\n");
         return 1;
     }
-    
-    frame = mbus_frame_new(MBUS_FRAME_TYPE_SHORT);
-
-    if (frame == NULL)
-    {
-        fprintf(stderr, "Failed to allocate mbus frame.\n");
-        return 1;
-    }
 
     //
     // init slaves
     //
-    frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
-    frame->address = MBUS_ADDRESS_NETWORK_LAYER;
-
-    if (mbus_send_frame(handle, frame) == -1)
-    {
-        fprintf(stderr, "Failed to send SND_NKE #1.\n");
-        mbus_frame_free(frame);
-        return 1;
-    }
-
-    (void) mbus_recv_frame(handle, &reply);
-
-    frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
-    frame->address = MBUS_ADDRESS_BROADCAST_NOREPLY;
-
-    if (mbus_send_frame(handle, frame) == -1)
+    if (debug)
+        printf("%s: debug: sending init frame #1\n", __PRETTY_FUNCTION__);
+    
+    if (mbus_send_ping_frame(handle, MBUS_ADDRESS_NETWORK_LAYER, 1) == -1)
     {
         free(addr_mask);
         return 1;
     }
 
-    (void) mbus_recv_frame(handle, &reply);
+    //
+    // resend SND_NKE, maybe the first get lost
+    //
+    if (debug)
+        printf("%s: debug: sending init frame #2\n", __PRETTY_FUNCTION__);
+        
+    if (mbus_send_ping_frame(handle, MBUS_ADDRESS_BROADCAST_NOREPLY, 1) == -1)
+    {
+        free(addr_mask);
+        return 1;
+    }
 
     mbus_scan_2nd_address_range(handle, 0, addr_mask);
 
