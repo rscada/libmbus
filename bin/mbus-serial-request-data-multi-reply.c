@@ -19,6 +19,35 @@
 
 static int debug = 0;
 
+//
+// init slave to get really the beginning of the records
+//
+int
+init_slaves(mbus_handle *handle)
+{    
+    if (debug)
+        printf("%s: debug: sending init frame #1\n", __PRETTY_FUNCTION__);
+    
+    if (mbus_send_ping_frame(handle, MBUS_ADDRESS_NETWORK_LAYER, 1) == -1)
+    {
+        return 0;
+    }
+
+    //
+    // resend SND_NKE, maybe the first get lost
+    //
+
+    if (debug)
+        printf("%s: debug: sending init frame #2\n", __PRETTY_FUNCTION__);
+        
+    if (mbus_send_ping_frame(handle, MBUS_ADDRESS_NETWORK_LAYER, 1) == -1)
+    {
+        return 0;
+    }
+
+    return 1;
+}
+
 //------------------------------------------------------------------------------
 // Scan for devices using secondary addressing.
 //------------------------------------------------------------------------------
@@ -91,51 +120,10 @@ main(int argc, char **argv)
         return 1;
     }
     
-    //
-    // init slave to get really the beginning of the records
-    //
-    
-    frame = mbus_frame_new(MBUS_FRAME_TYPE_SHORT);
-    
-    if (frame == NULL)
+    if (init_slaves(handle) == 0)
     {
-        fprintf(stderr, "Failed to allocate mbus frame.\n");
         return 1;
     }
-    
-    frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
-    frame->address = MBUS_ADDRESS_NETWORK_LAYER;
-    
-    if (debug)
-        printf("%s: debug: sending init frame #1\n", __PRETTY_FUNCTION__);
-    
-    if (mbus_send_frame(handle, frame) == -1)
-    {
-        fprintf(stderr, "Failed to send mbus frame.\n");
-        mbus_frame_free(frame);
-        return 1;
-    }
-    
-    mbus_purge_frames(handle);
-    
-    //
-    // resend SND_NKE, maybe the first get lost
-    //
-    
-    frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
-    frame->address = MBUS_ADDRESS_NETWORK_LAYER;
-
-    if (debug)
-        printf("%s: debug: sending init frame #2\n", __PRETTY_FUNCTION__);
-
-    if (mbus_send_frame(handle, frame) == -1)
-    {
-        fprintf(stderr, "Failed to send mbus frame.\n");
-        mbus_frame_free(frame);
-        return 1;
-    }
-
-    mbus_purge_frames(handle);
 
     if (strlen(addr_str) == 16)
     {

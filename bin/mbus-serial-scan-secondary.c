@@ -19,13 +19,43 @@
 
 static int debug = 0;
 
+//
+// init slave to get really the beginning of the records
+//
+int
+init_slaves(mbus_handle *handle)
+{   
+    if (debug)
+        printf("%s: debug: sending init frame #1\n", __PRETTY_FUNCTION__);
+    
+    if (mbus_send_ping_frame(handle, MBUS_ADDRESS_NETWORK_LAYER, 1) == -1)
+    {
+        return 0;
+    }
+
+    //
+    // resend SND_NKE, maybe the first get lost
+    //
+
+    if (debug)
+        printf("%s: debug: sending init frame #2\n", __PRETTY_FUNCTION__);
+        
+    if (mbus_send_ping_frame(handle, MBUS_ADDRESS_BROADCAST_NOREPLY, 1) == -1)
+    {
+        return 0;
+    }
+
+    return 1;
+}
+
+
 //------------------------------------------------------------------------------
 // Scan for devices using secondary addressing.
 //------------------------------------------------------------------------------
 int
 main(int argc, char **argv)
 {
-    char *device, *addr_mask;
+    char *device, *addr_mask = NULL;
     int baudrate = 9600;
     mbus_handle *handle = NULL;
     mbus_frame *frame = NULL, reply;
@@ -95,28 +125,38 @@ main(int argc, char **argv)
         mbus_register_send_event(&mbus_dump_send_event);
         mbus_register_recv_event(&mbus_dump_recv_event);
     }
+    
+    if (addr_mask == NULL)
+    {
+        fprintf(stderr, "Failed to allocate address mask.\n");
+        return 1;
+    }
  
     if (strlen(addr_mask) != 16)
     {
         fprintf(stderr, "Misformatted secondary address mask. Must be 16 character HEX number.\n");
+        free(addr_mask);
         return 1;
     }
 
     if ((handle = mbus_context_serial(device)) == NULL)
     {
         fprintf(stderr, "Could not initialize M-Bus context: %s\n",  mbus_error_str());
+        free(addr_mask);
         return 1;
     }
 
     if (mbus_connect(handle) == -1)
     {
         printf("Failed to setup connection to M-bus gateway\n");
+        free(addr_mask);
         return 1;
     }
 
     if (mbus_serial_set_baudrate(handle, baudrate) == -1)
     {
         fprintf(stderr, "Failed to set baud rate.\n");
+        free(addr_mask);
         return 1;
     }
 
@@ -126,35 +166,15 @@ main(int argc, char **argv)
     if (frame == NULL)
     {
         fprintf(stderr, "Failed to allocate mbus frame.\n");
+        free(addr_mask);
         return 1;
     }
 
-    //
-    // init slaves
-    //
-    frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
-    frame->address = MBUS_ADDRESS_NETWORK_LAYER;
-
-    if (mbus_send_frame(handle, frame) == -1)
+    if (init_slaves(handle) == 0)
     {
-        fprintf(stderr, "Failed to send SND_NKE #1.\n");
-        mbus_frame_free(frame);
+        free(addr_mask);
         return 1;
     }
-
-    (void) mbus_recv_frame(handle, &reply);
-
-    frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
-    frame->address = MBUS_ADDRESS_BROADCAST_NOREPLY;
-
-    if (mbus_send_frame(handle, frame) == -1)
-    {
-        fprintf(stderr, "Failed to send SND_NKE #2.\n");
-        mbus_frame_free(frame);
-        return 1;
-    }
-
-    (void) mbus_recv_frame(handle, &reply);
 
     mbus_scan_2nd_address_range(handle, 0, addr_mask);
 
