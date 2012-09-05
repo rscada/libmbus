@@ -77,29 +77,13 @@ main(int argc, char **argv)
     //
     // init slave to get really the beginning of the records
     //
-    
-    frame = mbus_frame_new(MBUS_FRAME_TYPE_SHORT);
-    
-    if (frame == NULL)
-    {
-        fprintf(stderr, "Failed to allocate mbus frame.\n");
-        return 1;
-    }
-    
-    frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
-    frame->address = MBUS_ADDRESS_BROADCAST_NOREPLY;
-    
     if (debug)
         printf("%s: debug: sending init frame\n", __PRETTY_FUNCTION__);
-    
-    if (mbus_send_frame(handle, frame) == -1)
+
+    if (mbus_send_ping_frame(handle, MBUS_ADDRESS_BROADCAST_NOREPLY, 1) == -1)
     {
-        fprintf(stderr, "Failed to send mbus frame.\n");
-        mbus_frame_free(frame);
         return 1;
     }
-    
-    mbus_recv_frame(handle, &reply);
 
     if (strlen(addr_str) == 16)
     {
