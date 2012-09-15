@@ -188,7 +188,7 @@ mbus_variable_vif vif_table[] = {
     { 0x6E, 1.0e0,  "Units for H.C.A.", "H.C.A." },
 
     /* E110 1111     Reserved */
-    { 0x6E, 0.0,  "Reserved", "Reserved" },
+    { 0x6F, 0.0,  "Reserved", "Reserved" },
 
     /* E111 00nn     Averaging Duration s */
     { 0x70,     1.0, "s", "Averaging Duration" },  /* seconds */
