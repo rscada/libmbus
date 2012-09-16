@@ -9,6 +9,7 @@
 //------------------------------------------------------------------------------
 
 #include <assert.h>
+#include <ctype.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -3226,26 +3227,34 @@ mbus_str_xml_encode(u_char *dst, const u_char *src, size_t max_len)
             {
                 break;
             }
-        
-            switch (src[i])
-            {
-                case '&':
-                    len += snprintf(&dst[len], max_len - len, "&amp;");
-                    break;
-                case '<':
-                    len += snprintf(&dst[len], max_len - len, "&lt;");
-                    break;
-                case '>':
-                    len += snprintf(&dst[len], max_len - len, "&gt;");
-                    break;
-                case '"':
-                    len += snprintf(&dst[len], max_len - len, "&quot;");
-                    break;
-                default:
-                    dst[len++] = src[i];
-                    break;
-            }
             
+            if (iscntrl(src[i]))
+            {
+                // convert all control chars into spaces
+                dst[len++] = ' ';
+            }
+            else
+            {
+                switch (src[i])
+                {
+                    case '&':
+                        len += snprintf(&dst[len], max_len - len, "&amp;");
+                        break;
+                    case '<':
+                        len += snprintf(&dst[len], max_len - len, "&lt;");
+                        break;
+                    case '>':
+                        len += snprintf(&dst[len], max_len - len, "&gt;");
+                        break;
+                    case '"':
+                        len += snprintf(&dst[len], max_len - len, "&quot;");
+                        break;
+                    default:
+                        dst[len++] = src[i];
+                        break;
+                }
+            }
+        
             i++;
         }
     }
