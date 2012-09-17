@@ -866,6 +866,15 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_SEN)
+        {
+            switch (header->version)
+            {
+                case 0x19:
+                    strcpy(buff,"Sensus PolluCom E");
+                    break;
+            }
+        }
         else if (manufacturer == MBUS_VARIABLE_DATA_MAN_SPX) 
         {
             switch (header->version)

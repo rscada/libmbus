@@ -484,6 +484,7 @@ typedef struct _mbus_data_secondary_address {
 #define MBUS_VARIABLE_DATA_MAN_NZR              0x3B52
 #define MBUS_VARIABLE_DATA_MAN_PAD              0x4024
 #define MBUS_VARIABLE_DATA_MAN_QDS              0x4493
+#define MBUS_VARIABLE_DATA_MAN_SEN              0x4CAE
 #define MBUS_VARIABLE_DATA_MAN_SLB              0x4D82
 #define MBUS_VARIABLE_DATA_MAN_SON              0x4DEE
 #define MBUS_VARIABLE_DATA_MAN_SPX              0x4E18
