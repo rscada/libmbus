@@ -9,6 +9,7 @@
 //------------------------------------------------------------------------------
 
 #include <assert.h>
+#include <ctype.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -862,6 +863,15 @@ mbus_data_product_name(mbus_data_variable_header *header)
             {
                 case 0x99:
                     strcpy(buff,"Siemens WFH21");
+                    break;
+            }
+        }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_SEN)
+        {
+            switch (header->version)
+            {
+                case 0x19:
+                    strcpy(buff,"Sensus PolluCom E");
                     break;
             }
         }
@@ -3226,26 +3236,34 @@ mbus_str_xml_encode(u_char *dst, const u_char *src, size_t max_len)
             {
                 break;
             }
-        
-            switch (src[i])
-            {
-                case '&':
-                    len += snprintf(&dst[len], max_len - len, "&amp;");
-                    break;
-                case '<':
-                    len += snprintf(&dst[len], max_len - len, "&lt;");
-                    break;
-                case '>':
-                    len += snprintf(&dst[len], max_len - len, "&gt;");
-                    break;
-                case '"':
-                    len += snprintf(&dst[len], max_len - len, "&quot;");
-                    break;
-                default:
-                    dst[len++] = src[i];
-                    break;
-            }
             
+            if (iscntrl(src[i]))
+            {
+                // convert all control chars into spaces
+                dst[len++] = ' ';
+            }
+            else
+            {
+                switch (src[i])
+                {
+                    case '&':
+                        len += snprintf(&dst[len], max_len - len, "&amp;");
+                        break;
+                    case '<':
+                        len += snprintf(&dst[len], max_len - len, "&lt;");
+                        break;
+                    case '>':
+                        len += snprintf(&dst[len], max_len - len, "&gt;");
+                        break;
+                    case '"':
+                        len += snprintf(&dst[len], max_len - len, "&quot;");
+                        break;
+                    default:
+                        dst[len++] = src[i];
+                        break;
+                }
+            }
+        
             i++;
         }
     }
