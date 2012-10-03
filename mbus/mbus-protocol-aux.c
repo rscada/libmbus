@@ -1467,6 +1467,13 @@ mbus_recv_frame(mbus_handle * handle, mbus_frame *frame)
     }
 
     result = handle->recv(handle, frame);
+    
+    /* frame valid, but wrong direction */
+    if (mbus_frame_direction(frame) == MBUS_CONTROL_MASK_DIR_M2S)
+    {
+        /* purge echo and retry (echo cancelation) */
+        result = handle->recv(handle, frame);
+    }
 
     if (frame != NULL)
     {
