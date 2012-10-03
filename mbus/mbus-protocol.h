@@ -555,6 +555,7 @@ const char *mbus_data_fixed_function(int status);
 // M-Bus frame data struct access/write functions
 //
 int mbus_frame_type(mbus_frame *frame);
+int mbus_frame_direction(mbus_frame *frame);
 
 //
 // Slave status data register.
