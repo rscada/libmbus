@@ -21,6 +21,10 @@ src/config.h.in
 /m4
 
 # configure stuff:
+Makefile
+bin/Makefile
+mbus/Makefile
+test/Makefile
 config.log
 config.status
 libtool
@@ -41,5 +45,18 @@ test/.deps
 *.la
 *.lo
 .libs/
+bin/libmbus.1
+bin/libmbus.1
+bin/mbus-serial-request-data
+bin/mbus-serial-request-data-multi-reply
+bin/mbus-serial-scan
+bin/mbus-serial-scan-secondary
+bin/mbus-serial-select-secondary
+bin/mbus-serial-switch-baudrate
+bin/mbus-tcp-request-data
+bin/mbus-tcp-request-data-multi-reply
+bin/mbus-tcp-scan
+bin/mbus-tcp-scan-secondary
+bin/mbus-tcp-select-secondary
 !*.c
 
