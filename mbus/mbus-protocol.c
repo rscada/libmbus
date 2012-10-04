@@ -308,7 +308,14 @@ mbus_frame_direction(mbus_frame *frame)
 {
     if (frame)
     {
-        return (frame->control & MBUS_CONTROL_MASK_DIR);
+        if (frame->type == MBUS_FRAME_TYPE_ACK)
+        {
+            return MBUS_CONTROL_MASK_DIR_S2M;    
+        }
+        else
+        {
+            return (frame->control & MBUS_CONTROL_MASK_DIR);
+        }
     }
     return -1;
 }
