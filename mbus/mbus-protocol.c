@@ -856,6 +856,15 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_RKE)
+        {
+            switch (header->version)
+            {
+                case 0x69:
+                    strcpy(buff,"Ista sensonic II mbus");
+                    break;
+            }
+        }
         else if (manufacturer == MBUS_VARIABLE_DATA_MAN_SVM) 
         {
             switch (header->version)
