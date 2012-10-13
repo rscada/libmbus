@@ -46,6 +46,7 @@ test/.deps
 *.lo
 .libs/
 bin/libmbus.1
+bin/libmbus.1
 bin/mbus-serial-request-data
 bin/mbus-serial-request-data-multi-reply
 bin/mbus-serial-scan
@@ -57,3 +58,5 @@ bin/mbus-tcp-request-data-multi-reply
 bin/mbus-tcp-scan
 bin/mbus-tcp-scan-secondary
 bin/mbus-tcp-select-secondary
+!*.c
+

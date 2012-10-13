@@ -70,12 +70,17 @@
 #define MBUS_PROBE_COLLISION 2
 #define MBUS_PROBE_ERROR     -1
 
+#define MBUS_FRAME_PURGE_S2M  2
+#define MBUS_FRAME_PURGE_M2S  1
+#define MBUS_FRAME_PURGE_NONE 0
+
 /**
  * Unified MBus handle type encapsulating either Serial or TCP gateway.
  */
 struct _mbus_handle {
     int fd;
     int max_retry;
+    char purge_first_frame;
     char is_serial; /**< _handle type (non zero for serial) */
     int (*open) (struct _mbus_handle *handle);
     int (*close) (struct _mbus_handle *handle);

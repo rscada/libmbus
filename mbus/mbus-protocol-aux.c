@@ -1353,6 +1353,7 @@ mbus_context_serial(const char *device)
 
     handle->max_retry = 3;
     handle->is_serial = 1;
+    handle->purge_first_frame = MBUS_FRAME_PURGE_M2S;
     handle->auxdata = serial_data;
     handle->open = mbus_serial_connect;
     handle->close = mbus_serial_disconnect;
@@ -1395,6 +1396,7 @@ mbus_context_tcp(const char *host, int port)
 
     handle->max_retry = 3;
     handle->is_serial = 0;
+    handle->purge_first_frame = MBUS_FRAME_PURGE_M2S;
     handle->auxdata = tcp_data;
     handle->open = mbus_tcp_connect;
     handle->close = mbus_tcp_disconnect;
@@ -1467,6 +1469,18 @@ mbus_recv_frame(mbus_handle * handle, mbus_frame *frame)
     }
 
     result = handle->recv(handle, frame);
+    
+    switch (mbus_frame_direction(frame))
+    {
+        case MBUS_CONTROL_MASK_DIR_M2S:
+            if (handle->purge_first_frame == MBUS_FRAME_PURGE_M2S)
+                result = handle->recv(handle, frame);  // purge echo and retry 
+    	     break;
+        case MBUS_CONTROL_MASK_DIR_S2M:
+            if (handle->purge_first_frame == MBUS_FRAME_PURGE_S2M)
+                result = handle->recv(handle, frame);  // purge echo and retry 
+             break;
+    }
 
     if (frame != NULL)
     {

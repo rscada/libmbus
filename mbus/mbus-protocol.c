@@ -301,6 +301,26 @@ mbus_frame_type(mbus_frame *frame)
 }
 
 //------------------------------------------------------------------------------
+/// Return the M-Bus frame direction 
+//------------------------------------------------------------------------------
+int
+mbus_frame_direction(mbus_frame *frame)
+{
+    if (frame)
+    {
+        if (frame->type == MBUS_FRAME_TYPE_ACK)
+        {
+            return MBUS_CONTROL_MASK_DIR_S2M;    
+        }
+        else
+        {
+            return (frame->control & MBUS_CONTROL_MASK_DIR);
+        }
+    }
+    return -1;
+}
+
+//------------------------------------------------------------------------------
 /// Verify that parsed frame is a valid M-bus frame. 
 //
 // Possible checks:
@@ -833,6 +853,15 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
                 case 0x07:
                     strcpy(buff,"Landis & Gyr Ultraheat T230");
+                    break;
+            }
+        }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_RKE)
+        {
+            switch (header->version)
+            {
+                case 0x69:
+                    strcpy(buff,"Ista sensonic II mbus");
                     break;
             }
         }
@@ -2713,7 +2742,23 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 int
 mbus_frame_data_parse(mbus_frame *frame, mbus_frame_data *data)
 {
-    if (frame && data)
+    char direction;
+
+    if (frame == NULL)
+    {
+        snprintf(error_str, sizeof(error_str), "Got null pointer to frame.");
+        return -1;
+    }
+    
+    if (data == NULL)
+    {
+        snprintf(error_str, sizeof(error_str), "Got null pointer to data.");
+        return -1;
+    }
+    
+    direction = (frame->control & MBUS_CONTROL_MASK_DIR);
+    
+    if (direction == MBUS_CONTROL_MASK_DIR_S2M)
     {
         if (frame->control_information == MBUS_CONTROL_INFO_ERROR_GENERAL)
         {
@@ -2761,9 +2806,13 @@ mbus_frame_data_parse(mbus_frame *frame, mbus_frame_data *data)
             return -1;
         }
     }
-    
-    snprintf(error_str, sizeof(error_str), "Got null pointer to frame or data.");
-
+    else
+    { 
+        snprintf(error_str, sizeof(error_str), "Wrong direction in frame (master to slave)");
+            
+        return -1;
+    }
+        
     return -1;
 }
 
