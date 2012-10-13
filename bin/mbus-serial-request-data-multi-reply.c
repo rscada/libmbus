@@ -31,7 +31,7 @@ init_slaves(mbus_handle *handle)
     if (mbus_send_ping_frame(handle, MBUS_ADDRESS_NETWORK_LAYER, 1) == -1)
     {
         return 0;
-    }
+    }  
 
     //
     // resend SND_NKE, maybe the first get lost
