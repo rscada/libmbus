@@ -2104,6 +2104,13 @@ mbus_vib_unit_lookup(mbus_value_information_block *vib)
         snprintf(buff, sizeof(buff), "%s", vib->custom_vif);
         return buff;
     }
+    else if (vib->vif == 0xFC && (vib->vife[0] & 0x78) == 0x70)
+    {
+        // custom VIF
+        n = (vib->vife[0] & 0x07);
+        snprintf(buff, sizeof(buff), "%s %s", mbus_unit_prefix(n-6), vib->custom_vif);
+        return buff;
+    }
 
     return mbus_vif_unit_lookup(vib->vif); // no extention, use VIF
 }
@@ -2686,21 +2693,30 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             // read and parse VIB (= VIF + VIFE)
 
             // VIF
-            record->drh.vib.vif = frame->data[i]; 
-                
-            if (record->drh.vib.vif == 0x7C)
+            record->drh.vib.vif = frame->data[i++];
+            
+            if ((record->drh.vib.vif & 0x7F) == 0x7C)
             {
                 // variable length VIF in ASCII format
                 int var_vif_len;
-                i++;
                 var_vif_len = frame->data[i++];
+                if (i + var_vif_len > frame->data_size)
+                {
+                    mbus_data_record_free(record);
+                    return -1;
+                }
                 mbus_data_str_decode(record->drh.vib.custom_vif, &(frame->data[i]), var_vif_len);
                 i += var_vif_len;
             }
-            else
+            
+            // VIFE
+            record->drh.vib.nvife = 0;
+            
+            if (record->drh.vib.vif & MBUS_DIB_VIF_EXTENSION_BIT)
             {
-                // VIFE
-                record->drh.vib.nvife = 0;
+                record->drh.vib.vife[0] = frame->data[i];
+                record->drh.vib.nvife++;
+                
                 while (frame->data[i] & MBUS_DIB_VIF_EXTENSION_BIT && 
                        record->drh.vib.nvife < NITEMS(record->drh.vib.vife))
                 {
@@ -2710,7 +2726,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                     record->drh.vib.nvife++;
                     i++;
                 }
-                i++;       
+                i++;
             }
                 
             // re-calculate data length, if of variable length type

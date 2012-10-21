@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #define MBUS_ERROR(...) fprintf (stderr, __VA_ARGS__)
 
@@ -1024,14 +1025,15 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
                 return -1;
             }
         } 
-        else if (vib->vif == 0x7C)
+        else if ((vib->vif == 0x7C) ||
+                 (vib->vif == 0xFC))
         {
             // custom VIF
             *unit_out = strdup("-");
             *quantity_out = strdup(vib->custom_vif);
-            *value_out = 0.0;
-        } 
-        else 
+            *value_out = value;
+        }
+        else
         {
             int code = (vib->vif) & 0x7f;
             if (0 != mbus_vif_unit_normalize(code, value, unit_out, value_out, quantity_out))
@@ -1039,6 +1041,37 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
                 MBUS_ERROR("%s: Error mbus_vif_unit_normalize\n", __PRETTY_FUNCTION__);
                 return -1;
             }
+        }
+    }
+    
+    if ((vib->vif & MBUS_DIB_VIF_EXTENSION_BIT) &&                       
+        (vib->vif != 0xFD) &&
+        (vib->vif != 0xFB))                       /* codes for VIF extention: see table 8.4.5 */
+    {
+        int code = (vib->vif) & 0x7f;
+        switch (code)
+        {
+            case 0x70:
+            case 0x71:
+            case 0x72:
+            case 0x73:
+            case 0x74:
+            case 0x75:
+            case 0x76:
+            case 0x77: /* Multiplicative correction factor: 10^nnn-6 */
+                *value_out *= pow(10.0, (vib->vife[0] & 0x07) - 6);
+                break;
+                
+            case 0x78:
+            case 0x79:
+            case 0x7A:
+            case 0x7B: /* Additive correction constant: 10^nn-3 unit of VIF (offset) */
+                *value_out += pow(10.0, (vib->vife[0] & 0x03) - 3);
+                break;
+                
+            case 0x7D: /* Multiplicative correction factor: 10^3 */
+                *value_out *= 1000.0;
+                break;
         }
     }
 
