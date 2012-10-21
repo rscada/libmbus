@@ -2055,12 +2055,22 @@ mbus_vib_unit_lookup(mbus_value_information_block *vib)
             // VIFE = E001 0001 Customer
             snprintf(buff, sizeof(buff), "Customer");
         }
-        else if (vib->vife[0] == 0x9)
+        else if (vib->vife[0] == 0x1A)
+        {
+            // VIFE = E001 1010 Digital output (binary)
+            snprintf(buff, sizeof(buff), "Digital output (binary)");
+        }
+        else if (vib->vife[0] == 0x1B)
+        {
+            // VIFE = E001 1011 Digital input (binary)
+            snprintf(buff, sizeof(buff), "Digital input (binary)");
+        }
+        else if (vib->vife[0] == 0x09)
         {
             // VIFE = E001 0110 Password
             snprintf(buff, sizeof(buff), "Password");
         }
-        else if (vib->vife[0] == 0x0b)
+        else if (vib->vife[0] == 0x0B)
         {
             // VIFE = E000 1011 Parameter set identification
             snprintf(buff, sizeof(buff), "Parameter set identification");
