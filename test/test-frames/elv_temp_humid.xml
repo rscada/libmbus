@@ -1,0 +1,104 @@
+<MBusData>
+
+    <SlaveInformation>
+        <Id>54000834</Id>
+        <Manufacturer>ELV</Manufacturer>
+        <Version>50</Version>
+        <ProductName></ProductName>
+        <Medium>Other</Medium>
+        <AccessNumber>242</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <Unit>Digital input (binary)</Unit>
+        <Value>0</Value>
+        <Timestamp>1970-01-01T00:00:00</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <Unit>1e-2  %RH</Unit>
+        <Value>4564</Value>
+        <Timestamp>1970-01-01T00:00:00</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Minimum value</Function>
+        <Unit>1e-2  %RH</Unit>
+        <Value>4552</Value>
+        <Timestamp>1970-01-01T00:00:00</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Maximum value</Function>
+        <Unit>1e-2  %RH</Unit>
+        <Value>5812</Value>
+        <Timestamp>1970-01-01T00:00:00</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <Unit>External temperature (1e-2  deg C)</Unit>
+        <Value>2256</Value>
+        <Timestamp>1970-01-01T00:00:00</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Minimum value</Function>
+        <Unit>External temperature (1e-2  deg C)</Unit>
+        <Value>2160</Value>
+        <Timestamp>1970-01-01T00:00:00</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Maximum value</Function>
+        <Unit>External temperature (1e-2  deg C)</Unit>
+        <Value>2339</Value>
+        <Timestamp>1970-01-01T00:00:00</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Instantaneous value</Function>
+        <Unit>Averaging Duration (hours)</Unit>
+        <Value>24</Value>
+        <Timestamp>1970-01-01T00:00:00</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="8">
+        <Function>Instantaneous value</Function>
+        <Unit>External temperature (1e-2  deg C)</Unit>
+        <Value>2276</Value>
+        <Timestamp>1970-01-01T00:00:00</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="9">
+        <Function>Instantaneous value</Function>
+        <Unit>External temperature (1e-2  deg C)</Unit>
+        <Value>2269</Value>
+        <Timestamp>1970-01-01T00:00:00</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="10">
+        <Function>Instantaneous value</Function>
+        <Unit>Fabrication number</Unit>
+        <Value>54000834</Value>
+        <Timestamp>1970-01-01T00:00:00</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="11">
+        <Function>Instantaneous value</Function>
+        <Unit>Software version</Unit>
+        <Value>262144</Value>
+        <Timestamp>1970-01-01T00:00:00</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="12">
+        <Function>More records follow</Function>
+        <Value></Value>
+        <Timestamp>1970-01-01T00:00:00</Timestamp>
+    </DataRecord>
+
+</MBusData>
