@@ -817,6 +817,36 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_ELV)
+        {
+            switch (header->version)
+            {
+                case 0x14:
+                case 0x15:
+                case 0x16:
+                case 0x17:
+                case 0x18:
+                case 0x19:
+                case 0x1A:
+                case 0x1B:
+                case 0x1C:
+                case 0x1D:
+                    strcpy(buff, "Elvaco CMa10");
+                    break;
+                case 0x32:
+                case 0x33:
+                case 0x34:
+                case 0x35:
+                case 0x36:
+                case 0x37:
+                case 0x38:
+                case 0x39:
+                case 0x3A:
+                case 0x3B:
+                    strcpy(buff,"Elvaco CMa11");
+                    break;
+            }
+        }
         else if (manufacturer == MBUS_VARIABLE_DATA_MAN_SLB) 
         {
             switch (header->version)
