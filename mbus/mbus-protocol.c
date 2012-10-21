@@ -3145,7 +3145,7 @@ mbus_data_variable_print(mbus_data_variable *data)
         {
             // DIF
             printf("DIF           = %.2X\n", record->drh.dib.dif);
-            printf("DIF.Extension = %s\n",  (record->drh.dib.dif & MBUS_DIB_DIF_EXTENSION_BIT) ? "Yes":"No");        
+            printf("DIF.Extension = %s\n",  (record->drh.dib.dif & MBUS_DIB_DIF_EXTENSION_BIT) ? "Yes":"No");
             printf("DIF.Function  = %s\n",  (record->drh.dib.dif & 0x30) ? "Minimum value" : "Instantaneous value" );
             printf("DIF.Data      = %.2X\n", record->drh.dib.dif & 0x0F);
 
@@ -3180,6 +3180,22 @@ mbus_data_variable_print(mbus_data_variable *data)
                 printf("DIFE[%zd].Data      = %.2X\n", j,  dife & 0x0F);            
             }
    
+            // VIF
+            printf("VIF           = %.2X\n", record->drh.vib.vif);
+            printf("VIF.Extension = %s\n",  (record->drh.vib.vif & MBUS_DIB_VIF_EXTENSION_BIT) ? "Yes":"No");
+            printf("VIF.Value     = %.2X\n", record->drh.vib.vif & 0x7F);
+            
+            // VIFE
+            for (j = 0; j < record->drh.vib.nvife; j++)
+            {
+                u_char vife = record->drh.vib.vife[j];
+                
+                printf("VIFE[%zd]           = %.2X\n", j,  vife);
+                printf("VIFE[%zd].Extension = %s\n",   j, (vife & MBUS_DIB_VIF_EXTENSION_BIT) ? "Yes" : "No");
+                printf("VIFE[%zd].Value     = %.2X\n", j,  vife & 0x7F);            
+            }
+            
+            printf("\n");
         }
     }
     
