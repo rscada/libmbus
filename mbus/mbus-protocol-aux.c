@@ -1690,6 +1690,12 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
     mbus_frame_data reply_data;
     mbus_frame *frame, *next_frame;
     int frame_count = 0, result;
+    
+    if (handle == NULL)
+    {
+        MBUS_ERROR("%s: Invalid M-Bus handle for request.\n", __PRETTY_FUNCTION__);
+        return 1;
+    }
 
     frame = mbus_frame_new(MBUS_FRAME_TYPE_SHORT);
     
