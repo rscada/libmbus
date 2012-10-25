@@ -817,6 +817,36 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_ELV)
+        {
+            switch (header->version)
+            {
+                case 0x14:
+                case 0x15:
+                case 0x16:
+                case 0x17:
+                case 0x18:
+                case 0x19:
+                case 0x1A:
+                case 0x1B:
+                case 0x1C:
+                case 0x1D:
+                    strcpy(buff, "Elvaco CMa10");
+                    break;
+                case 0x32:
+                case 0x33:
+                case 0x34:
+                case 0x35:
+                case 0x36:
+                case 0x37:
+                case 0x38:
+                case 0x39:
+                case 0x3A:
+                case 0x3B:
+                    strcpy(buff,"Elvaco CMa11");
+                    break;
+            }
+        }
         else if (manufacturer == MBUS_VARIABLE_DATA_MAN_SLB) 
         {
             switch (header->version)
@@ -2055,12 +2085,22 @@ mbus_vib_unit_lookup(mbus_value_information_block *vib)
             // VIFE = E001 0001 Customer
             snprintf(buff, sizeof(buff), "Customer");
         }
-        else if (vib->vife[0] == 0x9)
+        else if (vib->vife[0] == 0x1A)
+        {
+            // VIFE = E001 1010 Digital output (binary)
+            snprintf(buff, sizeof(buff), "Digital output (binary)");
+        }
+        else if (vib->vife[0] == 0x1B)
+        {
+            // VIFE = E001 1011 Digital input (binary)
+            snprintf(buff, sizeof(buff), "Digital input (binary)");
+        }
+        else if (vib->vife[0] == 0x09)
         {
             // VIFE = E001 0110 Password
             snprintf(buff, sizeof(buff), "Password");
         }
-        else if (vib->vife[0] == 0x0b)
+        else if (vib->vife[0] == 0x0B)
         {
             // VIFE = E000 1011 Parameter set identification
             snprintf(buff, sizeof(buff), "Parameter set identification");
@@ -2092,6 +2132,13 @@ mbus_vib_unit_lookup(mbus_value_information_block *vib)
     {
         // custom VIF
         snprintf(buff, sizeof(buff), "%s", vib->custom_vif);
+        return buff;
+    }
+    else if (vib->vif == 0xFC && (vib->vife[0] & 0x78) == 0x70)
+    {
+        // custom VIF
+        n = (vib->vife[0] & 0x07);
+        snprintf(buff, sizeof(buff), "%s %s", mbus_unit_prefix(n-6), vib->custom_vif);
         return buff;
     }
 
@@ -2676,21 +2723,30 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             // read and parse VIB (= VIF + VIFE)
 
             // VIF
-            record->drh.vib.vif = frame->data[i]; 
-                
-            if (record->drh.vib.vif == 0x7C)
+            record->drh.vib.vif = frame->data[i++];
+            
+            if ((record->drh.vib.vif & 0x7F) == 0x7C)
             {
                 // variable length VIF in ASCII format
                 int var_vif_len;
-                i++;
                 var_vif_len = frame->data[i++];
+                if (i + var_vif_len > frame->data_size)
+                {
+                    mbus_data_record_free(record);
+                    return -1;
+                }
                 mbus_data_str_decode(record->drh.vib.custom_vif, &(frame->data[i]), var_vif_len);
                 i += var_vif_len;
             }
-            else
+            
+            // VIFE
+            record->drh.vib.nvife = 0;
+            
+            if (record->drh.vib.vif & MBUS_DIB_VIF_EXTENSION_BIT)
             {
-                // VIFE
-                record->drh.vib.nvife = 0;
+                record->drh.vib.vife[0] = frame->data[i];
+                record->drh.vib.nvife++;
+                
                 while (frame->data[i] & MBUS_DIB_VIF_EXTENSION_BIT && 
                        record->drh.vib.nvife < NITEMS(record->drh.vib.vife))
                 {
@@ -2700,7 +2756,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                     record->drh.vib.nvife++;
                     i++;
                 }
-                i++;       
+                i++;
             }
                 
             // re-calculate data length, if of variable length type
@@ -3145,7 +3201,7 @@ mbus_data_variable_print(mbus_data_variable *data)
         {
             // DIF
             printf("DIF           = %.2X\n", record->drh.dib.dif);
-            printf("DIF.Extension = %s\n",  (record->drh.dib.dif & MBUS_DIB_DIF_EXTENSION_BIT) ? "Yes":"No");        
+            printf("DIF.Extension = %s\n",  (record->drh.dib.dif & MBUS_DIB_DIF_EXTENSION_BIT) ? "Yes":"No");
             printf("DIF.Function  = %s\n",  (record->drh.dib.dif & 0x30) ? "Minimum value" : "Instantaneous value" );
             printf("DIF.Data      = %.2X\n", record->drh.dib.dif & 0x0F);
 
@@ -3180,6 +3236,22 @@ mbus_data_variable_print(mbus_data_variable *data)
                 printf("DIFE[%zd].Data      = %.2X\n", j,  dife & 0x0F);            
             }
    
+            // VIF
+            printf("VIF           = %.2X\n", record->drh.vib.vif);
+            printf("VIF.Extension = %s\n",  (record->drh.vib.vif & MBUS_DIB_VIF_EXTENSION_BIT) ? "Yes":"No");
+            printf("VIF.Value     = %.2X\n", record->drh.vib.vif & 0x7F);
+            
+            // VIFE
+            for (j = 0; j < record->drh.vib.nvife; j++)
+            {
+                u_char vife = record->drh.vib.vife[j];
+                
+                printf("VIFE[%zd]           = %.2X\n", j,  vife);
+                printf("VIFE[%zd].Extension = %s\n",   j, (vife & MBUS_DIB_VIF_EXTENSION_BIT) ? "Yes" : "No");
+                printf("VIFE[%zd].Value     = %.2X\n", j,  vife & 0x7F);            
+            }
+            
+            printf("\n");
         }
     }
     
