@@ -65,6 +65,10 @@
 
 #include "mbus-protocol.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define MBUS_PROBE_NOTHING   0
 #define MBUS_PROBE_SINGLE    1
 #define MBUS_PROBE_COLLISION 2
@@ -432,5 +436,9 @@ char * mbus_frame_data_xml_normalized(mbus_frame_data *data);
  * @return zero when OK
  */
 int mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // __MBUS_PROTOCOL_AUX_H__
