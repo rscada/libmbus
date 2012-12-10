@@ -436,10 +436,10 @@ int mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask);
 /**
  * Convert a buffer with hex values into a buffer with binary values.
  *
- * @param src_buff    source buffer with hex values
- * @param src_len     byte count of source buffer
- * @param dest_buff   destination buffer with binary values
- * @param dest_len    byte count of destination buffer
+ * @param dst      destination buffer with binary values
+ * @param dst_len  byte count of destination buffer
+ * @param src      source buffer with hex values
+ * @param src_len  byte count of source buffer
  *
  * @return byte count of successful converted values
  */
