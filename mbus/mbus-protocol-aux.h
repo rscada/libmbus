@@ -433,4 +433,16 @@ char * mbus_frame_data_xml_normalized(mbus_frame_data *data);
  */
 int mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask);
 
+/**
+ * Convert a buffer with hex values into a buffer with binary values.
+ *
+ * @param src_buff    source buffer with hex values
+ * @param src_len     byte count of source buffer
+ * @param dest_buff   destination buffer with binary values
+ * @param dest_len    byte count of destination buffer
+ *
+ * @return byte count of successful converted values
+ */
+size_t mbus_hex2bin(u_char * dst, size_t dst_len, const u_char * src, size_t src_len);
+
 #endif // __MBUS_PROTOCOL_AUX_H__

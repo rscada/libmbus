@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include <math.h>
 
 #define MBUS_ERROR(...) fprintf (stderr, __VA_ARGS__)
@@ -2151,4 +2152,51 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
 
     free(mask);
     return 0;
+}
+
+//------------------------------------------------------------------------------
+// Convert a buffer with hex values into a buffer with binary values.
+// - invalid character stops convertion
+// - whitespaces will be ignored
+//------------------------------------------------------------------------------
+size_t
+mbus_hex2bin(u_char * dst, size_t dst_len, const u_char * src, size_t src_len)
+{
+    size_t i, result = 0;
+    unsigned long val;
+    u_char *ptr, *end, buf[3];
+    
+    if (!src || !dst)
+    {
+        return 0;
+    }
+    
+    memset(buf, 0, sizeof(buf));
+    memset(dst, 0, dst_len);
+    
+    for (i = 0; i+1 < src_len; i++)
+    {
+        // ignore whitespace
+        if (isspace(src[i]))
+            continue;
+    
+        buf[0] = src[i];
+        buf[1] = src[++i];
+        
+        end = buf;
+        ptr = end;
+        val = strtoul(ptr, (char **)&end, 16);
+        
+        // abort at non hex value 
+        if (ptr == end)
+            break;
+            
+        // abort at end of buffer
+        if (result >= dst_len)
+            break;
+            
+        dst[result++] = (u_char) val;
+    }
+    
+    return result;
 }
