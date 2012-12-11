@@ -1486,6 +1486,38 @@ mbus_disconnect(mbus_handle * handle)
 }
 
 int
+mbus_context_set_option(mbus_handle * handle, mbus_context_option option, long value)
+{
+    if (handle == NULL)
+    {
+        MBUS_ERROR("%s: Invalid M-Bus handle to set option.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+    
+    switch (option)
+    {
+        case MBUS_OPTION_MAX_RETRY:
+            if ((value >= 0) && (value <= 9))
+            {
+                handle->max_retry = value;
+                return 0;
+            }
+            break;
+        case MBUS_OPTION_PURGE_FIRST_FRAME:
+            if ((value == MBUS_FRAME_PURGE_NONE) ||
+                (value == MBUS_FRAME_PURGE_M2S)  ||
+                (value == MBUS_FRAME_PURGE_S2M))
+            {
+                handle->purge_first_frame = value;
+                return 0;
+            }
+            break;
+    }
+    
+    return -1; // unable to set option
+}
+
+int
 mbus_recv_frame(mbus_handle * handle, mbus_frame *frame)
 {
     int result = 0;
