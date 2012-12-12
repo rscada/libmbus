@@ -21,6 +21,10 @@
 #include <stdlib.h>
 #include <time.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //
 // Packet formats:
 //
@@ -631,6 +635,10 @@ u_char mbus_dif_datalength_lookup(u_char dif);
 
 char *mbus_frame_get_secondary_address(mbus_frame *frame);
 int   mbus_frame_select_secondary_pack(mbus_frame *frame, char *address);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _MBUS_PROTOCOL_H_ */
 

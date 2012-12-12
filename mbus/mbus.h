@@ -38,9 +38,17 @@
 #include <mbus/mbus-tcp.h>
 #include <mbus/mbus-serial.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //
 //
 //
 int mbus_init();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _MBUS_H_ */
