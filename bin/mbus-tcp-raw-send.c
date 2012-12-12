@@ -8,10 +8,6 @@
 //
 //------------------------------------------------------------------------------
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
 #include <string.h>
 
 #include <stdio.h>
@@ -30,8 +26,10 @@ main(int argc, char **argv)
     mbus_handle *handle = NULL;
 
     char *host, *addr_str, matching_addr[16], *file = NULL;
-    int port, address, fd, len, i, result;
-  	u_char raw_buff[4096], buff[4096], *ptr, *endptr;
+    int port, address, result;
+    FILE *fp = NULL;
+    size_t buff_len, len;
+  	u_char raw_buff[4096], buff[4096];
  
     memset((void *)&reply, 0, sizeof(mbus_frame));
     memset((void *)&reply_data, 0, sizeof(mbus_frame_data));
@@ -88,7 +86,7 @@ main(int argc, char **argv)
 
     if (mbus_connect(handle) == -1)
     {
-        fprintf(stderr, "Failed to setup connection to M-bus gateway\n");
+        fprintf(stderr, "Failed to setup connection to M-bus gateway\n%s\n", mbus_error_str());
         return 1;
     }
 
@@ -127,41 +125,35 @@ main(int argc, char **argv)
     //
     if (file != NULL)
     {
-      	if ((fd = open(file, O_RDONLY, 0)) == -1)
+        if ((fp = fopen(file, "r")) == NULL)
         {
-	    	fprintf(stderr, "%s: failed to open '%s'\n", __PRETTY_FUNCTION__, file);
+            fprintf(stderr, "%s: failed to open '%s'\n", __PRETTY_FUNCTION__, file);
             return 1;
         }
     }
     else
     {
-        fd = 0; // stdin
+        fp = stdin;
     }
 
-	memset(raw_buff, 0, sizeof(raw_buff));
-	len = read(fd, raw_buff, sizeof(raw_buff));
-	close(fd);
+    memset(raw_buff, 0, sizeof(raw_buff));
+    len = fread(raw_buff, 1, sizeof(raw_buff), fp);
 
-    ptr = 0;
-    endptr = raw_buff;
-    for (i = 0; i < sizeof(buff)-1; i++)
+    if (fp != stdin)
     {
-        ptr = endptr;
-        buff[i] = (u_char)strtol(ptr, (char **)&endptr, 16);
-        
-        // abort at non hex value 
-        if (ptr == endptr)
-            break;
+        fclose(fp);
     }
+    
+    buff_len = mbus_hex2bin(buff,sizeof(buff),raw_buff,sizeof(raw_buff));
     
     //
     // attempt to parse the input data
     //
-  	result = mbus_parse(&request, buff, i);
+    result = mbus_parse(&request, buff, buff_len);
     
-	if (result < 0)
-	{
-	    fprintf(stderr, "mbus_parse: %s\n", mbus_error_str());
+    if (result < 0)
+    {
+        fprintf(stderr, "mbus_parse: %s\n", mbus_error_str());
         return 1;
     }
     else if (result > 0)

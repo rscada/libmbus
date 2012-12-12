@@ -8,24 +8,19 @@
 //
 //------------------------------------------------------------------------------
 
-#include <sys/types.h>
-
 #include <err.h>
-#include <fcntl.h>
 #include <stdio.h>
-#include <termios.h>
-#include <unistd.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 
 #include <mbus/mbus-protocol.h>
 
 int
 main(int argc, char *argv[])
 {
-	int fd, len, i, result;
-	u_char raw_buff[4096], buff[4096], *ptr, *endptr;
+    FILE *fp = NULL;
+    size_t buff_len, len;
+	int result;
+	u_char raw_buff[4096], buff[4096];
 	mbus_frame reply;
 	mbus_frame_data frame_data;
 	char *xml_result = NULL;
@@ -35,38 +30,25 @@ main(int argc, char *argv[])
         fprintf(stderr, "usage: %s hex-file\n", argv[0]);
         return 1;
     }
-
-	if ((fd = open(argv[1], O_RDONLY, 0)) == -1)
+    
+    if ((fp = fopen(argv[1], "r")) == NULL)
     {
-		fprintf(stderr, "%s: failed to open '%s'", argv[0], argv[1]);
+        fprintf(stderr, "%s: failed to open '%s'\n", argv[0], argv[1]);
         return 1;
     }
-
-	memset(raw_buff, 0, sizeof(raw_buff));
-	len = read(fd, raw_buff, sizeof(raw_buff));
-	close(fd);
-
-    i = 0;
-    ptr    = 0;
-    endptr = raw_buff;
-    while (i < sizeof(buff)-1)
-    {
-        ptr = endptr;
-        buff[i] = (u_char)strtol(ptr, (char **)&endptr, 16);
-        
-        // abort at non hex value 
-        if (ptr == endptr)
-            break;
-           
-        i++;
-    }
+    
+    memset(raw_buff, 0, sizeof(raw_buff));
+    len = fread(raw_buff, 1, sizeof(raw_buff), fp);
+    fclose(fp);
+    
+    buff_len = mbus_hex2bin(buff,sizeof(buff),raw_buff,sizeof(raw_buff));
 
 	memset(&reply, 0, sizeof(reply));
 	memset(&frame_data, 0, sizeof(frame_data));
 	
 	//mbus_parse_set_debug(1);
 	
-	result = mbus_parse(&reply, buff, i);
+	result = mbus_parse(&reply, buff, buff_len);
 
 	if (result < 0)
 	{

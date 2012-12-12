@@ -8,23 +8,17 @@
 //
 //------------------------------------------------------------------------------
 
-#include <sys/types.h>
-
 #include <err.h>
-#include <fcntl.h>
 #include <stdio.h>
-#include <termios.h>
-#include <unistd.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 
 #include <mbus/mbus-protocol.h>
 
 int
 main(int argc, char *argv[])
 {
-	int fd, len;
+    FILE *fp = NULL;
+    size_t buff_len, len;
 	u_char buf[1024];
 	mbus_frame reply;
 	mbus_frame_data frame_data;
@@ -36,16 +30,15 @@ main(int argc, char *argv[])
         return 1;
     }
 
-	if ((fd = open(argv[1], O_RDONLY, 0)) == -1)
+	if ((fp = fopen(argv[1], "r")) == NULL)
     {
-		fprintf(stderr, "%s: failed to open '%s'", argv[0], argv[1]);
+        fprintf(stderr, "%s: failed to open '%s'\n", argv[0], argv[1]);
         return 1;
     }
 
 	memset(buf, 0, sizeof(buf));
-	len = read(fd, buf, sizeof(buf));
-
-	close(fd);
+	len = fread(buf, 1, sizeof(buf), fp);
+	fclose(fp);
 
 	memset(&reply, 0, sizeof(reply));
 	memset(&frame_data, 0, sizeof(frame_data));
