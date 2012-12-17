@@ -24,6 +24,8 @@
  *   or
  * mbus_handle = mbus_context_tcp(host, port);
  *
+ * mbus_context_set_option(mbus_handle,option,value); // optional
+ *
  * mbus_connect(mbus_handle);
  *
  *  ...
@@ -140,6 +142,15 @@ typedef struct _mbus_record {
     char               *quantity;       /**< Quantity type (e.g. Energy) */
 } mbus_record;
 
+/**
+ * MBus handle option type
+ */
+enum _mbus_context_option {
+    MBUS_OPTION_MAX_RETRY,
+    MBUS_OPTION_PURGE_FIRST_FRAME
+};
+
+typedef enum _mbus_context_option mbus_context_option;
 
 /**
  * Event callback functions
@@ -197,6 +208,17 @@ int mbus_connect(mbus_handle * handle);
  * @return Zero when successful.
  */
 int mbus_disconnect(mbus_handle * handle);
+
+/**
+ * Set option of a M-Bus context.
+ *
+ * @param handle Initialized handle
+ * @param option option to set
+ * @param value  value to set
+ *
+ * @return Zero when successful.
+ */
+int mbus_context_set_option(mbus_handle * handle, mbus_context_option option, long value);
 
 /** 
  * Receives a frame using "unified" handle
@@ -436,6 +458,18 @@ char * mbus_frame_data_xml_normalized(mbus_frame_data *data);
  * @return zero when OK
  */
 int mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask);
+
+/**
+ * Convert a buffer with hex values into a buffer with binary values.
+ *
+ * @param dst      destination buffer with binary values
+ * @param dst_len  byte count of destination buffer
+ * @param src      source buffer with hex values
+ * @param src_len  byte count of source buffer
+ *
+ * @return byte count of successful converted values
+ */
+size_t mbus_hex2bin(u_char * dst, size_t dst_len, const u_char * src, size_t src_len);
 
 #ifdef __cplusplus
 }

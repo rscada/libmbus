@@ -8,10 +8,6 @@
 //
 //------------------------------------------------------------------------------
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
 #include <string.h>
 
 #include <stdio.h>
@@ -90,7 +86,7 @@ main(int argc, char **argv)
         device = argv[3];   
         addr_mask = strdup("FFFFFFFFFFFFFFFF");
     }
-    else if (argc == 5 && strcmp(argv[1], "-d") == 0)
+    else if (argc == 5 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-b") == 0)
     {
         baudrate = atoi(argv[3]);
         device = argv[4];   

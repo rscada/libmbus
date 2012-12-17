@@ -19,7 +19,6 @@
 #define _MBUS_PROTOCOL_H_
 
 #include <stdlib.h>
-#include <sys/types.h>
 #include <time.h>
 
 #ifdef __cplusplus

@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include <math.h>
 
 #define MBUS_ERROR(...) fprintf (stderr, __VA_ARGS__)
@@ -1485,6 +1486,38 @@ mbus_disconnect(mbus_handle * handle)
 }
 
 int
+mbus_context_set_option(mbus_handle * handle, mbus_context_option option, long value)
+{
+    if (handle == NULL)
+    {
+        MBUS_ERROR("%s: Invalid M-Bus handle to set option.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+    
+    switch (option)
+    {
+        case MBUS_OPTION_MAX_RETRY:
+            if ((value >= 0) && (value <= 9))
+            {
+                handle->max_retry = value;
+                return 0;
+            }
+            break;
+        case MBUS_OPTION_PURGE_FIRST_FRAME:
+            if ((value == MBUS_FRAME_PURGE_NONE) ||
+                (value == MBUS_FRAME_PURGE_M2S)  ||
+                (value == MBUS_FRAME_PURGE_S2M))
+            {
+                handle->purge_first_frame = value;
+                return 0;
+            }
+            break;
+    }
+    
+    return -1; // unable to set option
+}
+
+int
 mbus_recv_frame(mbus_handle * handle, mbus_frame *frame)
 {
     int result = 0;
@@ -2151,4 +2184,51 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
 
     free(mask);
     return 0;
+}
+
+//------------------------------------------------------------------------------
+// Convert a buffer with hex values into a buffer with binary values.
+// - invalid character stops convertion
+// - whitespaces will be ignored
+//------------------------------------------------------------------------------
+size_t
+mbus_hex2bin(u_char * dst, size_t dst_len, const u_char * src, size_t src_len)
+{
+    size_t i, result = 0;
+    unsigned long val;
+    u_char *ptr, *end, buf[3];
+    
+    if (!src || !dst)
+    {
+        return 0;
+    }
+    
+    memset(buf, 0, sizeof(buf));
+    memset(dst, 0, dst_len);
+    
+    for (i = 0; i+1 < src_len; i++)
+    {
+        // ignore whitespace
+        if (isspace(src[i]))
+            continue;
+    
+        buf[0] = src[i];
+        buf[1] = src[++i];
+        
+        end = buf;
+        ptr = end;
+        val = strtoul(ptr, (char **)&end, 16);
+        
+        // abort at non hex value 
+        if (ptr == end)
+            break;
+            
+        // abort at end of buffer
+        if (result >= dst_len)
+            break;
+            
+        dst[result++] = (u_char) val;
+    }
+    
+    return result;
 }
