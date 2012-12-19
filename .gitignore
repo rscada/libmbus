@@ -53,6 +53,7 @@ bin/mbus-serial-scan
 bin/mbus-serial-scan-secondary
 bin/mbus-serial-select-secondary
 bin/mbus-serial-switch-baudrate
+bin/mbus-tcp-raw-send
 bin/mbus-tcp-request-data
 bin/mbus-tcp-request-data-multi-reply
 bin/mbus-tcp-scan

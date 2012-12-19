@@ -30,6 +30,8 @@ B<mbus-serial-select-secondary> [-b BAUDRATE] device secondary-mbus-address
 
 B<mbus-tcp-select-secondary> host port secondary-mbus-address
 
+B<mbus-tcp-raw-send> [-d] host port mbus-address [file]
+
 =head1 DESCRIPTION
 
 B<mbus-serial-switch-baudrate> - attempts to switch the communication speed of
@@ -51,6 +53,8 @@ Supports both primary and secondary address types.
 
 B<mbus-serial-select-secondary>, B<mbus-tcp-select-secondary> - perform single secondary
 address select to check what device responds.
+
+B<mbus-tcp-raw-send> - send a single raw hex frame to a MBus device.
 
 =head1 OPTIONS
 
@@ -112,6 +116,10 @@ MBus secondary address of the device. Sixteen digit hexadecimal number.
 =item B<target-baudrate>
 
 For serial communication, the baudrate to which the device should be switched.
+
+=item B<file>
+
+Path to an file with hex values. 
 
 =back
 
