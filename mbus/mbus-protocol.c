@@ -3958,7 +3958,7 @@ mbus_frame_select_secondary_pack(mbus_frame *frame, char *address)
     frame->control  = MBUS_CONTROL_MASK_SND_UD | MBUS_CONTROL_MASK_DIR_M2S | MBUS_CONTROL_MASK_FCB;
     frame->address  = MBUS_ADDRESS_NETWORK_LAYER;             // for addressing secondary slaves 
     frame->control_information = MBUS_CONTROL_INFO_SELECT_SLAVE; // mode 1
-
+    
     frame->data_size = 8;
 
     // parse secondary_addr_str and populate frame->data[0-7]
