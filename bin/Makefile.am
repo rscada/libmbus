@@ -77,6 +77,7 @@ dist_man_MANS = libmbus.1 \
                 mbus-tcp-request-data-multi-reply.1 \
                 mbus-tcp-select-secondary.1 \
                 mbus-tcp-scan-secondary.1 \
+                mbus-tcp-raw-send.1 \
                 mbus-serial-scan.1 \
                 mbus-serial-request-data.1 \
                 mbus-serial-request-data-multi-reply.1 \
