@@ -1983,7 +1983,7 @@ mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *match
     if (ret == MBUS_PROBE_SINGLE)
     {
         /* send a data request command to find out the full address */
-        if (mbus_send_request_frame(handle, 253) == -1)
+        if (mbus_send_request_frame(handle, MBUS_ADDRESS_NETWORK_LAYER) == -1)
         {
             MBUS_ERROR("%s: Failed to send request to selected secondary device [mask %s]: %s.\n",
                        __PRETTY_FUNCTION__,
@@ -2082,7 +2082,7 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
         }
         /* else MBUS_PROBE_SINGLE */
 
-        if (mbus_send_request_frame(handle, 253) == -1)
+        if (mbus_send_request_frame(handle, MBUS_ADDRESS_NETWORK_LAYER) == -1)
         {
             MBUS_ERROR("%s: Failed to send M-Bus request frame.\n",
                        __PRETTY_FUNCTION__);
