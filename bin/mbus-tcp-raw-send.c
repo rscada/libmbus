@@ -112,7 +112,7 @@ main(int argc, char **argv)
             fprintf(stderr, "%s: Error: Failed to select secondary address [%s].\n", __PRETTY_FUNCTION__, addr_str);
             return 1;    
         }
-        address = 253;
+        address = MBUS_ADDRESS_NETWORK_LAYER;
     } 
     else
     {
