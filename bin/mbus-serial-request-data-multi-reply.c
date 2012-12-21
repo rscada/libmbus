@@ -146,7 +146,7 @@ main(int argc, char **argv)
         }
         // else MBUS_PROBE_SINGLE
 
-        address = 253;
+        address = MBUS_ADDRESS_NETWORK_LAYER;
     } 
     else
     {
