@@ -2554,6 +2554,14 @@ mbus_parse(mbus_frame *frame, u_char *data, size_t data_size)
                 frame->length1  = data[1];
                 frame->length2  = data[2];
                 
+                if (frame->length1 < 3)
+                {
+                    snprintf(error_str, sizeof(error_str), "Invalid M-Bus frame length.");
+                
+                    // not a valid M-bus frame
+                    return -2;
+                }
+                
                 if (frame->length1 != frame->length2)
                 {
                     snprintf(error_str, sizeof(error_str), "Invalid M-Bus frame length.");
