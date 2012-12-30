@@ -20,3 +20,13 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libc6
 Description: FreeSCADA M-Bus Library.
  A free and open-source library for M-Bus (Meter Bus) from the rSCADA project.
+
+Package: libmbus1-dbg
+Architecture: any
+Section: debug
+Priority: extra
+Depends: libmbus1 (= ${binary:Version}), ${misc:Depends}
+Description: debugging symbols for libmbus1
+ A free and open-source library for M-Bus (Meter Bus) from the rSCADA project,
+ including debugging symbols.
+
