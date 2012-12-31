@@ -40,7 +40,7 @@ main(int argc, char **argv)
         return 1;
     }
 
-    if (strlen(addr) != 16)
+    if (mbus_is_secondary_address(addr) == 0)
     {
         printf("Misformatted secondary address. Must be 16 character HEX number.\n");
         return 1;
