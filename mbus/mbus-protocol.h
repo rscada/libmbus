@@ -636,6 +636,9 @@ u_char mbus_dif_datalength_lookup(u_char dif);
 char *mbus_frame_get_secondary_address(mbus_frame *frame);
 int   mbus_frame_select_secondary_pack(mbus_frame *frame, char *address);
 
+int mbus_is_primary_address(int value);
+int mbus_is_secondary_address(const char * value);
+
 #ifdef __cplusplus
 }
 #endif
