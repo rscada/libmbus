@@ -3957,9 +3957,15 @@ mbus_frame_select_secondary_pack(mbus_frame *frame, char *address)
     int val, i, j, k;
     char tmp[16];
 
-    if (frame == NULL || address == NULL || strlen(address) != 16)
+    if (frame == NULL || address == NULL)
     {
-        snprintf(error_str, sizeof(error_str), "%s: frame or address arguments are NULL or invalid.", __PRETTY_FUNCTION__);
+        snprintf(error_str, sizeof(error_str), "%s: frame or address arguments are NULL.", __PRETTY_FUNCTION__);
+        return -1;
+    }
+    
+    if (mbus_is_secondary_address(address) == 0)
+    {
+        snprintf(error_str, sizeof(error_str), "%s: address is invalid.", __PRETTY_FUNCTION__);
         return -1;
     }
 
@@ -4010,4 +4016,36 @@ mbus_frame_select_secondary_pack(mbus_frame *frame, char *address)
     }
 
     return 0;
+}
+
+//---------------------------------------------------------
+// Checks if an integer is a valid primary address.
+//---------------------------------------------------------
+int
+mbus_is_primary_address(int value)
+{
+    return ((value >= 0x00) && (value <= 0xFF));
+}
+
+//---------------------------------------------------------
+// Checks if an string is a valid secondary address.
+//---------------------------------------------------------
+int
+mbus_is_secondary_address(const char * value)
+{
+    int i;
+    
+    if (value == NULL)
+        return 0;
+        
+    if (strlen(value) != 16)
+        return 0;
+        
+    for (i = 0; i < 16; i++)
+    {
+        if (!isxdigit(value[i]))
+            return 0;
+    }
+    
+    return 1;
 }
