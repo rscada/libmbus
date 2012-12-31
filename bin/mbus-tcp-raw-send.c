@@ -90,7 +90,7 @@ main(int argc, char **argv)
         return 1;
     }
 
-    if (strlen(addr_str) == 16)
+    if (mbus_is_secondary_address(addr_str))
     {
         // secondary addressing
         int ret;
