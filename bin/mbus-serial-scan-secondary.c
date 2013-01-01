@@ -128,7 +128,7 @@ main(int argc, char **argv)
         return 1;
     }
  
-    if (strlen(addr_mask) != 16)
+    if (mbus_is_secondary_address(addr_mask) == 0)
     {
         fprintf(stderr, "Misformatted secondary address mask. Must be 16 character HEX number.\n");
         free(addr_mask);

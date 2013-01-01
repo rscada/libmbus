@@ -1629,6 +1629,12 @@ mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, int baudrate)
     int control_information = 0;
     mbus_frame *frame;
     
+    if (mbus_is_primary_address(address) == 0)
+    {
+        MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, address);
+        return -1;
+    }
+    
     switch (baudrate)
     {
       case 300:
@@ -1690,6 +1696,12 @@ mbus_send_request_frame(mbus_handle * handle, int address)
 {
     int retval = 0;
     mbus_frame *frame;
+    
+    if (mbus_is_primary_address(address) == 0)
+    {
+        MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, address);
+        return -1;
+    }
 
     frame = mbus_frame_new(MBUS_FRAME_TYPE_SHORT);
     
@@ -1727,6 +1739,12 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
     if (handle == NULL)
     {
         MBUS_ERROR("%s: Invalid M-Bus handle for request.\n", __PRETTY_FUNCTION__);
+        return 1;
+    }
+    
+    if (mbus_is_primary_address(address) == 0)
+    {
+        MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, address);
         return 1;
     }
 
@@ -1880,6 +1898,12 @@ mbus_send_ping_frame(mbus_handle *handle, int address, char purge_response)
 {
     int retval = 0;
     mbus_frame *frame;
+    
+    if (mbus_is_primary_address(address) == 0)
+    {
+        MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, address);
+        return 1;
+    }
         
     frame = mbus_frame_new(MBUS_FRAME_TYPE_SHORT);
     
