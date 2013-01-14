@@ -224,6 +224,7 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
 #ifdef MBUS_SERIAL_DEBUG
     // if debug, dump in HEX form to stdout what we write to the serial port
     printf("%s: Dumping M-Bus frame [%d bytes]: ", __PRETTY_FUNCTION__, len);
+    int i;
     for (i = 0; i < len; i++)
     {
        printf("%.2X ", buff[i]);
