@@ -8,5 +8,5 @@ Description: Open source M-bus (Meter-Bus) library.
 Requires: 
 Version: @PACKAGE_VERSION@
 URL: http://www.rscada.se/libmbus/
-Libs: -L${libdir} -lmbus
+Libs: -L${libdir} -lmbus -lm
 Cflags: -I${includedir}
