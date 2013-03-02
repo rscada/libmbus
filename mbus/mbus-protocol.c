@@ -1619,7 +1619,7 @@ mbus_vif_unit_lookup(u_char vif)
     static char buff[256];
     int n;
 
-    switch (vif & 0x7F) // ignore the extension bit in this selection
+    switch (vif & MBUS_DIB_VIF_WITHOUT_EXTENSION) // ignore the extension bit in this selection
     {
         // E000 0nnn Energy 10(nnn-3) W
         case 0x00:
@@ -2175,8 +2175,8 @@ mbus_data_record_decode(mbus_data_record *record)
     u_char vif, vife;
     
     // ignore extension bit
-    vif = (record->drh.vib.vif & 0x7F);       
-    vife = (record->drh.vib.vife[0] & 0x7F);
+    vif = (record->drh.vib.vif & MBUS_DIB_VIF_WITHOUT_EXTENSION);       
+    vife = (record->drh.vib.vife[0] & MBUS_DIB_VIF_WITHOUT_EXTENSION);
 
     if (record)
     {
@@ -2691,9 +2691,10 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             // DIF
             record->drh.dib.dif = frame->data[i];
 
-            if (record->drh.dib.dif == 0x0F || record->drh.dib.dif == 0x1F)
+            if ((record->drh.dib.dif == MBUS_DIB_DIF_MANUFACTURER_SPECIFIC) || 
+                (record->drh.dib.dif == MBUS_DIB_DIF_MORE_RECORDS_FOLLOW))
             {
-                if ((record->drh.dib.dif & 0xFF) == 0x1F)
+                if ((record->drh.dib.dif & 0xFF) == MBUS_DIB_DIF_MORE_RECORDS_FOLLOW)
                 {
                   data->more_records_follow = 1;
                 }
@@ -2733,7 +2734,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             // VIF
             record->drh.vib.vif = frame->data[i++];
             
-            if ((record->drh.vib.vif & 0x7F) == 0x7C)
+            if ((record->drh.vib.vif & MBUS_DIB_VIF_WITHOUT_EXTENSION) == 0x7C)
             {
                 // variable length VIF in ASCII format
                 int var_vif_len;
@@ -3214,7 +3215,8 @@ mbus_data_variable_print(mbus_data_variable *data)
             printf("DIF.Data      = %.2X\n", record->drh.dib.dif & 0x0F);
 
             // VENDOR SPECIFIC
-            if (record->drh.dib.dif == 0x0F || record->drh.dib.dif == 0x1F) //MBUS_DIB_DIF_VENDOR_SPECIFIC)
+            if ((record->drh.dib.dif == MBUS_DIB_DIF_MANUFACTURER_SPECIFIC) || 
+                (record->drh.dib.dif == MBUS_DIB_DIF_MORE_RECORDS_FOLLOW)) //MBUS_DIB_DIF_VENDOR_SPECIFIC
             {
                 printf("%s: VENDOR DATA [size=%zd] = ", __PRETTY_FUNCTION__, record->data_len);
                 for (j = 0; j < record->data_len; j++)
@@ -3223,7 +3225,7 @@ mbus_data_variable_print(mbus_data_variable *data)
                 }
                 printf("\n");
                 
-                if (record->drh.dib.dif == 0x1F)
+                if (record->drh.dib.dif == MBUS_DIB_DIF_MORE_RECORDS_FOLLOW)
                 {
                   printf("%s: More records follow in next telegram\n", __PRETTY_FUNCTION__);
                 }
@@ -3247,7 +3249,7 @@ mbus_data_variable_print(mbus_data_variable *data)
             // VIF
             printf("VIF           = %.2X\n", record->drh.vib.vif);
             printf("VIF.Extension = %s\n",  (record->drh.vib.vif & MBUS_DIB_VIF_EXTENSION_BIT) ? "Yes":"No");
-            printf("VIF.Value     = %.2X\n", record->drh.vib.vif & 0x7F);
+            printf("VIF.Value     = %.2X\n", record->drh.vib.vif & MBUS_DIB_VIF_WITHOUT_EXTENSION);
             
             // VIFE
             for (j = 0; j < record->drh.vib.nvife; j++)
@@ -3256,7 +3258,7 @@ mbus_data_variable_print(mbus_data_variable *data)
                 
                 printf("VIFE[%zd]           = %.2X\n", j,  vife);
                 printf("VIFE[%zd].Extension = %s\n",   j, (vife & MBUS_DIB_VIF_EXTENSION_BIT) ? "Yes" : "No");
-                printf("VIFE[%zd].Value     = %.2X\n", j,  vife & 0x7F);            
+                printf("VIFE[%zd].Value     = %.2X\n", j,  vife & MBUS_DIB_VIF_WITHOUT_EXTENSION);            
             }
             
             printf("\n");
@@ -3468,12 +3470,12 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
                             "    <DataRecord id=\"%d\">\n", record_cnt);
         }
     
-        if (record->drh.dib.dif == 0x0F) // MBUS_DIB_DIF_VENDOR_SPECIFIC
+        if (record->drh.dib.dif == MBUS_DIB_DIF_MANUFACTURER_SPECIFIC) // MBUS_DIB_DIF_VENDOR_SPECIFIC
         {
             len += snprintf(&buff[len], sizeof(buff) - len, 
                             "        <Function>Manufacturer specific</Function>\n");                
         }
-        else if (record->drh.dib.dif == 0x1F)
+        else if (record->drh.dib.dif == MBUS_DIB_DIF_MORE_RECORDS_FOLLOW)
         {
             len += snprintf(&buff[len], sizeof(buff) - len, 
                             "        <Function>More records follow</Function>\n");

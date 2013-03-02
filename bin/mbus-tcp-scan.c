@@ -62,7 +62,7 @@ main(int argc, char **argv)
     if (debug)
         printf("Scanning primary addresses:\n");
 
-    for (address = 0; address <= 250; address++)
+    for (address = 0; address <= MBUS_MAX_PRIMARY_SLAVES; address++)
     {
         mbus_frame reply;
 
