@@ -123,8 +123,13 @@ typedef struct _mbus_slave_data {
 //
 
 // DATA RECORDS
-#define MBUS_DIB_DIF_EXTENSION_BIT  0x80
-#define MBUS_DIB_VIF_EXTENSION_BIT  0x80
+#define MBUS_DIB_DIF_WITHOUT_EXTENSION     0x7F
+#define MBUS_DIB_DIF_EXTENSION_BIT         0x80
+#define MBUS_DIB_VIF_WITHOUT_EXTENSION     0x7F
+#define MBUS_DIB_VIF_EXTENSION_BIT         0x80
+#define MBUS_DIB_DIF_MANUFACTURER_SPECIFIC 0x0F
+#define MBUS_DIB_DIF_MORE_RECORDS_FOLLOW   0x1F
+
 
 typedef struct _mbus_data_information_block {
         
@@ -313,7 +318,7 @@ typedef struct _mbus_data_secondary_address {
 //
 //
 //
-#define MBUS_MAX_PRIMARY_SLAVES 256
+#define MBUS_MAX_PRIMARY_SLAVES            250
 
 //
 // Control field

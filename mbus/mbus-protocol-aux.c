@@ -787,8 +787,8 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
         MBUS_DEBUG("coding = 0x%02X \n", record->drh.dib.dif);
         
         // ignore extension bit
-        vif = (record->drh.vib.vif & 0x7F);       
-        vife = (record->drh.vib.vife[0] & 0x7F);
+        vif = (record->drh.vib.vif & MBUS_DIB_VIF_WITHOUT_EXTENSION);       
+        vife = (record->drh.vib.vife[0] & MBUS_DIB_VIF_WITHOUT_EXTENSION);
 
         switch (record->drh.dib.dif & 0x0F)
         {
@@ -1004,7 +1004,7 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
             return -1;
         }
 
-        int code = ((vib->vife[0]) & 0x7f) | 0x100;
+        int code = ((vib->vife[0]) & MBUS_DIB_VIF_WITHOUT_EXTENSION) | 0x100;
         if (mbus_vif_unit_normalize(code, value, unit_out, value_out, quantity_out) != 0)
         {
             MBUS_ERROR("%s: Error mbus_vif_unit_normalize\n", __PRETTY_FUNCTION__);
@@ -1019,7 +1019,7 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
                 return -1;
             }
             
-            int code = ((vib->vife[0]) & 0x7f) | 0x200;
+            int code = ((vib->vife[0]) & MBUS_DIB_VIF_WITHOUT_EXTENSION) | 0x200;
             if (0 != mbus_vif_unit_normalize(code, value, unit_out, value_out, quantity_out))
             {
                 MBUS_ERROR("%s: Error mbus_vif_unit_normalize\n", __PRETTY_FUNCTION__);
@@ -1036,7 +1036,7 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
         }
         else
         {
-            int code = (vib->vif) & 0x7f;
+            int code = (vib->vif) & MBUS_DIB_VIF_WITHOUT_EXTENSION;
             if (0 != mbus_vif_unit_normalize(code, value, unit_out, value_out, quantity_out))
             {
                 MBUS_ERROR("%s: Error mbus_vif_unit_normalize\n", __PRETTY_FUNCTION__);
@@ -1191,9 +1191,10 @@ mbus_parse_variable_record(mbus_data_record *data)
         return NULL;
     }
  
-    if (data->drh.dib.dif == 0x0F || data->drh.dib.dif == 0x1F) /* MBUS_DIB_DIF_VENDOR_SPECIFIC */
+    if ((data->drh.dib.dif == MBUS_DIB_DIF_MANUFACTURER_SPECIFIC) || 
+        (data->drh.dib.dif == MBUS_DIB_DIF_MORE_RECORDS_FOLLOW)) /* MBUS_DIB_DIF_VENDOR_SPECIFIC */
     {
-        if (data->drh.dib.dif == 0x1F)
+        if (data->drh.dib.dif == MBUS_DIB_DIF_MORE_RECORDS_FOLLOW)
         {
             record->function_medium = strdup("More records follow");
         }
