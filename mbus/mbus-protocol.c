@@ -2677,6 +2677,12 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
         while (i < frame->data_size)
         {
+            // Skip filler dif=2F
+            while (((frame->data[i] & 0xFF) == 0x2F) && (i < frame->data_size)) {
+              i++;
+            }
+            if (i == frame->data_size) break;
+
             if ((record = mbus_data_record_new()) == NULL)
             {
                 // clean up...
