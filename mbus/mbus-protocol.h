@@ -129,6 +129,7 @@ typedef struct _mbus_slave_data {
 #define MBUS_DIB_VIF_EXTENSION_BIT         0x80
 #define MBUS_DIB_DIF_MANUFACTURER_SPECIFIC 0x0F
 #define MBUS_DIB_DIF_MORE_RECORDS_FOLLOW   0x1F
+#define MBUS_DIB_DIF_IDLE_FILLER           0x2F
 
 
 typedef struct _mbus_data_information_block {
