@@ -8,10 +8,11 @@ dnl info@rscada.se
 dnl 
 dnl ----------------------------------------------------------------------------
 
-AC_INIT([libmbus], [0.8.0], [info@rscada.se], [libmbus], [http://www.rscada.se/libmbus/])
-AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+LT_CONFIG_LTDL_DIR([libltdl])
 
-AC_CONFIG_MACRO_DIR([m4])
+AC_INIT([libmbus], [0.8.0], [info@rscada.se], [libmbus], [http://www.rscada.se/libmbus/])
+AC_CONFIG_AUX_DIR([libltdl/config])
+AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
 AM_PROG_LIBTOOL
 
