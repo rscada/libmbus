@@ -15,6 +15,9 @@ AC_CONFIG_AUX_DIR([libltdl/config])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
 AM_PROG_LIBTOOL
+#fix for automake 1.12
+m4_pattern_allow([AM_PROG_AR])
+AM_PROG_AR
 
 LDFLAGS="$LDFLAGS -version-info 0:8:0"
 
