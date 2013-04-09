@@ -46,7 +46,7 @@ extern "C" {
 //
 //
 int mbus_init();
-char* mbus_get_current_version();
+const char* mbus_get_current_version();
 
 #ifdef __cplusplus
 }
