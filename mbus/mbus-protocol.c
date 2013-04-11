@@ -3827,6 +3827,10 @@ mbus_frame_data_new()
     {
         return NULL;
     }
+    
+    memset(data, 0, sizeof(mbus_frame_data));
+    
+    data->data_var.data = NULL;
     data->data_var.record = NULL;
 
     return data;
