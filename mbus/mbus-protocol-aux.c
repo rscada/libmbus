@@ -1146,6 +1146,13 @@ mbus_parse_fixed_record(char status_byte, char medium_unit, u_char *data)
 
     /* shared/static memory - get own copy */
     record->function_medium = strdup(mbus_data_fixed_function((int)status_byte));  /* stored / actual */
+    
+    if (record->function_medium == NULL)
+    {
+        MBUS_ERROR("%s: memory allocation error\n", __PRETTY_FUNCTION__);
+        mbus_record_free(record);
+        return NULL;
+    }
 
     long value = 0;
     if ((status_byte & MBUS_DATA_FIXED_STATUS_FORMAT_MASK) == MBUS_DATA_FIXED_STATUS_FORMAT_BCD)
@@ -1202,6 +1209,13 @@ mbus_parse_variable_record(mbus_data_record *data)
         {
             record->function_medium = strdup("Manufacturer specific");
         }
+        
+        if (record->function_medium == NULL)
+        {
+            MBUS_ERROR("%s: memory allocation error\n", __PRETTY_FUNCTION__);
+            mbus_record_free(record);
+            return NULL;
+        }
     
         /* parsing of data not implemented yet
            manufacturer specific data structures to end of user data */
@@ -1228,6 +1242,14 @@ mbus_parse_variable_record(mbus_data_record *data)
     else
     {
         record->function_medium = strdup(mbus_data_record_function(data));
+        
+        if (record->function_medium == NULL)
+        {
+            MBUS_ERROR("%s: memory allocation error\n", __PRETTY_FUNCTION__);
+            mbus_record_free(record);
+            return NULL;
+        }
+        
         MBUS_DEBUG("record->function_medium = %s \n", record->function_medium);     
 
         if (mbus_variable_value_decode(data, &value_out_real, &value_out_str, &value_out_str_size) != 0)
