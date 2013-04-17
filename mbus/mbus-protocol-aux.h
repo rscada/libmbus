@@ -83,7 +83,7 @@ extern "C" {
 /**
  * Unified MBus handle type encapsulating either Serial or TCP gateway.
  */
-struct _mbus_handle {
+typedef struct _mbus_handle {
     int fd;
     int max_retry;
     char purge_first_frame;
@@ -94,9 +94,7 @@ struct _mbus_handle {
     int (*recv) (struct _mbus_handle *handle, mbus_frame *frame);
     void (*free_auxdata) (struct _mbus_handle *handle);
     void *auxdata;
-};
-
-typedef struct _mbus_handle mbus_handle;
+} mbus_handle;
 
 /**
  * MBus slave address type (primary/secodary address)
@@ -143,14 +141,12 @@ typedef struct _mbus_record {
 } mbus_record;
 
 /**
- * MBus handle option type
+ * MBus handle option enumeration
  */
-enum _mbus_context_option {
-    MBUS_OPTION_MAX_RETRY,
-    MBUS_OPTION_PURGE_FIRST_FRAME
-};
-
-typedef enum _mbus_context_option mbus_context_option;
+typedef enum _mbus_context_option {
+    MBUS_OPTION_MAX_RETRY,  /**< option defines the maximum attempts of data retransmission */
+    MBUS_OPTION_PURGE_FIRST_FRAME  /**< option controls the echo cancelation for mbus_recv_frame */
+} mbus_context_option;
 
 /**
  * Event callback functions
@@ -271,7 +267,7 @@ int mbus_send_select_frame(mbus_handle * handle, const char *secondary_addr_str)
 int mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, int baudrate);
 
 /** 
- * Sends request frame to given slave using "unified" handle
+ * Sends request frame (REQ_UD2) to given slave using "unified" handle
  * 
  * @param handle  Initialized handle
  * @param address Address (0-255)
@@ -367,7 +363,7 @@ mbus_record *mbus_parse_fixed_record(char statusByte, char medium_unit_byte, u_c
 /** 
  * Create/parse single counter from the variable data structure record
  * 
- * @param data record data to be parsed
+ * @param record record data to be parsed
  * 
  * @return Newly allocated record if succesful, NULL otherwise. Later on need to use #mbus_record_free
  */
@@ -452,6 +448,7 @@ char * mbus_frame_data_xml_normalized(mbus_frame_data *data);
  * Iterate over secondary addresses, send a probe package to all addresses matching
  * the given addresses mask.
  * 
+ * @param handle      Initialized handle
  * @param pos         current address
  * @param addr_mask   address mask to 
  * 
