@@ -10,9 +10,9 @@ the communication with M-Bus devices.
 
 B<mbus-serial-switch-baudrate> [-b BAUDRATE] device address target-baudrate
 
-B<mbus-serial-scan> [-d] [-b BAUDRATE] device
+B<mbus-serial-scan> [-d] [-b BAUDRATE] [-r RETRIES] device
 
-B<mbus-tcp-scan> [-d] host port
+B<mbus-tcp-scan> [-d] [-r RETRIES] host port
 
 B<mbus-serial-scan-secondary> [-d] [-b BAUDRATE] device [address-mask]
 
@@ -71,6 +71,13 @@ libmbus supports following baud rates: 300, 600, 1200, 2400, 4800, 9600, 19200,
 Note that your MBus gateway and/or MBus device will most likely support only
 a subset of these. The most commonlu used/supported rates are probably 9600, 2400
 and 300.
+
+=item B<-r> I<RETRIES>
+
+Maximum retransmissions. In case a MBus device doesn't reply to a request or
+the response is erroneous, the MBus master can send a retransmissions.
+
+libmbus supports the following range of retransmission: 0 until 9
 
 =item B<-d>
 

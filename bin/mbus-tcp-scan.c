@@ -13,15 +13,48 @@
 #include <stdio.h>
 #include <mbus/mbus.h>
 
+static int debug = 0;
+
+int ping_address(mbus_handle *handle, mbus_frame *reply, int address)
+{
+    int i, ret = MBUS_RECV_RESULT_ERROR;
+    
+    memset((void *)reply, 0, sizeof(mbus_frame));
+
+    for (i = 0; i <= handle->max_retry; i++)
+    {
+        if (debug)
+        {
+            printf("%d ", address);
+            fflush(stdout);
+        }
+    
+        if (mbus_send_ping_frame(handle, address, 0) == -1)
+        {
+            printf("Scan failed. Could not send ping frame: %s\n", mbus_error_str());
+            return MBUS_RECV_RESULT_ERROR;
+        } 
+     
+        ret = mbus_recv_frame(handle, reply);
+    
+        if (ret != MBUS_RECV_RESULT_TIMEOUT)
+        {
+            return ret;
+        }
+    }
+    
+    return ret;
+}
+
 //------------------------------------------------------------------------------
-// Execution starts here:
+// Primary addressing scanning of mbus devices.
 //------------------------------------------------------------------------------
 int
 main(int argc, char **argv)
 {
     mbus_handle *handle;
     char *host;
-    int port, address, debug = 0;
+    int port, address, retries = 0;
     int ret;
 
     if (argc == 3)
@@ -35,9 +68,22 @@ main(int argc, char **argv)
         host = argv[2];   
         port = atoi(argv[3]);
     }
+    else if (argc == 5 && strcmp(argv[1], "-r") == 0)
+    {
+        retries = atoi(argv[2]); 
+        host = argv[3];   
+        port = atoi(argv[4]);
+    }
+    else if (argc == 6 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-r") == 0)
+    {
+        debug = 1;
+        retries = atoi(argv[3]); 
+        host = argv[4];   
+        port = atoi(argv[5]);
+    }
     else
     {
-        printf("usage: %s [-d] host port\n", argv[0]);
+        printf("usage: %s [-d] [-r RETRIES] host port\n", argv[0]);
         return 0;
     }
     
@@ -55,7 +101,13 @@ main(int argc, char **argv)
 
     if (mbus_connect(handle) == -1)
     {
-        printf("Scan failed: Could not setup connection to M-bus gateway: %s\n",  mbus_error_str());
+        printf("Scan failed: Could not setup connection to M-bus gateway: %s\n", mbus_error_str());
+        return 1;
+    }
+    
+    if (mbus_context_set_option(handle, MBUS_OPTION_MAX_RETRY, retries) == -1)
+    {
+        printf("Failed to set retry count\n");
         return 1;
     }
 
@@ -66,29 +118,12 @@ main(int argc, char **argv)
     {
         mbus_frame reply;
 
-        memset((void *)&reply, 0, sizeof(mbus_frame));
-
-        if (debug)
-        {
-            printf("%d ", address);
-            fflush(stdout);
-        }
-
-        if (mbus_send_ping_frame(handle, address, 0) == -1)
-        {
-            printf("Scan failed. Could not send ping frame: %s\n", mbus_error_str());
-            return 1;
-        } 
+        ret = ping_address(handle, &reply, address);
         
-        ret = mbus_recv_frame(handle, &reply);
-
         if (ret == MBUS_RECV_RESULT_TIMEOUT)
         {
             continue;
         }
-        
-        if (debug)
-            printf("\n");
         
         if (ret == MBUS_RECV_RESULT_INVALID)
         {

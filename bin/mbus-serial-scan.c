@@ -15,6 +15,37 @@
 
 static int debug = 0;
 
+int ping_address(mbus_handle *handle, mbus_frame *reply, int address)
+{
+    int i, ret = MBUS_RECV_RESULT_ERROR;
+    
+    memset((void *)reply, 0, sizeof(mbus_frame));
+
+    for (i = 0; i <= handle->max_retry; i++)
+    {
+        if (debug)
+        {
+            printf("%d ", address);
+            fflush(stdout);
+        }
+    
+        if (mbus_send_ping_frame(handle, address, 0) == -1)
+        {
+            printf("Scan failed. Could not send ping frame: %s\n", mbus_error_str());
+            return MBUS_RECV_RESULT_ERROR;
+        } 
+     
+        ret = mbus_recv_frame(handle, reply);
+    
+        if (ret != MBUS_RECV_RESULT_TIMEOUT)
+        {
+            return ret;
+        }
+    }
+    
+    return ret;
+}
+
 //------------------------------------------------------------------------------
 // Primary addressing scanning of mbus devices.
 //------------------------------------------------------------------------------
@@ -23,7 +54,7 @@ main(int argc, char **argv)
 {
     mbus_handle *handle;
     char *device;
-    int address, baudrate = 9600;
+    int address, baudrate = 9600, retries = 0;
     int ret;
 
     if (argc == 2)
@@ -40,15 +71,39 @@ main(int argc, char **argv)
         baudrate = atoi(argv[2]); 
         device = argv[3];
     }
+    else if (argc == 4 && strcmp(argv[1], "-r") == 0)
+    {
+        retries = atoi(argv[2]); 
+        device = argv[3];
+    }
     else if (argc == 5 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-b") == 0)
     {
         debug = 1;    
         baudrate = atoi(argv[3]); 
         device = argv[4];
     }
+    else if (argc == 5 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-r") == 0)
+    {
+        debug = 1;    
+        retries = atoi(argv[3]); 
+        device = argv[4];
+    }
+    else if (argc == 6 && strcmp(argv[1], "-b") == 0 && strcmp(argv[3], "-r") == 0)
+    {    
+        baudrate = atoi(argv[2]);
+        retries = atoi(argv[4]);
+        device = argv[5];
+    }
+    else if (argc == 7 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-b") == 0 && strcmp(argv[4], "-r") == 0)
+    {
+        debug = 1;    
+        baudrate = atoi(argv[3]);
+        retries = atoi(argv[5]);
+        device = argv[6];
+    }
     else
     {
-        fprintf(stderr, "usage: %s [-d] [-b BAUDRATE] device\n", argv[0]);
+        printf("usage: %s [-d] [-b BAUDRATE] [-r RETRIES] device\n", argv[0]);
         return 0;
     }
     
@@ -60,13 +115,19 @@ main(int argc, char **argv)
     
     if ((handle = mbus_context_serial(device)) == NULL)
     {
-        fprintf(stderr, "Could not initialize M-Bus context: %s\n",  mbus_error_str());
+        printf("Scan failed: Could not initialize M-Bus context: %s\n",  mbus_error_str());
         return 1;
     }
 
     if (mbus_connect(handle) == -1)
     {
-        printf("Failed to setup connection to M-bus gateway\n");
+        printf("Scan failed: Could not setup connection to M-bus gateway: %s\n", mbus_error_str());
+        return 1;
+    }
+    
+    if (mbus_context_set_option(handle, MBUS_OPTION_MAX_RETRY, retries) == -1)
+    {
+        printf("Failed to set retry count\n");
         return 1;
     }
 
@@ -83,29 +144,12 @@ main(int argc, char **argv)
     {
         mbus_frame reply;
 
-        memset((void *)&reply, 0, sizeof(mbus_frame));
-
-        if (debug)
-        {
-            printf("%d ", address);
-            fflush(stdout);
-        }
-
-        if (mbus_send_ping_frame(handle, address, 0) == -1)
-        {
-            printf("Scan failed. Could not send ping frame: %s\n", mbus_error_str());
-            return 1;
-        } 
+        ret = ping_address(handle, &reply, address);
         
-        ret = mbus_recv_frame(handle, &reply);
-
         if (ret == MBUS_RECV_RESULT_TIMEOUT)
         {
             continue;
         }
-        
-        if (debug)
-            printf("\n");
         
         if (ret == MBUS_RECV_RESULT_INVALID)
         {
@@ -121,10 +165,9 @@ main(int argc, char **argv)
             if (mbus_purge_frames(handle))
             {
                 printf("Collision at address %d\n", address);
-                
                 continue;
             }
-                
+
             printf("Found a M-Bus device at address %d\n", address);
         }
     }
