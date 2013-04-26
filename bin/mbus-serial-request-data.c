@@ -77,13 +77,13 @@ main(int argc, char **argv)
 
     if (mbus_connect(handle) == -1)
     {
-        printf("Failed to setup connection to M-bus gateway\n");
+        fprintf(stderr,"Failed to setup connection to M-bus gateway\n");
         return 1;
     }
 
     if (mbus_serial_set_baudrate(handle, baudrate) == -1)
     {
-        printf("Failed to set baud rate.\n");
+        fprintf(stderr,"Failed to set baud rate.\n");
         return 1;
     }
 

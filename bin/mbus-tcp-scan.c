@@ -31,7 +31,7 @@ int ping_address(mbus_handle *handle, mbus_frame *reply, int address)
     
         if (mbus_send_ping_frame(handle, address, 0) == -1)
         {
-            printf("Scan failed. Could not send ping frame: %s\n", mbus_error_str());
+            fprintf(stderr,"Scan failed. Could not send ping frame: %s\n", mbus_error_str());
             return MBUS_RECV_RESULT_ERROR;
         } 
      
@@ -83,7 +83,7 @@ main(int argc, char **argv)
     }
     else
     {
-        printf("usage: %s [-d] [-r RETRIES] host port\n", argv[0]);
+        fprintf(stderr,"usage: %s [-d] [-r RETRIES] host port\n", argv[0]);
         return 0;
     }
     
@@ -95,19 +95,19 @@ main(int argc, char **argv)
      
     if ((handle = mbus_context_tcp(host, port)) == NULL)
     {
-        printf("Scan failed: Could not initialize M-Bus context: %s\n",  mbus_error_str());
+        fprintf(stderr,"Scan failed: Could not initialize M-Bus context: %s\n",  mbus_error_str());
         return 1;
     }
 
     if (mbus_connect(handle) == -1)
     {
-        printf("Scan failed: Could not setup connection to M-bus gateway: %s\n", mbus_error_str());
+        fprintf(stderr,"Scan failed: Could not setup connection to M-bus gateway: %s\n", mbus_error_str());
         return 1;
     }
     
     if (mbus_context_set_option(handle, MBUS_OPTION_MAX_RETRY, retries) == -1)
     {
-        printf("Failed to set retry count\n");
+        fprintf(stderr,"Failed to set retry count\n");
         return 1;
     }
 

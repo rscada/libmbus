@@ -56,19 +56,19 @@ main(int argc, char **argv)
 
     if (mbus_connect(handle) == -1)
     {
-        printf("Failed to setup connection to M-bus gateway\n");
+        fprintf(stderr,"Failed to setup connection to M-bus gateway\n");
         return 1;
     }
     
     if (mbus_serial_set_baudrate(handle, source_baudrate) == -1)
     {
-        printf("Failed to set baud rate.\n");
+        fprintf(stderr,"Failed to set baud rate.\n");
         return 1;
     }
 
     if (mbus_send_switch_baudrate_frame(handle, address, target_baudrate) == -1)
     {
-        printf("Failed to send switch baudrate frame: %s\n", mbus_error_str());
+        fprintf(stderr,"Failed to send switch baudrate frame: %s\n", mbus_error_str());
         return 1; 
     }
 
@@ -76,12 +76,12 @@ main(int argc, char **argv)
     
     if (ret == MBUS_RECV_RESULT_TIMEOUT)
     {
-        printf("No reply from device\n");
+        fprintf(stderr,"No reply from device\n");
         return 1;
     }
     else if (mbus_frame_type(&reply) != MBUS_FRAME_TYPE_ACK)
     {
-        printf("Unknown reply:\n");
+        fprintf(stderr,"Unknown reply:\n");
         mbus_frame_print(&reply);
     }
     else
