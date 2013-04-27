@@ -1712,6 +1712,61 @@ mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, int baudrate)
 }
 
 //------------------------------------------------------------------------------
+// send a user data packet from master to slave: the packet resets
+// the application layer in the slave
+//------------------------------------------------------------------------------
+int
+mbus_send_application_reset_frame(mbus_handle * handle, int address, int subcode)
+{
+    int retval = 0;
+    mbus_frame *frame;
+    
+    if (mbus_is_primary_address(address) == 0)
+    {
+        MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, address);
+        return -1;
+    }
+    
+    if (subcode > 0xFF)
+    {
+    	MBUS_ERROR("%s: invalid subcode %d\n", __PRETTY_FUNCTION__, subcode);
+        return -1;
+    }
+    
+    frame = mbus_frame_new(MBUS_FRAME_TYPE_LONG);
+    
+    if (frame == NULL)
+    {
+        MBUS_ERROR("%s: failed to allocate mbus frame.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+    
+    frame->control = MBUS_CONTROL_MASK_SND_UD | MBUS_CONTROL_MASK_DIR_M2S;
+    frame->address = address;
+    frame->control_information = MBUS_CONTROL_INFO_APPLICATION_RESET;
+    
+    if (subcode >= 0)
+    {
+        frame->data_size = 1;
+        frame->data[0] = (subcode & 0xFF);
+    }
+    else
+    {
+        frame->data_size = 0;
+    }
+
+    if (mbus_send_frame(handle, frame) == -1)
+    {
+        MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
+        retval = -1;
+    }
+
+    mbus_frame_free(frame);
+    return retval;
+}
+
+
+//------------------------------------------------------------------------------
 // send a request packet to from master to slave
 //------------------------------------------------------------------------------
 int

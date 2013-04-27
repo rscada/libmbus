@@ -144,7 +144,7 @@ main(int argc, char **argv)
 
     if (mbus_connect(handle) == -1)
     {
-        printf("Failed to setup connection to M-bus gateway\n");
+        fprintf(stderr,"Failed to setup connection to M-bus gateway\n");
         free(addr_mask);
         return 1;
     }
