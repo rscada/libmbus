@@ -17,7 +17,7 @@ bin_PROGRAMS			= mbus-tcp-scan mbus-tcp-request-data mbus-tcp-request-data-multi
                           mbus-tcp-select-secondary mbus-tcp-scan-secondary \
                           mbus-serial-scan mbus-serial-request-data mbus-serial-request-data-multi-reply \
                           mbus-serial-select-secondary mbus-serial-scan-secondary \
-                          mbus-serial-switch-baudrate mbus-tcp-raw-send
+                          mbus-serial-switch-baudrate mbus-tcp-raw-send mbus-tcp-application-reset
 
 # tcp
 mbus_tcp_scan_LDFLAGS	= -L$(top_builddir)/mbus
@@ -44,6 +44,9 @@ mbus_tcp_raw_send_LDFLAGS = -L$(top_builddir)/mbus
 mbus_tcp_raw_send_LDADD	  = -lmbus -lm
 mbus_tcp_raw_send_SOURCES = mbus-tcp-raw-send.c
 
+mbus_tcp_application_reset_LDFLAGS = -L$(top_builddir)/mbus
+mbus_tcp_application_reset_LDADD   = -lmbus -lm
+mbus_tcp_application_reset_SOURCES = mbus-tcp-application-reset.c
 
 # serial
 mbus_serial_scan_LDFLAGS	= -L$(top_builddir)/mbus

@@ -27,7 +27,7 @@ main(int argc, char **argv)
 
     if (argc != 4)
     {
-        printf("usage: %s host port secondary-mbus-address\n", argv[0]);
+        fprintf(stderr,"usage: %s host port secondary-mbus-address\n", argv[0]);
         return 0;
     }
  
@@ -42,7 +42,7 @@ main(int argc, char **argv)
 
     if (mbus_is_secondary_address(addr) == 0)
     {
-        printf("Misformatted secondary address. Must be 16 character HEX number.\n");
+        fprintf(stderr,"Misformatted secondary address. Must be 16 character HEX number.\n");
         return 1;
     }
 
@@ -60,7 +60,7 @@ main(int argc, char **argv)
 
     if (mbus_send_select_frame(handle, addr) == -1)
     {
-        printf("Failed to send selection frame: %s\n", mbus_error_str());
+        fprintf(stderr,"Failed to send selection frame: %s\n", mbus_error_str());
         return 1; 
     }
 
@@ -68,13 +68,13 @@ main(int argc, char **argv)
 
     if (ret == MBUS_RECV_RESULT_TIMEOUT)
     {
-        printf("No reply from device with secondary address %s: %s\n", argv[3], mbus_error_str());
+        fprintf(stderr,"No reply from device with secondary address %s: %s\n", argv[3], mbus_error_str());
         return 1;
     }    
 
     if (ret == MBUS_RECV_RESULT_INVALID)
     {
-        printf("Invalid reply from %s: The address address probably match more than one device: %s\n", argv[3], mbus_error_str());
+        fprintf(stderr,"Invalid reply from %s: The address address probably match more than one device: %s\n", argv[3], mbus_error_str());
         return 1;
     }
 
@@ -82,13 +82,13 @@ main(int argc, char **argv)
     {
         if (mbus_send_request_frame(handle, MBUS_ADDRESS_NETWORK_LAYER) == -1)
 	    {
-            printf("Failed to send request to selected secondary device: %s\n", mbus_error_str());
+            fprintf(stderr,"Failed to send request to selected secondary device: %s\n", mbus_error_str());
             return 1;
         }
 
         if (mbus_recv_frame(handle, &reply) != MBUS_RECV_RESULT_OK)
         {
-            printf("Failed to recieve reply from selected secondary device: %s\n", mbus_error_str());
+            fprintf(stderr,"Failed to recieve reply from selected secondary device: %s\n", mbus_error_str());
             return 1;
         }
 
@@ -100,7 +100,7 @@ main(int argc, char **argv)
     }
     else
     {
-        printf("Unknown reply:\n");
+        fprintf(stderr,"Unknown reply:\n");
         mbus_frame_print(&reply);
     }
  

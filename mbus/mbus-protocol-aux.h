@@ -246,7 +246,7 @@ int mbus_purge_frames(mbus_handle * handle);
 int mbus_send_frame(mbus_handle * handle, mbus_frame *frame);
 
 /** 
- * Sends secodary address selection frame using "unified" handle
+ * Sends secondary address selection frame using "unified" handle
  * 
  * @param handle             Initialized handle
  * @param secondary_addr_str Secondary address
@@ -254,6 +254,17 @@ int mbus_send_frame(mbus_handle * handle, mbus_frame *frame);
  * @return Zero when successful.
  */
 int mbus_send_select_frame(mbus_handle * handle, const char *secondary_addr_str);
+
+/** 
+ * Sends application reset to given slave using "unified" handle
+ * 
+ * @param handle    Initialized handle
+ * @param address   Address (0-255)
+ * @param subcode   Subcode (0-255) or no subcode (-1)
+ * 
+ * @return Zero when successful.
+ */
+int mbus_send_application_reset_frame(mbus_handle * handle, int address, int subcode);
 
 /** 
  * Sends switch baudrate frame using "unified" handle
