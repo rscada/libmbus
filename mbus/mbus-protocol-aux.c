@@ -1584,6 +1584,8 @@ int mbus_purge_frames(mbus_handle *handle)
 {
     int err, received;
     mbus_frame reply;
+    
+    memset((void *)&reply, 0, sizeof(mbus_frame));
 
     received = 0;
     while (1)
@@ -2033,7 +2035,8 @@ mbus_select_secondary_address(mbus_handle * handle, const char *mask)
                    mbus_error_str());
         return MBUS_PROBE_ERROR;
     }
-
+    
+    memset((void *)&reply, 0, sizeof(mbus_frame));
     ret = mbus_recv_frame(handle, &reply);
 
     if (ret == MBUS_RECV_RESULT_TIMEOUT)
@@ -2093,7 +2096,8 @@ mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *match
                        mbus_error_str());
             return MBUS_PROBE_ERROR;
         }
-
+        
+        memset((void *)&reply, 0, sizeof(mbus_frame));
         ret = mbus_recv_frame(handle, &reply);
 
         if (ret == MBUS_RECV_RESULT_TIMEOUT)
