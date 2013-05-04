@@ -20,6 +20,7 @@
 #include <ctype.h>
 #include <math.h>
 
+/*@ignore@*/ 
 #define MBUS_ERROR(...) fprintf (stderr, __VA_ARGS__)
 
 #ifdef _DEBUG_
@@ -27,6 +28,7 @@
 #else
 #define MBUS_DEBUG(...)
 #endif
+/*@end@*/
 
 static int debug = 0;
 
@@ -776,11 +778,11 @@ int mbus_fixed_normalize(int medium_unit, long medium_value, char **unit_out, do
 int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real, char **value_out_str, int *value_out_str_size)
 {
     int result = 0;
+    unsigned char vif, vife;
+    struct tm time;
     *value_out_real = 0.0;
     *value_out_str = NULL;
     *value_out_str_size = 0;
-    u_char vif, vife;
-    struct tm time;
 
     if (record)
     {
@@ -908,7 +910,7 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                         return -1;
                     }
                     *value_out_str_size = record->data_len;
-                    mbus_data_str_decode((u_char*)(*value_out_str), record->data, record->data_len);
+                    mbus_data_str_decode((unsigned char*)(*value_out_str), record->data, record->data_len);
                     result = 0;
                     break;
                 }
@@ -929,7 +931,7 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                     return -1;
                 }
                 *value_out_str_size = 3 * record->data_len;
-                mbus_data_bin_decode((u_char*)(*value_out_str), record->data, record->data_len, (3 * record->data_len + 1));
+                mbus_data_bin_decode((unsigned char*)(*value_out_str), record->data, record->data_len, (3 * record->data_len + 1));
                 result = 0;
                 break;
 
@@ -951,13 +953,11 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
 int
 mbus_vif_unit_normalize(int vif, double value, char **unit_out, double *value_out, char **quantity_out)
 {
-    MBUS_DEBUG("vif_unit_normalize = 0x%03X \n", vif);
-
-    double exponent = 1.0;
-
-    unsigned newVif = vif & 0xF7F; /* clear extension bit */
-
     int i;
+    double exponent = 1.0;
+    unsigned newVif = vif & 0xF7F; /* clear extension bit */
+    
+    MBUS_DEBUG("vif_unit_normalize = 0x%03X \n", vif);
     
     if (unit_out == NULL || value_out == NULL || quantity_out == NULL)
     {
@@ -988,6 +988,8 @@ mbus_vif_unit_normalize(int vif, double value, char **unit_out, double *value_ou
 int
 mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **unit_out, double *value_out, char **quantity_out)
 {   
+    int code;
+
     if (vib == NULL || unit_out == NULL || value_out == NULL || quantity_out == NULL)
     {
         MBUS_ERROR("%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
@@ -1004,7 +1006,7 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
             return -1;
         }
 
-        int code = ((vib->vife[0]) & MBUS_DIB_VIF_WITHOUT_EXTENSION) | 0x100;
+        code = ((vib->vife[0]) & MBUS_DIB_VIF_WITHOUT_EXTENSION) | 0x100;
         if (mbus_vif_unit_normalize(code, value, unit_out, value_out, quantity_out) != 0)
         {
             MBUS_ERROR("%s: Error mbus_vif_unit_normalize\n", __PRETTY_FUNCTION__);
@@ -1019,7 +1021,7 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
                 return -1;
             }
             
-            int code = ((vib->vife[0]) & MBUS_DIB_VIF_WITHOUT_EXTENSION) | 0x200;
+            code = ((vib->vife[0]) & MBUS_DIB_VIF_WITHOUT_EXTENSION) | 0x200;
             if (0 != mbus_vif_unit_normalize(code, value, unit_out, value_out, quantity_out))
             {
                 MBUS_ERROR("%s: Error mbus_vif_unit_normalize\n", __PRETTY_FUNCTION__);
@@ -1036,7 +1038,7 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
         }
         else
         {
-            int code = (vib->vif) & MBUS_DIB_VIF_WITHOUT_EXTENSION;
+            code = (vib->vif) & MBUS_DIB_VIF_WITHOUT_EXTENSION;
             if (0 != mbus_vif_unit_normalize(code, value, unit_out, value_out, quantity_out))
             {
                 MBUS_ERROR("%s: Error mbus_vif_unit_normalize\n", __PRETTY_FUNCTION__);
@@ -1049,7 +1051,7 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
         (vib->vif != 0xFD) &&
         (vib->vif != 0xFB))                       /* codes for VIF extention: see table 8.4.5 */
     {
-        int code = (vib->vif) & 0x7f;
+        code = (vib->vif) & 0x7f;
         switch (code)
         {
             case 0x70:
@@ -1134,8 +1136,9 @@ mbus_record_free(mbus_record * rec)
 
 
 mbus_record *
-mbus_parse_fixed_record(char status_byte, char medium_unit, u_char *data)
+mbus_parse_fixed_record(char status_byte, char medium_unit, unsigned char *data)
 {
+    long value = 0;
     mbus_record * record = NULL;
 
     if (!(record = mbus_record_new()))
@@ -1154,7 +1157,6 @@ mbus_parse_fixed_record(char status_byte, char medium_unit, u_char *data)
         return NULL;
     }
 
-    long value = 0;
     if ((status_byte & MBUS_DATA_FIXED_STATUS_FORMAT_MASK) == MBUS_DATA_FIXED_STATUS_FORMAT_BCD)
     {
         value = mbus_data_bcd_decode(data, 4);
@@ -1294,7 +1296,7 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
 {
     mbus_data_record *record;
     mbus_record *norm_record;
-    char *buff = NULL;
+    char *buff = NULL, *new_buff = NULL;
     char str_encoded[768];
     size_t len = 0, buff_size = 8192;
     size_t i;
@@ -2298,11 +2300,11 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
 // - whitespaces will be ignored
 //------------------------------------------------------------------------------
 size_t
-mbus_hex2bin(u_char * dst, size_t dst_len, const u_char * src, size_t src_len)
+mbus_hex2bin(unsigned char * dst, size_t dst_len, const unsigned char * src, size_t src_len)
 {
     size_t i, result = 0;
     unsigned long val;
-    u_char *ptr, *end, buf[3];
+    unsigned char *ptr, *end, buf[3];
     
     if (!src || !dst)
     {
@@ -2333,7 +2335,7 @@ mbus_hex2bin(u_char * dst, size_t dst_len, const u_char * src, size_t src_len)
         if (result >= dst_len)
             break;
             
-        dst[result++] = (u_char) val;
+        dst[result++] = (unsigned char) val;
     }
     
     return result;

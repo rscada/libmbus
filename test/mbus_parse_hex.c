@@ -20,7 +20,7 @@ main(int argc, char *argv[])
     FILE *fp = NULL;
     size_t buff_len, len;
 	int result;
-	u_char raw_buff[4096], buff[4096];
+	unsigned char raw_buff[4096], buff[4096];
 	mbus_frame reply;
 	mbus_frame_data frame_data;
 	char *xml_result = NULL;
