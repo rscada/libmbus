@@ -3703,6 +3703,8 @@ mbus_frame_xml(mbus_frame *frame)
 
     if (frame)
     {
+        memset((void *)&frame_data, 0, sizeof(mbus_frame_data));
+    
         if (mbus_frame_data_parse(frame, &frame_data) == -1)
         {
             mbus_error_str_set("M-bus data parse error.");
