@@ -29,7 +29,7 @@ main(int argc, char **argv)
     int port, address, result;
     FILE *fp = NULL;
     size_t buff_len, len;
-  	u_char raw_buff[4096], buff[4096];
+  	unsigned char raw_buff[4096], buff[4096];
  
     memset((void *)&reply, 0, sizeof(mbus_frame));
     memset((void *)&reply_data, 0, sizeof(mbus_frame_data));

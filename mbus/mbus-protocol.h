@@ -71,18 +71,18 @@ extern "C" {
 
 typedef struct _mbus_frame {
 
-    u_char start1;
-    u_char length1;
-    u_char length2;
-    u_char start2;
-    u_char control;
-    u_char address;
-    u_char control_information;
+    unsigned char start1;
+    unsigned char length1;
+    unsigned char length2;
+    unsigned char start2;
+    unsigned char control;
+    unsigned char address;
+    unsigned char control_information;
     // variable data field
-    u_char checksum;
-    u_char stop;
+    unsigned char checksum;
+    unsigned char stop;
     
-    u_char   data[252]; 
+    unsigned char   data[252]; 
     size_t data_size;
     
     int type;
@@ -134,19 +134,19 @@ typedef struct _mbus_slave_data {
 
 typedef struct _mbus_data_information_block {
         
-        u_char dif;
-        u_char dife[10];
+        unsigned char dif;
+        unsigned char dife[10];
         size_t  ndife;
 
 } mbus_data_information_block;
 
 typedef struct _mbus_value_information_block {
         
-        u_char vif;
-        u_char vife[10];
+        unsigned char vif;
+        unsigned char vife[10];
         size_t  nvife;
 
-        u_char custom_vif[128];
+        unsigned char custom_vif[128];
 
 } mbus_value_information_block;
 
@@ -161,7 +161,7 @@ typedef struct _mbus_data_record {
         
     mbus_data_record_header drh;
 
-    u_char data[234];
+    unsigned char data[234];
     size_t data_len;    
 
     time_t timestamp;
@@ -181,13 +181,13 @@ typedef struct _mbus_data_variable_header {
     // ex
     // 88 63 80 09 82 4D 02 04 15 00 00 00
     
-    u_char id_bcd[4];         // 88 63 80 09
-    u_char manufacturer[2];   // 82 4D 
-    u_char version;           // 02
-    u_char medium;            // 04
-    u_char access_no;         // 15
-    u_char status;            // 00
-    u_char signature[2];      // 00 00
+    unsigned char id_bcd[4];         // 88 63 80 09
+    unsigned char manufacturer[2];   // 82 4D 
+    unsigned char version;           // 02
+    unsigned char medium;            // 04
+    unsigned char access_no;         // 15
+    unsigned char status;            // 00
+    unsigned char signature[2];      // 00 00
     
 } mbus_data_variable_header;
 
@@ -201,14 +201,14 @@ typedef struct _mbus_data_variable {
     mbus_data_record *record; 
     size_t nrecords;
     
-    u_char *data;
+    unsigned char *data;
     size_t  data_len;
     
-    u_char more_records_follow;
+    unsigned char more_records_follow;
     
     // are these needed/used?
-    u_char  mdh;
-    u_char *mfg_data;
+    unsigned char  mdh;
+    unsigned char *mfg_data;
     size_t  mfg_data_len;    
         
 } mbus_data_variable;
@@ -230,13 +230,13 @@ typedef struct _mbus_data_fixed {
     // 01 00 00 00 counter 1 = 1l (actual value)
     // 35 01 00 00 counter 2 = 135 l (historic value)
 
-    u_char id_bcd[4];
-    u_char tx_cnt;
-    u_char status;
-    u_char cnt1_type;
-    u_char cnt2_type;
-    u_char cnt1_val[4];
-    u_char cnt2_val[4];
+    unsigned char id_bcd[4];
+    unsigned char tx_cnt;
+    unsigned char status;
+    unsigned char cnt1_type;
+    unsigned char cnt2_type;
+    unsigned char cnt1_val[4];
+    unsigned char cnt2_val[4];
 
 } mbus_data_fixed;
 
@@ -268,10 +268,10 @@ typedef struct _mbus_data_secondary_address {
     // ex
     // 14 49 10 01 10 57 01 06
     
-    u_char id_bcd[4];         // 14 49 10 01
-    u_char manufacturer[2];   // 10 57
-    u_char version;           // 01
-    u_char medium;            // 06
+    unsigned char id_bcd[4];         // 14 49 10 01
+    unsigned char manufacturer[2];   // 10 57
+    unsigned char version;           // 01
+    unsigned char medium;            // 06
     
 } mbus_data_secondary_address;
 
@@ -506,17 +506,17 @@ typedef struct _mbus_data_secondary_address {
 //
 // Event callback functions
 //
-extern void (*_mbus_recv_event)(u_char src_type, const char *buff, size_t len);
-extern void (*_mbus_send_event)(u_char src_type, const char *buff, size_t len);
+extern void (*_mbus_recv_event)(unsigned char src_type, const char *buff, size_t len);
+extern void (*_mbus_send_event)(unsigned char src_type, const char *buff, size_t len);
 
-void mbus_dump_recv_event(u_char src_type, const char *buff, size_t len);
-void mbus_dump_send_event(u_char src_type, const char *buff, size_t len);
+void mbus_dump_recv_event(unsigned char src_type, const char *buff, size_t len);
+void mbus_dump_send_event(unsigned char src_type, const char *buff, size_t len);
 
 //
 // Event register functions
 //
-void mbus_register_recv_event(void (*event)(u_char src_type, const char *buff, size_t len));
-void mbus_register_send_event(void (*event)(u_char src_type, const char *buff, size_t len));
+void mbus_register_recv_event(void (*event)(unsigned char src_type, const char *buff, size_t len));
+void mbus_register_send_event(void (*event)(unsigned char src_type, const char *buff, size_t len));
 
 //
 // variable length records
@@ -543,14 +543,14 @@ int mbus_frame_calc_length  (mbus_frame *frame);
 //
 // Parse/Pack to bin
 //
-int mbus_parse(mbus_frame *frame, u_char *data, size_t data_size);
+int mbus_parse(mbus_frame *frame, unsigned char *data, size_t data_size);
 
 int mbus_data_fixed_parse   (mbus_frame *frame, mbus_data_fixed    *data);
 int mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data);
 
 int mbus_frame_data_parse   (mbus_frame *frame, mbus_frame_data *data);
   
-int mbus_frame_pack(mbus_frame *frame, u_char *data, size_t data_size);
+int mbus_frame_pack(mbus_frame *frame, unsigned char *data, size_t data_size);
 
 int mbus_frame_verify(mbus_frame *frame);
 
@@ -576,7 +576,7 @@ mbus_slave_data *mbus_slave_data_get(size_t i);
 //
 // XML generating functions
 //
-void  mbus_str_xml_encode(u_char *dst, const u_char *src, size_t max_len);
+void  mbus_str_xml_encode(unsigned char *dst, const unsigned char *src, size_t max_len);
 char *mbus_data_xml(mbus_frame_data *data);
 char *mbus_data_variable_xml(mbus_data_variable *data);
 char *mbus_data_fixed_xml(mbus_data_fixed *data);
@@ -607,37 +607,37 @@ void  mbus_hex_dump(const char *label, const char *buff, size_t len);
 //
 // data encode/decode functions
 //
-int mbus_data_manufacturer_encode(u_char *m_data, u_char *m_code);
-const char *mbus_decode_manufacturer(u_char byte1, u_char byte2);
+int mbus_data_manufacturer_encode(unsigned char *m_data, unsigned char *m_code);
+const char *mbus_decode_manufacturer(unsigned char byte1, unsigned char byte2);
 const char *mbus_data_product_name(mbus_data_variable_header *header);
  
-int mbus_data_bcd_encode(u_char *bcd_data, size_t bcd_data_size, int value);
-int mbus_data_int_encode(u_char *int_data, size_t int_data_size, int value);
+int mbus_data_bcd_encode(unsigned char *bcd_data, size_t bcd_data_size, int value);
+int mbus_data_int_encode(unsigned char *int_data, size_t int_data_size, int value);
 
-long long mbus_data_bcd_decode(u_char *bcd_data, size_t bcd_data_size);
-int  mbus_data_int_decode(u_char *int_data, size_t int_data_size);
-long mbus_data_long_decode(u_char *int_data, size_t int_data_size);
-long long mbus_data_long_long_decode(u_char *int_data, size_t int_data_size);
+long long mbus_data_bcd_decode(unsigned char *bcd_data, size_t bcd_data_size);
+int  mbus_data_int_decode(unsigned char *int_data, size_t int_data_size);
+long mbus_data_long_decode(unsigned char *int_data, size_t int_data_size);
+long long mbus_data_long_long_decode(unsigned char *int_data, size_t int_data_size);
 
-float mbus_data_float_decode(u_char *float_data);
+float mbus_data_float_decode(unsigned char *float_data);
 
-void mbus_data_tm_decode(struct tm *t, u_char *t_data, size_t t_data_size);
+void mbus_data_tm_decode(struct tm *t, unsigned char *t_data, size_t t_data_size);
 
-void mbus_data_str_decode(u_char *dst, const u_char *src, size_t len);
+void mbus_data_str_decode(unsigned char *dst, const unsigned char *src, size_t len);
 
-void mbus_data_bin_decode(u_char *dst, const u_char *src, size_t len, size_t max_len);
+void mbus_data_bin_decode(unsigned char *dst, const unsigned char *src, size_t len, size_t max_len);
 
 const char *mbus_data_fixed_medium(mbus_data_fixed *data);
 const char *mbus_data_fixed_unit(int medium_unit_byte);
-const char *mbus_data_variable_medium_lookup(u_char medium);
+const char *mbus_data_variable_medium_lookup(unsigned char medium);
 const char *mbus_unit_prefix(int exp);
 
 const char *mbus_data_error_lookup(int error);
 
 const char *mbus_vib_unit_lookup(mbus_value_information_block *vib);
-const char *mbus_vif_unit_lookup(u_char vif);
+const char *mbus_vif_unit_lookup(unsigned char vif);
 
-u_char mbus_dif_datalength_lookup(u_char dif);
+unsigned char mbus_dif_datalength_lookup(unsigned char dif);
 
 char *mbus_frame_get_secondary_address(mbus_frame *frame);
 int   mbus_frame_select_secondary_pack(mbus_frame *frame, char *address);
