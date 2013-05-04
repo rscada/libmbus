@@ -1319,10 +1319,16 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
             if ((buff_size - len) < 1024)
             {
                 buff_size *= 2;
-                buff = (char*) realloc(buff,buff_size);
+                new_buff = (char*) realloc(buff,buff_size);
                 
-                if (buff == NULL)
+                if (new_buff == NULL)
+                {
+                    mbus_record_free(norm_record);
+                    free(buff);
                     return NULL;
+                }
+                
+                buff = new_buff;
             }
             
             len += snprintf(&buff[len], buff_size - len, "    <DataRecord id=\"%zd\">\n", i);

@@ -2658,7 +2658,7 @@ mbus_data_fixed_parse(mbus_frame *frame, mbus_data_fixed *data)
 int
 mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 {
-    mbus_data_record *record;
+    mbus_data_record *record = NULL;
     size_t i, j;
     
     if (frame && data)
@@ -3520,7 +3520,7 @@ char *
 mbus_data_variable_xml(mbus_data_variable *data)
 {
     mbus_data_record *record;
-    char *buff = NULL;
+    char *buff = NULL, *new_buff;
     size_t len = 0, buff_size = 8192;
     int i;
     
@@ -3541,10 +3541,15 @@ mbus_data_variable_xml(mbus_data_variable *data)
             if ((buff_size - len) < 1024)
             {
                 buff_size *= 2;
-                buff = (char*) realloc(buff,buff_size);
+                new_buff = (char*) realloc(buff,buff_size);
                 
-                if (buff == NULL)
+                if (new_buff == NULL)
+                {
+                    free(buff);
                     return NULL;
+                }
+                
+                buff = new_buff;
             }
         
             len += snprintf(&buff[len], buff_size - len, "%s", 
@@ -3696,7 +3701,7 @@ mbus_frame_xml(mbus_frame *frame)
     mbus_frame *iter;
      
     mbus_data_record *record;
-    char *buff = NULL;
+    char *buff = NULL, *new_buff;
 
     size_t len = 0, buff_size = 8192;
     int record_cnt = 0, frame_cnt;
@@ -3736,7 +3741,10 @@ mbus_frame_xml(mbus_frame *frame)
             buff = (char*) malloc(buff_size);
         
             if (buff == NULL)
-                return NULL;        
+            {
+                mbus_data_record_free(frame_data.data_var.record);
+                return NULL;
+            }        
 
             // include frame counter in XML output if more than one frame
             // is available (frame_cnt = -1 => not included in output)        
@@ -3757,10 +3765,16 @@ mbus_frame_xml(mbus_frame *frame)
                 if ((buff_size - len) < 1024)
                 {
                     buff_size *= 2;
-                    buff = (char*) realloc(buff,buff_size);
-                    
-                    if (buff == NULL)
+                    new_buff = (char*) realloc(buff,buff_size);
+                
+                    if (new_buff == NULL)
+                    {
+                        free(buff);
+                        mbus_data_record_free(frame_data.data_var.record);
                         return NULL;
+                    }
+                    
+                    buff = new_buff;
                 }
             
                 len += snprintf(&buff[len], buff_size - len, "%s", 
@@ -3790,10 +3804,14 @@ mbus_frame_xml(mbus_frame *frame)
                     if ((buff_size - len) < 1024)
                     {
                         buff_size *= 2;
-                        buff = (char*) realloc(buff,buff_size);
-                        
-                        if (buff == NULL)
+                        if (new_buff == NULL)
+                        {
+                            free(buff);
+                            mbus_data_record_free(frame_data.data_var.record);
                             return NULL;
+                        }
+                        
+                        buff = new_buff;
                     }
                 
                     len += snprintf(&buff[len], buff_size - len, "%s", 

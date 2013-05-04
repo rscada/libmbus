@@ -80,7 +80,7 @@ main(int argc, char *argv[])
     }
 	printf("%s", xml_result);
 	free(xml_result);
-
+	mbus_data_record_free(frame_data.data_var.record);
 	
 	return 0;
 }
