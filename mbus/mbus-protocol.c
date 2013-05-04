@@ -451,15 +451,15 @@ mbus_data_bcd_encode(unsigned char *bcd_data, size_t bcd_data_size, int value)
     int v0, v1, v2, x1, x2;
     size_t i;
 
-    v2 = value;
-
-    if (bcd_data)
+    if (bcd_data && bcd_data_size && (value >= 0))
     {
+        v2 = value;
+    
         for (i = 0; i < bcd_data_size; i++)
         {
             v0 = v2;
-            v1 = (int)(v0 / 10.0);
-            v2 = (int)(v1 / 10.0);
+            v1 = (int)(v0 / 10);
+            v2 = (int)(v1 / 10);
 
             x1 = v0 - v1 * 10;
             x2 = v1 - v2 * 10;
@@ -689,16 +689,23 @@ mbus_data_bin_decode(unsigned char *dst, const unsigned char *src, size_t len, s
 void
 mbus_data_tm_decode(struct tm *t, unsigned char *t_data, size_t t_data_size)
 {
-    if (t && t_data)
+    if (t == NULL)
     {
-        t->tm_sec   = 0;
-        t->tm_min   = 0;
-        t->tm_hour  = 0;
-        t->tm_mday  = 0;
-        t->tm_mon   = 0;
-        t->tm_year  = 0; 
-        t->tm_isdst = 0;
-   
+        return;
+    }
+    
+    t->tm_sec   = 0;
+    t->tm_min   = 0;
+    t->tm_hour  = 0;
+    t->tm_mday  = 0;
+    t->tm_mon   = 0;
+    t->tm_year  = 0; 
+    t->tm_wday  = 0;
+    t->tm_yday  = 0;
+    t->tm_isdst = 0;
+    
+    if (t_data)
+    {
         if (t_data_size == 4)                // Type F = Compound CP32: Date and Time
         {     
             if ((t_data[0] & 0x80) == 0)     // Time valid ?
@@ -2363,7 +2370,7 @@ mbus_data_record_decode(mbus_data_record *record)
                     mbus_data_str_decode(buff, record->data, record->data_len);
                     break;
                 }
-                /* FALLTHROUGH */
+                /*@fallthrough@*/
 
             default:
         
@@ -2878,12 +2885,8 @@ mbus_frame_data_parse(mbus_frame *frame, mbus_frame_data *data)
             return -1;
         }
     }
-    else
-    { 
-        snprintf(error_str, sizeof(error_str), "Wrong direction in frame (master to slave)");
-            
-        return -1;
-    }
+    
+    snprintf(error_str, sizeof(error_str), "Wrong direction in frame (master to slave)");
         
     return -1;
 }
@@ -3461,7 +3464,6 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
     size_t len = 0;
     struct tm * timeinfo;
     char timestamp[21];
-    int val;
     
     if (record)
     {
@@ -3804,6 +3806,8 @@ mbus_frame_xml(mbus_frame *frame)
                     if ((buff_size - len) < 1024)
                     {
                         buff_size *= 2;
+                        new_buff = (char*) realloc(buff,buff_size);
+                        
                         if (new_buff == NULL)
                         {
                             free(buff);

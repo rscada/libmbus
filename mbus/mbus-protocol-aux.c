@@ -768,7 +768,6 @@ int mbus_fixed_normalize(int medium_unit, long medium_value, char **unit_out, do
         exponent = 0.0;
         *value_out = 0.0;
         return -1;
-        break;
     }
     
     return -2;
