@@ -95,7 +95,7 @@ mbus_serial_connect(mbus_handle *handle)
 // Set baud rate for serial connection
 //------------------------------------------------------------------------------
 int
-mbus_serial_set_baudrate(mbus_handle *handle, int baudrate)
+mbus_serial_set_baudrate(mbus_handle *handle, long baudrate)
 {
     speed_t speed;
     mbus_serial_data *serial_data;

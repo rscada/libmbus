@@ -23,7 +23,8 @@ main(int argc, char **argv)
     mbus_handle *handle;
     mbus_frame reply;
     char *device, *addr = NULL;
-    int ret, baudrate = 9600;
+    int ret;
+    long baudrate = 9600;
 
     if (argc == 3)
     {
@@ -32,7 +33,7 @@ main(int argc, char **argv)
     }   
     else if (argc == 5 && strcmp(argv[1], "-b") == 0)
     {
-        baudrate = atoi(argv[2]);
+        baudrate = atol(argv[2]);
         device = argv[3];   
         addr = strdup(argv[4]);
     }

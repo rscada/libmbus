@@ -38,7 +38,7 @@ mbus_tcp_connect(mbus_handle *handle)
     struct sockaddr_in s;
     struct timeval time_out;
     mbus_tcp_data *tcp_data;
-    int port;
+    uint16_t port;
 
     if (handle == NULL)
         return -1;

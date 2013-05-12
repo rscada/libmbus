@@ -1438,7 +1438,7 @@ mbus_context_serial(const char *device)
 }
 
 mbus_handle *
-mbus_context_tcp(const char *host, int port)
+mbus_context_tcp(const char *host, uint16_t port)
 {
     mbus_handle *handle;
     mbus_tcp_data *tcp_data;
@@ -1655,7 +1655,7 @@ mbus_send_select_frame(mbus_handle * handle, const char *secondary_addr_str)
 // adressed slave(s) switch to the given baudrate
 //------------------------------------------------------------------------------
 int
-mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, int baudrate)
+mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, long baudrate)
 {
     int retval = 0;
     int control_information = 0;

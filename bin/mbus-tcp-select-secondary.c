@@ -23,7 +23,8 @@ main(int argc, char **argv)
     mbus_handle *handle;
     mbus_frame reply;
     char *host, *addr = NULL;
-    int port, ret;
+    int ret;
+    long port;
 
     if (argc != 4)
     {
@@ -32,7 +33,13 @@ main(int argc, char **argv)
     }
  
     host = argv[1];   
-    port = atoi(argv[2]);
+    port = atol(argv[2]);
+    
+    if ((port < 0) || (port > 0xFFFF))
+    {
+        fprintf(stderr, "Invalid port: %ld\n", port);
+        return 1;
+    }
     
     if ((addr = strdup(argv[3])) == NULL)
     {

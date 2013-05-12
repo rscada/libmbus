@@ -26,7 +26,8 @@ main(int argc, char **argv)
     mbus_handle *handle = NULL;
 
     char *host, *addr_str, matching_addr[16], *xml_result;
-    int port, address;
+    int address;
+    long port;
  
     memset((void *)&reply, 0, sizeof(mbus_frame));
     memset((void *)&reply_data, 0, sizeof(mbus_frame_data));
@@ -34,14 +35,14 @@ main(int argc, char **argv)
     if (argc == 4)
     {
         host = argv[1];   
-        port = atoi(argv[2]);
+        port = atol(argv[2]);
         addr_str = argv[3];
         debug = 0;
     }
     else if (argc == 5 && strcmp(argv[1], "-d") == 0)
     {
         host = argv[2];   
-        port = atoi(argv[3]);
+        port = atol(argv[3]);
         addr_str = argv[4];
         debug = 1;
     }
@@ -50,6 +51,12 @@ main(int argc, char **argv)
         fprintf(stderr, "usage: %s [-d] host port mbus-address\n", argv[0]);
         fprintf(stderr, "    optional flag -d for debug printout\n");
         return 0;
+    }
+    
+    if ((port < 0) || (port > 0xFFFF))
+    {
+        fprintf(stderr, "Invalid port: %ld\n", port);
+        return 1;
     }
     
     if (debug)

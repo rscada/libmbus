@@ -55,7 +55,8 @@ main(int argc, char **argv)
     mbus_handle *handle = NULL;
 
     char *device, *addr_str, *xml_result;
-    int address, baudrate = 9600;
+    int address;
+    long baudrate = 9600;
  
     memset((void *)&reply, 0, sizeof(mbus_frame));
     memset((void *)&reply_data, 0, sizeof(mbus_frame_data));
@@ -73,13 +74,13 @@ main(int argc, char **argv)
     }
     else if (argc == 5 && strcmp(argv[1], "-b") == 0)
     {
-        baudrate = atoi(argv[2]);
+        baudrate = atol(argv[2]);
         device   = argv[3];   
         addr_str = argv[4];
     }
     else if (argc == 6 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-b") == 0)
     {
-        baudrate = atoi(argv[3]);
+        baudrate = atol(argv[3]);
         device   = argv[4];   
         addr_str = argv[5];
         debug = 1;
