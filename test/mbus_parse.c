@@ -19,7 +19,7 @@ main(int argc, char *argv[])
 {
     FILE *fp = NULL;
     size_t buff_len, len;
-	u_char buf[1024];
+	unsigned char buf[1024];
 	mbus_frame reply;
 	mbus_frame_data frame_data;
 	char *xml_result = NULL;

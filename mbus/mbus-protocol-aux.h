@@ -368,7 +368,7 @@ void mbus_record_free(mbus_record *rec);
  * 
  * @return Newly allocated record if succesful, NULL otherwise. Later on need to use #mbus_record_free
  */
-mbus_record *mbus_parse_fixed_record(char statusByte, char medium_unit_byte, u_char *data);
+mbus_record *mbus_parse_fixed_record(char statusByte, char medium_unit_byte, unsigned char *data);
 
 
 /** 
@@ -477,7 +477,7 @@ int mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask);
  *
  * @return byte count of successful converted values
  */
-size_t mbus_hex2bin(u_char * dst, size_t dst_len, const u_char * src, size_t src_len);
+size_t mbus_hex2bin(unsigned char * dst, size_t dst_len, const unsigned char * src, size_t src_len);
 
 #ifdef __cplusplus
 }

@@ -33,10 +33,10 @@
 #ifndef _MBUS_H_
 #define _MBUS_H_
 
-#include <mbus/mbus-protocol.h>
-#include <mbus/mbus-protocol-aux.h>
-#include <mbus/mbus-tcp.h>
-#include <mbus/mbus-serial.h>
+#include "mbus-protocol.h"
+#include "mbus-protocol-aux.h"
+#include "mbus-tcp.h"
+#include "mbus-serial.h"
 
 #ifdef __cplusplus
 extern "C" {

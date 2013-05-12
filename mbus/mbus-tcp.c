@@ -124,7 +124,7 @@ mbus_tcp_disconnect(mbus_handle *handle)
 int
 mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
 {
-    u_char buff[PACKET_BUFF_SIZE];
+    unsigned char buff[PACKET_BUFF_SIZE];
     int len, ret;
 
     if (handle == NULL || frame == NULL)

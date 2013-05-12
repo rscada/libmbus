@@ -82,7 +82,7 @@ hex_to_bin(char *buff, size_t buff_size, char *hex_buff)
     while ((ptr != endptr) && i < buff_size-1)
     {
         ptr = endptr;
-        buff[i++] = (u_char)strtol(ptr, (char **)&endptr, 16);
+        buff[i++] = (unsigned char)strtol(ptr, (char **)&endptr, 16);
     }
 
     return i;

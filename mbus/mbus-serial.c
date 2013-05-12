@@ -98,11 +98,12 @@ int
 mbus_serial_set_baudrate(mbus_handle *handle, int baudrate)
 {
     speed_t speed;
+    mbus_serial_data *serial_data;
 
     if (handle == NULL)
         return -1;
 
-    mbus_serial_data *serial_data = (mbus_serial_data *) handle->auxdata;
+    serial_data = (mbus_serial_data *) handle->auxdata;
 
     switch (baudrate)
     {
@@ -207,7 +208,7 @@ mbus_serial_data_free(mbus_handle *handle)
 int
 mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
 {
-    u_char buff[PACKET_BUFF_SIZE];
+    unsigned char buff[PACKET_BUFF_SIZE];
     int len, ret;
 
     if (handle == NULL || frame == NULL)
