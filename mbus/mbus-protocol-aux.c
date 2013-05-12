@@ -1655,7 +1655,7 @@ mbus_send_select_frame(mbus_handle * handle, const char *secondary_addr_str)
 // adressed slave(s) switch to the given baudrate
 //------------------------------------------------------------------------------
 int
-mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, int baudrate)
+mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, long baudrate)
 {
     int retval = 0;
     int control_information = 0;
