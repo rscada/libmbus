@@ -291,7 +291,8 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
     // Make sure serial connection is open
     if (isatty(handle->fd) == 0)
     {
-        return -1;
+        fprintf(stderr, "%s: Serial connection is not available.\n", __PRETTY_FUNCTION__);
+        return MBUS_RECV_RESULT_ERROR;
     }
 
     memset((void *)buff, 0, sizeof(buff));
