@@ -22,7 +22,7 @@ int
 main(int argc, char **argv)
 {
     char *host, *addr_mask = NULL;
-    int port;
+    long port;
     mbus_handle *handle = NULL;
     mbus_frame *frame = NULL, reply;
     
@@ -37,7 +37,7 @@ main(int argc, char **argv)
     }
  
     host = argv[1];   
-    port = atoi(argv[2]);
+    port = atol(argv[2]);
     if (argc == 4)
     {
         addr_mask = strdup(argv[3]);
@@ -50,6 +50,12 @@ main(int argc, char **argv)
     if (addr_mask == NULL)
     {
         fprintf(stderr, "Failed to allocate address mask.\n");
+        return 1;
+    }
+    
+    if ((port < 0) || (port > 0xFFFF))
+    {
+        fprintf(stderr, "Invalid port: %ld\n", port);
         return 1;
     }
 

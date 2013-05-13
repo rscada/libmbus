@@ -26,7 +26,8 @@ main(int argc, char **argv)
     mbus_handle *handle = NULL;
 
     char *host, *addr_str, matching_addr[16], *file = NULL;
-    int port, address, result;
+    long port;
+    int address, result;
     FILE *fp = NULL;
     size_t buff_len, len;
   	unsigned char raw_buff[4096], buff[4096];
@@ -37,21 +38,21 @@ main(int argc, char **argv)
     if (argc == 4)
     {
         host = argv[1];   
-        port = atoi(argv[2]);
+        port = atol(argv[2]);
         addr_str = argv[3];
         debug = 0;
     }
     else if (argc == 5 && strcmp(argv[1], "-d") == 0)
     {
         host = argv[2];   
-        port = atoi(argv[3]);
+        port = atol(argv[3]);
         addr_str = argv[4];
         debug = 1;
     }
     else if (argc == 5)
     {
         host = argv[1];   
-        port = atoi(argv[2]);
+        port = atol(argv[2]);
         addr_str = argv[3];
         file = argv[4];
         debug = 0;
@@ -59,7 +60,7 @@ main(int argc, char **argv)
     else if (argc == 6 && strcmp(argv[1], "-d") == 0)
     {
         host = argv[2];   
-        port = atoi(argv[3]);
+        port = atol(argv[3]);
         addr_str = argv[4];
         file = argv[5];
         debug = 1;
@@ -70,6 +71,12 @@ main(int argc, char **argv)
         fprintf(stderr, "    optional flag -d for debug printout\n");
         fprintf(stderr, "    optional argument file for file. if omitted read from stdin\n");
         return 0;
+    }
+    
+    if ((port < 0) || (port > 0xFFFF))
+    {
+        fprintf(stderr, "Invalid port: %ld\n", port);
+        return 1;
     }
     
     if (debug)

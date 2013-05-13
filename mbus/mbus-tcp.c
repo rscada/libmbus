@@ -9,6 +9,7 @@
 //------------------------------------------------------------------------------
 
 #include <unistd.h>
+#include <limits.h>
 #include <fcntl.h>
 
 #include <sys/socket.h>
@@ -38,7 +39,7 @@ mbus_tcp_connect(mbus_handle *handle)
     struct sockaddr_in s;
     struct timeval time_out;
     mbus_tcp_data *tcp_data;
-    int port;
+    uint16_t port;
 
     if (handle == NULL)
         return -1;
@@ -97,8 +98,15 @@ mbus_tcp_data_free(mbus_handle *handle)
     if (handle)
     {
         tcp_data = (mbus_tcp_data *) handle->auxdata;
+        
+        if (tcp_data == NULL)
+        {
+            return;
+        }
+        
         free(tcp_data->host);
         free(tcp_data);
+        handle->auxdata = NULL;
     }
 }
 
@@ -126,6 +134,7 @@ mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
 {
     unsigned char buff[PACKET_BUFF_SIZE];
     int len, ret;
+    char error_str[128];
 
     if (handle == NULL || frame == NULL)
     {
@@ -134,7 +143,6 @@ mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
 
     if ((len = mbus_frame_pack(frame, buff, sizeof(buff))) == -1)
     {
-        char error_str[128];
         snprintf(error_str, sizeof(error_str), "%s: mbus_frame_pack failed\n", __PRETTY_FUNCTION__);
         mbus_error_str_set(error_str);
         return -1;
@@ -150,7 +158,6 @@ mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
     }
     else
     {   
-        char error_str[128];
         snprintf(error_str, sizeof(error_str), "%s: Failed to write frame to socket (ret = %d)\n", __PRETTY_FUNCTION__, ret);
         mbus_error_str_set(error_str);
         return -1;
@@ -165,7 +172,8 @@ mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
 int mbus_tcp_recv_frame(mbus_handle *handle, mbus_frame *frame)
 {
     char buff[PACKET_BUFF_SIZE];
-    int len, remaining, nread;
+    int remaining;
+    ssize_t len, nread;
 
     if (handle == NULL || frame == NULL) {
         fprintf(stderr, "%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
@@ -182,6 +190,12 @@ int mbus_tcp_recv_frame(mbus_handle *handle, mbus_frame *frame)
 
     do {
 retry:
+        if (len + remaining > PACKET_BUFF_SIZE)
+        {
+            // avoid out of bounds access
+            return MBUS_RECV_RESULT_ERROR;
+        }
+
         nread = read(handle->fd, &buff[len], remaining);
         switch (nread) {
         case -1:
@@ -199,6 +213,12 @@ retry:
             mbus_error_str_set("M-Bus tcp transport layer connection closed by remote host.");
             return MBUS_RECV_RESULT_RESET;
         default:
+            if (len > (SSIZE_MAX-nread))
+            {
+                // avoid overflow
+                return MBUS_RECV_RESULT_ERROR;
+            }
+        
             len += nread;
         }
     } while ((remaining = mbus_parse(frame, buff, len)) > 0);

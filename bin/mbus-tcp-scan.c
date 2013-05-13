@@ -54,37 +54,44 @@ main(int argc, char **argv)
 {
     mbus_handle *handle;
     char *host;
-    int port, address, retries = 0;
+    int address, retries = 0;
+    long port;
     int ret;
 
     if (argc == 3)
     {
         host = argv[1];   
-        port = atoi(argv[2]);
+        port = atol(argv[2]);
     }
     else if (argc == 4 && strcmp(argv[1], "-d") == 0)
     {
         debug = 1;
         host = argv[2];   
-        port = atoi(argv[3]);
+        port = atol(argv[3]);
     }
     else if (argc == 5 && strcmp(argv[1], "-r") == 0)
     {
         retries = atoi(argv[2]); 
         host = argv[3];   
-        port = atoi(argv[4]);
+        port = atol(argv[4]);
     }
     else if (argc == 6 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-r") == 0)
     {
         debug = 1;
         retries = atoi(argv[3]); 
         host = argv[4];   
-        port = atoi(argv[5]);
+        port = atol(argv[5]);
     }
     else
     {
         fprintf(stderr,"usage: %s [-d] [-r RETRIES] host port\n", argv[0]);
         return 0;
+    }
+    
+    if ((port < 0) || (port > 0xFFFF))
+    {
+        fprintf(stderr, "Invalid port: %ld\n", port);
+        return 1;
     }
     
     if (debug)

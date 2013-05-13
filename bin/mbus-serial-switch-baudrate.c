@@ -27,20 +27,20 @@ main(int argc, char **argv)
     mbus_frame reply;
     char *device;
     int address, ret;
-    int source_baudrate = 9600, target_baudrate;
+    long source_baudrate = 9600, target_baudrate;
 
     if (argc == 4)
     {
         device = argv[1];
         address = atoi(argv[2]);
-        target_baudrate = atoi(argv[3]);
+        target_baudrate = atol(argv[3]);
     }
     else if (argc == 6 && strcmp(argv[1], "-b") == 0)
     {
-        source_baudrate = atoi(argv[2]);
+        source_baudrate = atol(argv[2]);
         device = argv[3];
         address = atoi(argv[4]);
-        target_baudrate = atoi(argv[5]);
+        target_baudrate = atol(argv[5]);
     }
     else
     {

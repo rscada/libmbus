@@ -9,6 +9,7 @@
 //------------------------------------------------------------------------------
 
 #include <unistd.h>
+#include <limits.h>
 #include <fcntl.h>
 
 #include <sys/types.h>
@@ -61,7 +62,7 @@ mbus_serial_connect(mbus_handle *handle)
     term->c_cflag |= PARENB;
 
     // No received data still OK
-    term->c_cc[VMIN]  = 0;
+    term->c_cc[VMIN] = (cc_t) 0;
 
     // Wait at most 0.2 sec.Note that it starts after first received byte!!
     // I.e. if CMIN>0 and there are no data we would still wait forever...
@@ -74,7 +75,7 @@ mbus_serial_connect(mbus_handle *handle)
     // For 2400Bd this means (330 + 11) / 2400 + 0.05 = 188.75 ms (added 11 bit periods to receive first byte).
     // I.e. timeout of 0.2s seems appropriate for 2400Bd.
 
-    term->c_cc[VTIME] = 2; // Timeout in 1/10 sec
+    term->c_cc[VTIME] = (cc_t) 2; // Timeout in 1/10 sec
 
     cfsetispeed(term, B2400);
     cfsetospeed(term, B2400);
@@ -95,7 +96,7 @@ mbus_serial_connect(mbus_handle *handle)
 // Set baud rate for serial connection
 //------------------------------------------------------------------------------
 int
-mbus_serial_set_baudrate(mbus_handle *handle, int baudrate)
+mbus_serial_set_baudrate(mbus_handle *handle, long baudrate)
 {
     speed_t speed;
     mbus_serial_data *serial_data;
@@ -104,47 +105,50 @@ mbus_serial_set_baudrate(mbus_handle *handle, int baudrate)
         return -1;
 
     serial_data = (mbus_serial_data *) handle->auxdata;
+    
+    if (serial_data == NULL)
+        return -1;
 
     switch (baudrate)
     {
         case 300:
             speed = B300;
-            serial_data->t.c_cc[VTIME] = 12; // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = (cc_t) 12; // Timeout in 1/10 sec
             break;
 
         case 600:
             speed = B600;
-            serial_data->t.c_cc[VTIME] = 6;  // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = (cc_t) 6;  // Timeout in 1/10 sec
             break;
 
         case 1200:
             speed = B1200;
-            serial_data->t.c_cc[VTIME] = 4;  // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = (cc_t) 4;  // Timeout in 1/10 sec
             break;
 
         case 2400:
             speed = B2400;
-            serial_data->t.c_cc[VTIME] = 2;  // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = (cc_t) 2;  // Timeout in 1/10 sec
             break;
 
         case 4800:
             speed = B4800;
-            serial_data->t.c_cc[VTIME] = 2;  // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = (cc_t) 2;  // Timeout in 1/10 sec
             break;
 
         case 9600:
             speed = B9600;
-            serial_data->t.c_cc[VTIME] = 1;  // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = (cc_t) 1;  // Timeout in 1/10 sec
             break;
 
         case 19200:
             speed = B19200;
-            serial_data->t.c_cc[VTIME] = 1;  // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = (cc_t) 1;  // Timeout in 1/10 sec
             break;
 
         case 38400:
             speed = B38400;
-            serial_data->t.c_cc[VTIME] = 1;  // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = (cc_t) 1;  // Timeout in 1/10 sec
             break;
 
        default:
@@ -197,8 +201,15 @@ mbus_serial_data_free(mbus_handle *handle)
     if (handle)
     {
         serial_data = (mbus_serial_data *) handle->auxdata;
+        
+        if (serial_data == NULL)
+        {
+            return;
+        }
+        
         free(serial_data->device);
         free(serial_data);
+        handle->auxdata = NULL;
     }
 }
 
@@ -212,6 +223,12 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
     int len, ret;
 
     if (handle == NULL || frame == NULL)
+    {
+        return -1;
+    }
+    
+    // Make sure serial connection is open
+    if (isatty(handle->fd) == 0)
     {
         return -1;
     }
@@ -262,11 +279,19 @@ int
 mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
 {
     char buff[PACKET_BUFF_SIZE];
-    int len, remaining, nread, timeouts;
+    int remaining, timeouts;
+    ssize_t len, nread;
     
     if (handle == NULL || frame == NULL)
     {
         fprintf(stderr, "%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
+        return MBUS_RECV_RESULT_ERROR;
+    }
+    
+    // Make sure serial connection is open
+    if (isatty(handle->fd) == 0)
+    {
+        fprintf(stderr, "%s: Serial connection is not available.\n", __PRETTY_FUNCTION__);
         return MBUS_RECV_RESULT_ERROR;
     }
 
@@ -280,6 +305,12 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
     timeouts = 0;
 
     do {
+        if (len + remaining > PACKET_BUFF_SIZE)
+        {
+            // avoid out of bounds access
+            return MBUS_RECV_RESULT_ERROR;
+        }
+        
         //printf("%s: Attempt to read %d bytes [len = %d]\n", __PRETTY_FUNCTION__, remaining, len);
 
         if ((nread = read(handle->fd, &buff[len], remaining)) == -1)
@@ -301,6 +332,12 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
                 fprintf(stderr, "%s: Timeout\n", __PRETTY_FUNCTION__);
                 break;
             }
+        }
+        
+        if (len > (SSIZE_MAX-nread))
+        {
+            // avoid overflow
+            return MBUS_RECV_RESULT_ERROR;
         }
 
         len += nread;
