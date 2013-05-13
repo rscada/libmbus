@@ -52,7 +52,7 @@ int
 main(int argc, char **argv)
 {
     char *device, *addr_mask = NULL;
-    int baudrate = 9600;
+    long baudrate = 9600;
     mbus_handle *handle = NULL;
     mbus_frame *frame = NULL, reply;
     
@@ -82,26 +82,26 @@ main(int argc, char **argv)
     }
     else if (argc == 4 && strcmp(argv[1], "-b") == 0)
     {
-        baudrate = atoi(argv[2]);
+        baudrate = atol(argv[2]);
         device = argv[3];   
         addr_mask = strdup("FFFFFFFFFFFFFFFF");
     }
     else if (argc == 5 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-b") == 0)
     {
-        baudrate = atoi(argv[3]);
+        baudrate = atol(argv[3]);
         device = argv[4];   
         addr_mask = strdup("FFFFFFFFFFFFFFFF");
         debug = 1;
     }
     else if (argc == 5 && strcmp(argv[1], "-b") == 0)
     {
-        baudrate = atoi(argv[2]);
+        baudrate = atol(argv[2]);
         device = argv[3];   
         addr_mask = strdup(argv[4]);
     }
     else if (argc == 6 && strcmp(argv[1], "-d") == 0)
     {
-        baudrate = atoi(argv[3]);
+        baudrate = atol(argv[3]);
         device = argv[4];   
         addr_mask = strdup(argv[5]);
         debug = 1;

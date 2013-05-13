@@ -29,7 +29,7 @@ extern "C" {
 typedef struct _mbus_tcp_data
 {
     char *host;
-    int port;
+    uint16_t port;
 } mbus_tcp_data;
 
 int              mbus_tcp_connect(mbus_handle *handle);

@@ -54,7 +54,8 @@ main(int argc, char **argv)
 {
     mbus_handle *handle;
     char *device;
-    int address, baudrate = 9600, retries = 0;
+    int address, retries = 0;
+    long baudrate = 9600;
     int ret;
 
     if (argc == 2)
@@ -68,7 +69,7 @@ main(int argc, char **argv)
     }
     else if (argc == 4 && strcmp(argv[1], "-b") == 0)
     {
-        baudrate = atoi(argv[2]); 
+        baudrate = atol(argv[2]); 
         device = argv[3];
     }
     else if (argc == 4 && strcmp(argv[1], "-r") == 0)
@@ -79,7 +80,7 @@ main(int argc, char **argv)
     else if (argc == 5 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-b") == 0)
     {
         debug = 1;    
-        baudrate = atoi(argv[3]); 
+        baudrate = atol(argv[3]); 
         device = argv[4];
     }
     else if (argc == 5 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-r") == 0)
@@ -90,14 +91,14 @@ main(int argc, char **argv)
     }
     else if (argc == 6 && strcmp(argv[1], "-b") == 0 && strcmp(argv[3], "-r") == 0)
     {    
-        baudrate = atoi(argv[2]);
+        baudrate = atol(argv[2]);
         retries = atoi(argv[4]);
         device = argv[5];
     }
     else if (argc == 7 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-b") == 0 && strcmp(argv[4], "-r") == 0)
     {
         debug = 1;    
-        baudrate = atoi(argv[3]);
+        baudrate = atol(argv[3]);
         retries = atoi(argv[5]);
         device = argv[6];
     }

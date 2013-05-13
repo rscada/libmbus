@@ -177,7 +177,7 @@ mbus_handle * mbus_context_serial(const char *device);
  * 
  * @return Initialized "unified" handler when successful, NULL otherwise;
  */
-mbus_handle * mbus_context_tcp(const char *host, int port);
+mbus_handle * mbus_context_tcp(const char *host, uint16_t port);
 
 /** 
  * Deallocate memory used by M-Bus context.
@@ -275,7 +275,7 @@ int mbus_send_application_reset_frame(mbus_handle * handle, int address, int sub
  * 
  * @return Zero when successful.
  */
-int mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, int baudrate);
+int mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, long baudrate);
 
 /** 
  * Sends request frame (REQ_UD2) to given slave using "unified" handle
