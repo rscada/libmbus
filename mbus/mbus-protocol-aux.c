@@ -1050,7 +1050,7 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
         (vib->vif != 0xFD) &&
         (vib->vif != 0xFB))                       /* codes for VIF extention: see table 8.4.5 */
     {
-        code = (vib->vif) & 0x7f;
+        code = (vib->vife[0]) & 0x7f;
         switch (code)
         {
             case 0x70:
