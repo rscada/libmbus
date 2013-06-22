@@ -192,6 +192,8 @@ typedef struct _mbus_data_variable_header {
     
 } mbus_data_variable_header;
 
+#define MBUS_DATA_VARIABLE_HEADER_LENGTH 12
+
 //
 // VARIABLE LENGTH DATA FORMAT
 //
@@ -240,6 +242,8 @@ typedef struct _mbus_data_fixed {
     unsigned char cnt2_val[4];
 
 } mbus_data_fixed;
+
+#define MBUS_DATA_FIXED_LENGTH 16
 
 //
 // ABSTRACT DATA FORMAT (error, fixed or variable length)

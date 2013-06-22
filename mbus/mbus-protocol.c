@@ -2648,9 +2648,30 @@ int
 mbus_data_fixed_parse(mbus_frame *frame, mbus_data_fixed *data)
 {
     if (frame && data)
-    {  
-        // copy the fixed-length data structure
-        memcpy((void *)data, (void *)(frame->data), sizeof(mbus_data_fixed));
+    {
+        if (frame->data_size != MBUS_DATA_FIXED_LENGTH)
+        {
+            snprintf(error_str, sizeof(error_str), "Invalid length for fixed data.");
+            return -1;
+        }
+        
+        // copy the fixed-length data structure bytewise
+        data->id_bcd[0]   = frame->data[0];
+        data->id_bcd[1]   = frame->data[1];
+        data->id_bcd[2]   = frame->data[2];
+        data->id_bcd[3]   = frame->data[3];
+        data->tx_cnt      = frame->data[4];
+        data->status      = frame->data[5];
+        data->cnt1_type   = frame->data[6];
+        data->cnt2_type   = frame->data[7];
+        data->cnt1_val[0] = frame->data[8];
+        data->cnt1_val[1] = frame->data[9];
+        data->cnt1_val[2] = frame->data[10];
+        data->cnt1_val[3] = frame->data[11];
+        data->cnt2_val[0] = frame->data[12];
+        data->cnt2_val[1] = frame->data[13];
+        data->cnt2_val[2] = frame->data[14];
+        data->cnt2_val[3] = frame->data[15];
 
         return 0;
     }    
@@ -2673,13 +2694,28 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
         // parse header
         data->nrecords = 0;
         data->more_records_follow = 0;
-        i = sizeof(mbus_data_variable_header);
+        i = MBUS_DATA_VARIABLE_HEADER_LENGTH;
+        
         if(frame->data_size < i)
+        {
+            snprintf(error_str, sizeof(error_str), "Variable header too short.");
             return -1;
+        }
 
-        // first copy the variable data fixed header
-        memcpy((void *)&(data->header), (void *)(frame->data), i);
-
+        // first copy the variable data fixed header bytewise
+        data->header.id_bcd[0]       = frame->data[0];
+        data->header.id_bcd[1]       = frame->data[1];
+        data->header.id_bcd[2]       = frame->data[2];
+        data->header.id_bcd[3]       = frame->data[3];
+        data->header.manufacturer[0] = frame->data[4];
+        data->header.manufacturer[1] = frame->data[5];
+        data->header.version         = frame->data[6];
+        data->header.medium          = frame->data[7];
+        data->header.access_no       = frame->data[8];
+        data->header.status          = frame->data[9];
+        data->header.signature[0]    = frame->data[10];
+        data->header.signature[1]    = frame->data[11];
+        
         data->record = NULL;
 
         while (i < frame->data_size)
@@ -2732,16 +2768,32 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
             // read DIF extensions
             record->drh.dib.ndife = 0;
-            while (frame->data[i] & MBUS_DIB_DIF_EXTENSION_BIT && 
-                   record->drh.dib.ndife < NITEMS(record->drh.dib.dife))
+            while ((i < frame->data_size) &&
+                   (frame->data[i] & MBUS_DIB_DIF_EXTENSION_BIT))
             {
-                unsigned char dife = frame->data[i+1];
+                unsigned char dife;
+                
+                if (record->drh.dib.ndife >= NITEMS(record->drh.dib.dife))
+                {
+                    mbus_data_record_free(record);
+                    snprintf(error_str, sizeof(error_str), "Too many DIFE.");
+                    return -1;
+                }
+                
+                dife = frame->data[i+1];
                 record->drh.dib.dife[record->drh.dib.ndife] = dife;
 
                 record->drh.dib.ndife++;
                 i++;
             }
             i++;
+            
+            if (i > frame->data_size)
+            {
+                mbus_data_record_free(record);
+                snprintf(error_str, sizeof(error_str), "Premature end of record at DIF.");
+                return -1;
+            }
 
             // read and parse VIB (= VIF + VIFE)
 
@@ -2753,9 +2805,17 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 // variable length VIF in ASCII format
                 int var_vif_len;
                 var_vif_len = frame->data[i++];
+                if (var_vif_len > sizeof(record->drh.vib.custom_vif))
+                {
+                    mbus_data_record_free(record);
+                    snprintf(error_str, sizeof(error_str), "Too long variable length VIF.");
+                    return -1;
+                }
+                
                 if (i + var_vif_len > frame->data_size)
                 {
                     mbus_data_record_free(record);
+                    snprintf(error_str, sizeof(error_str), "Premature end of record at variable length VIF.");
                     return -1;
                 }
                 mbus_data_str_decode(record->drh.vib.custom_vif, &(frame->data[i]), var_vif_len);
@@ -2770,16 +2830,32 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 record->drh.vib.vife[0] = frame->data[i];
                 record->drh.vib.nvife++;
                 
-                while (frame->data[i] & MBUS_DIB_VIF_EXTENSION_BIT && 
-                       record->drh.vib.nvife < NITEMS(record->drh.vib.vife))
+                while ((i < frame->data_size) &&
+                       (frame->data[i] & MBUS_DIB_VIF_EXTENSION_BIT))
                 {
-                    unsigned char vife = frame->data[i+1];
+                    unsigned char vife;
+                    
+                    if (record->drh.vib.nvife < NITEMS(record->drh.vib.vife))
+                    {
+                        mbus_data_record_free(record);
+                        snprintf(error_str, sizeof(error_str), "Too many VIFE.");
+                        return -1;
+                    }
+                    
+                    vife = frame->data[i+1];
                     record->drh.vib.vife[record->drh.vib.nvife] = vife;
                 
                     record->drh.vib.nvife++;
                     i++;
                 }
                 i++;
+            }
+            
+            if (i > frame->data_size)
+            {
+                mbus_data_record_free(record);
+                snprintf(error_str, sizeof(error_str), "Premature end of record at VIF.");
+                return -1;
             }
                 
             // re-calculate data length, if of variable length type
@@ -2796,6 +2872,13 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 else if(frame->data[i] >= 0xF0 && frame->data[i] <= 0xFA)
                     record->data_len = frame->data[i++] - 0xF0;
             }
+            
+            if (i + record->data_len > frame->data_size)
+            {
+                mbus_data_record_free(record);
+                snprintf(error_str, sizeof(error_str), "Premature end of record at data.");
+                return -1;
+            }   
 
             // copy data
             for (j = 0; j < record->data_len; j++)
