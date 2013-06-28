@@ -15,6 +15,8 @@
 
 static int debug = 0;
 
+// Default value for the maximum number of frames
+#define MAXFRAMES 16
 //
 // init slave to get really the beginning of the records
 //
@@ -45,6 +47,19 @@ init_slaves(mbus_handle *handle)
 }
 
 //------------------------------------------------------------------------------
+// Wrapper for argument parsing errors
+//------------------------------------------------------------------------------
+int
+parse_abort(char **argv)
+{
+    fprintf(stderr, "usage: %s [-d] [-b BAUDRATE] [-f FRAMES] device mbus-address\n", argv[0]);
+    fprintf(stderr, "    optional flag -d for debug printout\n");
+    fprintf(stderr, "    optional flag -b for selecting baudrate\n");
+    fprintf(stderr, "    optional flag -f for selecting the maximal number of frames\n");
+    exit(1);
+}
+
+//------------------------------------------------------------------------------
 // Scan for devices using secondary addressing.
 //------------------------------------------------------------------------------
 int
@@ -57,42 +72,40 @@ main(int argc, char **argv)
     char *device, *addr_str, *xml_result;
     int address;
     long baudrate = 9600;
- 
+    int maxframes = MAXFRAMES;
+
     memset((void *)&reply, 0, sizeof(mbus_frame));
     memset((void *)&reply_data, 0, sizeof(mbus_frame_data));
-     
-    if (argc == 3)
+    int c;
+    for (c=1; c<argc-2; c++)
     {
-        device   = argv[1];   
-        addr_str = argv[2];
+        if (strcmp(argv[c], "-d") == 0) 
+        {
+            debug = 1;
+        } 
+        else if (strcmp(argv[c], "-b") == 0)
+        {
+            c++;
+            baudrate = atol(argv[c]);
+        } 
+        else if (strcmp(argv[c], "-f") == 0)
+        {
+            c++;
+            maxframes = atoi(argv[c]);
+        } 
+        else 
+        {
+            parse_abort(argv);
+        }
     }
-    else if (argc == 4 && strcmp(argv[1], "-d") == 0)
+    if (c > argc-2)
     {
-        device   = argv[2];   
-        addr_str = argv[3];
-        debug = 1;
+        parse_abort(argv);
     }
-    else if (argc == 5 && strcmp(argv[1], "-b") == 0)
-    {
-        baudrate = atol(argv[2]);
-        device   = argv[3];   
-        addr_str = argv[4];
-    }
-    else if (argc == 6 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-b") == 0)
-    {
-        baudrate = atol(argv[3]);
-        device   = argv[4];   
-        addr_str = argv[5];
-        debug = 1;
-    }
-    else 
-    {
-        fprintf(stderr, "usage: %s [-d] [-b BAUDRATE] device mbus-address\n", argv[0]);
-        fprintf(stderr, "    optional flag -d for debug printout\n");
-        fprintf(stderr, "    optional flag -b for selecting baudrate\n");
-        return 0;
-    }
-    
+    device   = argv[c];   
+    addr_str = argv[c+1];
+
+        
     if (debug)
     {
         mbus_register_send_event(&mbus_dump_send_event);
@@ -157,7 +170,7 @@ main(int argc, char **argv)
     
     // instead of the send and recv, use this sendrecv function that 
     // takes care of the possibility of multi-telegram replies (limit = 16 frames)
-    if (mbus_sendrecv_request(handle, address, &reply, 16) != 0)
+    if (mbus_sendrecv_request(handle, address, &reply, maxframes) != 0)
     {
         fprintf(stderr, "Failed to send/receive M-Bus request.\n");
         return 1;
