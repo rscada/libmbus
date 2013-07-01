@@ -20,7 +20,7 @@ static int debug = 0;
 //
 // init slave to get really the beginning of the records
 //
-int
+static int
 init_slaves(mbus_handle *handle)
 {    
     if (debug)
@@ -49,7 +49,7 @@ init_slaves(mbus_handle *handle)
 //------------------------------------------------------------------------------
 // Wrapper for argument parsing errors
 //------------------------------------------------------------------------------
-int
+static void
 parse_abort(char **argv)
 {
     fprintf(stderr, "usage: %s [-d] [-b BAUDRATE] [-f FRAMES] device mbus-address\n", argv[0]);
@@ -65,8 +65,7 @@ parse_abort(char **argv)
 int
 main(int argc, char **argv)
 {
-    mbus_frame *frame, reply;
-    mbus_frame_data reply_data;
+    mbus_frame reply;
     mbus_handle *handle = NULL;
 
     char *device, *addr_str, *xml_result;
@@ -75,7 +74,6 @@ main(int argc, char **argv)
     int maxframes = MAXFRAMES;
 
     memset((void *)&reply, 0, sizeof(mbus_frame));
-    memset((void *)&reply_data, 0, sizeof(mbus_frame_data));
     int c;
     for (c=1; c<argc-2; c++)
     {
@@ -121,17 +119,22 @@ main(int argc, char **argv)
     if (mbus_connect(handle) == -1)
     {
         fprintf(stderr,"Failed to setup connection to M-bus gateway\n");
+        mbus_context_free(handle);
         return 1;
     }
 
     if (mbus_serial_set_baudrate(handle, baudrate) == -1)
     {
         fprintf(stderr,"Failed to set baud rate.\n");
+        mbus_disconnect(handle);
+        mbus_context_free(handle);
         return 1;
     }
     
     if (init_slaves(handle) == 0)
     {
+        mbus_disconnect(handle);
+        mbus_context_free(handle);
         return 1;
     }
 
@@ -146,16 +149,22 @@ main(int argc, char **argv)
         if (ret == MBUS_PROBE_COLLISION)
         {
             fprintf(stderr, "%s: Error: The address mask [%s] matches more than one device.\n", __PRETTY_FUNCTION__, addr_str);
+            mbus_disconnect(handle);
+            mbus_context_free(handle);
             return 1;
         }
         else if (ret == MBUS_PROBE_NOTHING)
         {
             fprintf(stderr, "%s: Error: The selected secondary address does not match any device [%s].\n", __PRETTY_FUNCTION__, addr_str);
+            mbus_disconnect(handle);
+            mbus_context_free(handle);
             return 1;
         }
         else if (ret == MBUS_PROBE_ERROR)
         {
             fprintf(stderr, "%s: Error: Failed to select secondary address [%s].\n", __PRETTY_FUNCTION__, addr_str);
+            mbus_disconnect(handle);
+            mbus_context_free(handle);
             return 1;    
         }
         // else MBUS_PROBE_SINGLE
@@ -173,6 +182,9 @@ main(int argc, char **argv)
     if (mbus_sendrecv_request(handle, address, &reply, maxframes) != 0)
     {
         fprintf(stderr, "Failed to send/receive M-Bus request.\n");
+        mbus_disconnect(handle);
+        mbus_context_free(handle);
+        mbus_frame_free(reply.next);
         return 1;
     }
 
@@ -190,6 +202,9 @@ main(int argc, char **argv)
     if ((xml_result = mbus_frame_xml(&reply)) == NULL)
     {
         fprintf(stderr, "Failed to generate XML representation of MBUS frames: %s\n", mbus_error_str());
+        mbus_disconnect(handle);
+        mbus_context_free(handle);
+        mbus_frame_free(reply.next);
         return 1;
     }
     
@@ -198,6 +213,8 @@ main(int argc, char **argv)
 
     mbus_disconnect(handle);
     mbus_context_free(handle);
+    mbus_frame_free(reply.next);
+    
     return 0;
 }
 
