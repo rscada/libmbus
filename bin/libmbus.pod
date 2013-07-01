@@ -22,9 +22,9 @@ B<mbus-serial-request-data> [-d] [-b BAUDRATE] device mbus-address
 
 B<mbus-tcp-request-data> [-d] host port mbus-address
 
-B<mbus-serial-request-data-multi-reply> [-d] [-b BAUDRATE] device mbus-address
+B<mbus-serial-request-data-multi-reply> [-d] [-b BAUDRATE] [-f FRAMES] device mbus-address
 
-B<mbus-tcp-request-data-multi-reply> [-d] host port mbus-address
+B<mbus-tcp-request-data-multi-reply> [-d] [-f FRAMES] host port mbus-address
 
 B<mbus-serial-select-secondary> [-b BAUDRATE] device secondary-mbus-address
 
@@ -47,8 +47,8 @@ B<mbus-serial-request-data>, B<mbus-tcp-request-data> - read data from given dev
 Supports both primary and secondary address types.
 
 B<mbus-serial-request-data-multi-reply>, B<mbus-tcp-request-data-multi-reply> - read
-data from given device supporting multi-telegram (up to 16 frames) reply. Can be also
-used for single telegram as mbus-serial-request-data or mbus-tcp-request-data.
+data from given device supporting multi-telegram (default: up to 16 frames) reply. 
+Can be also used for single telegram as mbus-serial-request-data or mbus-tcp-request-data.
 Supports both primary and secondary address types.
 
 B<mbus-serial-select-secondary>, B<mbus-tcp-select-secondary> - perform single secondary
@@ -79,6 +79,10 @@ the response is erroneous, the MBus master can send a retransmissions.
 
 libmbus supports the following range of retransmission: 0 until 9
 
+=item B<-f> I<FRAMES>
+
+Maximum response frames. 
+
 =item B<-d>
 
 Enable debugging messages.
@@ -95,6 +99,7 @@ For TCP communciation, the host which represents the MBus (gateway).
 =item B<port>
 
 For TCP communciation, the port on the host which represents the MBus (gateway).
+An integer between 0 and 65535.
 
 =item B<address>
 
