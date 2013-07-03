@@ -136,7 +136,7 @@ main(int argc, char **argv)
 
     if (mbus_frame_data_parse(&reply, &reply_data) == -1)
     {
-        fprintf(stderr, "M-bus data parse error.\n");
+        fprintf(stderr, "M-bus data parse error: %s\n", mbus_error_str());
         return 1;
     }
     
