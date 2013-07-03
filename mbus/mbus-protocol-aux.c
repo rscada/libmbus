@@ -2075,7 +2075,7 @@ mbus_select_secondary_address(mbus_handle * handle, const char *mask)
 }
 
 //------------------------------------------------------------------------------
-// Prove for the presence of a device(s) using the supplied secondary address 
+// Probe for the presence of a device(s) using the supplied secondary address 
 // (mask).
 //------------------------------------------------------------------------------
 int 
@@ -2230,7 +2230,7 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
 
     if (strlen(addr_mask) != 16)
     {
-        fprintf(stderr, "%s: Illegal address mask [%s]. Not 16 characters long.\n", __PRETTY_FUNCTION__, addr_mask);
+        MBUS_ERROR("%s: Illegal address mask [%s]. Not 16 characters long.\n", __PRETTY_FUNCTION__, addr_mask);
         return -1;
     }
 
@@ -2241,7 +2241,7 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
 
     if ((mask = strdup(addr_mask)) == NULL)
     {
-        fprintf(stderr, "%s: Failed to allocate local copy of the address mask.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Failed to allocate local copy of the address mask.\n", __PRETTY_FUNCTION__);
         return -1;
     }
     
@@ -2290,7 +2290,7 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
         }
         else // MBUS_PROBE_ERROR
         {
-            fprintf(stderr, "%s: Failed to probe secondary address [%s].\n", __PRETTY_FUNCTION__, mask);
+            MBUS_ERROR("%s: Failed to probe secondary address [%s].\n", __PRETTY_FUNCTION__, mask);
             return -1;    
         }
     }
