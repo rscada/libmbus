@@ -2115,7 +2115,7 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
         if (ret == MBUS_RECV_RESULT_INVALID)
         {
             /* check for more data (collision) */
-		    mbus_purge_frames(handle);
+            mbus_purge_frames(handle);
             return MBUS_PROBE_COLLISION;
         }
         
