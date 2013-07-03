@@ -4047,11 +4047,13 @@ mbus_frame_get_secondary_address(mbus_frame *frame)
     if (frame->control_information != MBUS_CONTROL_INFO_RESP_VARIABLE)
     {
         snprintf(error_str, sizeof(error_str), "Non-variable data response (can't get secondary address from response).");
+        mbus_frame_data_free(data);
         return NULL;
     }
 
     if (mbus_frame_data_parse(frame, data) == -1)
     {
+        mbus_frame_data_free(data);
         return NULL;
     }
 
