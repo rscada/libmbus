@@ -4038,7 +4038,9 @@ mbus_frame_get_secondary_address(mbus_frame *frame)
 
     if (frame == NULL || (data = mbus_frame_data_new()) == NULL)
     {
-        printf("%s: Failed to allocate data structure [%p, %p].\n", __PRETTY_FUNCTION__, (void*)frame, (void*)data);
+        snprintf(error_str, sizeof(error_str),
+                 "%s: Failed to allocate data structure [%p, %p].",
+                  __PRETTY_FUNCTION__, (void*)frame, (void*)data);
         return NULL;
     }
 
