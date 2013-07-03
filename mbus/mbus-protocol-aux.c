@@ -2114,10 +2114,18 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
 
         if (ret == MBUS_RECV_RESULT_INVALID)
         {
+            /* check for more data (collision) */
+		    mbus_purge_frames(handle);
+            return MBUS_PROBE_COLLISION;
+        }
+        
+        /* check for more data (collision) */
+        if (mbus_purge_frames(handle))
+        {
             return MBUS_PROBE_COLLISION;
         }
 
-        if (mbus_frame_type(&reply) != MBUS_FRAME_TYPE_ACK)
+        if (mbus_frame_type(&reply) == MBUS_FRAME_TYPE_LONG)
         {
             char *addr = mbus_frame_get_secondary_address(&reply);
 
@@ -2125,6 +2133,7 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
             {
                 // show error message, but procede with scan
                 MBUS_ERROR("Failed to generate secondary address from M-Bus reply frame: %s\n", mbus_error_str());
+                return MBUS_PROBE_NOTHING;
             }
             
             snprintf(matching_addr, 17, "%s", addr);
@@ -2138,7 +2147,7 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
         }
         else
         {
-            MBUS_ERROR("%s: Unexpected reply for address [mask %s]. Got ACK, expected data.\n",
+            MBUS_ERROR("%s: Unexpected reply for address [mask %s]. Expected long frame.\n",
                        __PRETTY_FUNCTION__, mask);
             return MBUS_PROBE_NOTHING;
         }
