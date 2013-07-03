@@ -2079,7 +2079,7 @@ mbus_select_secondary_address(mbus_handle * handle, const char *mask)
 // (mask).
 //------------------------------------------------------------------------------
 int 
-mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *matching_addr)
+mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matching_addr)
 {
     int ret;
     mbus_frame reply;
@@ -2119,7 +2119,15 @@ mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *match
 
         if (mbus_frame_type(&reply) != MBUS_FRAME_TYPE_ACK)
         {
-            snprintf(matching_addr, 17, "%s", mbus_frame_get_secondary_address(&reply));
+            char *addr = mbus_frame_get_secondary_address(&reply);
+
+            if (addr == NULL)
+            {
+                // show error message, but procede with scan
+                MBUS_ERROR("Failed to generate secondary address from M-Bus reply frame: %s\n", mbus_error_str());
+            }
+            
+            snprintf(matching_addr, 17, "%s", addr);
 
             if (_mbus_found_event)
             {
