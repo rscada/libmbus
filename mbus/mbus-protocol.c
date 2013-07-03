@@ -2181,16 +2181,16 @@ mbus_data_record_decode(mbus_data_record *record)
     static char buff[768];
     unsigned char vif, vife;
     
-    // ignore extension bit
-    vif = (record->drh.vib.vif & MBUS_DIB_VIF_WITHOUT_EXTENSION);       
-    vife = (record->drh.vib.vife[0] & MBUS_DIB_VIF_WITHOUT_EXTENSION);
-
     if (record)
     {
         int val;
         float val3;
         long long val4;
         struct tm time;
+        
+        // ignore extension bit
+        vif = (record->drh.vib.vif & MBUS_DIB_VIF_WITHOUT_EXTENSION);       
+        vife = (record->drh.vib.vife[0] & MBUS_DIB_VIF_WITHOUT_EXTENSION);
             
         switch (record->drh.dib.dif & 0x0F)
         {
