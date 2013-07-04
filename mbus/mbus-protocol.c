@@ -3587,10 +3587,14 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
         
         mbus_str_xml_encode(str_encoded, mbus_data_record_value(record), sizeof(str_encoded));
         len += snprintf(&buff[len], sizeof(buff) - len, "        <Value>%s</Value>\n", str_encoded);
-        
-        timeinfo = gmtime ( &(record->timestamp) );
-        strftime(timestamp,20,"%Y-%m-%dT%H:%M:%S",timeinfo);
-        len += snprintf(&buff[len], sizeof(buff) - len, "        <Timestamp>%s</Timestamp>\n", timestamp);
+
+        if (record->timestamp > 0)
+        {        
+            timeinfo = gmtime (&(record->timestamp));
+            strftime(timestamp,20,"%Y-%m-%dT%H:%M:%S",timeinfo);
+            len += snprintf(&buff[len], sizeof(buff) - len,
+                            "        <Timestamp>%s</Timestamp>\n", timestamp);
+        }
         
         len += snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");
             
