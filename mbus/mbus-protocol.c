@@ -2181,16 +2181,16 @@ mbus_data_record_decode(mbus_data_record *record)
     static char buff[768];
     unsigned char vif, vife;
     
-    // ignore extension bit
-    vif = (record->drh.vib.vif & MBUS_DIB_VIF_WITHOUT_EXTENSION);       
-    vife = (record->drh.vib.vife[0] & MBUS_DIB_VIF_WITHOUT_EXTENSION);
-
     if (record)
     {
         int val;
         float val3;
         long long val4;
         struct tm time;
+        
+        // ignore extension bit
+        vif = (record->drh.vib.vif & MBUS_DIB_VIF_WITHOUT_EXTENSION);       
+        vife = (record->drh.vib.vife[0] & MBUS_DIB_VIF_WITHOUT_EXTENSION);
             
         switch (record->drh.dib.dif & 0x0F)
         {
@@ -2835,7 +2835,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 {
                     unsigned char vife;
                     
-                    if (record->drh.vib.nvife > NITEMS(record->drh.vib.vife))
+                    if (record->drh.vib.nvife >= NITEMS(record->drh.vib.vife))
                     {
                         mbus_data_record_free(record);
                         snprintf(error_str, sizeof(error_str), "Too many VIFE.");
@@ -4047,11 +4047,13 @@ mbus_frame_get_secondary_address(mbus_frame *frame)
     if (frame->control_information != MBUS_CONTROL_INFO_RESP_VARIABLE)
     {
         snprintf(error_str, sizeof(error_str), "Non-variable data response (can't get secondary address from response).");
+        mbus_frame_data_free(data);
         return NULL;
     }
 
     if (mbus_frame_data_parse(frame, data) == -1)
     {
+        mbus_frame_data_free(data);
         return NULL;
     }
 
