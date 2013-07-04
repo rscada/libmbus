@@ -2489,6 +2489,8 @@ mbus_parse(mbus_frame *frame, unsigned char *data, size_t data_size)
     
     if (frame && data && data_size > 0)
     {
+        frame->next = NULL;
+        
         if (parse_debug) 
             printf("%s: Attempting to parse binary data [size = %zu]\n", __PRETTY_FUNCTION__, data_size);
 
