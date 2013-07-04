@@ -4,6 +4,7 @@
         <Id>70112345</Id>
         <Manufacturer>ELS</Manufacturer>
         <Version>2</Version>
+        <ProductName>Elster TMP-A</ProductName>
         <Medium>Water</Medium>
         <AccessNumber>2</AccessNumber>
         <Status>00</Status>

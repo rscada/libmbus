@@ -4,6 +4,7 @@
         <Id>10060958</Id>
         <Manufacturer>LSE</Manufacturer>
         <Version>22</Version>
+        <ProductName></ProductName>
         <Medium>Bus/System</Medium>
         <AccessNumber>123</AccessNumber>
         <Status>00</Status>

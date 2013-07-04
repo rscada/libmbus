@@ -4,6 +4,7 @@
         <Id>5000345</Id>
         <Manufacturer>@@@</Manufacturer>
         <Version>18</Version>
+        <ProductName></ProductName>
         <Medium>Electricity</Medium>
         <AccessNumber>37</AccessNumber>
         <Status>00</Status>

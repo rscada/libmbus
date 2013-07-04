@@ -1,44 +1,44 @@
 <MBusData>
 
     <SlaveInformation>
-        <Id>1006089</Id>
+        <Id>802657</Id>
         <Manufacturer>SVM</Manufacturer>
-        <Version>9</Version>
-        <ProductName>Kamstrup SVM F22</ProductName>
-        <Medium>Heat: Inlet</Medium>
-        <AccessNumber>148</AccessNumber>
-        <Status>70</Status>
+        <Version>8</Version>
+        <ProductName>Elster F2</ProductName>
+        <Medium>Heat: Outlet</Medium>
+        <AccessNumber>70</AccessNumber>
+        <Status>00</Status>
         <Signature>0000</Signature>
     </SlaveInformation>
 
     <DataRecord id="0">
         <Function>Instantaneous value</Function>
         <Unit>Energy (kWh)</Unit>
-        <Value>28014</Value>
+        <Value>5272</Value>
     </DataRecord>
 
     <DataRecord id="1">
         <Function>Instantaneous value</Function>
-        <Unit>Volume (m m^3)</Unit>
-        <Value>640581</Value>
+        <Unit>Volume (1e-2  m^3)</Unit>
+        <Value>120427</Value>
     </DataRecord>
 
     <DataRecord id="2">
         <Function>Instantaneous value</Function>
-        <Unit>Volume (m m^3)</Unit>
-        <Value>640581</Value>
+        <Unit>Volume (1e-2  m^3)</Unit>
+        <Value>91769</Value>
     </DataRecord>
 
     <DataRecord id="3">
         <Function>Instantaneous value</Function>
         <Unit>Flow temperature (deg C)</Unit>
-        <Value>243</Value>
+        <Value>28</Value>
     </DataRecord>
 
     <DataRecord id="4">
         <Function>Instantaneous value</Function>
         <Unit>Return temperature (deg C)</Unit>
-        <Value>243</Value>
+        <Value>34</Value>
     </DataRecord>
 
     <DataRecord id="5">
@@ -50,13 +50,13 @@
     <DataRecord id="6">
         <Function>Instantaneous value</Function>
         <Unit>On time (hours)</Unit>
-        <Value>6370</Value>
+        <Value>41393</Value>
     </DataRecord>
 
     <DataRecord id="7">
         <Function>Instantaneous value</Function>
         <Unit>Operating time (hours)</Unit>
-        <Value>6363</Value>
+        <Value>41393</Value>
     </DataRecord>
 
     <DataRecord id="8">
@@ -74,7 +74,7 @@
     <DataRecord id="10">
         <Function>Instantaneous value</Function>
         <Unit>Time Point (time &amp; date)</Unit>
-        <Value>2021-02-08T21:12:00</Value>
+        <Value>2013-06-29T12:12:00</Value>
     </DataRecord>
 
     <DataRecord id="11">
@@ -91,7 +91,7 @@
 
     <DataRecord id="13">
         <Function>More records follow</Function>
-        <Value></Value>
+        <Value>C4 09 01 01 12 00 01 01 01 07 57 26 80 00 CD 4E 08 04 07 A3 FF 03 57 26 80 00 04 04 0D 02 FF 0F 05 3C FF 62 E7 62 96 0A 89 0A 02 00 15 40 17 01 00 00 63 42</Value>
     </DataRecord>
 
 </MBusData>

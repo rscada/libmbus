@@ -4,6 +4,7 @@
         <Id>5000244</Id>
         <Manufacturer>SBC</Manufacturer>
         <Version>18</Version>
+        <ProductName></ProductName>
         <Medium>Electricity</Medium>
         <AccessNumber>19</AccessNumber>
         <Status>00</Status>

@@ -15,7 +15,6 @@
         <Function>Instantaneous value</Function>
         <Unit>Energy (Wh)</Unit>
         <Value>5000</Value>
-        <Timestamp>1970-01-01T00:00:00</Timestamp>
     </DataRecord>
 
 </MBusData>

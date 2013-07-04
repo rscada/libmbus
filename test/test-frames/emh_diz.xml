@@ -4,6 +4,7 @@
         <Id>623702</Id>
         <Manufacturer>EMH</Manufacturer>
         <Version>0</Version>
+        <ProductName>EMH DIZ</ProductName>
         <Medium>Electricity</Medium>
         <AccessNumber>7</AccessNumber>
         <Status>00</Status>

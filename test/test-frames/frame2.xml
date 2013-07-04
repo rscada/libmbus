@@ -4,6 +4,7 @@
         <Id>12345678</Id>
         <Manufacturer>PAD</Manufacturer>
         <Version>1</Version>
+        <ProductName></ProductName>
         <Medium>Water</Medium>
         <AccessNumber>85</AccessNumber>
         <Status>00</Status>
