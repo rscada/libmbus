@@ -1694,7 +1694,7 @@ mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, long baudrate
         control_information = MBUS_CONTROL_INFO_SET_BAUDRATE_38400;
         break;
       default:
-        MBUS_ERROR("%s: invalid baudrate %d\n", __PRETTY_FUNCTION__, baudrate);
+        MBUS_ERROR("%s: invalid baudrate %lu\n", __PRETTY_FUNCTION__, baudrate);
         return -1;
     }
     
