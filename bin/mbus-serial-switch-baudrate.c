@@ -86,7 +86,7 @@ main(int argc, char **argv)
     }
     else
     {
-        printf("Switched baud rate of device to %d\n", target_baudrate);
+        printf("Switched baud rate of device to %lu\n", target_baudrate);
     }
     
     mbus_disconnect(handle);
