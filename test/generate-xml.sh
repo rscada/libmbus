@@ -33,6 +33,10 @@ if [ ! -d "$directory" ]; then
 fi
 
 for hexfile in "$directory"/*.hex;  do
+	if [ ! -f "$hexfile" ]; then
+		continue
+	fi
+
     filename=`basename $hexfile .hex`
     
     # Parse hex file and write XML in file
