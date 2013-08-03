@@ -2072,6 +2072,11 @@ mbus_vib_unit_lookup(mbus_value_information_block *vib)
             // E000 1101
             snprintf(buff, sizeof(buff), "Software version");
         }
+        else if (vib->vife[0] == 0x16)
+        {
+            // VIFE = E001 0110 Password
+            snprintf(buff, sizeof(buff), "Password");
+        }
         else if (vib->vife[0] == 0x17 || vib->vife[0] == 0x97)
 		{
             // VIFE = E001 0111 Error flags
@@ -2081,11 +2086,6 @@ mbus_vib_unit_lookup(mbus_value_information_block *vib)
         {
             // VIFE = E001 0000 Customer location
             snprintf(buff, sizeof(buff), "Customer location");
-        }
-        else if (vib->vife[0] == 0x0C)
-        {
-            // E000 1100 Model / Version
-            snprintf(buff, sizeof(buff), "Model / Version");
         }
         else if (vib->vife[0] == 0x11)
         {
@@ -2101,16 +2101,6 @@ mbus_vib_unit_lookup(mbus_value_information_block *vib)
         {
             // VIFE = E001 1011 Digital input (binary)
             snprintf(buff, sizeof(buff), "Digital input (binary)");
-        }
-        else if (vib->vife[0] == 0x09)
-        {
-            // VIFE = E001 0110 Password
-            snprintf(buff, sizeof(buff), "Password");
-        }
-        else if (vib->vife[0] == 0x0B)
-        {
-            // VIFE = E000 1011 Parameter set identification
-            snprintf(buff, sizeof(buff), "Parameter set identification");
         }
         else if ((vib->vife[0] & 0x70) == 0x40)
         {
@@ -2131,7 +2121,7 @@ mbus_vib_unit_lookup(mbus_value_information_block *vib)
         }
         else
         {
-            snprintf(buff, sizeof(buff), "Unrecongized VIF extension: 0x%.2x", vib->vife[0]);
+            snprintf(buff, sizeof(buff), "Unrecognized VIF extension: 0x%.2x", vib->vife[0]);
         }
         return buff;
     }
