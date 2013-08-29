@@ -28,6 +28,9 @@
 
 #define PACKET_BUFF_SIZE 2048
 
+static int tcp_timeout_sec = 4;
+static int tcp_timeout_usec = 0;
+
 //------------------------------------------------------------------------------
 /// Setup a TCP/IP handle.
 //------------------------------------------------------------------------------
@@ -82,14 +85,17 @@ mbus_tcp_connect(mbus_handle *handle)
     }
 
     // Set a timeout
-    time_out.tv_sec  = 4; //seconds
-    time_out.tv_usec = 0;
+    time_out.tv_sec  = tcp_timeout_sec;   // seconds
+    time_out.tv_usec = tcp_timeout_usec;  // microseconds
     setsockopt(handle->fd, SOL_SOCKET, SO_SNDTIMEO, &time_out, sizeof(time_out));
     setsockopt(handle->fd, SOL_SOCKET, SO_RCVTIMEO, &time_out, sizeof(time_out));
 
     return 0;
 }
 
+//------------------------------------------------------------------------------
+//
+//------------------------------------------------------------------------------
 void
 mbus_tcp_data_free(mbus_handle *handle)
 {
@@ -237,4 +243,23 @@ retry:
     return MBUS_RECV_RESULT_OK;
 }
 
+//------------------------------------------------------------------------------
+/// The the timeout in seconds that will be used as the amount of time the 
+/// a read operation will wait before giving up. Note: This configuration has
+/// to be made before calling mbus_tcp_connect.
+//------------------------------------------------------------------------------
+int
+mbus_tcp_set_timeout_set(double seconds)
+{
+    if (seconds < 0.0)
+    {
+        mbus_error_str_set("Invalid timeout (must be positive).");
+        return -1;
+    }
+    
+    tcp_timeout_sec = (int)seconds;
+    tcp_timeout_sec = (seconds - tcp_timeout_sec) * 1000000;
+
+    return 0;
+}
 
