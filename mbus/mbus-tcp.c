@@ -160,7 +160,7 @@ mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
         // call the send event function, if the callback function is registered
         // 
         if (_mbus_send_event)
-                _mbus_send_event(MBUS_HANDLE_TYPE_TCP, buff, len);
+            _mbus_send_event(MBUS_HANDLE_TYPE_TCP, buff, len);
     }
     else
     {   
@@ -258,7 +258,7 @@ mbus_tcp_set_timeout_set(double seconds)
     }
     
     tcp_timeout_sec = (int)seconds;
-    tcp_timeout_sec = (seconds - tcp_timeout_sec) * 1000000;
+    tcp_timeout_usec = (seconds - tcp_timeout_sec) * 1000000;
 
     return 0;
 }
