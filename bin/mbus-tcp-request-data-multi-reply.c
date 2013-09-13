@@ -2,7 +2,7 @@
 // Copyright (C) 2011, Robert Johansson, Raditex AB
 // All rights reserved.
 //
-// rSCADA 
+// rSCADA
 // http://www.rSCADA.se
 // info@rscada.se
 //
@@ -22,14 +22,14 @@ static int debug = 0;
 //
 static int
 init_slaves(mbus_handle *handle)
-{    
+{
     if (debug)
         printf("%s: debug: sending init frame #1\n", __PRETTY_FUNCTION__);
-    
+
     if (mbus_send_ping_frame(handle, MBUS_ADDRESS_NETWORK_LAYER, 1) == -1)
     {
         return 0;
-    }  
+    }
 
     //
     // resend SND_NKE, maybe the first get lost
@@ -37,7 +37,7 @@ init_slaves(mbus_handle *handle)
 
     if (debug)
         printf("%s: debug: sending init frame #2\n", __PRETTY_FUNCTION__);
-        
+
     if (mbus_send_ping_frame(handle, MBUS_ADDRESS_NETWORK_LAYER, 1) == -1)
     {
         return 0;
@@ -74,10 +74,10 @@ main(int argc, char **argv)
     int c = 0;
 
     memset((void *)&reply, 0, sizeof(mbus_frame));
-    
+
     for (c=1; c<argc-3; c++)
     {
-        if (strcmp(argv[c], "-d") == 0) 
+        if (strcmp(argv[c], "-d") == 0)
         {
             debug = 1;
         }
@@ -85,8 +85,8 @@ main(int argc, char **argv)
         {
             c++;
             maxframes = atoi(argv[c]);
-        } 
-        else 
+        }
+        else
         {
             parse_abort(argv);
         }
@@ -95,22 +95,22 @@ main(int argc, char **argv)
     {
         parse_abort(argv);
     }
-    host     = argv[c];   
+    host     = argv[c];
     port     = atol(argv[c+1]);
     addr_str = argv[c+2];
-    
+
     if ((port < 0) || (port > 0xFFFF))
     {
         fprintf(stderr, "Invalid port: %ld\n", port);
         return 1;
     }
-    
+
     if (debug)
     {
         mbus_register_send_event(&mbus_dump_send_event);
         mbus_register_recv_event(&mbus_dump_recv_event);
     }
-    
+
     if ((handle = mbus_context_tcp(host, port)) == NULL)
     {
         fprintf(stderr, "Could not initialize M-Bus context: %s\n",  mbus_error_str());
@@ -123,7 +123,7 @@ main(int argc, char **argv)
         mbus_context_free(handle);
         return 1;
     }
-    
+
     if (init_slaves(handle) == 0)
     {
         mbus_disconnect(handle);
@@ -158,19 +158,19 @@ main(int argc, char **argv)
             fprintf(stderr, "%s: Error: Failed to select secondary address [%s].\n", __PRETTY_FUNCTION__, addr_str);
             mbus_disconnect(handle);
             mbus_context_free(handle);
-            return 1;    
+            return 1;
         }
         // else MBUS_PROBE_SINGLE
 
         address = MBUS_ADDRESS_NETWORK_LAYER;
-    } 
+    }
     else
     {
         // primary addressing
         address = atoi(addr_str);
-    }   
-    
-    // instead of the send and recv, use this sendrecv function that 
+    }
+
+    // instead of the send and recv, use this sendrecv function that
     // takes care of the possibility of multi-telegram replies (limit = 16 frames)
     if (mbus_sendrecv_request(handle, address, &reply, maxframes) != 0)
     {
@@ -200,14 +200,14 @@ main(int argc, char **argv)
         mbus_frame_free(reply.next);
         return 1;
     }
-    
+
     printf("%s", xml_result);
     free(xml_result);
 
     mbus_disconnect(handle);
     mbus_context_free(handle);
     mbus_frame_free(reply.next);
-    
+
     return 0;
 }
 

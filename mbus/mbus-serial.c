@@ -2,7 +2,7 @@
 // Copyright (C) 2011, Robert Johansson, Raditex AB
 // All rights reserved.
 //
-// rSCADA 
+// rSCADA
 // http://www.rSCADA.se
 // info@rscada.se
 //
@@ -105,7 +105,7 @@ mbus_serial_set_baudrate(mbus_handle *handle, long baudrate)
         return -1;
 
     serial_data = (mbus_serial_data *) handle->auxdata;
-    
+
     if (serial_data == NULL)
         return -1;
 
@@ -201,12 +201,12 @@ mbus_serial_data_free(mbus_handle *handle)
     if (handle)
     {
         serial_data = (mbus_serial_data *) handle->auxdata;
-        
+
         if (serial_data == NULL)
         {
             return;
         }
-        
+
         free(serial_data->device);
         free(serial_data);
         handle->auxdata = NULL;
@@ -226,7 +226,7 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
     {
         return -1;
     }
-    
+
     // Make sure serial connection is open
     if (isatty(handle->fd) == 0)
     {
@@ -238,7 +238,7 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
         fprintf(stderr, "%s: mbus_frame_pack failed\n", __PRETTY_FUNCTION__);
         return -1;
     }
-    
+
 #ifdef MBUS_SERIAL_DEBUG
     // if debug, dump in HEX form to stdout what we write to the serial port
     printf("%s: Dumping M-Bus frame [%d bytes]: ", __PRETTY_FUNCTION__, len);
@@ -254,16 +254,16 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
     {
         //
         // call the send event function, if the callback function is registered
-        // 
+        //
         if (_mbus_send_event)
                 _mbus_send_event(MBUS_HANDLE_TYPE_SERIAL, buff, len);
     }
     else
-    {   
+    {
         fprintf(stderr, "%s: Failed to write frame to socket (ret = %d: %s)\n", __PRETTY_FUNCTION__, ret, strerror(errno));
         return -1;
     }
-    
+
     //
     // wait until complete frame has been transmitted
     //
@@ -281,13 +281,13 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
     char buff[PACKET_BUFF_SIZE];
     int remaining, timeouts;
     ssize_t len, nread;
-    
+
     if (handle == NULL || frame == NULL)
     {
         fprintf(stderr, "%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
         return MBUS_RECV_RESULT_ERROR;
     }
-    
+
     // Make sure serial connection is open
     if (isatty(handle->fd) == 0)
     {
@@ -310,7 +310,7 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
             // avoid out of bounds access
             return MBUS_RECV_RESULT_ERROR;
         }
-        
+
         //printf("%s: Attempt to read %d bytes [len = %d]\n", __PRETTY_FUNCTION__, remaining, len);
 
         if ((nread = read(handle->fd, &buff[len], remaining)) == -1)
@@ -321,11 +321,11 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
         }
 
 //   printf("%s: Got %d byte [remaining %d, len %d]\n", __PRETTY_FUNCTION__, nread, remaining, len);
-   
+
         if (nread == 0)
         {
             timeouts++;
-            
+
             if (timeouts >= 3)
             {
                 // abort to avoid endless loop
@@ -333,7 +333,7 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
                 break;
             }
         }
-        
+
         if (len > (SSIZE_MAX-nread))
         {
             // avoid overflow
@@ -349,13 +349,13 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
         // No data received
         return MBUS_RECV_RESULT_TIMEOUT;
     }
-    
+
     //
     // call the receive event function, if the callback function is registered
-    // 
+    //
     if (_mbus_recv_event)
         _mbus_recv_event(MBUS_HANDLE_TYPE_SERIAL, buff, len);
-      
+
     if (remaining != 0)
     {
         // Would be OK when e.g. scanning the bus, otherwise it is a failure.
@@ -368,7 +368,7 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
         fprintf(stderr, "%s: M-Bus layer failed to parse data.\n", __PRETTY_FUNCTION__);
         return MBUS_RECV_RESULT_ERROR;
     }
-  
+
     return MBUS_RECV_RESULT_OK;
 }
 

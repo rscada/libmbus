@@ -2,7 +2,7 @@
 // Copyright (C) 2010, Raditex AB
 // All rights reserved.
 //
-// rSCADA 
+// rSCADA
 // http://www.rSCADA.se
 // info@rscada.se
 //
@@ -49,13 +49,13 @@ main(int argc, char *argv[])
 
 	memset(buf, 0, sizeof(buf));
 	len = fread(buf, 1, sizeof(buf), fp);
-	
+
     if (ferror(fp) != 0)
     {
         fprintf(stderr, "%s: failed to read '%s'\n", argv[0], file);
         return 1;
     }
-	
+
 	fclose(fp);
 
 	memset(&reply, 0, sizeof(reply));
@@ -63,9 +63,9 @@ main(int argc, char *argv[])
 	mbus_parse(&reply, buf, len);
 	mbus_frame_data_parse(&reply, &frame_data);
 	mbus_frame_print(&reply);
-	
+
 	xml_result = normalized ? mbus_frame_data_xml_normalized(&frame_data) : mbus_frame_data_xml(&frame_data);
-	
+
 	if (xml_result == NULL)
     {
         fprintf(stderr, "Failed to generate XML representation of MBUS frame: %s\n", mbus_error_str());
@@ -73,7 +73,7 @@ main(int argc, char *argv[])
     }
     printf("%s", xml_result);
     free(xml_result);
-	
+
 	return 0;
 }
 

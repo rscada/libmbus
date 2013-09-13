@@ -2,7 +2,7 @@
 // Copyright (C) 2011, Robert Johansson, Raditex AB
 // All rights reserved.
 //
-// rSCADA 
+// rSCADA
 // http://www.rSCADA.se
 // info@rscada.se
 //
@@ -104,12 +104,12 @@ mbus_tcp_data_free(mbus_handle *handle)
     if (handle)
     {
         tcp_data = (mbus_tcp_data *) handle->auxdata;
-        
+
         if (tcp_data == NULL)
         {
             return;
         }
-        
+
         free(tcp_data->host);
         free(tcp_data);
         handle->auxdata = NULL;
@@ -158,12 +158,12 @@ mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
     {
         //
         // call the send event function, if the callback function is registered
-        // 
+        //
         if (_mbus_send_event)
             _mbus_send_event(MBUS_HANDLE_TYPE_TCP, buff, len);
     }
     else
-    {   
+    {
         snprintf(error_str, sizeof(error_str), "%s: Failed to write frame to socket (ret = %d)\n", __PRETTY_FUNCTION__, ret);
         mbus_error_str_set(error_str);
         return -1;
@@ -224,7 +224,7 @@ retry:
                 // avoid overflow
                 return MBUS_RECV_RESULT_ERROR;
             }
-        
+
             len += nread;
         }
     } while ((remaining = mbus_parse(frame, buff, len)) > 0);
@@ -244,7 +244,7 @@ retry:
 }
 
 //------------------------------------------------------------------------------
-/// The the timeout in seconds that will be used as the amount of time the 
+/// The the timeout in seconds that will be used as the amount of time the
 /// a read operation will wait before giving up. Note: This configuration has
 /// to be made before calling mbus_tcp_connect.
 //------------------------------------------------------------------------------
@@ -256,7 +256,7 @@ mbus_tcp_set_timeout_set(double seconds)
         mbus_error_str_set("Invalid timeout (must be positive).");
         return -1;
     }
-    
+
     tcp_timeout_sec = (int)seconds;
     tcp_timeout_usec = (seconds - tcp_timeout_sec) * 1000000;
 

@@ -2,7 +2,7 @@
 // Copyright (C) 2010, Raditex AB
 // All rights reserved.
 //
-// rSCADA 
+// rSCADA
 // http://www.rSCADA.se
 // info@rscada.se
 //

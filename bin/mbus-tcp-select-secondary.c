@@ -2,7 +2,7 @@
 // Copyright (C) 2011, Robert Johansson, Raditex AB
 // All rights reserved.
 //
-// rSCADA 
+// rSCADA
 // http://www.rSCADA.se
 // info@rscada.se
 //
@@ -31,16 +31,16 @@ main(int argc, char **argv)
         fprintf(stderr,"usage: %s host port secondary-mbus-address\n", argv[0]);
         return 0;
     }
- 
-    host = argv[1];   
+
+    host = argv[1];
     port = atol(argv[2]);
-    
+
     if ((port < 0) || (port > 0xFFFF))
     {
         fprintf(stderr, "Invalid port: %ld\n", port);
         return 1;
     }
-    
+
     if ((addr = strdup(argv[3])) == NULL)
     {
         fprintf(stderr, "Failed to allocate address.\n");
@@ -68,7 +68,7 @@ main(int argc, char **argv)
     if (mbus_send_select_frame(handle, addr) == -1)
     {
         fprintf(stderr,"Failed to send selection frame: %s\n", mbus_error_str());
-        return 1; 
+        return 1;
     }
 
     ret = mbus_recv_frame(handle, &reply);
@@ -77,7 +77,7 @@ main(int argc, char **argv)
     {
         fprintf(stderr,"No reply from device with secondary address %s: %s\n", argv[3], mbus_error_str());
         return 1;
-    }    
+    }
 
     if (ret == MBUS_RECV_RESULT_INVALID)
     {
@@ -110,7 +110,7 @@ main(int argc, char **argv)
         fprintf(stderr,"Unknown reply:\n");
         mbus_frame_print(&reply);
     }
- 
+
     free(addr);
     mbus_disconnect(handle);
     mbus_context_free(handle);
