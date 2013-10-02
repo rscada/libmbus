@@ -2,7 +2,7 @@
 // Copyright (C) 2010-2012, Robert Johansson and contributors, Raditex AB
 // All rights reserved.
 //
-// rSCADA 
+// rSCADA
 // http://www.rSCADA.se
 // info@rscada.se
 //
@@ -59,7 +59,7 @@ main(int argc, char **argv)
         fprintf(stderr,"Failed to setup connection to M-bus gateway\n");
         return 1;
     }
-    
+
     if (mbus_serial_set_baudrate(handle, source_baudrate) == -1)
     {
         fprintf(stderr,"Failed to set baud rate.\n");
@@ -69,11 +69,11 @@ main(int argc, char **argv)
     if (mbus_send_switch_baudrate_frame(handle, address, target_baudrate) == -1)
     {
         fprintf(stderr,"Failed to send switch baudrate frame: %s\n", mbus_error_str());
-        return 1; 
+        return 1;
     }
 
-    ret = mbus_recv_frame(handle, &reply);  
-    
+    ret = mbus_recv_frame(handle, &reply);
+
     if (ret == MBUS_RECV_RESULT_TIMEOUT)
     {
         fprintf(stderr,"No reply from device\n");
@@ -88,7 +88,7 @@ main(int argc, char **argv)
     {
         printf("Switched baud rate of device to %lu\n", target_baudrate);
     }
-    
+
     mbus_disconnect(handle);
     mbus_context_free(handle);
     return 0;

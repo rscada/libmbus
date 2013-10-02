@@ -2,7 +2,7 @@
 // Copyright (C) 2010-2011, Robert Johansson, Raditex AB
 // All rights reserved.
 //
-// rSCADA 
+// rSCADA
 // http://www.rSCADA.se
 // info@rscada.se
 //
@@ -10,7 +10,7 @@
 
 /**
  * @file   mbus-protocol.h
- * 
+ *
  * @brief  Functions and data structures for M-Bus protocol parsing.
  *
  */
@@ -82,13 +82,13 @@ typedef struct _mbus_frame {
     // variable data field
     unsigned char checksum;
     unsigned char stop;
-    
-    unsigned char   data[252]; 
+
+    unsigned char   data[252];
     size_t data_size;
-    
+
     int type;
     time_t timestamp;
-    
+
     //mbus_frame_data frame_data;
 
     void *next; // pointer to next mbus_frame for multi-telegram replies
@@ -99,7 +99,7 @@ typedef struct _mbus_slave_data {
 
     int state_fcb;
     int state_acd;
-    
+
 } mbus_slave_data;
 
 #define NITEMS(x) (sizeof(x)/sizeof(x[0]))
@@ -134,7 +134,7 @@ typedef struct _mbus_slave_data {
 
 
 typedef struct _mbus_data_information_block {
-        
+
         unsigned char dif;
         unsigned char dife[10];
         size_t  ndife;
@@ -142,7 +142,7 @@ typedef struct _mbus_data_information_block {
 } mbus_data_information_block;
 
 typedef struct _mbus_value_information_block {
-        
+
         unsigned char vif;
         unsigned char vife[10];
         size_t  nvife;
@@ -152,18 +152,18 @@ typedef struct _mbus_value_information_block {
 } mbus_value_information_block;
 
 typedef struct _mbus_data_record_header {
-    
+
     mbus_data_information_block  dib;
-    mbus_value_information_block vib;      
+    mbus_value_information_block vib;
 
 } mbus_data_record_header;
 
 typedef struct _mbus_data_record {
-        
+
     mbus_data_record_header drh;
 
     unsigned char data[234];
-    size_t data_len;    
+    size_t data_len;
 
     time_t timestamp;
 
@@ -171,25 +171,25 @@ typedef struct _mbus_data_record {
 
 } mbus_data_record;
 
-// 
+//
 // HEADER FOR VARIABLE LENGTH DATA FORMAT
-// 
+//
 typedef struct _mbus_data_variable_header {
-    
+
     //Ident.Nr. Manufr. Version Medium Access No. Status  Signature
     //4 Byte    2 Byte  1 Byte  1 Byte   1 Byte   1 Byte  2 Byte
-    
+
     // ex
     // 88 63 80 09 82 4D 02 04 15 00 00 00
-    
+
     unsigned char id_bcd[4];         // 88 63 80 09
-    unsigned char manufacturer[2];   // 82 4D 
+    unsigned char manufacturer[2];   // 82 4D
     unsigned char version;           // 02
     unsigned char medium;            // 04
     unsigned char access_no;         // 15
     unsigned char status;            // 00
     unsigned char signature[2];      // 00 00
-    
+
 } mbus_data_variable_header;
 
 #define MBUS_DATA_VARIABLE_HEADER_LENGTH 12
@@ -198,22 +198,22 @@ typedef struct _mbus_data_variable_header {
 // VARIABLE LENGTH DATA FORMAT
 //
 typedef struct _mbus_data_variable {
-  
+
     mbus_data_variable_header header;
-    
-    mbus_data_record *record; 
+
+    mbus_data_record *record;
     size_t nrecords;
-    
+
     unsigned char *data;
     size_t  data_len;
-    
+
     unsigned char more_records_follow;
-    
+
     // are these needed/used?
     unsigned char  mdh;
     unsigned char *mfg_data;
-    size_t  mfg_data_len;    
-        
+    size_t  mfg_data_len;
+
 } mbus_data_variable;
 
 //
@@ -262,22 +262,22 @@ typedef struct _mbus_frame_data {
 
 } mbus_frame_data;
 
-// 
+//
 // HEADER FOR SECONDARY ADDRESSING
-// 
+//
 typedef struct _mbus_data_secondary_address {
-    
-    //Ident.Nr. Manufr. Version Medium 
-    //4 Byte    2 Byte  1 Byte  1 Byte 
-    
+
+    //Ident.Nr. Manufr. Version Medium
+    //4 Byte    2 Byte  1 Byte  1 Byte
+
     // ex
     // 14 49 10 01 10 57 01 06
-    
+
     unsigned char id_bcd[4];         // 14 49 10 01
     unsigned char manufacturer[2];   // 10 57
     unsigned char version;           // 01
     unsigned char medium;            // 06
-    
+
 } mbus_data_secondary_address;
 
 
@@ -309,7 +309,7 @@ typedef struct _mbus_data_secondary_address {
 
 #define MBUS_FRAME_FIXED_SIZE_ACK      1
 #define MBUS_FRAME_FIXED_SIZE_SHORT    5
-#define MBUS_FRAME_FIXED_SIZE_CONTROL  6 
+#define MBUS_FRAME_FIXED_SIZE_CONTROL  6
 #define MBUS_FRAME_FIXED_SIZE_LONG     6
 
 //
@@ -463,7 +463,7 @@ typedef struct _mbus_data_secondary_address {
 
 //
 // VARIABLE DATA FLAGS
-// 
+//
 #define MBUS_VARIABLE_DATA_MEDIUM_OTHER         0x00
 #define MBUS_VARIABLE_DATA_MEDIUM_OIL           0x01
 #define MBUS_VARIABLE_DATA_MEDIUM_ELECTRICITY   0x02
@@ -554,7 +554,7 @@ int mbus_data_fixed_parse   (mbus_frame *frame, mbus_data_fixed    *data);
 int mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data);
 
 int mbus_frame_data_parse   (mbus_frame *frame, mbus_frame_data *data);
-  
+
 int mbus_frame_pack(mbus_frame *frame, unsigned char *data, size_t data_size);
 
 int mbus_frame_verify(mbus_frame *frame);
@@ -615,7 +615,7 @@ void  mbus_hex_dump(const char *label, const char *buff, size_t len);
 int mbus_data_manufacturer_encode(unsigned char *m_data, unsigned char *m_code);
 const char *mbus_decode_manufacturer(unsigned char byte1, unsigned char byte2);
 const char *mbus_data_product_name(mbus_data_variable_header *header);
- 
+
 int mbus_data_bcd_encode(unsigned char *bcd_data, size_t bcd_data_size, int value);
 int mbus_data_int_encode(unsigned char *int_data, size_t int_data_size, int value);
 

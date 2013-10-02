@@ -2,7 +2,7 @@
 // Copyright (C) 2011, Robert Johansson, Raditex AB
 // All rights reserved.
 //
-// rSCADA 
+// rSCADA
 // http://www.rSCADA.se
 // info@rscada.se
 //
@@ -28,48 +28,48 @@ main(int argc, char **argv)
     char *device, *addr_str, *xml_result;
     int address;
     long baudrate = 9600;
-    
+
     memset((void *)&reply, 0, sizeof(mbus_frame));
     memset((void *)&reply_data, 0, sizeof(mbus_frame_data));
 
     if (argc == 3)
     {
-        device   = argv[1];   
+        device   = argv[1];
         addr_str = argv[2];
     }
     else if (argc == 4 && strcmp(argv[1], "-d") == 0)
     {
-        device   = argv[2];   
+        device   = argv[2];
         addr_str = argv[3];
         debug = 1;
     }
     else if (argc == 5 && strcmp(argv[1], "-b") == 0)
     {
         baudrate = atol(argv[2]);
-        device   = argv[3];   
+        device   = argv[3];
         addr_str = argv[4];
     }
     else if (argc == 6 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-b") == 0)
     {
         baudrate = atol(argv[3]);
-        device   = argv[4];   
+        device   = argv[4];
         addr_str = argv[5];
         debug = 1;
     }
-    else 
+    else
     {
         fprintf(stderr, "usage: %s [-d] [-b BAUDRATE] device mbus-address\n", argv[0]);
         fprintf(stderr, "    optional flag -d for debug printout\n");
         fprintf(stderr, "    optional flag -b for selecting baudrate\n");
         return 0;
     }
-    
+
     if (debug)
     {
         mbus_register_send_event(&mbus_dump_send_event);
         mbus_register_recv_event(&mbus_dump_recv_event);
     }
- 
+
     if ((handle = mbus_context_serial(device)) == NULL)
     {
         fprintf(stderr, "Could not initialize M-Bus context: %s\n",  mbus_error_str());
@@ -110,7 +110,7 @@ main(int argc, char **argv)
         else if (ret == MBUS_PROBE_ERROR)
         {
             fprintf(stderr, "%s: Error: Failed to select secondary address [%s].\n", __PRETTY_FUNCTION__, addr_str);
-            return 1;    
+            return 1;
         }
         // else MBUS_PROBE_SINGLE
 
@@ -119,7 +119,7 @@ main(int argc, char **argv)
             fprintf(stderr, "Failed to send M-Bus request frame.\n");
             return 1;
         }
-    } 
+    }
     else
     {
         // primary addressing
@@ -130,13 +130,13 @@ main(int argc, char **argv)
             fprintf(stderr, "Failed to send M-Bus request frame.\n");
             return 1;
         }
-    }   
+    }
 
     if (mbus_recv_frame(handle, &reply) != MBUS_RECV_RESULT_OK)
     {
         fprintf(stderr, "Failed to receive M-Bus response frame.\n");
         return 1;
-    }    
+    }
 
     //
     // parse data and print in XML format
@@ -151,13 +151,13 @@ main(int argc, char **argv)
         fprintf(stderr, "M-bus data parse error: %s\n", mbus_error_str());
         return 1;
     }
-    
+
     if ((xml_result = mbus_frame_data_xml(&reply_data)) == NULL)
     {
         fprintf(stderr, "Failed to generate XML representation of MBUS frame: %s\n", mbus_error_str());
         return 1;
     }
-    
+
     printf("%s", xml_result);
     free(xml_result);
 
