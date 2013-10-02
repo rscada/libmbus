@@ -2,7 +2,7 @@
 // Copyright (C) 2010, Raditex AB
 // All rights reserved.
 //
-// rSCADA 
+// rSCADA
 // http://www.rSCADA.se
 // info@rscada.se
 //
@@ -10,7 +10,7 @@
 
 /**
  * @file   mbus.h
- * 
+ *
  * @brief  Main include file for the Freescada libmbus library.
  *
  * Include this file to access the libmbus API:
@@ -20,7 +20,7 @@
  *
  */
 
-/*! \mainpage libmbus 
+/*! \mainpage libmbus
  *
  * These pages contain automatically generated documentation for the libmbus
  * API. For examples on how to use the libmbus library, see the applications

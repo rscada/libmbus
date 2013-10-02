@@ -2,7 +2,7 @@
 // Copyright (C) 2011, Robert Johansson, Raditex AB
 // All rights reserved.
 //
-// rSCADA 
+// rSCADA
 // http://www.rSCADA.se
 // info@rscada.se
 //
@@ -27,24 +27,24 @@ main(int argc, char **argv)
     int ret;
     long port;
     int address, subcode = -1;
-    
+
     if (argc == 4)
     {
         host     = argv[1];
-        port     = atol(argv[2]);   
+        port     = atol(argv[2]);
         addr     = argv[3];
     }
     else if (argc == 5 && strcmp(argv[1], "-d") == 0)
     {
         debug    = 1;
         host     = argv[2];
-        port     = atol(argv[3]);   
+        port     = atol(argv[3]);
         addr     = argv[4];
     }
     else if (argc == 5)
     {
         host     = argv[1];
-        port     = atol(argv[2]);   
+        port     = atol(argv[2]);
         addr     = argv[3];
         subcode  = atoi(argv[4]);
     }
@@ -52,7 +52,7 @@ main(int argc, char **argv)
     {
         debug    = 1;
         host     = argv[2];
-        port     = atol(argv[3]);   
+        port     = atol(argv[3]);
         addr     = argv[4];
         subcode  = atoi(argv[5]);
     }
@@ -61,13 +61,13 @@ main(int argc, char **argv)
         fprintf(stderr, "usage: %s [-d] host port mbus-address [subcode]\n", argv[0]);
         return 0;
     }
-    
+
     if ((port < 0) || (port > 0xFFFF))
     {
         fprintf(stderr, "Invalid port: %ld\n", port);
         return 1;
     }
-    
+
     if (debug)
     {
         mbus_register_send_event(&mbus_dump_send_event);
@@ -86,7 +86,7 @@ main(int argc, char **argv)
         mbus_context_free(handle);
         return 1;
     }
-    
+
     if (mbus_is_secondary_address(addr))
     {
         // secondary addressing
@@ -114,17 +114,17 @@ main(int argc, char **argv)
             fprintf(stderr, "Failed to select secondary address [%s].\n", addr);
             mbus_disconnect(handle);
             mbus_context_free(handle);
-            return 1;    
+            return 1;
         }
         // else MBUS_PROBE_SINGLE
-        
+
         address = MBUS_ADDRESS_NETWORK_LAYER;
-    } 
+    }
     else
     {
         // primary addressing
 
-        address = atoi(addr);   
+        address = atoi(addr);
     }
 
     if (mbus_send_application_reset_frame(handle, address, subcode) == -1)
@@ -132,11 +132,11 @@ main(int argc, char **argv)
         fprintf(stderr,"Failed to send reset frame: %s\n", mbus_error_str());
         mbus_disconnect(handle);
         mbus_context_free(handle);
-        return 1; 
+        return 1;
     }
 
     ret = mbus_recv_frame(handle, &reply);
-    
+
     if (ret == MBUS_RECV_RESULT_TIMEOUT)
     {
         fprintf(stderr,"No reply from device\n");
@@ -160,7 +160,7 @@ main(int argc, char **argv)
             printf("Successful reset device\n");
         }
     }
- 
+
     mbus_disconnect(handle);
     mbus_context_free(handle);
     return 0;

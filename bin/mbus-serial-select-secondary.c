@@ -2,7 +2,7 @@
 // Copyright (C) 2011, Robert Johansson, Raditex AB
 // All rights reserved.
 //
-// rSCADA 
+// rSCADA
 // http://www.rSCADA.se
 // info@rscada.se
 //
@@ -28,13 +28,13 @@ main(int argc, char **argv)
 
     if (argc == 3)
     {
-        device = argv[1];   
+        device = argv[1];
         addr = strdup(argv[2]);
-    }   
+    }
     else if (argc == 5 && strcmp(argv[1], "-b") == 0)
     {
         baudrate = atol(argv[2]);
-        device = argv[3];   
+        device = argv[3];
         addr = strdup(argv[4]);
     }
     else
@@ -43,13 +43,13 @@ main(int argc, char **argv)
         fprintf(stderr, "    optional flag -b for selecting baudrate\n");
         return 0;
     }
-    
+
     if (addr == NULL)
     {
         fprintf(stderr, "Failed to allocate address.\n");
         return 1;
     }
- 
+
     if (mbus_is_secondary_address(addr) == 0)
     {
         fprintf(stderr,"Misformatted secondary address. Must be 16 character HEX number.\n");
@@ -77,7 +77,7 @@ main(int argc, char **argv)
     if (mbus_send_select_frame(handle, addr) == -1)
     {
         fprintf(stderr,"Failed to send selection frame: %s\n", mbus_error_str());
-        return 1; 
+        return 1;
     }
 
     ret = mbus_recv_frame(handle, &reply);
@@ -86,7 +86,7 @@ main(int argc, char **argv)
     {
         fprintf(stderr,"No reply from device with secondary address %s: %s\n", argv[2], mbus_error_str());
         return 1;
-    }    
+    }
 
     if (ret == MBUS_RECV_RESULT_INVALID)
     {
@@ -119,7 +119,7 @@ main(int argc, char **argv)
         fprintf(stderr,"Unknown reply:\n");
         mbus_frame_print(&reply);
     }
- 
+
     free(addr);
     mbus_disconnect(handle);
     mbus_context_free(handle);
