@@ -70,6 +70,8 @@ extern "C" {
 //
 //
 
+#define MBUS_FRAME_DATA_LENGTH 252
+
 typedef struct _mbus_frame {
 
     unsigned char start1;
@@ -83,7 +85,7 @@ typedef struct _mbus_frame {
     unsigned char checksum;
     unsigned char stop;
 
-    unsigned char   data[252];
+    unsigned char   data[MBUS_FRAME_DATA_LENGTH];
     size_t data_size;
 
     int type;
