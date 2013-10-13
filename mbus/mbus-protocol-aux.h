@@ -93,6 +93,10 @@ typedef struct _mbus_handle {
     int (*send) (struct _mbus_handle *handle, mbus_frame *frame);
     int (*recv) (struct _mbus_handle *handle, mbus_frame *frame);
     void (*free_auxdata) (struct _mbus_handle *handle);
+    void (*recv_event) (unsigned char src_type, const char *buff, size_t len);
+    void (*send_event) (unsigned char src_type, const char *buff, size_t len);
+    void (*scan_progress) (struct _mbus_handle *handle, const char *mask);
+    void (*found_event) (struct _mbus_handle *handle, mbus_frame *frame);    
     void *auxdata;
 } mbus_handle;
 
@@ -149,16 +153,15 @@ typedef enum _mbus_context_option {
 } mbus_context_option;
 
 /**
- * Event callback functions
- */
-extern void (*_mbus_scan_progress)(mbus_handle * handle, const char *mask);
-extern void (*_mbus_found_event)(mbus_handle * handle, mbus_frame *frame);
-
-/**
  * Event register functions
  */
-void mbus_register_scan_progress(void (*event)(mbus_handle * handle, const char *mask));
-void mbus_register_found_event(void (*event)(mbus_handle * handle, mbus_frame *frame));
+//
+// Event register functions
+//
+void mbus_register_recv_event(mbus_handle *handle, void (*event)(unsigned char src_type, const char *buff, size_t len));
+void mbus_register_send_event(mbus_handle *handle, void (*event)(unsigned char src_type, const char *buff, size_t len));
+void mbus_register_scan_progress(mbus_handle *handle, void (*event)(mbus_handle *handle, const char *mask));
+void mbus_register_found_event(mbus_handle *handle, void (*event)(mbus_handle *handle, mbus_frame *frame));
 
 /**
  * Allocate and initialize M-Bus serial context.

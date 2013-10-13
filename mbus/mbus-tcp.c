@@ -159,8 +159,8 @@ mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
         //
         // call the send event function, if the callback function is registered
         //
-        if (_mbus_send_event)
-            _mbus_send_event(MBUS_HANDLE_TYPE_TCP, buff, len);
+        if (handle->send_event)
+            handle->send_event(MBUS_HANDLE_TYPE_TCP, buff, len);
     }
     else
     {
@@ -232,8 +232,8 @@ retry:
     //
     // call the receive event function, if the callback function is registered
     //
-    if (_mbus_recv_event)
-        _mbus_recv_event(MBUS_HANDLE_TYPE_TCP, buff, len);
+    if (handle->recv_event)
+        handle->recv_event(MBUS_HANDLE_TYPE_TCP, buff, len);
 
     if (remaining < 0) {
         mbus_error_str_set("M-Bus layer failed to parse data.");

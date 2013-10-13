@@ -27,12 +27,6 @@ static char error_str[512];
 static mbus_slave_data slave_data[MBUS_MAX_PRIMARY_SLAVES];
 
 //
-// init event callback
-//
-void (*_mbus_recv_event)(unsigned char src_type, const char *buff, size_t len) = NULL;
-void (*_mbus_send_event)(unsigned char src_type, const char *buff, size_t len) = NULL;
-
-//
 //  trace callbacks
 //
 void
@@ -45,24 +39,6 @@ void
 mbus_dump_send_event(unsigned char src_type, const char *buff, size_t len)
 {
     mbus_hex_dump("SEND", buff, len);
-}
-
-//------------------------------------------------------------------------------
-/// Register a function for receive events.
-//------------------------------------------------------------------------------
-void
-mbus_register_recv_event(void (*event)(unsigned char src_type, const char *buff, size_t len))
-{
-    _mbus_recv_event = event;
-}
-
-//------------------------------------------------------------------------------
-/// Register a function for send events.
-//------------------------------------------------------------------------------
-void
-mbus_register_send_event(void (*event)(unsigned char src_type, const char *buff, size_t len))
-{
-    _mbus_send_event = event;
 }
 
 //------------------------------------------------------------------------------

@@ -513,17 +513,8 @@ typedef struct _mbus_data_secondary_address {
 //
 // Event callback functions
 //
-extern void (*_mbus_recv_event)(unsigned char src_type, const char *buff, size_t len);
-extern void (*_mbus_send_event)(unsigned char src_type, const char *buff, size_t len);
-
 void mbus_dump_recv_event(unsigned char src_type, const char *buff, size_t len);
 void mbus_dump_send_event(unsigned char src_type, const char *buff, size_t len);
-
-//
-// Event register functions
-//
-void mbus_register_recv_event(void (*event)(unsigned char src_type, const char *buff, size_t len));
-void mbus_register_send_event(void (*event)(unsigned char src_type, const char *buff, size_t len));
 
 //
 // variable length records
