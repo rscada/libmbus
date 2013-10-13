@@ -103,17 +103,16 @@ main(int argc, char **argv)
     device   = argv[c];
     addr_str = argv[c+1];
 
-
-    if (debug)
-    {
-        mbus_register_send_event(&mbus_dump_send_event);
-        mbus_register_recv_event(&mbus_dump_recv_event);
-    }
-
     if ((handle = mbus_context_serial(device)) == NULL)
     {
         fprintf(stderr, "Could not initialize M-Bus context: %s\n",  mbus_error_str());
         return 1;
+    }
+    
+    if (debug)
+    {
+        mbus_register_send_event(handle, &mbus_dump_send_event);
+        mbus_register_recv_event(handle, &mbus_dump_recv_event);
     }
 
     if (mbus_connect(handle) == -1)
