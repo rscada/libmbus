@@ -1812,6 +1812,57 @@ mbus_send_request_frame(mbus_handle * handle, int address)
 }
 
 //------------------------------------------------------------------------------
+// send a user data packet from master to slave
+//------------------------------------------------------------------------------
+int
+mbus_send_user_data_frame(mbus_handle * handle, int address, const unsigned char *data, size_t data_size)
+{
+    int retval = 0;
+    mbus_frame *frame;
+
+    if (mbus_is_primary_address(address) == 0)
+    {
+        MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, address);
+        return -1;
+    }
+
+    if (data == NULL)
+    {
+        MBUS_ERROR("%s: Invalid data\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+
+    if ((data_size > MBUS_FRAME_DATA_LENGTH) || (data_size == 0))
+    {
+        MBUS_ERROR("%s: illegal data_size %d\n", __PRETTY_FUNCTION__, data_size);
+        return -1;
+    }
+
+    frame = mbus_frame_new(MBUS_FRAME_TYPE_LONG);
+
+    if (frame == NULL)
+    {
+        MBUS_ERROR("%s: failed to allocate mbus frame.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+
+    frame->control = MBUS_CONTROL_MASK_SND_UD | MBUS_CONTROL_MASK_DIR_M2S;
+    frame->address = address;
+    frame->control_information = MBUS_CONTROL_INFO_DATA_SEND;
+    frame->data_size = data_size;
+    memcpy(frame->data, data, data_size);
+
+    if (mbus_send_frame(handle, frame) == -1)
+    {
+        MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
+        retval = -1;
+    }
+
+    mbus_frame_free(frame);
+    return retval;
+}
+
+//------------------------------------------------------------------------------
 // send a request from master to slave and collect the reply (replies)
 // from the slave.
 //------------------------------------------------------------------------------

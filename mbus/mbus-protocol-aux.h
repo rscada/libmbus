@@ -288,6 +288,18 @@ int mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, long baud
 int mbus_send_request_frame(mbus_handle * handle, int address);
 
 /**
+ * Sends user data frame (SND_UD) to given slave using "unified" handle
+ *
+ * @param handle    Initialized handle
+ * @param address   Address (0-255)
+ * @param data      User data
+ * @param data_size Byte count of user data
+ *
+ * @return Zero when successful.
+ */
+int mbus_send_user_data_frame(mbus_handle * handle, int address, const unsigned char *data, size_t data_size);
+
+/**
  * Sends a request and read replies until no more records available
  * or limit is reached.
  *
