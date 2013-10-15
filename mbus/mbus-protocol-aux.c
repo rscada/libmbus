@@ -707,25 +707,40 @@ mbus_variable_vif fixed_table[] = {
     { 0xFFFF, 0.0, "", "" },
 };
 
-void (*_mbus_scan_progress)(mbus_handle * handle, const char *mask) = NULL;
-void (*_mbus_found_event)(mbus_handle * handle, mbus_frame *frame) = NULL;
+//------------------------------------------------------------------------------
+/// Register a function for receive events.
+//------------------------------------------------------------------------------
+void
+mbus_register_recv_event(mbus_handle * handle, void (*event)(unsigned char src_type, const char *buff, size_t len))
+{
+    handle->recv_event = event;
+}
+
+//------------------------------------------------------------------------------
+/// Register a function for send events.
+//------------------------------------------------------------------------------
+void
+mbus_register_send_event(mbus_handle * handle, void (*event)(unsigned char src_type, const char *buff, size_t len))
+{
+    handle->send_event = event;
+}
 
 //------------------------------------------------------------------------------
 /// Register a function for the scan progress.
 //------------------------------------------------------------------------------
 void
-mbus_register_scan_progress(void (*event)(mbus_handle * handle, const char *mask))
+mbus_register_scan_progress(mbus_handle * handle, void (*event)(mbus_handle * handle, const char *mask))
 {
-    _mbus_scan_progress = event;
+    handle->scan_progress = event;
 }
 
 //------------------------------------------------------------------------------
 /// Register a function for the found events.
 //------------------------------------------------------------------------------
 void
-mbus_register_found_event(void (*event)(mbus_handle * handle, mbus_frame *frame))
+mbus_register_found_event(mbus_handle * handle, void (*event)(mbus_handle * handle, mbus_frame *frame))
 {
-    _mbus_found_event = event;
+    handle->found_event = event;
 }
 
 int mbus_fixed_normalize(int medium_unit, long medium_value, char **unit_out, double *value_out, char **quantity_out)
@@ -1424,6 +1439,10 @@ mbus_context_serial(const char *device)
     handle->recv = mbus_serial_recv_frame;
     handle->send = mbus_serial_send_frame;
     handle->free_auxdata = mbus_serial_data_free;
+    handle->recv_event = NULL;
+    handle->send_event = NULL;
+    handle->scan_progress = NULL;
+    handle->found_event = NULL;
 
     if ((serial_data->device = strdup(device)) == NULL)
     {
@@ -1467,6 +1486,10 @@ mbus_context_tcp(const char *host, uint16_t port)
     handle->recv = mbus_tcp_recv_frame;
     handle->send = mbus_tcp_send_frame;
     handle->free_auxdata = mbus_tcp_data_free;
+    handle->recv_event = NULL;
+    handle->send_event = NULL;
+    handle->scan_progress = NULL;
+    handle->found_event = NULL;
 
     tcp_data->port = port;
     if ((tcp_data->host = strdup(host)) == NULL)
@@ -1812,6 +1835,57 @@ mbus_send_request_frame(mbus_handle * handle, int address)
 }
 
 //------------------------------------------------------------------------------
+// send a user data packet from master to slave
+//------------------------------------------------------------------------------
+int
+mbus_send_user_data_frame(mbus_handle * handle, int address, const unsigned char *data, size_t data_size)
+{
+    int retval = 0;
+    mbus_frame *frame;
+
+    if (mbus_is_primary_address(address) == 0)
+    {
+        MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, address);
+        return -1;
+    }
+
+    if (data == NULL)
+    {
+        MBUS_ERROR("%s: Invalid data\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+
+    if ((data_size > MBUS_FRAME_DATA_LENGTH) || (data_size == 0))
+    {
+        MBUS_ERROR("%s: illegal data_size %d\n", __PRETTY_FUNCTION__, data_size);
+        return -1;
+    }
+
+    frame = mbus_frame_new(MBUS_FRAME_TYPE_LONG);
+
+    if (frame == NULL)
+    {
+        MBUS_ERROR("%s: failed to allocate mbus frame.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+
+    frame->control = MBUS_CONTROL_MASK_SND_UD | MBUS_CONTROL_MASK_DIR_M2S;
+    frame->address = address;
+    frame->control_information = MBUS_CONTROL_INFO_DATA_SEND;
+    frame->data_size = data_size;
+    memcpy(frame->data, data, data_size);
+
+    if (mbus_send_frame(handle, frame) == -1)
+    {
+        MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
+        retval = -1;
+    }
+
+    mbus_frame_free(frame);
+    return retval;
+}
+
+//------------------------------------------------------------------------------
 // send a request from master to slave and collect the reply (replies)
 // from the slave.
 //------------------------------------------------------------------------------
@@ -2138,9 +2212,9 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
 
             snprintf(matching_addr, 17, "%s", addr);
 
-            if (_mbus_found_event)
+            if (handle->found_event)
             {
-                _mbus_found_event(handle,&reply);
+                handle->found_event(handle,&reply);
             }
 
             return MBUS_PROBE_SINGLE;
@@ -2284,14 +2358,14 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
     {
         mask[pos] = '0'+i;
 
-        if (_mbus_scan_progress)
-            _mbus_scan_progress(handle,mask);
+        if (handle->scan_progress)
+            handle->scan_progress(handle,mask);
 
         probe_ret = mbus_probe_secondary_address(handle, mask, matching_mask);
 
         if (probe_ret == MBUS_PROBE_SINGLE)
         {
-            if (!_mbus_found_event)
+            if (!handle->found_event)
             {
                 printf("Found a device on secondary address %s [using address mask %s]\n", matching_mask, mask);
             }

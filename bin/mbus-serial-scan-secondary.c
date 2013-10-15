@@ -116,12 +116,6 @@ main(int argc, char **argv)
         return 0;
     }
 
-    if (debug)
-    {
-        mbus_register_send_event(&mbus_dump_send_event);
-        mbus_register_recv_event(&mbus_dump_recv_event);
-    }
-
     if (addr_mask == NULL)
     {
         fprintf(stderr, "Failed to allocate address mask.\n");
@@ -140,6 +134,12 @@ main(int argc, char **argv)
         fprintf(stderr, "Could not initialize M-Bus context: %s\n",  mbus_error_str());
         free(addr_mask);
         return 1;
+    }
+    
+    if (debug)
+    {
+        mbus_register_send_event(handle, &mbus_dump_send_event);
+        mbus_register_recv_event(handle, &mbus_dump_recv_event);
     }
 
     if (mbus_connect(handle) == -1)
