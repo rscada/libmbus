@@ -15,6 +15,35 @@
 
 static int debug = 0;
 
+//
+// init slave to get really the beginning of the records
+//
+static int
+init_slaves(mbus_handle *handle)
+{
+    if (debug)
+        printf("%s: debug: sending init frame #1\n", __PRETTY_FUNCTION__);
+
+    if (mbus_send_ping_frame(handle, MBUS_ADDRESS_NETWORK_LAYER, 1) == -1)
+    {
+        return 0;
+    }
+
+    //
+    // resend SND_NKE, maybe the first get lost
+    //
+
+    if (debug)
+        printf("%s: debug: sending init frame #2\n", __PRETTY_FUNCTION__);
+
+    if (mbus_send_ping_frame(handle, MBUS_ADDRESS_NETWORK_LAYER, 1) == -1)
+    {
+        return 0;
+    }
+
+    return 1;
+}
+
 //------------------------------------------------------------------------------
 // Scan for devices using secondary addressing.
 //------------------------------------------------------------------------------
@@ -79,15 +108,24 @@ main(int argc, char **argv)
     if (mbus_connect(handle) == -1)
     {
         fprintf(stderr,"Failed to setup connection to M-bus gateway\n");
+        mbus_context_free(handle);
         return 1;
     }
 
     if (mbus_serial_set_baudrate(handle, baudrate) == -1)
     {
         fprintf(stderr,"Failed to set baud rate.\n");
+        mbus_disconnect(handle);
+        mbus_context_free(handle);
         return 1;
     }
 
+    if (init_slaves(handle) == 0)
+    {
+        mbus_disconnect(handle);
+        mbus_context_free(handle);
+        return 1;
+    }
 
     if (mbus_is_secondary_address(addr_str))
     {
@@ -100,36 +138,40 @@ main(int argc, char **argv)
         if (ret == MBUS_PROBE_COLLISION)
         {
             fprintf(stderr, "%s: Error: The address mask [%s] matches more than one device.\n", __PRETTY_FUNCTION__, addr_str);
+            mbus_disconnect(handle);
+            mbus_context_free(handle);
             return 1;
         }
         else if (ret == MBUS_PROBE_NOTHING)
         {
             fprintf(stderr, "%s: Error: The selected secondary address does not match any device [%s].\n", __PRETTY_FUNCTION__, addr_str);
+            mbus_disconnect(handle);
+            mbus_context_free(handle);
             return 1;
         }
         else if (ret == MBUS_PROBE_ERROR)
         {
             fprintf(stderr, "%s: Error: Failed to select secondary address [%s].\n", __PRETTY_FUNCTION__, addr_str);
+            mbus_disconnect(handle);
+            mbus_context_free(handle);
             return 1;
         }
         // else MBUS_PROBE_SINGLE
-
-        if (mbus_send_request_frame(handle, MBUS_ADDRESS_NETWORK_LAYER) == -1)
-        {
-            fprintf(stderr, "Failed to send M-Bus request frame.\n");
-            return 1;
-        }
+        
+        address = MBUS_ADDRESS_NETWORK_LAYER;
     }
     else
     {
         // primary addressing
-
         address = atoi(addr_str);
-        if (mbus_send_request_frame(handle, address) == -1)
-        {
-            fprintf(stderr, "Failed to send M-Bus request frame.\n");
-            return 1;
-        }
+    }
+
+    if (mbus_send_request_frame(handle, address) == -1)
+    {
+        fprintf(stderr, "Failed to send M-Bus request frame.\n");
+        mbus_disconnect(handle);
+        mbus_context_free(handle);
+        return 1;
     }
 
     if (mbus_recv_frame(handle, &reply) != MBUS_RECV_RESULT_OK)
@@ -139,22 +181,32 @@ main(int argc, char **argv)
     }
 
     //
-    // parse data and print in XML format
+    // dump hex data if debug is true
     //
     if (debug)
     {
         mbus_frame_print(&reply);
     }
 
+    //
+    // parse data
+    //
     if (mbus_frame_data_parse(&reply, &reply_data) == -1)
     {
         fprintf(stderr, "M-bus data parse error: %s\n", mbus_error_str());
+        mbus_disconnect(handle);
+        mbus_context_free(handle);
         return 1;
     }
 
+    //
+    // generate XML and print to standard output
+    //
     if ((xml_result = mbus_frame_data_xml(&reply_data)) == NULL)
     {
         fprintf(stderr, "Failed to generate XML representation of MBUS frame: %s\n", mbus_error_str());
+        mbus_disconnect(handle);
+        mbus_context_free(handle);
         return 1;
     }
 
