@@ -869,6 +869,15 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_RAM)
+        {
+        	switch (header->version)
+        	{
+        		case 0x03:
+        			strcpy(buff, "Rossweiner ETK/ETW Modularis");
+        			break;
+        	}
+        }
         else if (manufacturer == MBUS_VARIABLE_DATA_MAN_RKE)
         {
             switch (header->version)
