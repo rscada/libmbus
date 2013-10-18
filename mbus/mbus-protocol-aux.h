@@ -85,7 +85,8 @@ extern "C" {
  */
 typedef struct _mbus_handle {
     int fd;
-    int max_retry;
+    int max_data_retry;
+    int max_search_retry;
     char purge_first_frame;
     char is_serial; /**< _handle type (non zero for serial) */
     int (*open) (struct _mbus_handle *handle);
@@ -148,7 +149,8 @@ typedef struct _mbus_record {
  * MBus handle option enumeration
  */
 typedef enum _mbus_context_option {
-    MBUS_OPTION_MAX_RETRY,  /**< option defines the maximum attempts of data retransmission */
+    MBUS_OPTION_MAX_DATA_RETRY,  /**< option defines the maximum attempts of data request retransmission */
+    MBUS_OPTION_MAX_SEARCH_RETRY,  /**< option defines the maximum attempts of search request retransmission */
     MBUS_OPTION_PURGE_FIRST_FRAME  /**< option controls the echo cancelation for mbus_recv_frame */
 } mbus_context_option;
 

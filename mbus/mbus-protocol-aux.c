@@ -1430,7 +1430,8 @@ mbus_context_serial(const char *device)
         return NULL;
     }
 
-    handle->max_retry = 3;
+    handle->max_data_retry = 3;
+    handle->max_search_retry = 1;
     handle->is_serial = 1;
     handle->purge_first_frame = MBUS_FRAME_PURGE_M2S;
     handle->auxdata = serial_data;
@@ -1477,7 +1478,8 @@ mbus_context_tcp(const char *host, uint16_t port)
         return NULL;
     }
 
-    handle->max_retry = 3;
+    handle->max_data_retry = 3;
+    handle->max_search_retry = 1;
     handle->is_serial = 0;
     handle->purge_first_frame = MBUS_FRAME_PURGE_M2S;
     handle->auxdata = tcp_data;
@@ -1549,10 +1551,17 @@ mbus_context_set_option(mbus_handle * handle, mbus_context_option option, long v
 
     switch (option)
     {
-        case MBUS_OPTION_MAX_RETRY:
+        case MBUS_OPTION_MAX_DATA_RETRY:
             if ((value >= 0) && (value <= 9))
             {
-                handle->max_retry = value;
+                handle->max_data_retry = value;
+                return 0;
+            }
+            break;
+        case MBUS_OPTION_MAX_SEARCH_RETRY:
+            if ((value >= 0) && (value <= 9))
+            {
+                handle->max_search_retry = value;
                 return 0;
             }
             break;
@@ -1934,7 +1943,7 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
 
     while (more_frames)
     {
-        if (retry > handle->max_retry)
+        if (retry > handle->max_data_retry)
         {
             // Give up
             retval = 1;
