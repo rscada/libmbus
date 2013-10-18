@@ -2354,7 +2354,7 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
         }
         else
         {
-            // .. except if we're at the last pos (==16) and this isn't a wildcard we still need to send the probe
+            // .. except if we're at the last pos (==15) and this isn't a wildcard we still need to send the probe
             i_start = (int)(mask[pos] - '0');
             i_end   = (int)(mask[pos] - '0');
         }
