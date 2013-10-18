@@ -2361,7 +2361,7 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
     }
 
     // skip the scanning if we're returning from the (pos < 15) case above
-    if (mask[pos] == 'f' || mask[pos] == 'F' || pos == 16)
+    if (mask[pos] == 'f' || mask[pos] == 'F' || pos == 15)
     {
         for (i = i_start; i <= i_end; i++)
         {
