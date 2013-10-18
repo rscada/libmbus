@@ -2311,6 +2311,7 @@ int
 mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
 {
     int i, i_start, i_end, probe_ret;
+    int debug = 0;
     char *mask, matching_mask[17];
 
     if (handle == NULL || addr_mask == NULL)
@@ -2336,8 +2337,11 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
         return -1;
     }
 
+    if (debug) printf("mbus_scan_2nd_address_range: mask [%s] pos [%d]\n", mask, pos);
+
     if (mask[pos] == 'f' || mask[pos] == 'F')
     {
+        // mask[pos] is a wildcard -> enumerate all 0..9 at this position
         i_start = 0;
         i_end   = 9;
     }
@@ -2345,44 +2349,52 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
     {
         if (pos < 15)
         {
+            // mask[pos] is not a wildcard -> don't iterate, recursively check pos+1
             mbus_scan_2nd_address_range(handle, pos+1, mask);
         }
         else
         {
+            // .. except if we're at the last pos (==15) and this isn't a wildcard we still need to send the probe
             i_start = (int)(mask[pos] - '0');
             i_end   = (int)(mask[pos] - '0');
         }
     }
 
-    for (i = 0; i <= 9; i++)
+    // skip the scanning if we're returning from the (pos < 15) case above
+    if (mask[pos] == 'f' || mask[pos] == 'F' || pos == 15)
     {
-        mask[pos] = '0'+i;
-
-        if (handle->scan_progress)
-            handle->scan_progress(handle,mask);
-
-        probe_ret = mbus_probe_secondary_address(handle, mask, matching_mask);
-
-        if (probe_ret == MBUS_PROBE_SINGLE)
+        for (i = i_start; i <= i_end; i++)
         {
-            if (!handle->found_event)
+            mask[pos] = '0'+i;
+            
+            if (debug) printf("mbus_scan_2nd_address_range: for mask [%s] pos [%d] i [%d]\n", mask, pos, i);
+
+            if (handle->scan_progress)
+                handle->scan_progress(handle,mask);
+
+            probe_ret = mbus_probe_secondary_address(handle, mask, matching_mask);
+
+            if (probe_ret == MBUS_PROBE_SINGLE)
             {
-                printf("Found a device on secondary address %s [using address mask %s]\n", matching_mask, mask);
+                if (!handle->found_event)
+                {
+                    printf("Found a device on secondary address %s [using address mask %s]\n", matching_mask, mask);
+                }
             }
-        }
-        else if (probe_ret == MBUS_PROBE_COLLISION)
-        {
-            // collision, more than one device matching, restrict the search mask further
-            mbus_scan_2nd_address_range(handle, pos+1, mask);
-        }
-        else if (probe_ret == MBUS_PROBE_NOTHING)
-        {
-             // nothing... move on to next address mask
-        }
-        else // MBUS_PROBE_ERROR
-        {
-            MBUS_ERROR("%s: Failed to probe secondary address [%s].\n", __PRETTY_FUNCTION__, mask);
-            return -1;
+            else if (probe_ret == MBUS_PROBE_COLLISION)
+            {
+                // collision, more than one device matching, restrict the search mask further
+                mbus_scan_2nd_address_range(handle, pos+1, mask);
+            }
+            else if (probe_ret == MBUS_PROBE_NOTHING)
+            {
+                 // nothing... move on to next address mask
+            }
+            else // MBUS_PROBE_ERROR
+            {
+                MBUS_ERROR("%s: Failed to probe secondary address [%s].\n", __PRETTY_FUNCTION__, mask);
+                return -1;
+            }
         }
     }
 
