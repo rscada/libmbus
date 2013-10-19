@@ -2164,7 +2164,7 @@ mbus_select_secondary_address(mbus_handle * handle, const char *mask)
 int
 mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matching_addr)
 {
-    int ret;
+    int ret, i;
     mbus_frame reply;
 
     if (mask == NULL || matching_addr == NULL || strlen(mask) != 16)
@@ -2173,68 +2173,77 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
         return MBUS_PROBE_ERROR;
     }
 
-    ret = mbus_select_secondary_address(handle, mask);
-
-    if (ret == MBUS_PROBE_SINGLE)
+    for (i = 0; i <= handle->max_search_retry; i++)
     {
-        /* send a data request command to find out the full address */
-        if (mbus_send_request_frame(handle, MBUS_ADDRESS_NETWORK_LAYER) == -1)
-        {
-            MBUS_ERROR("%s: Failed to send request to selected secondary device [mask %s]: %s.\n",
-                       __PRETTY_FUNCTION__,
-                       mask,
-                       mbus_error_str());
-            return MBUS_PROBE_ERROR;
-        }
+        ret = mbus_select_secondary_address(handle, mask);
 
-        memset((void *)&reply, 0, sizeof(mbus_frame));
-        ret = mbus_recv_frame(handle, &reply);
+        if (ret == MBUS_PROBE_SINGLE)
+	    {
+	        /* send a data request command to find out the full address */
+	        if (mbus_send_request_frame(handle, MBUS_ADDRESS_NETWORK_LAYER) == -1)
+	        {
+	            MBUS_ERROR("%s: Failed to send request to selected secondary device [mask %s]: %s.\n",
+	                       __PRETTY_FUNCTION__,
+	                       mask,
+	                       mbus_error_str());
+	            return MBUS_PROBE_ERROR;
+	        }
 
-        if (ret == MBUS_RECV_RESULT_TIMEOUT)
-        {
-            return MBUS_PROBE_NOTHING;
-        }
+            memset((void *)&reply, 0, sizeof(mbus_frame));
+            ret = mbus_recv_frame(handle, &reply);
 
-        if (ret == MBUS_RECV_RESULT_INVALID)
-        {
-            /* check for more data (collision) */
-            mbus_purge_frames(handle);
-            return MBUS_PROBE_COLLISION;
-        }
-
-        /* check for more data (collision) */
-        if (mbus_purge_frames(handle))
-        {
-            return MBUS_PROBE_COLLISION;
-        }
-
-        if (mbus_frame_type(&reply) == MBUS_FRAME_TYPE_LONG)
-        {
-            char *addr = mbus_frame_get_secondary_address(&reply);
-
-            if (addr == NULL)
+            if (ret == MBUS_RECV_RESULT_TIMEOUT)
             {
-                // show error message, but procede with scan
-                MBUS_ERROR("Failed to generate secondary address from M-Bus reply frame: %s\n", mbus_error_str());
                 return MBUS_PROBE_NOTHING;
             }
 
-            snprintf(matching_addr, 17, "%s", addr);
-
-            if (handle->found_event)
+            if (ret == MBUS_RECV_RESULT_INVALID)
             {
-                handle->found_event(handle,&reply);
-            }
+                /* check for more data (collision) */
+                mbus_purge_frames(handle);
+                return MBUS_PROBE_COLLISION;
+	        }
 
-            return MBUS_PROBE_SINGLE;
-        }
-        else
-        {
-            MBUS_ERROR("%s: Unexpected reply for address [mask %s]. Expected long frame.\n",
-                       __PRETTY_FUNCTION__, mask);
-            return MBUS_PROBE_NOTHING;
-        }
-    }
+            /* check for more data (collision) */
+            if (mbus_purge_frames(handle))
+            {
+                return MBUS_PROBE_COLLISION;
+	        }
+
+            if (mbus_frame_type(&reply) == MBUS_FRAME_TYPE_LONG)
+            {
+                char *addr = mbus_frame_get_secondary_address(&reply);
+
+                if (addr == NULL)
+                {
+                    // show error message, but procede with scan
+                    MBUS_ERROR("Failed to generate secondary address from M-Bus reply frame: %s\n", 
+                               mbus_error_str());
+                    return MBUS_PROBE_NOTHING;
+                }
+
+	            snprintf(matching_addr, 17, "%s", addr);
+
+                if (handle->found_event)
+                {
+                    handle->found_event(handle,&reply);
+                }
+
+                return MBUS_PROBE_SINGLE;
+	        }
+	        else
+	        {
+	            MBUS_ERROR("%s: Unexpected reply for address [mask %s]. Expected long frame.\n",
+	                       __PRETTY_FUNCTION__, mask);
+	            return MBUS_PROBE_NOTHING;
+	        }
+	    }
+	    else if ((ret == MBUS_PROBE_ERROR) ||
+	             (ret == MBUS_PROBE_COLLISION))
+	    {
+	    	break;
+	    }
+	}
 
     return ret;
 }
