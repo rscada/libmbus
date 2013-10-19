@@ -21,7 +21,7 @@ int ping_address(mbus_handle *handle, mbus_frame *reply, int address)
 
     memset((void *)reply, 0, sizeof(mbus_frame));
 
-    for (i = 0; i <= handle->max_retry; i++)
+    for (i = 0; i <= handle->max_search_retry; i++)
     {
         if (debug)
         {
@@ -112,7 +112,7 @@ main(int argc, char **argv)
         return 1;
     }
 
-    if (mbus_context_set_option(handle, MBUS_OPTION_MAX_RETRY, retries) == -1)
+    if (mbus_context_set_option(handle, MBUS_OPTION_MAX_SEARCH_RETRY, retries) == -1)
     {
         fprintf(stderr,"Failed to set retry count\n");
         return 1;
