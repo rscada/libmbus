@@ -2261,7 +2261,6 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
     {
         /* secondary addressing */
         int probe_ret;
-        char matching_addr[16];
 
         if (address->secondary == NULL)
         {
@@ -2270,7 +2269,7 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
             return -1;
         }
 
-        probe_ret = mbus_probe_secondary_address(handle, address->secondary, matching_addr);
+        probe_ret = mbus_select_secondary_address(handle, address->secondary);
 
         if (probe_ret == MBUS_PROBE_COLLISION)
         {
