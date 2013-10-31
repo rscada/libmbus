@@ -56,7 +56,7 @@
     <DataRecord id="7">
         <Function>Instantaneous value</Function>
         <Unit>Power (10 W)</Unit>
-        <Value>65518</Value>
+        <Value>-18</Value>
     </DataRecord>
 
     <DataRecord id="8">
@@ -80,7 +80,7 @@
     <DataRecord id="11">
         <Function>Instantaneous value</Function>
         <Unit>Power (10 W)</Unit>
-        <Value>65521</Value>
+        <Value>-15</Value>
     </DataRecord>
 
     <DataRecord id="12">
@@ -104,7 +104,7 @@
     <DataRecord id="15">
         <Function>Instantaneous value</Function>
         <Unit>Power (10 W)</Unit>
-        <Value>65504</Value>
+        <Value>-32</Value>
     </DataRecord>
 
     <DataRecord id="16">
@@ -122,7 +122,7 @@
     <DataRecord id="18">
         <Function>Instantaneous value</Function>
         <Unit>Power (10 W)</Unit>
-        <Value>65471</Value>
+        <Value>-65</Value>
     </DataRecord>
 
     <DataRecord id="19">
