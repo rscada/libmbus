@@ -875,6 +875,15 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
+        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_GMC)
+        {
+            switch (header->version)
+            {
+                case 0xE6:
+                    strcpy(buff,"GMC-I A230 EMMOD 206");
+                	break;
+            }
+        }
         else if (manufacturer == MBUS_VARIABLE_DATA_MAN_SLB)
         {
             switch (header->version)
