@@ -794,6 +794,9 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
     int result = 0;
     unsigned char vif, vife;
     struct tm time;
+    int value_out_int;
+    long value_out_long;
+    long long value_out_long_long;
     *value_out_real = 0.0;
     *value_out_str = NULL;
     *value_out_str_size = 0;
@@ -819,8 +822,8 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                 break;
 
             case 0x01: /* 1 byte integer (8 bit) */
-                *value_out_real = mbus_data_int_decode(record->data, 1);
-                result = 0;
+                result = mbus_data_int_decode(record->data, 1, &value_out_int);
+                *value_out_real = value_out_int;
                 break;
 
             case 0x02: /* 2 byte integer (16 bit) */
@@ -837,18 +840,18 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                                                  (time.tm_year + 2000),
                                                  (time.tm_mon + 1),
                                                   time.tm_mday);
+                    result = 0;
                 }
                 else  // normal integer
                 {
-                    *value_out_real = mbus_data_int_decode(record->data, 2);
+                    result = mbus_data_int_decode(record->data, 2, &value_out_int);
+                    *value_out_real = value_out_int; 
                 }
-
-                result = 0;
                 break;
 
             case 0x03: /* 3 byte integer (24 bit) */
-                *value_out_real = mbus_data_int_decode(record->data, 3);
-                result = 0;
+                result = mbus_data_int_decode(record->data, 3, &value_out_int);
+                *value_out_real = value_out_int;
                 break;
 
             case 0x04: /* 4 byte integer (32 bit) */
@@ -872,12 +875,13 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                                                   time.tm_hour,
                                                   time.tm_min,
                                                   time.tm_sec);
+                    result = 0;
                 }
                 else  // normal integer
                 {
-                    *value_out_real = mbus_data_int_decode(record->data, 4);
+                    result = mbus_data_int_decode(record->data, 4, &value_out_int);
+                    *value_out_real = value_out_int; 
                 }
-                result = 0;
                 break;
 
             case 0x05: /* 32b real */
@@ -886,13 +890,13 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                 break;
 
             case 0x06: /* 6 byte integer (48 bit) */
-                *value_out_real = mbus_data_long_long_decode(record->data, 6);
-                result = 0;
+                result = mbus_data_long_long_decode(record->data, 6, &value_out_long_long);
+                *value_out_real = value_out_long_long;
                 break;
 
             case 0x07: /* 8 byte integer (64 bit) */
-                *value_out_real = mbus_data_long_long_decode(record->data, 8);
-                result = 0;
+            	result = mbus_data_long_long_decode(record->data, 8, &value_out_long_long);
+                *value_out_real = value_out_long_long;
                 break;
 
             case 0x09: /* 2 digit BCD (8 bit) */
@@ -1177,7 +1181,7 @@ mbus_parse_fixed_record(char status_byte, char medium_unit, unsigned char *data)
     }
     else
     {
-        value = mbus_data_int_decode(data, 4);
+        mbus_data_long_decode(data, 4, &value);
     }
 
     record->unit = NULL;
