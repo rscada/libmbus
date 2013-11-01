@@ -567,32 +567,22 @@ mbus_variable_vif vif_table[] = {
     { 0x235, 1.0e0, "Reserved", "Reserved" },
     { 0x236, 1.0e0, "Reserved", "Reserved" },
     { 0x237, 1.0e0, "Reserved", "Reserved" },
-
-    /* E101 10nn Flow Temperature 10(nn-3) °F 0.001°F to 1°F */
-    { 0x238, 1.0e-3, "°F", "Flow temperature" },
-    { 0x239, 1.0e-2, "°F", "Flow temperature" },
-    { 0x23A, 1.0e-1, "°F", "Flow temperature" },
-    { 0x23B, 1.0e0,  "°F", "Flow temperature" },
-
-    /* E101 11nn Return Temperature 10(nn-3) °F 0.001°F to 1°F */
-    { 0x23C, 1.0e-3, "°F", "Return temperature" },
-    { 0x23D, 1.0e-2, "°F", "Return temperature" },
-    { 0x23E, 1.0e-1, "°F", "Return temperature" },
-    { 0x23F, 1.0e0,  "°F", "Return temperature" },
-
-    /* E110 00nn Temperature Difference 10(nn-3) °F 0.001°F to 1°F */
-    { 0x240, 1.0e-3, "°F", "Temperature difference" },
-    { 0x241, 1.0e-2, "°F", "Temperature difference" },
-    { 0x242, 1.0e-1, "°F", "Temperature difference" },
-    { 0x243, 1.0e0,  "°F", "Temperature difference" },
-
-    /* E110 01nn External Temperature 10(nn-3) °F 0.001°F to 1°F */
-    { 0x244, 1.0e-3, "°F", "External temperature" },
-    { 0x245, 1.0e-2, "°F", "External temperature" },
-    { 0x246, 1.0e-1, "°F", "External temperature" },
-    { 0x247, 1.0e0,  "°F", "External temperature" },
-
-    /* E110 1nnn Reserved */
+    { 0x238, 1.0e0, "Reserved", "Reserved" },
+    { 0x239, 1.0e0, "Reserved", "Reserved" },
+    { 0x23A, 1.0e0, "Reserved", "Reserved" },
+    { 0x23B, 1.0e0, "Reserved", "Reserved" },
+    { 0x23C, 1.0e0, "Reserved", "Reserved" },
+    { 0x23D, 1.0e0, "Reserved", "Reserved" },
+    { 0x23E, 1.0e0, "Reserved", "Reserved" },
+    { 0x23F, 1.0e0, "Reserved", "Reserved" },
+    { 0x240, 1.0e0, "Reserved", "Reserved" },
+    { 0x241, 1.0e0, "Reserved", "Reserved" },
+    { 0x242, 1.0e0, "Reserved", "Reserved" },
+    { 0x243, 1.0e0, "Reserved", "Reserved" },
+    { 0x244, 1.0e0, "Reserved", "Reserved" },
+    { 0x245, 1.0e0, "Reserved", "Reserved" },
+    { 0x246, 1.0e0, "Reserved", "Reserved" },
+    { 0x247, 1.0e0, "Reserved", "Reserved" },
     { 0x248, 1.0e0, "Reserved", "Reserved" },
     { 0x249, 1.0e0, "Reserved", "Reserved" },
     { 0x24A, 1.0e0, "Reserved", "Reserved" },
@@ -601,28 +591,70 @@ mbus_variable_vif vif_table[] = {
     { 0x24D, 1.0e0, "Reserved", "Reserved" },
     { 0x24E, 1.0e0, "Reserved", "Reserved" },
     { 0x24F, 1.0e0, "Reserved", "Reserved" },
+    { 0x250, 1.0e0, "Reserved", "Reserved" },
+    { 0x251, 1.0e0, "Reserved", "Reserved" },
+    { 0x252, 1.0e0, "Reserved", "Reserved" },
+    { 0x253, 1.0e0, "Reserved", "Reserved" },
+    { 0x254, 1.0e0, "Reserved", "Reserved" },
+    { 0x255, 1.0e0, "Reserved", "Reserved" },
+    { 0x256, 1.0e0, "Reserved", "Reserved" },
+    { 0x257, 1.0e0, "Reserved", "Reserved" },
+    
+    /* E101 10nn Flow Temperature 10(nn-3) °F 0.001°F to 1°F */
+    { 0x258, 1.0e-3, "°F", "Flow temperature" },
+    { 0x259, 1.0e-2, "°F", "Flow temperature" },
+    { 0x25A, 1.0e-1, "°F", "Flow temperature" },
+    { 0x25B, 1.0e0,  "°F", "Flow temperature" },
+
+    /* E101 11nn Return Temperature 10(nn-3) °F 0.001°F to 1°F */
+    { 0x25C, 1.0e-3, "°F", "Return temperature" },
+    { 0x25D, 1.0e-2, "°F", "Return temperature" },
+    { 0x25E, 1.0e-1, "°F", "Return temperature" },
+    { 0x25F, 1.0e0,  "°F", "Return temperature" },
+
+    /* E110 00nn Temperature Difference 10(nn-3) °F 0.001°F to 1°F */
+    { 0x260, 1.0e-3, "°F", "Temperature difference" },
+    { 0x261, 1.0e-2, "°F", "Temperature difference" },
+    { 0x262, 1.0e-1, "°F", "Temperature difference" },
+    { 0x263, 1.0e0,  "°F", "Temperature difference" },
+
+    /* E110 01nn External Temperature 10(nn-3) °F 0.001°F to 1°F */
+    { 0x264, 1.0e-3, "°F", "External temperature" },
+    { 0x265, 1.0e-2, "°F", "External temperature" },
+    { 0x266, 1.0e-1, "°F", "External temperature" },
+    { 0x267, 1.0e0,  "°F", "External temperature" },
+
+    /* E110 1nnn Reserved */
+    { 0x268, 1.0e0, "Reserved", "Reserved" },
+    { 0x269, 1.0e0, "Reserved", "Reserved" },
+    { 0x26A, 1.0e0, "Reserved", "Reserved" },
+    { 0x26B, 1.0e0, "Reserved", "Reserved" },
+    { 0x26C, 1.0e0, "Reserved", "Reserved" },
+    { 0x26D, 1.0e0, "Reserved", "Reserved" },
+    { 0x26E, 1.0e0, "Reserved", "Reserved" },
+    { 0x26F, 1.0e0, "Reserved", "Reserved" },
 
     /* E111 00nn Cold / Warm Temperature Limit 10(nn-3) °F 0.001°F to 1°F */
-    { 0x250, 1.0e-3, "°F", "Cold / Warm Temperature Limit" },
-    { 0x251, 1.0e-2, "°F", "Cold / Warm Temperature Limit" },
-    { 0x252, 1.0e-1, "°F", "Cold / Warm Temperature Limit" },
-    { 0x253, 1.0e0,  "°F", "Cold / Warm Temperature Limit" },
+    { 0x270, 1.0e-3, "°F", "Cold / Warm Temperature Limit" },
+    { 0x271, 1.0e-2, "°F", "Cold / Warm Temperature Limit" },
+    { 0x272, 1.0e-1, "°F", "Cold / Warm Temperature Limit" },
+    { 0x273, 1.0e0,  "°F", "Cold / Warm Temperature Limit" },
 
     /* E111 01nn Cold / Warm Temperature Limit 10(nn-3) °C 0.001°C to 1°C */
-    { 0x254, 1.0e-3, "°C", "Cold / Warm Temperature Limit" },
-    { 0x255, 1.0e-2, "°C", "Cold / Warm Temperature Limit" },
-    { 0x256, 1.0e-1, "°C", "Cold / Warm Temperature Limit" },
-    { 0x257, 1.0e0,  "°C", "Cold / Warm Temperature Limit" },
+    { 0x274, 1.0e-3, "°C", "Cold / Warm Temperature Limit" },
+    { 0x275, 1.0e-2, "°C", "Cold / Warm Temperature Limit" },
+    { 0x276, 1.0e-1, "°C", "Cold / Warm Temperature Limit" },
+    { 0x277, 1.0e0,  "°C", "Cold / Warm Temperature Limit" },
 
     /* E111 1nnn cumul. count max power § 10(nnn-3) W 0.001W to 10000W */
-    { 0x258, 1.0e-3, "W", "Cumul count max power" },
-    { 0x259, 1.0e-3, "W", "Cumul count max power" },
-    { 0x25A, 1.0e-1, "W", "Cumul count max power" },
-    { 0x25B, 1.0e0,  "W", "Cumul count max power" },
-    { 0x25C, 1.0e1,  "W", "Cumul count max power" },
-    { 0x25D, 1.0e2,  "W", "Cumul count max power" },
-    { 0x25E, 1.0e3,  "W", "Cumul count max power" },
-    { 0x25F, 1.0e4,  "W", "Cumul count max power" },
+    { 0x278, 1.0e-3, "W", "Cumul count max power" },
+    { 0x279, 1.0e-3, "W", "Cumul count max power" },
+    { 0x27A, 1.0e-1, "W", "Cumul count max power" },
+    { 0x27B, 1.0e0,  "W", "Cumul count max power" },
+    { 0x27C, 1.0e1,  "W", "Cumul count max power" },
+    { 0x27D, 1.0e2,  "W", "Cumul count max power" },
+    { 0x27E, 1.0e3,  "W", "Cumul count max power" },
+    { 0x27F, 1.0e4,  "W", "Cumul count max power" },
 
 /* End of array */
     { 0xFFFF, 0.0, "", "" },
