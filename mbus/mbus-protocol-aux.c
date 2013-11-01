@@ -214,9 +214,17 @@ mbus_variable_vif vif_table[] = {
 
     /* E111 1010 Bus Address */
     { 0x7A, 1.0, "", "Bus Address" },
-
-    /* Manufacturer specific: 7Fh / FF */
+    
+    /* Any VIF: 7Eh */
+    { 0x7E, 1.0, "", "Any VIF" },
+    
+    /* Manufacturer specific: 7Fh */
     { 0x7F, 1.0, "", "Manufacturer specific" },
+    
+    /* Any VIF: 7Eh */
+    { 0xFE, 1.0, "", "Any VIF" },
+
+    /* Manufacturer specific: FFh */
     { 0xFF, 1.0, "", "Manufacturer specific" },
 
 
