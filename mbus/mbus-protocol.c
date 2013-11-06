@@ -1603,14 +1603,14 @@ mbus_unit_prefix(int exp)
 }
 
 //------------------------------------------------------------------------------
-/// Look up the data lenght from a VIF field in the data record.
+/// Look up the data length from a DIF field in the data record.
 ///
 /// See the table on page 41 the M-BUS specification.
 //------------------------------------------------------------------------------
 unsigned char
 mbus_dif_datalength_lookup(unsigned char dif)
 {
-	switch (dif&0x0F)
+	switch (dif & MBUS_DATA_RECORD_DIF_MASK_DATA)
 	{
 		case 0x0:
 			return 0;
@@ -2221,7 +2221,7 @@ mbus_data_record_decode(mbus_data_record *record)
         vif = (record->drh.vib.vif & MBUS_DIB_VIF_WITHOUT_EXTENSION);
         vife = (record->drh.vib.vife[0] & MBUS_DIB_VIF_WITHOUT_EXTENSION);
 
-        switch (record->drh.dib.dif & 0x0F)
+        switch (record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_DATA)
         {
             case 0x00: // no data
 
@@ -2890,7 +2890,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             }
 
             // re-calculate data length, if of variable length type
-            if ((record->drh.dib.dif & 0x0F) == 0x0D) // flag for variable length data
+            if ((record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_DATA) == 0x0D) // flag for variable length data
             {
                 if(frame->data[i] <= 0xBF)
                     record->data_len = frame->data[i++];
@@ -3333,10 +3333,11 @@ mbus_data_variable_print(mbus_data_variable *data)
         for (record = data->record; record; record = record->next)
         {
             // DIF
-            printf("DIF           = %.2X\n", record->drh.dib.dif);
-            printf("DIF.Extension = %s\n",  (record->drh.dib.dif & MBUS_DIB_DIF_EXTENSION_BIT) ? "Yes":"No");
-            printf("DIF.Function  = %s\n",  (record->drh.dib.dif & 0x30) ? "Minimum value" : "Instantaneous value" );
-            printf("DIF.Data      = %.2X\n", record->drh.dib.dif & 0x0F);
+            printf("DIF               = %.2X\n", record->drh.dib.dif);
+            printf("DIF.Extension     = %s\n",  (record->drh.dib.dif & MBUS_DIB_DIF_EXTENSION_BIT) ? "Yes":"No");
+            printf("DIF.StorageNumber = %d\n",  (record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_STORAGE_NO) >> 6);
+            printf("DIF.Function      = %s\n",  (record->drh.dib.dif & 0x30) ? "Minimum value" : "Instantaneous value" );
+            printf("DIF.Data          = %.2X\n", record->drh.dib.dif & 0x0F);
 
             // VENDOR SPECIFIC
             if ((record->drh.dib.dif == MBUS_DIB_DIF_MANUFACTURER_SPECIFIC) ||
@@ -3364,10 +3365,11 @@ mbus_data_variable_print(mbus_data_variable *data)
             {
                 unsigned char dife = record->drh.dib.dife[j];
 
-                printf("DIFE[%zd]           = %.2X\n", j,  dife);
-                printf("DIFE[%zd].Extension = %s\n",   j, (dife & MBUS_DIB_DIF_EXTENSION_BIT) ? "Yes" : "No");
-                printf("DIFE[%zd].Function  = %s\n",   j, (dife & 0x30) ? "Minimum value" : "Instantaneous value" );
-                printf("DIFE[%zd].Data      = %.2X\n", j,  dife & 0x0F);
+                printf("DIFE[%zd]               = %.2X\n", j,  dife);
+                printf("DIFE[%zd].Extension     = %s\n",   j, (dife & MBUS_DATA_RECORD_DIFE_MASK_EXTENSION) ? "Yes" : "No");
+                printf("DIFE[%zd].Device        = %d\n",   j, (dife & MBUS_DATA_RECORD_DIFE_MASK_DEVICE) >> 6 );
+                printf("DIFE[%zd].Tariff        = %d\n",   j, (dife & MBUS_DATA_RECORD_DIFE_MASK_TARIFF) >> 4 );
+                printf("DIFE[%zd].StorageNumber = %.2X\n", j,  dife & MBUS_DATA_RECORD_DIFE_MASK_STORAGE_NO);
             }
 
             // VIF

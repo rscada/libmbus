@@ -849,7 +849,7 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
         vif = (record->drh.vib.vif & MBUS_DIB_VIF_WITHOUT_EXTENSION);
         vife = (record->drh.vib.vife[0] & MBUS_DIB_VIF_WITHOUT_EXTENSION);
 
-        switch (record->drh.dib.dif & 0x0F)
+        switch (record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_DATA)
         {
             case 0x00: /* no data */
                 if ((*value_out_str = (char*) malloc(1)) == NULL)
