@@ -1156,6 +1156,9 @@ mbus_record_new()
     record->unit = NULL;
     record->function_medium = NULL;
     record->quantity = NULL;
+    record->device = -1;
+    record->tariff = -1;
+    record->storage_number = 0;
     return record;
 }
 
@@ -1257,6 +1260,10 @@ mbus_parse_variable_record(mbus_data_record *data)
         MBUS_ERROR("%s: memory allocation error\n", __PRETTY_FUNCTION__);
         return NULL;
     }
+    
+    record->storage_number = mbus_data_record_storage_number(data);
+    record->tariff = mbus_data_record_tariff(data);
+    record->device = mbus_data_record_device(data);
 
     if ((data->drh.dib.dif == MBUS_DIB_DIF_MANUFACTURER_SPECIFIC) ||
         (data->drh.dib.dif == MBUS_DIB_DIF_MORE_RECORDS_FOLLOW)) /* MBUS_DIB_DIF_VENDOR_SPECIFIC */
@@ -1395,6 +1402,14 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
             {
                 mbus_str_xml_encode(str_encoded, norm_record->function_medium, sizeof(str_encoded));
                 len += snprintf(&buff[len], buff_size - len, "        <Function>%s</Function>\n", str_encoded);
+                
+                len += snprintf(&buff[len], buff_size - len, "        <StorageNumber>%ld</StorageNumber>\n", norm_record->storage_number);
+            	
+            	if (norm_record->tariff >= 0)
+            	{
+	            	len += snprintf(&buff[len], buff_size - len, "        <Tariff>%ld</Tariff>\n", norm_record->tariff);
+	            	len += snprintf(&buff[len], buff_size - len, "        <Device>%d</Device>\n", norm_record->device);
+            	}
 
                 mbus_str_xml_encode(str_encoded, norm_record->unit, sizeof(str_encoded));
 

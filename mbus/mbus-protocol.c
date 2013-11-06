@@ -3657,6 +3657,7 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
     size_t len = 0;
     struct tm * timeinfo;
     char timestamp[21];
+    long tariff;
 
     if (record)
     {
@@ -3687,6 +3688,19 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
             mbus_str_xml_encode(str_encoded, mbus_data_record_function(record), sizeof(str_encoded));
             len += snprintf(&buff[len], sizeof(buff) - len,
                             "        <Function>%s</Function>\n", str_encoded);
+                            
+            len += snprintf(&buff[len], sizeof(buff) - len,
+            				"        <StorageNumber>%ld</StorageNumber>\n",
+            				mbus_data_record_storage_number(record));
+            	
+        	
+        	if ((tariff = mbus_data_record_tariff(record)) >= 0)
+        	{
+            	len += snprintf(&buff[len], sizeof(buff) - len, "        <Tariff>%ld</Tariff>\n",
+            					tariff);
+            	len += snprintf(&buff[len], sizeof(buff) - len, "        <Device>%d</Device>\n", 
+            					mbus_data_record_device(record));
+        	}
 
             mbus_str_xml_encode(str_encoded, mbus_data_record_unit(record), sizeof(str_encoded));
             len += snprintf(&buff[len], sizeof(buff) - len,
