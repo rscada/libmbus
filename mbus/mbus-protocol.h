@@ -566,6 +566,9 @@ int mbus_frame_internal_pack(mbus_frame *frame, mbus_frame_data *frame_data);
 //
 const char *mbus_data_record_function(mbus_data_record *record);
 const char *mbus_data_fixed_function(int status);
+long        mbus_data_record_storage_number(mbus_data_record *record);
+long        mbus_data_record_tariff(mbus_data_record *record);
+int         mbus_data_record_device(mbus_data_record *record);
 
 //
 // M-Bus frame data struct access/write functions

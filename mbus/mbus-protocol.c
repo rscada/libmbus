@@ -2449,6 +2449,78 @@ mbus_data_record_value(mbus_data_record *record)
 }
 
 //------------------------------------------------------------------------------
+/// Return the storage number for a variable-length data record
+//------------------------------------------------------------------------------
+long mbus_data_record_storage_number(mbus_data_record *record)
+{
+	int bit_index;
+	long result = 0;
+	int i;
+
+	if (record)
+	{
+		result |= (record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_STORAGE_NO) >> 6;
+		bit_index++;
+	
+		for (i=0; i<record->drh.dib.ndife; i++)
+		{
+			result |= (record->drh.dib.dife[i] & MBUS_DATA_RECORD_DIFE_MASK_STORAGE_NO) << bit_index;
+			bit_index += 4;
+		}
+		
+		return result;
+	}
+	
+	return 0;
+}
+
+//------------------------------------------------------------------------------
+/// Return the tariff for a variable-length data record
+//------------------------------------------------------------------------------
+long mbus_data_record_tariff(mbus_data_record *record)
+{
+	int bit_index;
+	long result = 0;
+	int i;
+	
+	if (record && (record->drh.dib.ndife > 0))
+	{
+		for (i=0; i<record->drh.dib.ndife; i++)
+		{
+			result |= ((record->drh.dib.dife[i] & MBUS_DATA_RECORD_DIFE_MASK_TARIFF) >> 4) << bit_index;
+			bit_index += 2;
+		}
+		
+		return result;
+	}
+
+	return -1;
+}
+
+//------------------------------------------------------------------------------
+/// Return device unit for a variable-length data record
+//------------------------------------------------------------------------------
+int mbus_data_record_device(mbus_data_record *record)
+{
+	int bit_index;
+	int result = 0;
+	int i;
+
+	if (record && (record->drh.dib.ndife > 0))
+	{
+		for (i=0; i<record->drh.dib.ndife; i++)
+		{
+			result |= ((record->drh.dib.dife[i] & MBUS_DATA_RECORD_DIFE_MASK_DEVICE) >> 6) << bit_index;
+			bit_index++;
+		}
+		
+		return result;
+	}
+
+	return -1;
+}
+
+//------------------------------------------------------------------------------
 /// Return a string containing the function description
 //------------------------------------------------------------------------------
 const char *
