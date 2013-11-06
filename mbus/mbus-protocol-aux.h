@@ -143,6 +143,9 @@ typedef struct _mbus_record {
     char               *unit;           /**< Quantity unit (e.g. Wh) */
     char               *function_medium; /**< Quantity medium or function (e.g. Electricity) */
     char               *quantity;       /**< Quantity type (e.g. Energy) */
+    int                 device;         /**< Quantity device */
+    long                tariff;         /**< Quantity tariff */
+    long                storage_number; /**< Quantity storage number */
 } mbus_record;
 
 /**
