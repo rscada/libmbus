@@ -2380,8 +2380,8 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x0E: // 12 digit BCD (48 bit)
 
-                float_val = mbus_data_bcd_decode(record->data, 6);
-                snprintf(buff, sizeof(buff), "%lld", float_val);
+                long_long_val = mbus_data_bcd_decode(record->data, 6);
+                snprintf(buff, sizeof(buff), "%lld", long_long_val);
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 12 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
