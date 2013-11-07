@@ -13,18 +13,25 @@
 
     <DataRecord id="0">
         <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
         <Unit>Volume (m m^3)</Unit>
         <Value>12565</Value>
     </DataRecord>
 
     <DataRecord id="1">
         <Function>Maximum value</Function>
+        <StorageNumber>5</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
         <Unit>Volume flow (m m^3/h)</Unit>
         <Value>113</Value>
     </DataRecord>
 
     <DataRecord id="2">
         <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>2</Tariff>
+        <Device>1</Device>
         <Unit>Energy (10 Wh)</Unit>
         <Value>21837</Value>
     </DataRecord>

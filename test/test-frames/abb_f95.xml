@@ -91,6 +91,7 @@
 
     <DataRecord id="13">
         <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
         <Unit>Operating time (hours)</Unit>
         <Value>86553</Value>
     </DataRecord>
