@@ -445,6 +445,11 @@ typedef struct _mbus_data_secondary_address {
 #define MBUS_DATA_RECORD_DIF_MASK_EXTENTION      0x80
 #define MBUS_DATA_RECORD_DIF_MASK_NON_DATA       0xF0
 
+#define MBUS_DATA_RECORD_DIFE_MASK_STORAGE_NO    0x0F
+#define MBUS_DATA_RECORD_DIFE_MASK_TARIFF        0x30
+#define MBUS_DATA_RECORD_DIFE_MASK_DEVICE        0x40
+#define MBUS_DATA_RECORD_DIFE_MASK_EXTENSION     0x80
+
 //
 // GENERAL APPLICATION ERRORS
 //
@@ -494,6 +499,7 @@ typedef struct _mbus_data_secondary_address {
 #define MBUS_VARIABLE_DATA_MAN_ELS              0x1593
 #define MBUS_VARIABLE_DATA_MAN_ELV              0x1596
 #define MBUS_VARIABLE_DATA_MAN_EMH              0x15A8
+#define MBUS_VARIABLE_DATA_MAN_GMC              0x1DA3
 #define MBUS_VARIABLE_DATA_MAN_HYD              0x2324
 #define MBUS_VARIABLE_DATA_MAN_KAM              0x2C2D
 #define MBUS_VARIABLE_DATA_MAN_LSE              0x3265
@@ -501,6 +507,7 @@ typedef struct _mbus_data_secondary_address {
 #define MBUS_VARIABLE_DATA_MAN_NZR              0x3B52
 #define MBUS_VARIABLE_DATA_MAN_PAD              0x4024
 #define MBUS_VARIABLE_DATA_MAN_QDS              0x4493
+#define MBUS_VARIABLE_DATA_MAN_RAM              0x482D
 #define MBUS_VARIABLE_DATA_MAN_RKE              0x4965
 #define MBUS_VARIABLE_DATA_MAN_SEN              0x4CAE
 #define MBUS_VARIABLE_DATA_MAN_SLB              0x4D82
@@ -559,6 +566,9 @@ int mbus_frame_internal_pack(mbus_frame *frame, mbus_frame_data *frame_data);
 //
 const char *mbus_data_record_function(mbus_data_record *record);
 const char *mbus_data_fixed_function(int status);
+long        mbus_data_record_storage_number(mbus_data_record *record);
+long        mbus_data_record_tariff(mbus_data_record *record);
+int         mbus_data_record_device(mbus_data_record *record);
 
 //
 // M-Bus frame data struct access/write functions
@@ -613,9 +623,9 @@ int mbus_data_bcd_encode(unsigned char *bcd_data, size_t bcd_data_size, int valu
 int mbus_data_int_encode(unsigned char *int_data, size_t int_data_size, int value);
 
 long long mbus_data_bcd_decode(unsigned char *bcd_data, size_t bcd_data_size);
-int  mbus_data_int_decode(unsigned char *int_data, size_t int_data_size);
-long mbus_data_long_decode(unsigned char *int_data, size_t int_data_size);
-long long mbus_data_long_long_decode(unsigned char *int_data, size_t int_data_size);
+int mbus_data_int_decode(unsigned char *int_data, size_t int_data_size, int *value);
+int mbus_data_long_decode(unsigned char *int_data, size_t int_data_size, long *value);
+int mbus_data_long_long_decode(unsigned char *int_data, size_t int_data_size, long long *value);
 
 float mbus_data_float_decode(unsigned char *float_data);
 

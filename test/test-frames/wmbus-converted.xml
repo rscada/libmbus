@@ -13,6 +13,7 @@
 
     <DataRecord id="0">
         <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
         <Unit>Energy (Wh)</Unit>
         <Value>5000</Value>
     </DataRecord>

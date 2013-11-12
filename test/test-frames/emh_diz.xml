@@ -13,18 +13,25 @@
 
     <DataRecord id="0">
         <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>1</Tariff>
+        <Device>0</Device>
         <Unit>Energy (10 Wh)</Unit>
         <Value>409</Value>
     </DataRecord>
 
     <DataRecord id="1">
         <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
         <Unit>Power (1e-1 W)</Unit>
         <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="2">
         <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
         <Unit>Error flags</Unit>
         <Value>0</Value>
     </DataRecord>

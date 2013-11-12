@@ -13,6 +13,7 @@
 
     <DataRecord id="0">
         <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
         <Unit>Fabrication number</Unit>
         <Value>1020304</Value>
     </DataRecord>

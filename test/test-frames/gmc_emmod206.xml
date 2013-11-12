@@ -1,12 +1,12 @@
 <MBusData>
 
     <SlaveInformation>
-        <Id>5000345</Id>
-        <Manufacturer>@@@</Manufacturer>
-        <Version>18</Version>
-        <ProductName></ProductName>
+        <Id>12345678</Id>
+        <Manufacturer>GMC</Manufacturer>
+        <Version>230</Version>
+        <ProductName>GMC-I A230 EMMOD 206</ProductName>
         <Medium>Electricity</Medium>
-        <AccessNumber>37</AccessNumber>
+        <AccessNumber>2</AccessNumber>
         <Status>00</Status>
         <Signature>0000</Signature>
     </SlaveInformation>
@@ -14,58 +14,64 @@
     <DataRecord id="0">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Tariff>1</Tariff>
-        <Device>0</Device>
-        <Unit>Energy (10 Wh)</Unit>
-        <Value>254</Value>
+        <Tariff>0</Tariff>
+        <Device>1</Device>
+        <Unit>1e-1  V</Unit>
+        <Value>864</Value>
     </DataRecord>
 
     <DataRecord id="1">
         <Function>Instantaneous value</Function>
-        <StorageNumber>2</StorageNumber>
-        <Tariff>1</Tariff>
-        <Device>0</Device>
-        <Unit>Energy (10 Wh)</Unit>
-        <Value>254</Value>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>2</Device>
+        <Unit>1e-1  V</Unit>
+        <Value>959</Value>
     </DataRecord>
 
     <DataRecord id="2">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Tariff>2</Tariff>
-        <Device>0</Device>
-        <Unit>Energy (10 Wh)</Unit>
-        <Value>444128</Value>
+        <Tariff>0</Tariff>
+        <Device>3</Device>
+        <Unit>1e-1  V</Unit>
+        <Value>1056</Value>
     </DataRecord>
 
     <DataRecord id="3">
         <Function>Instantaneous value</Function>
-        <StorageNumber>2</StorageNumber>
-        <Tariff>2</Tariff>
-        <Device>0</Device>
-        <Unit>Energy (10 Wh)</Unit>
-        <Value>444128</Value>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>1</Device>
+        <Unit>m A</Unit>
+        <Value>957</Value>
     </DataRecord>
 
     <DataRecord id="4">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit> V</Unit>
-        <Value>233</Value>
+        <Tariff>0</Tariff>
+        <Device>2</Device>
+        <Unit>m A</Unit>
+        <Value>1055</Value>
     </DataRecord>
 
     <DataRecord id="5">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>1e-1  A</Unit>
-        <Value>1</Value>
+        <Tariff>0</Tariff>
+        <Device>3</Device>
+        <Unit>m A</Unit>
+        <Value>1150</Value>
     </DataRecord>
 
     <DataRecord id="6">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>Power (10 W)</Unit>
-        <Value>0</Value>
+        <Tariff>0</Tariff>
+        <Device>1</Device>
+        <Unit>Power (W)</Unit>
+        <Value>224</Value>
     </DataRecord>
 
     <DataRecord id="7">
@@ -73,98 +79,116 @@
         <StorageNumber>0</StorageNumber>
         <Tariff>0</Tariff>
         <Device>1</Device>
-        <Unit>Power (10 W)</Unit>
-        <Value>0</Value>
+        <Unit>Power (W)</Unit>
+        <Value>-202</Value>
     </DataRecord>
 
     <DataRecord id="8">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit> V</Unit>
-        <Value>234</Value>
+        <Tariff>1</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (10 Wh)</Unit>
+        <Value>10388</Value>
     </DataRecord>
 
     <DataRecord id="9">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>1e-1  A</Unit>
-        <Value>0</Value>
+        <Tariff>2</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (10 Wh)</Unit>
+        <Value>15000</Value>
     </DataRecord>
 
     <DataRecord id="10">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>Power (10 W)</Unit>
-        <Value>0</Value>
+        <Tariff>1</Tariff>
+        <Device>1</Device>
+        <Unit>Energy (10 Wh)</Unit>
+        <Value>20159</Value>
     </DataRecord>
 
     <DataRecord id="11">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Tariff>0</Tariff>
+        <Tariff>2</Tariff>
         <Device>1</Device>
-        <Unit>Power (10 W)</Unit>
-        <Value>0</Value>
+        <Unit>Energy (10 Wh)</Unit>
+        <Value>25000</Value>
     </DataRecord>
 
     <DataRecord id="12">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit> V</Unit>
-        <Value>235</Value>
+        <Tariff>1</Tariff>
+        <Device>2</Device>
+        <Unit>Energy (10 Wh)</Unit>
+        <Value>30091</Value>
     </DataRecord>
 
     <DataRecord id="13">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>1e-1  A</Unit>
-        <Value>1</Value>
+        <Tariff>2</Tariff>
+        <Device>2</Device>
+        <Unit>Energy (10 Wh)</Unit>
+        <Value>35000</Value>
     </DataRecord>
 
     <DataRecord id="14">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>Power (10 W)</Unit>
-        <Value>0</Value>
+        <Tariff>1</Tariff>
+        <Device>3</Device>
+        <Unit>Energy (10 Wh)</Unit>
+        <Value>40237</Value>
     </DataRecord>
 
     <DataRecord id="15">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Tariff>0</Tariff>
-        <Device>1</Device>
-        <Unit>Power (10 W)</Unit>
-        <Value>0</Value>
+        <Tariff>2</Tariff>
+        <Device>3</Device>
+        <Unit>Energy (10 Wh)</Unit>
+        <Value>45000</Value>
     </DataRecord>
 
     <DataRecord id="16">
         <Function>Instantaneous value</Function>
-        <StorageNumber>0</StorageNumber>
-        <Unit>Manufacturer specific</Unit>
-        <Value>0</Value>
+        <StorageNumber>2</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>1</Device>
+        <Unit>Power (W)</Unit>
+        <Value>224</Value>
     </DataRecord>
 
     <DataRecord id="17">
         <Function>Instantaneous value</Function>
-        <StorageNumber>0</StorageNumber>
-        <Unit>Power (10 W)</Unit>
+        <StorageNumber>4</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>1</Device>
+        <Unit>Power (W)</Unit>
         <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="18">
         <Function>Instantaneous value</Function>
-        <StorageNumber>0</StorageNumber>
+        <StorageNumber>6</StorageNumber>
         <Tariff>0</Tariff>
         <Device>1</Device>
-        <Unit>Power (10 W)</Unit>
+        <Unit>Power (W)</Unit>
         <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="19">
         <Function>Instantaneous value</Function>
-        <StorageNumber>0</StorageNumber>
-        <Unit>Manufacturer specific</Unit>
-        <Value>4</Value>
+        <StorageNumber>8</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>1</Device>
+        <Unit>Power (W)</Unit>
+        <Value>202</Value>
     </DataRecord>
 
 </MBusData>
