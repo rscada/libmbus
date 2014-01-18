@@ -22,6 +22,21 @@ static char error_str[512];
 #define NITEMS(x) (sizeof(x)/sizeof(x[0]))
 
 //------------------------------------------------------------------------------
+// Return the manufacturer ID according to the manufacturer's 3 byte ASCII code
+//------------------------------------------------------------------------------
+unsigned int
+mbus_manufacturer_id(char *manufacturer)
+{
+    unsigned int id;
+
+    id = (toupper(manufacturer[0]) - 64) * 32 * 32 +
+         (toupper(manufacturer[1]) - 64) * 32 +
+         (toupper(manufacturer[2]) - 64);
+
+    return id;
+}
+
+//------------------------------------------------------------------------------
 // internal data
 //------------------------------------------------------------------------------
 static mbus_slave_data slave_data[MBUS_MAX_PRIMARY_SLAVES];
@@ -809,7 +824,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
     {
         manufacturer = (header->manufacturer[1] << 8) + header->manufacturer[0];
 
-        if (manufacturer == MBUS_VARIABLE_DATA_MAN_ACW)
+        if (manufacturer == mbus_manufacturer_id("ACW"))
         {
             switch (header->version)
             {
@@ -833,7 +848,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_EFE)
+        else if (manufacturer == mbus_manufacturer_id("EFE"))
         {
             switch (header->version)
             {
@@ -845,7 +860,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_ELV)
+        else if (manufacturer == mbus_manufacturer_id("ELV"))
         {
             switch (header->version)
             {
@@ -875,7 +890,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_GMC)
+        else if (manufacturer == mbus_manufacturer_id("GMC"))
         {
             switch (header->version)
             {
@@ -884,7 +899,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                 	break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_SLB)
+        else if (manufacturer == mbus_manufacturer_id("SLB"))
         {
             switch (header->version)
             {
@@ -896,7 +911,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_HYD)
+        else if (manufacturer == mbus_manufacturer_id("HYD"))
         {
             switch (header->version)
             {
@@ -905,7 +920,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_LUG)
+        else if (manufacturer == mbus_manufacturer_id("LUG"))
         {
             switch (header->version)
             {
@@ -923,7 +938,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_RAM)
+        else if (manufacturer == mbus_manufacturer_id("RAM"))
         {
         	switch (header->version)
         	{
@@ -932,7 +947,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
         			break;
         	}
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_RKE)
+        else if (manufacturer == mbus_manufacturer_id("RKE"))
         {
             switch (header->version)
             {
@@ -941,7 +956,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_SVM)
+        else if (manufacturer == mbus_manufacturer_id("SVM"))
         {
             switch (header->version)
             {
@@ -953,7 +968,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_SON)
+        else if (manufacturer == mbus_manufacturer_id("SON"))
         {
             switch (header->version)
             {
@@ -962,7 +977,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_LSE)
+        else if (manufacturer == mbus_manufacturer_id("LSE"))
         {
             switch (header->version)
             {
@@ -971,7 +986,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_SEN)
+        else if (manufacturer == mbus_manufacturer_id("SEN"))
         {
             switch (header->version)
             {
@@ -980,7 +995,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_SPX)
+        else if (manufacturer == mbus_manufacturer_id("SPX"))
         {
             switch (header->version)
             {
@@ -990,7 +1005,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_ELS)
+        else if (manufacturer == mbus_manufacturer_id("ELS"))
         {
             switch (header->version)
             {
@@ -999,7 +1014,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_NZR)
+        else if (manufacturer == mbus_manufacturer_id("NZR"))
         {
             switch (header->version)
             {
@@ -1008,7 +1023,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_KAM)
+        else if (manufacturer == mbus_manufacturer_id("KAM"))
         {
             switch (header->version)
             {
@@ -1020,7 +1035,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_EMH)
+        else if (manufacturer == mbus_manufacturer_id("EMH"))
         {
             switch (header->version)
             {
@@ -1029,7 +1044,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_TCH)
+        else if (manufacturer == mbus_manufacturer_id("TCH"))
         {
             switch (header->version)
             {
@@ -1038,7 +1053,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == MBUS_VARIABLE_DATA_MAN_ZRM)
+        else if (manufacturer == mbus_manufacturer_id("ZRM"))
         {
             switch (header->version)
             {
