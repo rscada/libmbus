@@ -59,5 +59,6 @@ bin/mbus-tcp-request-data-multi-reply
 bin/mbus-tcp-scan
 bin/mbus-tcp-scan-secondary
 bin/mbus-tcp-select-secondary
+bin/mbus-tcp-application-reset
 !*.c
 
