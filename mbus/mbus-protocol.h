@@ -493,7 +493,8 @@ typedef struct _mbus_data_secondary_address {
 #define MBUS_VARIABLE_DATA_MEDIUM_ADC           0x19
 
 //
-// Return manufacturer ID
+// Returns the manufacturer ID or zero if the given
+// string could not be converted into an ID
 //
 unsigned int mbus_manufacturer_id(char *manufacturer);
 

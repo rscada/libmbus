@@ -22,18 +22,38 @@ static char error_str[512];
 #define NITEMS(x) (sizeof(x)/sizeof(x[0]))
 
 //------------------------------------------------------------------------------
-// Return the manufacturer ID according to the manufacturer's 3 byte ASCII code
+// Returns the manufacturer ID according to the manufacturer's 3 byte ASCII code
+// or zero when there was an error.
 //------------------------------------------------------------------------------
 unsigned int
 mbus_manufacturer_id(char *manufacturer)
 {
     unsigned int id;
 
+    /*
+     * manufacturer must consist of at least 3 alphabetic characters,
+     * additional chars are silently ignored.
+     */
+
+    if (!manufacturer || strlen(manufacturer) < 3)
+        return 0;
+
+    if (!isalpha(manufacturer[0]) ||
+        !isalpha(manufacturer[1]) ||
+        !isalpha(manufacturer[2]))
+        return 0;
+
     id = (toupper(manufacturer[0]) - 64) * 32 * 32 +
          (toupper(manufacturer[1]) - 64) * 32 +
          (toupper(manufacturer[2]) - 64);
 
-    return id;
+    /*
+     * Valid input data should be in the range of 'AAA' to 'ZZZ' according to
+     * the FLAG Association (http://www.dlms.com/flag/), thus resulting in
+     * an ID from 0x0421 to 0x6b5a. If the conversion results in anything not
+     * in this range, simply discard it and return 0 instead.
+     */
+    return (0x0421 <= id && id <= 0x6b5a) ? id : 0;
 }
 
 //------------------------------------------------------------------------------
