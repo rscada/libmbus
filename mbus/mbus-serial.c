@@ -56,8 +56,15 @@ mbus_serial_connect(mbus_handle *handle)
         fprintf(stderr, "%s: failed to open tty.", __PRETTY_FUNCTION__);
         return -1;
     }
+    
+    // Get current serial port settings
+    if (tcgetattr(handle->fd, term) < 0)
+    {
+        fprintf(stderr, "%s: failed to get tty attr.\n", __PRETTY_FUNCTION__);
+        close(handle->fd);
+        return -1;
+    }
 
-    memset(term, 0, sizeof(*term));
     term->c_cflag |= (CS8|CREAD|CLOCAL);
     term->c_cflag |= PARENB;
 
