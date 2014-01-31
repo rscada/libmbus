@@ -65,8 +65,11 @@ mbus_serial_connect(mbus_handle *handle)
         return -1;
     }
 
-    term->c_cflag |= (CS8|CREAD|CLOCAL);
-    term->c_cflag |= PARENB;
+    term->c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL | IXON);
+    term->c_oflag &= ~OPOST;
+    term->c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
+    term->c_cflag &= ~CSIZE;
+    term->c_cflag |= (CS8 | CREAD | CLOCAL | PARENB);
 
     // No received data still OK
     term->c_cc[VMIN] = (cc_t) 0;
