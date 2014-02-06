@@ -492,30 +492,11 @@ typedef struct _mbus_data_secondary_address {
 #define MBUS_VARIABLE_DATA_MEDIUM_PRESSURE      0x18
 #define MBUS_VARIABLE_DATA_MEDIUM_ADC           0x19
 
-#define MBUS_VARIABLE_DATA_MAN_ACW              0x0477
-#define MBUS_VARIABLE_DATA_MAN_ABB              0x0442
-#define MBUS_VARIABLE_DATA_MAN_AMT              0x05B4
-#define MBUS_VARIABLE_DATA_MAN_EFE              0x14C5
-#define MBUS_VARIABLE_DATA_MAN_ELS              0x1593
-#define MBUS_VARIABLE_DATA_MAN_ELV              0x1596
-#define MBUS_VARIABLE_DATA_MAN_EMH              0x15A8
-#define MBUS_VARIABLE_DATA_MAN_GMC              0x1DA3
-#define MBUS_VARIABLE_DATA_MAN_HYD              0x2324
-#define MBUS_VARIABLE_DATA_MAN_KAM              0x2C2D
-#define MBUS_VARIABLE_DATA_MAN_LSE              0x3265
-#define MBUS_VARIABLE_DATA_MAN_LUG              0x32A7
-#define MBUS_VARIABLE_DATA_MAN_NZR              0x3B52
-#define MBUS_VARIABLE_DATA_MAN_PAD              0x4024
-#define MBUS_VARIABLE_DATA_MAN_QDS              0x4493
-#define MBUS_VARIABLE_DATA_MAN_RAM              0x482D
-#define MBUS_VARIABLE_DATA_MAN_RKE              0x4965
-#define MBUS_VARIABLE_DATA_MAN_SEN              0x4CAE
-#define MBUS_VARIABLE_DATA_MAN_SLB              0x4D82
-#define MBUS_VARIABLE_DATA_MAN_SON              0x4DEE
-#define MBUS_VARIABLE_DATA_MAN_SPX              0x4E18
-#define MBUS_VARIABLE_DATA_MAN_SVM              0x4ECD
-#define MBUS_VARIABLE_DATA_MAN_TCH              0x5068
-#define MBUS_VARIABLE_DATA_MAN_ZRM              0x6A4D
+//
+// Returns the manufacturer ID or zero if the given
+// string could not be converted into an ID
+//
+unsigned int mbus_manufacturer_id(char *manufacturer);
 
 //
 // Event callback functions
