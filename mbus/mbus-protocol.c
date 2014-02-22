@@ -2488,7 +2488,7 @@ mbus_data_record_value(mbus_data_record *record)
 //------------------------------------------------------------------------------
 long mbus_data_record_storage_number(mbus_data_record *record)
 {
-	int bit_index;
+	int bit_index = 0;
 	long result = 0;
 	int i;
 
@@ -2506,7 +2506,7 @@ long mbus_data_record_storage_number(mbus_data_record *record)
 		return result;
 	}
 	
-	return 0;
+	return -1;
 }
 
 //------------------------------------------------------------------------------
@@ -2514,7 +2514,7 @@ long mbus_data_record_storage_number(mbus_data_record *record)
 //------------------------------------------------------------------------------
 long mbus_data_record_tariff(mbus_data_record *record)
 {
-	int bit_index;
+	int bit_index = 0;
 	long result = 0;
 	int i;
 	
@@ -2537,7 +2537,7 @@ long mbus_data_record_tariff(mbus_data_record *record)
 //------------------------------------------------------------------------------
 int mbus_data_record_device(mbus_data_record *record)
 {
-	int bit_index;
+	int bit_index = 0;
 	int result = 0;
 	int i;
 
