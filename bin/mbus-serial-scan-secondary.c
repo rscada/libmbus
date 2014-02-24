@@ -135,7 +135,7 @@ main(int argc, char **argv)
         free(addr_mask);
         return 1;
     }
-    
+
     if (debug)
     {
         mbus_register_send_event(handle, &mbus_dump_send_event);

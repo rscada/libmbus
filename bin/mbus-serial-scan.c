@@ -113,7 +113,7 @@ main(int argc, char **argv)
         fprintf(stderr,"Scan failed: Could not initialize M-Bus context: %s\n",  mbus_error_str());
         return 1;
     }
-    
+
     if (debug)
     {
         mbus_register_send_event(handle, &mbus_dump_send_event);

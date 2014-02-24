@@ -372,5 +372,3 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
     return MBUS_RECV_RESULT_OK;
 }
 
-
-
