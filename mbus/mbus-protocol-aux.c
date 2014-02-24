@@ -1373,6 +1373,8 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
         if (buff == NULL)
             return NULL;
 
+        len += snprintf(&buff[len], buff_size - len, MBUS_XML_PROCESSING_INSTRUCTION);
+
         len += snprintf(&buff[len], buff_size - len, "<MBusData>\n\n");
 
         len += snprintf(&buff[len], buff_size - len, "%s", mbus_data_variable_header_xml(&(data->header)));

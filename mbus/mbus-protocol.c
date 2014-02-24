@@ -3779,6 +3779,8 @@ mbus_data_variable_xml(mbus_data_variable *data)
         if (buff == NULL)
             return NULL;
 
+        len += snprintf(&buff[len], buff_size - len, MBUS_XML_PROCESSING_INSTRUCTION);
+
         len += snprintf(&buff[len], buff_size - len, "<MBusData>\n\n");
 
         len += snprintf(&buff[len], buff_size - len, "%s",
@@ -3828,6 +3830,8 @@ mbus_data_fixed_xml(mbus_data_fixed *data)
 
         if (buff == NULL)
             return NULL;
+
+        len += snprintf(&buff[len], buff_size - len, MBUS_XML_PROCESSING_INSTRUCTION);
 
         len += snprintf(&buff[len], buff_size - len, "<MBusData>\n\n");
 
@@ -3902,6 +3906,7 @@ mbus_data_error_xml(int error)
     if (buff == NULL)
         return NULL;
 
+    len += snprintf(&buff[len], buff_size - len, MBUS_XML_PROCESSING_INSTRUCTION);
     len += snprintf(&buff[len], buff_size - len, "<MBusData>\n\n");
 
     len += snprintf(&buff[len], buff_size - len, "    <SlaveInformation>\n");
@@ -4002,6 +4007,8 @@ mbus_frame_xml(mbus_frame *frame)
             // include frame counter in XML output if more than one frame
             // is available (frame_cnt = -1 => not included in output)
             frame_cnt = (frame->next == NULL) ? -1 : 0;
+
+            len += snprintf(&buff[len], buff_size - len, MBUS_XML_PROCESSING_INSTRUCTION);
 
             len += snprintf(&buff[len], buff_size - len, "<MBusData>\n\n");
 
