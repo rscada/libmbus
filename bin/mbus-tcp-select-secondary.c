@@ -88,7 +88,7 @@ main(int argc, char **argv)
     if (mbus_frame_type(&reply) == MBUS_FRAME_TYPE_ACK)
     {
         if (mbus_send_request_frame(handle, MBUS_ADDRESS_NETWORK_LAYER) == -1)
-	    {
+        {
             fprintf(stderr,"Failed to send request to selected secondary device: %s\n", mbus_error_str());
             return 1;
         }

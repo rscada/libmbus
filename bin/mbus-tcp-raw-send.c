@@ -30,7 +30,7 @@ main(int argc, char **argv)
     int address, result;
     FILE *fp = NULL;
     size_t buff_len, len;
-  	unsigned char raw_buff[4096], buff[4096];
+    unsigned char raw_buff[4096], buff[4096];
 
     memset((void *)&reply, 0, sizeof(mbus_frame));
     memset((void *)&reply_data, 0, sizeof(mbus_frame_data));
@@ -191,6 +191,4 @@ main(int argc, char **argv)
     mbus_context_free(handle);
     return 0;
 }
-
-
 
