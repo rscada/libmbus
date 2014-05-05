@@ -498,6 +498,10 @@ typedef struct _mbus_data_secondary_address {
 //
 unsigned int mbus_manufacturer_id(char *manufacturer);
 
+// Since libmbus writes some special characters (ASCII > 0x7F) into the XML output (e.g. °C for centigrade == ASCII 0xB0)
+// it is useful to attach the appropriate code page for postprocessing.
+#define MBUS_XML_PROCESSING_INSTRUCTION         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
+
 //
 // Event callback functions
 //
