@@ -20,10 +20,10 @@ main(int argc, char *argv[])
     FILE *fp = NULL;
     size_t buff_len, len;
     int normalized = 0;
-	unsigned char buf[1024];
-	mbus_frame reply;
-	mbus_frame_data frame_data;
-	char *xml_result = NULL, *file = NULL;
+    unsigned char buf[1024];
+    mbus_frame reply;
+    mbus_frame_data frame_data;
+    char *xml_result = NULL, *file = NULL;
 
     if (argc == 3 && strcmp(argv[1], "-n") == 0)
     {
@@ -47,8 +47,8 @@ main(int argc, char *argv[])
         return 1;
     }
 
-	memset(buf, 0, sizeof(buf));
-	len = fread(buf, 1, sizeof(buf), fp);
+    memset(buf, 0, sizeof(buf));
+    len = fread(buf, 1, sizeof(buf), fp);
 
     if (ferror(fp) != 0)
     {
@@ -56,17 +56,17 @@ main(int argc, char *argv[])
         return 1;
     }
 
-	fclose(fp);
+    fclose(fp);
 
-	memset(&reply, 0, sizeof(reply));
-	memset(&frame_data, 0, sizeof(frame_data));
-	mbus_parse(&reply, buf, len);
-	mbus_frame_data_parse(&reply, &frame_data);
-	mbus_frame_print(&reply);
+    memset(&reply, 0, sizeof(reply));
+    memset(&frame_data, 0, sizeof(frame_data));
+    mbus_parse(&reply, buf, len);
+    mbus_frame_data_parse(&reply, &frame_data);
+    mbus_frame_print(&reply);
 
-	xml_result = normalized ? mbus_frame_data_xml_normalized(&frame_data) : mbus_frame_data_xml(&frame_data);
+    xml_result = normalized ? mbus_frame_data_xml_normalized(&frame_data) : mbus_frame_data_xml(&frame_data);
 
-	if (xml_result == NULL)
+    if (xml_result == NULL)
     {
         fprintf(stderr, "Failed to generate XML representation of MBUS frame: %s\n", mbus_error_str());
         return 1;
@@ -74,7 +74,6 @@ main(int argc, char *argv[])
     printf("%s", xml_result);
     free(xml_result);
 
-	return 0;
+    return 0;
 }
-
 
