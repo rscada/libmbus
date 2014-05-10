@@ -3677,7 +3677,7 @@ mbus_data_error_print(int error)
 /// Encode string to XML
 ///
 //------------------------------------------------------------------------------
-void
+int
 mbus_str_xml_encode(unsigned char *dst, const unsigned char *src, size_t max_len)
 {
     size_t i, len;
@@ -3686,49 +3686,55 @@ mbus_str_xml_encode(unsigned char *dst, const unsigned char *src, size_t max_len
     len = 0;
 
     if (dst == NULL)
-        return;
-
-    if (src != NULL)
     {
-        while((len+6) < max_len)
+        return -1;
+    }
+    
+    if (src == NULL)
+    {
+    	dst[len] = '\0';
+    	return -2;
+    }
+
+    while((len+6) < max_len)
+    {
+        if (src[i] == '\0')
         {
-            if (src[i] == '\0')
-            {
-                break;
-            }
-
-            if (iscntrl(src[i]))
-            {
-                // convert all control chars into spaces
-                dst[len++] = ' ';
-            }
-            else
-            {
-                switch (src[i])
-                {
-                    case '&':
-                        len += snprintf(&dst[len], max_len - len, "&amp;");
-                        break;
-                    case '<':
-                        len += snprintf(&dst[len], max_len - len, "&lt;");
-                        break;
-                    case '>':
-                        len += snprintf(&dst[len], max_len - len, "&gt;");
-                        break;
-                    case '"':
-                        len += snprintf(&dst[len], max_len - len, "&quot;");
-                        break;
-                    default:
-                        dst[len++] = src[i];
-                        break;
-                }
-            }
-
-            i++;
+            break;
         }
+
+        if (iscntrl(src[i]))
+        {
+            // convert all control chars into spaces
+            dst[len++] = ' ';
+        }
+        else
+        {
+            switch (src[i])
+            {
+                case '&':
+                    len += snprintf(&dst[len], max_len - len, "&amp;");
+                    break;
+                case '<':
+                    len += snprintf(&dst[len], max_len - len, "&lt;");
+                    break;
+                case '>':
+                    len += snprintf(&dst[len], max_len - len, "&gt;");
+                    break;
+                case '"':
+                    len += snprintf(&dst[len], max_len - len, "&quot;");
+                    break;
+                default:
+                    dst[len++] = src[i];
+                    break;
+            }
+        }
+
+        i++;
     }
 
     dst[len] = '\0';
+    return 0;
 }
 
 //------------------------------------------------------------------------------
