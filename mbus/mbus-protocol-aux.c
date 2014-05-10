@@ -857,6 +857,7 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                     MBUS_ERROR("Unable to allocate memory");
                     return -1;
                 }
+                *value_out_str[0] = '\0';
                 *value_out_str_size = 0;
                 result = 0;
                 break;
@@ -1362,7 +1363,7 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
     mbus_data_record *record;
     mbus_record *norm_record;
     char *buff = NULL, *new_buff = NULL;
-    char str_encoded[768];
+    char str_encoded[768] = "";
     size_t len = 0, buff_size = 8192;
     size_t i;
 
