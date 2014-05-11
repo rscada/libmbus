@@ -967,6 +967,29 @@ mbus_data_product_name(mbus_data_variable_header *header)
                 }
             }
         }
+        else if (manufacturer == mbus_manufacturer_id("GAV"))
+        {
+            if (header->medium == MBUS_VARIABLE_DATA_MEDIUM_ELECTRICITY)
+            {
+                switch (header->version)
+                {
+                    case 0x2D:
+                    case 0x2E:
+                    case 0x2F:
+                    case 0x30:
+                        strcpy(buff,"Carlo Gavazzi EM24");
+                        break;
+                    case 0x39:
+                    case 0x3A:
+                        strcpy(buff,"Carlo Gavazzi EM21");
+                        break;
+                    case 0x40:
+                        strcpy(buff,"Carlo Gavazzi EM33");
+                        break;
+                    
+                }
+            }
+        }
         else if (manufacturer == mbus_manufacturer_id("GMC"))
         {
             switch (header->version)
