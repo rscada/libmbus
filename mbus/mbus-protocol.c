@@ -898,7 +898,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
             {
                 switch (header->version)
                 {
-            	    case 0x71:
+                    case 0x71:
                         strcpy(buff, "Berg BMB-10S0");
                         break; 
                 }
@@ -3715,8 +3715,8 @@ mbus_str_json_encode(unsigned char *dst, const unsigned char *src, size_t max_le
     
     if (src == NULL)
     {
-    	dst[len] = '\0';
-    	return -2;
+        dst[len] = '\0';
+        return -2;
     }
 
     while((len+6) < max_len)
@@ -3769,7 +3769,7 @@ mbus_data_variable_header_json(mbus_data_variable_header *header)
         val = (int)mbus_data_bcd_decode(header->id_bcd, 4);
 
         len += snprintf(&buff[len], sizeof(buff) - len, "\"Id\":%d,", val);
-        len += snprintf(&buff[len], sizeof(buff) - len, "\"Manufacturer\"\"%s\",",
+        len += snprintf(&buff[len], sizeof(buff) - len, "\"Manufacturer\":\"%s\",",
                 mbus_decode_manufacturer(header->manufacturer[0], header->manufacturer[1]));
         len += snprintf(&buff[len], sizeof(buff) - len, "\"Version\":%d,", header->version);
 
@@ -3782,7 +3782,7 @@ mbus_data_variable_header_json(mbus_data_variable_header *header)
         len += snprintf(&buff[len], sizeof(buff) - len, "\"Medium\":\"%s\",", str_encoded);
         len += snprintf(&buff[len], sizeof(buff) - len, "\"AccessNumber\":%d,", header->access_no);
         len += snprintf(&buff[len], sizeof(buff) - len, "\"Status\":\"%.2X\",", header->status);
-        len += snprintf(&buff[len], sizeof(buff) - len, "\"Signature\":%.2X%.2X\"", header->signature[1], header->signature[0]);
+        len += snprintf(&buff[len], sizeof(buff) - len, "\"Signature\":\"%.2X%.2X\"", header->signature[1], header->signature[0]);
 
         len += snprintf(&buff[len], sizeof(buff) - len, "}");
 
@@ -3843,17 +3843,17 @@ mbus_data_variable_record_json(mbus_data_record *record, int record_cnt, int fra
             {
                 len += snprintf(&buff[len], sizeof(buff) - len, "\"Tariff\":%ld,",
                                 tariff);
-                len += snprintf(&buff[len], sizeof(buff) - len, "\"Device\":%d", 
+                len += snprintf(&buff[len], sizeof(buff) - len, "\"Device\":%d,", 
                                 mbus_data_record_device(record));
             }
 
             mbus_str_json_encode(str_encoded, mbus_data_record_unit(record), sizeof(str_encoded));
             len += snprintf(&buff[len], sizeof(buff) - len,
-                            "\"Unit\":\"%s\"", str_encoded);
+                            "\"Unit\":\"%s\",", str_encoded);
         }
 
         mbus_str_json_encode(str_encoded, mbus_data_record_value(record), sizeof(str_encoded));
-        len += snprintf(&buff[len], sizeof(buff) - len, "\"Value\":\"%s\"", str_encoded);
+        len += snprintf(&buff[len], sizeof(buff) - len, "\"Value\":\"%s\",", str_encoded);
 
         if (record->timestamp > 0)
         {
@@ -3864,7 +3864,7 @@ mbus_data_variable_record_json(mbus_data_record *record, int record_cnt, int fra
                             "\"Timestamp\":\"%s\"", timestamp);
         }
 
-        len += snprintf(&buff[len], sizeof(buff) - len, "}");
+        len += snprintf(&buff[len], sizeof(buff) - len, "},");
 
         return buff;
     }
@@ -3892,8 +3892,10 @@ mbus_data_variable_json(mbus_data_variable *data)
 
         len += snprintf(&buff[len], buff_size - len, "{\"MBusData\":{");
 
-        len += snprintf(&buff[len], buff_size - len, "%s",
+        len += snprintf(&buff[len], buff_size - len, "%s,",
                         mbus_data_variable_header_json(&(data->header)));
+
+        len += snprintf(&buff[len], buff_size - len, "%s","\"DataRecords\":[");
 
         for (record = data->record, i = 0; record; record = record->next, i++)
         {
@@ -3914,7 +3916,7 @@ mbus_data_variable_json(mbus_data_variable *data)
             len += snprintf(&buff[len], buff_size - len, "%s",
                             mbus_data_variable_record_json(record, i, -1, &(data->header)));
         }
-        len += snprintf(&buff[len], buff_size - len, "}}");
+        len += snprintf(&buff[len-1], buff_size - len + 1, "]}}");
 
         return buff;
     }
