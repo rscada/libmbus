@@ -14,7 +14,8 @@ else
 
     autoheader \
         && aclocal \
-        && libtoolize --ltdl --copy --force \
+        && case `uname` in Darwin*) glibtoolize --ltdl --copy --force ;; \
+  		*) libtoolize --ltdl --copy --force ;; esac \
         && automake --add-missing --copy \
         && autoconf \
         && ./configure
