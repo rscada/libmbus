@@ -159,6 +159,13 @@ mbus_serial_set_baudrate(mbus_handle *handle, long baudrate)
             return -1; // unsupported baudrate
     }
 
+    // Set port raw
+
+    if (cfmakeraw(&(serial_data->t)) != 0)
+    {
+        return -1;
+    }
+
     // Set input baud rate
     if (cfsetispeed(&(serial_data->t), speed) != 0)
     {
