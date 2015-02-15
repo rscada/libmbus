@@ -182,7 +182,7 @@ int mbus_tcp_recv_frame(mbus_handle *handle, mbus_frame *frame)
     ssize_t len, nread;
 
     if (handle == NULL || frame == NULL) {
-        fprintf(stderr, "%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
+        //fprintf(stderr, "%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
         return MBUS_RECV_RESULT_ERROR;
     }
 

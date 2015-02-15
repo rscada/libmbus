@@ -53,7 +53,7 @@ mbus_serial_connect(mbus_handle *handle)
     // Use blocking read and handle it by serial port VMIN/VTIME setting
     if ((handle->fd = open(device, O_RDWR | O_NOCTTY)) < 0)
     {
-        fprintf(stderr, "%s: failed to open tty.", __PRETTY_FUNCTION__);
+        //fprintf(stderr, "%s: failed to open tty.", __PRETTY_FUNCTION__);
         return -1;
     }
 
@@ -239,7 +239,7 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
 
     if ((len = mbus_frame_pack(frame, buff, sizeof(buff))) == -1)
     {
-        fprintf(stderr, "%s: mbus_frame_pack failed\n", __PRETTY_FUNCTION__);
+        //fprintf(stderr, "%s: mbus_frame_pack failed\n", __PRETTY_FUNCTION__);
         return -1;
     }
 
@@ -264,7 +264,7 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
     }
     else
     {
-        fprintf(stderr, "%s: Failed to write frame to socket (ret = %d: %s)\n", __PRETTY_FUNCTION__, ret, strerror(errno));
+        //fprintf(stderr, "%s: Failed to write frame to socket (ret = %d: %s)\n", __PRETTY_FUNCTION__, ret, strerror(errno));
         return -1;
     }
 
@@ -288,14 +288,14 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
 
     if (handle == NULL || frame == NULL)
     {
-        fprintf(stderr, "%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
+        //fprintf(stderr, "%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
         return MBUS_RECV_RESULT_ERROR;
     }
 
     // Make sure serial connection is open
     if (isatty(handle->fd) == 0)
     {
-        fprintf(stderr, "%s: Serial connection is not available.\n", __PRETTY_FUNCTION__);
+        //fprintf(stderr, "%s: Serial connection is not available.\n", __PRETTY_FUNCTION__);
         return MBUS_RECV_RESULT_ERROR;
     }
 
@@ -333,7 +333,7 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
             if (timeouts >= 3)
             {
                 // abort to avoid endless loop
-                fprintf(stderr, "%s: Timeout\n", __PRETTY_FUNCTION__);
+                //fprintf(stderr, "%s: Timeout\n", __PRETTY_FUNCTION__);
                 break;
             }
         }
@@ -369,7 +369,7 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
 
     if (len == -1)
     {
-        fprintf(stderr, "%s: M-Bus layer failed to parse data.\n", __PRETTY_FUNCTION__);
+        //fprintf(stderr, "%s: M-Bus layer failed to parse data.\n", __PRETTY_FUNCTION__);
         return MBUS_RECV_RESULT_ERROR;
     }
 
