@@ -868,15 +868,36 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
+        else if (manufacturer == mbus_manufacturer_id("AMT"))
+        {
+            switch (header->version)
+            {
+                case 0x80:
+                    strcpy(buff,"Aquametro CALEC MB");
+                    break;
+                case 0xC0:
+                    strcpy(buff,"Aquametro CALEC ST");
+                    break;
+            }
+        }
         else if (manufacturer == mbus_manufacturer_id("EFE"))
         {
             switch (header->version)
             {
                 case 0x00:
-                    strcpy(buff, ((header->medium == 0x06) ? "Engelmann WaterStar" : "Engelmann SensoStar 2"));
+                    strcpy(buff, ((header->medium == 0x06) ? "Engelmann WaterStar" : "Engelmann / Elster SensoStar 2"));
                     break;
                 case 0x01:
                     strcpy(buff,"Engelmann SensoStar 2C");
+                    break;
+            }
+        }
+        else if (manufacturer == mbus_manufacturer_id("ELS"))
+        {
+            switch (header->version)
+            {
+                case 0x2F:
+                    strcpy(buff,"Elster F96 Plus");
                     break;
             }
         }
@@ -908,6 +929,18 @@ mbus_data_product_name(mbus_data_variable_header *header)
                 case 0x3B:
                     strcpy(buff,"Elvaco CMa11");
                     break;
+            }
+        }
+        else if (manufacturer == mbus_manufacturer_id("EMU"))
+        {
+            if (header->medium == MBUS_VARIABLE_DATA_MEDIUM_ELECTRICITY)
+            {
+                switch (header->version)
+                {
+                    case 0x10:
+                        strcpy(buff,"EMU Professional 3/75 M-Bus");
+                        break;
+                }
             }
         }
         else if (manufacturer == mbus_manufacturer_id("GMC"))
@@ -981,10 +1014,10 @@ mbus_data_product_name(mbus_data_variable_header *header)
             switch (header->version)
             {
                 case 0x08:
-                    strcpy(buff,"Elster F2");
+                    strcpy(buff,"Elster F2 / Deltamess F2");
                     break;
                 case 0x09:
-                    strcpy(buff,"Kamstrup SVM F22");
+                    strcpy(buff,"Elster F4 / Kamstrup SVM F22");
                     break;
             }
         }
@@ -1010,6 +1043,12 @@ mbus_data_product_name(mbus_data_variable_header *header)
         {
             switch (header->version)
             {
+                case 0x0B:
+                    strcpy(buff,"Sensus PolluTherm");
+                    break;
+                case 0x0E:
+                    strcpy(buff,"Sensus PolluStat E");
+                    break;
                 case 0x19:
                     strcpy(buff,"Sensus PolluCom E");
                     break;
@@ -1041,6 +1080,10 @@ mbus_data_product_name(mbus_data_variable_header *header)
                 case 0x01:
                     strcpy(buff,"NZR DHZ 5/63");
                     break;
+                case 0x50:
+                    strcpy(buff,"NZR IC-M2");
+                    break;
+
             }
         }
         else if (manufacturer == mbus_manufacturer_id("KAM"))
@@ -1085,6 +1128,20 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
+        else if (manufacturer == mbus_manufacturer_id("SBC"))
+        {
+            switch (header->id_bcd[3])
+            {
+                case 0x10:
+                case 0x19:
+                    strcpy(buff,"Saia-Burgess ALE3");
+                    break;
+                case 0x11:
+                    strcpy(buff,"Saia-Burgess AWD3");
+                    break;
+            }
+        }
+
     }
 
     return buff;
