@@ -214,13 +214,13 @@ mbus_variable_vif vif_table[] = {
 
     /* E111 1010 Bus Address */
     { 0x7A, 1.0, "", "Bus Address" },
-    
+
     /* Any VIF: 7Eh */
     { 0x7E, 1.0, "", "Any VIF" },
-    
+
     /* Manufacturer specific: 7Fh */
     { 0x7F, 1.0, "", "Manufacturer specific" },
-    
+
     /* Any VIF: 7Eh */
     { 0xFE, 1.0, "", "Any VIF" },
 
@@ -607,7 +607,7 @@ mbus_variable_vif vif_table[] = {
     { 0x255, 1.0e0, "Reserved", "Reserved" },
     { 0x256, 1.0e0, "Reserved", "Reserved" },
     { 0x257, 1.0e0, "Reserved", "Reserved" },
-    
+
     /* E101 10nn Flow Temperature 10(nn-3) °F 0.001°F to 1°F */
     { 0x258, 1.0e-3, "°F", "Flow temperature" },
     { 0x259, 1.0e-2, "°F", "Flow temperature" },
@@ -935,7 +935,7 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                 break;
 
             case 0x07: /* 8 byte integer (64 bit) */
-            	result = mbus_data_long_long_decode(record->data, 8, &value_out_long_long);
+                result = mbus_data_long_long_decode(record->data, 8, &value_out_long_long);
                 *value_out_real = value_out_long_long;
                 break;
 
@@ -1404,14 +1404,14 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
             {
                 mbus_str_xml_encode(str_encoded, norm_record->function_medium, sizeof(str_encoded));
                 len += snprintf(&buff[len], buff_size - len, "        <Function>%s</Function>\n", str_encoded);
-                
+
                 len += snprintf(&buff[len], buff_size - len, "        <StorageNumber>%ld</StorageNumber>\n", norm_record->storage_number);
-            	
-            	if (norm_record->tariff >= 0)
-            	{
-	            	len += snprintf(&buff[len], buff_size - len, "        <Tariff>%ld</Tariff>\n", norm_record->tariff);
-	            	len += snprintf(&buff[len], buff_size - len, "        <Device>%d</Device>\n", norm_record->device);
-            	}
+
+                if (norm_record->tariff >= 0)
+                {
+                    len += snprintf(&buff[len], buff_size - len, "        <Tariff>%ld</Tariff>\n", norm_record->tariff);
+                    len += snprintf(&buff[len], buff_size - len, "        <Device>%d</Device>\n", norm_record->device);
+                }
 
                 mbus_str_xml_encode(str_encoded, norm_record->unit, sizeof(str_encoded));
 
@@ -1664,11 +1664,11 @@ mbus_recv_frame(mbus_handle * handle, mbus_frame *frame)
         case MBUS_CONTROL_MASK_DIR_M2S:
             if (handle->purge_first_frame == MBUS_FRAME_PURGE_M2S)
                 result = handle->recv(handle, frame);  // purge echo and retry
-    	     break;
+            break;
         case MBUS_CONTROL_MASK_DIR_S2M:
             if (handle->purge_first_frame == MBUS_FRAME_PURGE_S2M)
                 result = handle->recv(handle, frame);  // purge echo and retry
-             break;
+            break;
     }
 
     if (frame != NULL)
@@ -1831,7 +1831,7 @@ mbus_send_application_reset_frame(mbus_handle * handle, int address, int subcode
 
     if (subcode > 0xFF)
     {
-    	MBUS_ERROR("%s: invalid subcode %d\n", __PRETTY_FUNCTION__, subcode);
+        MBUS_ERROR("%s: invalid subcode %d\n", __PRETTY_FUNCTION__, subcode);
         return -1;
     }
 
@@ -2239,16 +2239,16 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
         ret = mbus_select_secondary_address(handle, mask);
 
         if (ret == MBUS_PROBE_SINGLE)
-	    {
-	        /* send a data request command to find out the full address */
-	        if (mbus_send_request_frame(handle, MBUS_ADDRESS_NETWORK_LAYER) == -1)
-	        {
-	            MBUS_ERROR("%s: Failed to send request to selected secondary device [mask %s]: %s.\n",
-	                       __PRETTY_FUNCTION__,
-	                       mask,
-	                       mbus_error_str());
-	            return MBUS_PROBE_ERROR;
-	        }
+        {
+            /* send a data request command to find out the full address */
+            if (mbus_send_request_frame(handle, MBUS_ADDRESS_NETWORK_LAYER) == -1)
+            {
+                MBUS_ERROR("%s: Failed to send request to selected secondary device [mask %s]: %s.\n",
+                           __PRETTY_FUNCTION__,
+                           mask,
+                           mbus_error_str());
+                return MBUS_PROBE_ERROR;
+            }
 
             memset((void *)&reply, 0, sizeof(mbus_frame));
             ret = mbus_recv_frame(handle, &reply);
@@ -2263,13 +2263,13 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
                 /* check for more data (collision) */
                 mbus_purge_frames(handle);
                 return MBUS_PROBE_COLLISION;
-	        }
+            }
 
             /* check for more data (collision) */
             if (mbus_purge_frames(handle))
             {
                 return MBUS_PROBE_COLLISION;
-	        }
+            }
 
             if (mbus_frame_type(&reply) == MBUS_FRAME_TYPE_LONG)
             {
@@ -2283,7 +2283,7 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
                     return MBUS_PROBE_NOTHING;
                 }
 
-	            snprintf(matching_addr, 17, "%s", addr);
+                snprintf(matching_addr, 17, "%s", addr);
 
                 if (handle->found_event)
                 {
@@ -2291,20 +2291,20 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
                 }
 
                 return MBUS_PROBE_SINGLE;
-	        }
-	        else
-	        {
-	            MBUS_ERROR("%s: Unexpected reply for address [mask %s]. Expected long frame.\n",
-	                       __PRETTY_FUNCTION__, mask);
-	            return MBUS_PROBE_NOTHING;
-	        }
-	    }
-	    else if ((ret == MBUS_PROBE_ERROR) ||
-	             (ret == MBUS_PROBE_COLLISION))
-	    {
-	    	break;
-	    }
-	}
+            }
+            else
+            {
+                MBUS_ERROR("%s: Unexpected reply for address [mask %s]. Expected long frame.\n",
+                           __PRETTY_FUNCTION__, mask);
+                return MBUS_PROBE_NOTHING;
+            }
+        }
+        else if ((ret == MBUS_PROBE_ERROR) ||
+                 (ret == MBUS_PROBE_COLLISION))
+        {
+            break;
+        }
+    }
 
     return ret;
 }
