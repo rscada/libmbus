@@ -102,7 +102,7 @@ main(int argc, char **argv)
         }
         // else MBUS_PROBE_SINGLE
 
-        if (mbus_send_request_frame(handle, MBUS_ADDRESS_NETWORK_LAYER) == -1)
+        if (mbus_send_request_frame(handle, MBUS_ADDRESS_NETWORK_LAYER, 0) == -1)
         {
             fprintf(stderr, "Failed to send M-Bus request frame.\n");
             return 1;
@@ -113,7 +113,7 @@ main(int argc, char **argv)
         // primary addressing
 
         address = atoi(addr_str);
-        if (mbus_send_request_frame(handle, address) == -1)
+        if (mbus_send_request_frame(handle, address, 1) == -1)
         {
             fprintf(stderr, "Failed to send M-Bus request frame.\n");
             return 1;

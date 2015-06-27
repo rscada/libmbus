@@ -56,6 +56,7 @@ main(int argc, char **argv)
 
     char *device, *addr_str, *xml_result;
     int address;
+    char fcb;
     long baudrate = 9600;
 
     memset((void *)&reply, 0, sizeof(mbus_frame));
@@ -159,14 +160,16 @@ main(int argc, char **argv)
         // else MBUS_PROBE_SINGLE
         
         address = MBUS_ADDRESS_NETWORK_LAYER;
+        fcb = 0;
     }
     else
     {
         // primary addressing
         address = atoi(addr_str);
+        fcb = 1;
     }
 
-    if (mbus_send_request_frame(handle, address) == -1)
+    if (mbus_send_request_frame(handle, address, fcb) == -1)
     {
         fprintf(stderr, "Failed to send M-Bus request frame.\n");
         mbus_disconnect(handle);

@@ -1872,7 +1872,7 @@ mbus_send_application_reset_frame(mbus_handle * handle, int address, int subcode
 // send a request packet to from master to slave
 //------------------------------------------------------------------------------
 int
-mbus_send_request_frame(mbus_handle * handle, int address)
+mbus_send_request_frame(mbus_handle * handle, int address, char frame_count_bit)
 {
     int retval = 0;
     mbus_frame *frame;
@@ -1893,6 +1893,11 @@ mbus_send_request_frame(mbus_handle * handle, int address)
 
     frame->control = MBUS_CONTROL_MASK_REQ_UD2 | MBUS_CONTROL_MASK_DIR_M2S;
     frame->address = address;
+
+    if (frame_count_bit)
+    {
+        frame->control |= MBUS_CONTROL_MASK_FCB;
+    }
 
     if (mbus_send_frame(handle, frame) == -1)
     {
@@ -2241,7 +2246,7 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
         if (ret == MBUS_PROBE_SINGLE)
         {
             /* send a data request command to find out the full address */
-            if (mbus_send_request_frame(handle, MBUS_ADDRESS_NETWORK_LAYER) == -1)
+            if (mbus_send_request_frame(handle, MBUS_ADDRESS_NETWORK_LAYER, 0) == -1)
             {
                 MBUS_ERROR("%s: Failed to send request to selected secondary device [mask %s]: %s.\n",
                            __PRETTY_FUNCTION__,
@@ -2320,7 +2325,7 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
 
     if (address->is_primary)
     {
-        if (mbus_send_request_frame(handle, address->primary) == -1)
+        if (mbus_send_request_frame(handle, address->primary, 1) == -1)
         {
             MBUS_ERROR("%s: Failed to send M-Bus request frame.\n",
                        __PRETTY_FUNCTION__);
@@ -2364,7 +2369,7 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
         }
         /* else MBUS_PROBE_SINGLE */
 
-        if (mbus_send_request_frame(handle, MBUS_ADDRESS_NETWORK_LAYER) == -1)
+        if (mbus_send_request_frame(handle, MBUS_ADDRESS_NETWORK_LAYER, 0) == -1)
         {
             MBUS_ERROR("%s: Failed to send M-Bus request frame.\n",
                        __PRETTY_FUNCTION__);

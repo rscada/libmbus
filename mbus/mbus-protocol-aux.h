@@ -288,12 +288,13 @@ int mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, long baud
 /**
  * Sends request frame (REQ_UD2) to given slave using "unified" handle
  *
- * @param handle  Initialized handle
- * @param address Address (0-255)
+ * @param handle          Initialized handle
+ * @param address         Address (0-255)
+ * @param frame_count_bit Frame Count Bit (0-1)
  *
  * @return Zero when successful.
  */
-int mbus_send_request_frame(mbus_handle * handle, int address);
+int mbus_send_request_frame(mbus_handle * handle, int address, char frame_count_bit);
 
 /**
  * Sends user data frame (SND_UD) to given slave using "unified" handle
