@@ -10,9 +10,9 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <math.h>
 #include <stdio.h>
 #include <string.h>
+#include <arpa/inet.h>
 
 #include "mbus-protocol.h"
 
@@ -649,6 +649,7 @@ mbus_data_int_encode(unsigned char *int_data, size_t int_data_size, int value)
 float
 mbus_data_float_decode(unsigned char *float_data)
 {
+#ifdef _HAS_NON_IEEE754_FLOAT
     float val = 0.0f;
     long temp = 0, fraction;
     int sign,exponent;
@@ -682,8 +683,20 @@ mbus_data_float_decode(unsigned char *float_data)
 
         return val;
     }
+#else
+    if (float_data)
+    {
+        union {
+            uint32_t u32;
+            float f;
+        } data;
+        memcpy(&(data.u32), float_data, sizeof(uint32_t));
+        data.u32 = ntohl(data.u32);
+        return data.f;
+    }
+#endif
 
-    return -1.0;
+    return -1.0f;
 }
 
 //------------------------------------------------------------------------------
