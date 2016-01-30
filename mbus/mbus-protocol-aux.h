@@ -429,7 +429,7 @@ int mbus_data_fixed_normalize(int medium_unit_byte, long medium_value, char **un
  *
  * @return zero when OK
  */
-int mbus_data_variable_value_decode(mbus_record *record, double *value_out_real, char **value_out_str, int *value_out_str_size);
+int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real, char **value_out_str, int *value_out_str_size);
 
 /**
  * Decode units and normalize value using VIF/VIFE (used internally by mbus_vib_unit_normalize)
