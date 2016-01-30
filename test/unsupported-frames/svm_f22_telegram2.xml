@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>1006089</Id>
+        <Manufacturer>SVM</Manufacturer>
+        <Version>9</Version>
+        <ProductName>Elster F4 / Kamstrup SVM F22</ProductName>
+        <Medium>Heat: Outlet</Medium>
+        <AccessNumber>24</AccessNumber>
+        <Status>70</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>More records follow</Function>
+        <Value>45 00 3C 01 7F B0 09 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C5 00 84 11 98 A1 01 00 C9 18 00 00 00 00 00 01 58 04 87 24 81 01 5B 00 00 48 18 00 63 60 7D 7F 3E 5F 60 01 00 0A 01 02 99 00 00 0E 50 C3 00 00 7F 7F 80 01 0A 00 00 FF 02 00 02 18 00 00 00 00 28 10 36 20 06 02 BE 23 BF 23 0A 0B 10 28 10 36 20 06 02 BE 23 BF 23 0A 0B 10 28 10 36 00 00 00 00 00 93 92 C9 00 10 00 00 02 89 60 00 01 FF FF FF FF FF FF FF FF 08 06 08 13 08 5A 08 5E 08 62 08 3D 00 00 00 00 00 00 00 10 01 00 0D 01 45 00 46 08 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0C 0A 02 25 6E 02 6E 6D 00 00</Value>
+    </DataRecord>
+
+</MBusData>

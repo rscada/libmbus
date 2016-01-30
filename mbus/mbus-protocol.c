@@ -933,6 +933,9 @@ mbus_data_product_name(mbus_data_variable_header *header)
         {
             switch (header->version)
             {
+                case 0x02:
+                    strcpy(buff,"Elster TMP-A");
+                    break;
                 case 0x2F:
                     strcpy(buff,"Elster F96 Plus");
                     break;
@@ -1133,15 +1136,6 @@ mbus_data_product_name(mbus_data_variable_header *header)
                 case 0x31:
                 case 0x34:
                     strcpy(buff,"Sensus PolluTherm");
-                    break;
-            }
-        }
-        else if (manufacturer == mbus_manufacturer_id("ELS"))
-        {
-            switch (header->version)
-            {
-                case 0x02:
-                    strcpy(buff,"Elster TMP-A");
                     break;
             }
         }
