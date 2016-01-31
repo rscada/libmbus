@@ -893,6 +893,30 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
+        else if (manufacturer == mbus_manufacturer_id("BEC"))
+        {
+            if (header->medium == MBUS_VARIABLE_DATA_MEDIUM_ELECTRICITY)
+            {
+                switch (header->version)
+                {
+                    case 0x00:
+                        strcpy(buff,"Berg DCMi");
+                        break;
+                    case 0x07:
+                        strcpy(buff,"Berg BLMi");
+                        break;
+                }
+            }
+            else if (header->medium == MBUS_VARIABLE_DATA_MEDIUM_UNKNOWN)
+            {
+                switch (header->version)
+                {
+                    case 0x71:
+                        strcpy(buff, "Berg BMB-10S0");
+                        break; 
+                }
+            }
+        }
         else if (manufacturer == mbus_manufacturer_id("EFE"))
         {
             switch (header->version)
