@@ -893,6 +893,30 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
+        else if (manufacturer == mbus_manufacturer_id("BEC"))
+        {
+            if (header->medium == MBUS_VARIABLE_DATA_MEDIUM_ELECTRICITY)
+            {
+                switch (header->version)
+                {
+                    case 0x00:
+                        strcpy(buff,"Berg DCMi");
+                        break;
+                    case 0x07:
+                        strcpy(buff,"Berg BLMi");
+                        break;
+                }
+            }
+            else if (header->medium == MBUS_VARIABLE_DATA_MEDIUM_UNKNOWN)
+            {
+                switch (header->version)
+                {
+                    case 0x71:
+                        strcpy(buff, "Berg BMB-10S0");
+                        break; 
+                }
+            }
+        }
         else if (manufacturer == mbus_manufacturer_id("EFE"))
         {
             switch (header->version)
@@ -952,6 +976,28 @@ mbus_data_product_name(mbus_data_variable_header *header)
                 {
                     case 0x10:
                         strcpy(buff,"EMU Professional 3/75 M-Bus");
+                        break;
+                }
+            }
+        }
+        else if (manufacturer == mbus_manufacturer_id("GAV"))
+        {
+            if (header->medium == MBUS_VARIABLE_DATA_MEDIUM_ELECTRICITY)
+            {
+                switch (header->version)
+                {
+                    case 0x2D:
+                    case 0x2E:
+                    case 0x2F:
+                    case 0x30:
+                        strcpy(buff,"Carlo Gavazzi EM24");
+                        break;
+                    case 0x39:
+                    case 0x3A:
+                        strcpy(buff,"Carlo Gavazzi EM21");
+                        break;
+                    case 0x40:
+                        strcpy(buff,"Carlo Gavazzi EM33");
                         break;
                 }
             }
@@ -3654,7 +3700,7 @@ mbus_data_error_print(int error)
 /// Encode string to XML
 ///
 //------------------------------------------------------------------------------
-void
+int
 mbus_str_xml_encode(unsigned char *dst, const unsigned char *src, size_t max_len)
 {
     size_t i, len;
@@ -3663,49 +3709,55 @@ mbus_str_xml_encode(unsigned char *dst, const unsigned char *src, size_t max_len
     len = 0;
 
     if (dst == NULL)
-        return;
-
-    if (src != NULL)
     {
-        while((len+6) < max_len)
+        return -1;
+    }
+    
+    if (src == NULL)
+    {
+        dst[len] = '\0';
+        return -2;
+    }
+
+    while((len+6) < max_len)
+    {
+        if (src[i] == '\0')
         {
-            if (src[i] == '\0')
-            {
-                break;
-            }
-
-            if (iscntrl(src[i]))
-            {
-                // convert all control chars into spaces
-                dst[len++] = ' ';
-            }
-            else
-            {
-                switch (src[i])
-                {
-                    case '&':
-                        len += snprintf(&dst[len], max_len - len, "&amp;");
-                        break;
-                    case '<':
-                        len += snprintf(&dst[len], max_len - len, "&lt;");
-                        break;
-                    case '>':
-                        len += snprintf(&dst[len], max_len - len, "&gt;");
-                        break;
-                    case '"':
-                        len += snprintf(&dst[len], max_len - len, "&quot;");
-                        break;
-                    default:
-                        dst[len++] = src[i];
-                        break;
-                }
-            }
-
-            i++;
+            break;
         }
+
+        if (iscntrl(src[i]))
+        {
+            // convert all control chars into spaces
+            dst[len++] = ' ';
+        }
+        else
+        {
+            switch (src[i])
+            {
+                case '&':
+                    len += snprintf(&dst[len], max_len - len, "&amp;");
+                    break;
+                case '<':
+                    len += snprintf(&dst[len], max_len - len, "&lt;");
+                    break;
+                case '>':
+                    len += snprintf(&dst[len], max_len - len, "&gt;");
+                    break;
+                case '"':
+                    len += snprintf(&dst[len], max_len - len, "&quot;");
+                    break;
+                default:
+                    dst[len++] = src[i];
+                    break;
+            }
+        }
+
+        i++;
     }
 
     dst[len] = '\0';
+    return 0;
 }
 
 //------------------------------------------------------------------------------
