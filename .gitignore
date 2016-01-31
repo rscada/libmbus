@@ -62,3 +62,7 @@ bin/mbus-tcp-select-secondary
 bin/mbus-tcp-application-reset
 !*.c
 
+# ignore test binaries:
+test/mbus_parse
+test/mbus_parse_hex
+

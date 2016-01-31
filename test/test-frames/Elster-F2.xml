@@ -1,10 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <MBusData>
 
     <SlaveInformation>
         <Id>802657</Id>
         <Manufacturer>SVM</Manufacturer>
         <Version>8</Version>
-        <ProductName>Elster F2</ProductName>
+        <ProductName>Elster F2 / Deltamess F2</ProductName>
         <Medium>Heat: Outlet</Medium>
         <AccessNumber>70</AccessNumber>
         <Status>00</Status>
