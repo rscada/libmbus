@@ -62,3 +62,10 @@ bin/mbus-tcp-select-secondary
 bin/mbus-tcp-application-reset
 !*.c
 
+# test binaries
+test/mbus_parse
+test/mbus_parse_hex
+
+# test cases temp files
+test/test-frames/*.xml.new
+
