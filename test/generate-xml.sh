@@ -3,7 +3,7 @@
 # Copyright (C) 2010-2012, Robert Johansson and contributors, Raditex AB
 # All rights reserved.
 #
-# rSCADA 
+# rSCADA
 # http://www.rSCADA.se
 # info@rscada.se
 #
@@ -33,27 +33,27 @@ if [ ! -d "$directory" ]; then
 fi
 
 for hexfile in "$directory"/*.hex;  do
-	if [ ! -f "$hexfile" ]; then
-		continue
-	fi
+    if [ ! -f "$hexfile" ]; then
+        continue
+    fi
 
     filename=`basename $hexfile .hex`
-    
+
     # Parse hex file and write XML in file
     ./mbus_parse_hex "$hexfile" > "$directory/$filename.xml.new"
     result=$?
-    
+
     # Check parsing result
     if [ $result -ne 0 ]; then
         echo "Unable to generate XML for $hexfile"
         rm "$directory/$filename.xml.new"
         continue
     fi
-    
+
     # Compare old XML with new XML and write in file
     diff -u "$directory/$filename.xml" "$directory/$filename.xml.new" 2> /dev/null > "$directory/$filename.dif"
     result=$?
-    
+
     case "$result" in
         0)
              # XML equal -> remove new
@@ -65,7 +65,7 @@ for hexfile in "$directory"/*.hex;  do
              cat "$directory/$filename.dif" && rm "$directory/$filename.dif"
              echo ""
              ;;
-        *)   
+        *)
              # no old -> rename XML
              echo "Create $filename.xml"
              mv "$directory/$filename.xml.new" "$directory/$filename.xml"
