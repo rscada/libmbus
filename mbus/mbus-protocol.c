@@ -559,9 +559,9 @@ mbus_data_long_decode(unsigned char *int_data, size_t int_data_size, long *value
     {
         return -1;
     }
-    
+
     neg = int_data[int_data_size-1] & 0x80;
-    
+
     for (i = int_data_size; i > 0; i--)
     {
         if (neg)
@@ -913,7 +913,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                 {
                     case 0x71:
                         strcpy(buff, "Berg BMB-10S0");
-                        break; 
+                        break;
                 }
             }
         }
@@ -3712,7 +3712,7 @@ mbus_str_xml_encode(unsigned char *dst, const unsigned char *src, size_t max_len
     {
         return -1;
     }
-    
+
     if (src == NULL)
     {
         dst[len] = '\0';
@@ -3852,7 +3852,7 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
             {
                 len += snprintf(&buff[len], sizeof(buff) - len, "        <Tariff>%ld</Tariff>\n",
                                 tariff);
-                len += snprintf(&buff[len], sizeof(buff) - len, "        <Device>%d</Device>\n", 
+                len += snprintf(&buff[len], sizeof(buff) - len, "        <Device>%d</Device>\n",
                                 mbus_data_record_device(record));
             }
 
@@ -3980,7 +3980,7 @@ mbus_data_fixed_xml(mbus_data_fixed *data)
             mbus_data_int_decode(data->cnt1_val, 4, &val);
         }
         len += snprintf(&buff[len], buff_size - len, "        <Value>%d</Value>\n", val);
-        
+
         len += snprintf(&buff[len], buff_size - len, "    </DataRecord>\n\n");
 
         len += snprintf(&buff[len], buff_size - len, "    <DataRecord id=\"1\">\n");
@@ -3999,7 +3999,7 @@ mbus_data_fixed_xml(mbus_data_fixed *data)
             mbus_data_int_decode(data->cnt2_val, 4, &val);
         }
         len += snprintf(&buff[len], buff_size - len, "        <Value>%d</Value>\n", val);
-        
+
         len += snprintf(&buff[len], buff_size - len, "    </DataRecord>\n\n");
 
         len += snprintf(&buff[len], buff_size - len, "</MBusData>\n");
