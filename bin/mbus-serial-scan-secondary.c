@@ -115,6 +115,8 @@ main(int argc, char **argv)
     if (mbus_connect(handle) == -1)
     {
         fprintf(stderr,"Failed to setup connection to M-bus gateway\n");
+        mbus_disconnect(handle);
+        mbus_context_free(handle);
         free(addr_mask);
         return 1;
     }
@@ -122,6 +124,8 @@ main(int argc, char **argv)
     if (mbus_serial_set_baudrate(handle, baudrate) == -1)
     {
         fprintf(stderr, "Failed to set baud rate.\n");
+        mbus_disconnect(handle);
+        mbus_context_free(handle);
         free(addr_mask);
         return 1;
     }
@@ -132,6 +136,8 @@ main(int argc, char **argv)
     if (frame == NULL)
     {
         fprintf(stderr, "Failed to allocate mbus frame.\n");
+        mbus_disconnect(handle);
+        mbus_context_free(handle);
         free(addr_mask);
         return 1;
     }
