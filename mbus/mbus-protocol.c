@@ -857,7 +857,16 @@ mbus_data_product_name(mbus_data_variable_header *header)
     {
         manufacturer = (header->manufacturer[1] << 8) + header->manufacturer[0];
 
-        if (manufacturer == mbus_manufacturer_id("ACW"))
+        if (manufacturer == mbus_manufacturer_id("ABB"))
+        {
+            switch (header->version)
+            {
+                case 0x02:
+                    strcpy(buff,"ABB Delta-Meter");
+                    break;
+            }
+        }
+        else if (manufacturer == mbus_manufacturer_id("ACW"))
         {
             switch (header->version)
             {
@@ -933,6 +942,9 @@ mbus_data_product_name(mbus_data_variable_header *header)
         {
             switch (header->version)
             {
+                case 0x0A:
+                    strcpy(buff,"Elster Falcon");
+                    break;
                 case 0x2F:
                     strcpy(buff,"Elster F96 Plus");
                     break;
@@ -1068,6 +1080,27 @@ mbus_data_product_name(mbus_data_variable_header *header)
             {
                 case 0x03:
                     strcpy(buff, "Rossweiner ETK/ETW Modularis");
+                    break;
+            }
+        }
+        else if (manufacturer == mbus_manufacturer_id("REL"))
+        {
+            switch (header->version)
+            {
+                case 0x08:
+                    strcpy(buff, "Relay PadPuls M1");
+                    break;
+                case 0x12:
+                    strcpy(buff, "Relay PadPuls M4");
+                    break;
+                case 0x20:
+                    strcpy(buff, "Relay Padin 4");
+                    break;
+                case 0x30:
+                    strcpy(buff, "Relay AnDi 4");
+                    break;
+                case 0x40:
+                    strcpy(buff, "Relay PadPuls M2");
                     break;
             }
         }
