@@ -886,7 +886,7 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                 else  // normal integer
                 {
                     result = mbus_data_int_decode(record->data, 2, &value_out_int);
-                    *value_out_real = value_out_int; 
+                    *value_out_real = value_out_int;
                 }
                 break;
 
@@ -921,7 +921,7 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                 else  // normal integer
                 {
                     result = mbus_data_int_decode(record->data, 4, &value_out_int);
-                    *value_out_real = value_out_int; 
+                    *value_out_real = value_out_int;
                 }
                 break;
 
@@ -1261,7 +1261,7 @@ mbus_parse_variable_record(mbus_data_record *data)
         MBUS_ERROR("%s: memory allocation error\n", __PRETTY_FUNCTION__);
         return NULL;
     }
-    
+
     record->storage_number = mbus_data_record_storage_number(data);
     record->tariff = mbus_data_record_tariff(data);
     record->device = mbus_data_record_device(data);
@@ -2279,7 +2279,7 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
                 if (addr == NULL)
                 {
                     // show error message, but procede with scan
-                    MBUS_ERROR("Failed to generate secondary address from M-Bus reply frame: %s\n", 
+                    MBUS_ERROR("Failed to generate secondary address from M-Bus reply frame: %s\n",
                                mbus_error_str());
                     return MBUS_PROBE_NOTHING;
                 }

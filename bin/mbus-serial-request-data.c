@@ -15,37 +15,8 @@
 
 static int debug = 0;
 
-//
-// init slave to get really the beginning of the records
-//
-static int
-init_slaves(mbus_handle *handle)
-{
-    if (debug)
-        printf("%s: debug: sending init frame #1\n", __PRETTY_FUNCTION__);
-
-    if (mbus_send_ping_frame(handle, MBUS_ADDRESS_NETWORK_LAYER, 1) == -1)
-    {
-        return 0;
-    }
-
-    //
-    // resend SND_NKE, maybe the first get lost
-    //
-
-    if (debug)
-        printf("%s: debug: sending init frame #2\n", __PRETTY_FUNCTION__);
-
-    if (mbus_send_ping_frame(handle, MBUS_ADDRESS_NETWORK_LAYER, 1) == -1)
-    {
-        return 0;
-    }
-
-    return 1;
-}
-
 //------------------------------------------------------------------------------
-// Scan for devices using secondary addressing.
+// request one frame of data from a slave
 //------------------------------------------------------------------------------
 int
 main(int argc, char **argv)
@@ -98,7 +69,7 @@ main(int argc, char **argv)
         fprintf(stderr, "Could not initialize M-Bus context: %s\n",  mbus_error_str());
         return 1;
     }
-    
+
     if (debug)
     {
         mbus_register_send_event(handle, &mbus_dump_send_event);
@@ -120,8 +91,9 @@ main(int argc, char **argv)
         return 1;
     }
 
-    if (init_slaves(handle) == 0)
+    if (mbus_send_ping_frame(handle,MBUS_ADDRESS_NETWORK_LAYER, 1) == -1)
     {
+        fprintf(stderr,"Failed to init/de-select slave.\n");
         mbus_disconnect(handle);
         mbus_context_free(handle);
         return 1;
@@ -157,7 +129,7 @@ main(int argc, char **argv)
             return 1;
         }
         // else MBUS_PROBE_SINGLE
-        
+
         address = MBUS_ADDRESS_NETWORK_LAYER;
     }
     else
@@ -223,6 +195,4 @@ main(int argc, char **argv)
     mbus_context_free(handle);
     return 0;
 }
-
-
 
