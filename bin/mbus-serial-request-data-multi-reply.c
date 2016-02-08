@@ -14,6 +14,7 @@
 #include <mbus/mbus.h>
 
 static int debug = 0;
+static int reset = 0;
 
 // Default value for the maximum number of frames
 #define MAXFRAMES 16
@@ -28,6 +29,7 @@ parse_abort(char **argv)
     fprintf(stderr, "    optional flag -d for debug printout\n");
     fprintf(stderr, "    optional flag -b for selecting baudrate\n");
     fprintf(stderr, "    optional flag -f for selecting the maximal number of frames\n");
+    fprintf(stderr, "    optional flag -r to reset (SND_NKE) the device before querying. Silenty ignored for secondary addresses.\n");
     exit(1);
 }
 
@@ -52,6 +54,10 @@ main(int argc, char **argv)
         if (strcmp(argv[c], "-d") == 0)
         {
             debug = 1;
+        }
+        else if (strcmp(argv[c], "-r") == 0)
+        {
+            reset = 1;
         }
         else if (strcmp(argv[c], "-b") == 0)
         {
@@ -147,6 +153,19 @@ main(int argc, char **argv)
     {
         // primary addressing
         address = atoi(addr_str);
+        if (reset) {
+            // send a reset SND_NKE to the device before requesting data
+            // this does not make sense for devices that are accessed by secondary addressing
+            // as the reset de-selects the device
+            if (mbus_send_ping_frame(handle, address, 1) == -1)
+            {
+                fprintf(stderr,"Failed to init slave.\n");
+                mbus_disconnect(handle);
+                mbus_context_free(handle);
+                mbus_frame_free(reply.next);
+                return 1;
+            }
+        }
     }
 
     // instead of the send and recv, use this sendrecv function that
