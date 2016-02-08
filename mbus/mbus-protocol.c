@@ -857,6 +857,8 @@ mbus_data_product_name(mbus_data_variable_header *header)
     {
         manufacturer = (header->manufacturer[1] << 8) + header->manufacturer[0];
 
+        // please keep this list ordered by manufacturer code
+
         if (manufacturer == mbus_manufacturer_id("ACW"))
         {
             switch (header->version)
@@ -933,6 +935,9 @@ mbus_data_product_name(mbus_data_variable_header *header)
         {
             switch (header->version)
             {
+                case 0x02:
+                    strcpy(buff,"Elster TMP-A");
+                    break;
                 case 0x2F:
                     strcpy(buff,"Elster F96 Plus");
                     break;
@@ -965,6 +970,15 @@ mbus_data_product_name(mbus_data_variable_header *header)
                 case 0x3A:
                 case 0x3B:
                     strcpy(buff,"Elvaco CMa11");
+                    break;
+            }
+        }
+        else if (manufacturer == mbus_manufacturer_id("EMH"))
+        {
+            switch (header->version)
+            {
+                case 0x00:
+                    strcpy(buff,"EMH DIZ");
                     break;
             }
         }
@@ -1011,6 +1025,18 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
+        else if (manufacturer == mbus_manufacturer_id("KAM"))
+        {
+            switch (header->version)
+            {
+                case 0x01:
+                    strcpy(buff,"Kamstrup 382 (6850-005)");
+                    break;
+                case 0x08:
+                    strcpy(buff,"Kamstrup Multical 601");
+                    break;
+            }
+        }
         else if (manufacturer == mbus_manufacturer_id("SLB"))
         {
             switch (header->version)
@@ -1050,6 +1076,28 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
+        else if (manufacturer == mbus_manufacturer_id("LSE"))
+        {
+            switch (header->version)
+            {
+                case 0x99:
+                    strcpy(buff,"Siemens WFH21");
+                    break;
+            }
+        }
+        else if (manufacturer == mbus_manufacturer_id("NZR"))
+        {
+            switch (header->version)
+            {
+                case 0x01:
+                    strcpy(buff,"NZR DHZ 5/63");
+                    break;
+                case 0x50:
+                    strcpy(buff,"NZR IC-M2");
+                    break;
+
+            }
+        }
         else if (manufacturer == mbus_manufacturer_id("RAM"))
         {
             switch (header->version)
@@ -1068,33 +1116,16 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == mbus_manufacturer_id("SVM"))
+        else if (manufacturer == mbus_manufacturer_id("SBC"))
         {
-            switch (header->version)
+            switch (header->id_bcd[3])
             {
-                case 0x08:
-                    strcpy(buff,"Elster F2 / Deltamess F2");
+                case 0x10:
+                case 0x19:
+                    strcpy(buff,"Saia-Burgess ALE3");
                     break;
-                case 0x09:
-                    strcpy(buff,"Elster F4 / Kamstrup SVM F22");
-                    break;
-            }
-        }
-        else if (manufacturer == mbus_manufacturer_id("SON"))
-        {
-            switch (header->version)
-            {
-                case 0x0D:
-                    strcpy(buff,"Sontex Supercal 531");
-                    break;
-            }
-        }
-        else if (manufacturer == mbus_manufacturer_id("LSE"))
-        {
-            switch (header->version)
-            {
-                case 0x99:
-                    strcpy(buff,"Siemens WFH21");
+                case 0x11:
+                    strcpy(buff,"Saia-Burgess AWD3");
                     break;
             }
         }
@@ -1113,6 +1144,15 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
+        else if (manufacturer == mbus_manufacturer_id("SON"))
+        {
+            switch (header->version)
+            {
+                case 0x0D:
+                    strcpy(buff,"Sontex Supercal 531");
+                    break;
+            }
+        }
         else if (manufacturer == mbus_manufacturer_id("SPX"))
         {
             switch (header->version)
@@ -1123,46 +1163,15 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == mbus_manufacturer_id("ELS"))
+        else if (manufacturer == mbus_manufacturer_id("SVM"))
         {
             switch (header->version)
             {
-                case 0x02:
-                    strcpy(buff,"Elster TMP-A");
-                    break;
-            }
-        }
-        else if (manufacturer == mbus_manufacturer_id("NZR"))
-        {
-            switch (header->version)
-            {
-                case 0x01:
-                    strcpy(buff,"NZR DHZ 5/63");
-                    break;
-                case 0x50:
-                    strcpy(buff,"NZR IC-M2");
-                    break;
-
-            }
-        }
-        else if (manufacturer == mbus_manufacturer_id("KAM"))
-        {
-            switch (header->version)
-            {
-                case 0x01:
-                    strcpy(buff,"Kamstrup 382 (6850-005)");
-                    break;
                 case 0x08:
-                    strcpy(buff,"Kamstrup Multical 601");
+                    strcpy(buff,"Elster F2 / Deltamess F2");
                     break;
-            }
-        }
-        else if (manufacturer == mbus_manufacturer_id("EMH"))
-        {
-            switch (header->version)
-            {
-                case 0x00:
-                    strcpy(buff,"EMH DIZ");
+                case 0x09:
+                    strcpy(buff,"Elster F4 / Kamstrup SVM F22");
                     break;
             }
         }
@@ -1184,19 +1193,6 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
                 case 0x82:
                     strcpy(buff,"Minol Minocal WR3");
-                    break;
-            }
-        }
-        else if (manufacturer == mbus_manufacturer_id("SBC"))
-        {
-            switch (header->id_bcd[3])
-            {
-                case 0x10:
-                case 0x19:
-                    strcpy(buff,"Saia-Burgess ALE3");
-                    break;
-                case 0x11:
-                    strcpy(buff,"Saia-Burgess AWD3");
                     break;
             }
         }
