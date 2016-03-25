@@ -859,7 +859,16 @@ mbus_data_product_name(mbus_data_variable_header *header)
 
         // please keep this list ordered by manufacturer code
 
-        if (manufacturer == mbus_manufacturer_id("ACW"))
+        if (manufacturer == mbus_manufacturer_id("ABB"))
+        {
+            switch (header->version)
+            {
+                case 0x02:
+                    strcpy(buff,"ABB Delta-Meter");
+                    break;
+            }
+        }
+        else if (manufacturer == mbus_manufacturer_id("ACW"))
         {
             switch (header->version)
             {
@@ -937,6 +946,9 @@ mbus_data_product_name(mbus_data_variable_header *header)
             {
                 case 0x02:
                     strcpy(buff,"Elster TMP-A");
+                    break;
+                case 0x0A:
+                    strcpy(buff,"Elster Falcon");
                     break;
                 case 0x2F:
                     strcpy(buff,"Elster F96 Plus");
@@ -1058,6 +1070,18 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
+        else if (manufacturer == mbus_manufacturer_id("JAN"))
+        {
+            if (header->medium == MBUS_VARIABLE_DATA_MEDIUM_ELECTRICITY)
+            {
+                switch (header->version)
+                {
+                    case 0x09:
+                        strcpy(buff,"Janitza UMG 96S");
+                        break;
+                }
+            }
+        }
         else if (manufacturer == mbus_manufacturer_id("LUG"))
         {
             switch (header->version)
@@ -1095,7 +1119,6 @@ mbus_data_product_name(mbus_data_variable_header *header)
                 case 0x50:
                     strcpy(buff,"NZR IC-M2");
                     break;
-
             }
         }
         else if (manufacturer == mbus_manufacturer_id("RAM"))
@@ -1104,6 +1127,27 @@ mbus_data_product_name(mbus_data_variable_header *header)
             {
                 case 0x03:
                     strcpy(buff, "Rossweiner ETK/ETW Modularis");
+                    break;
+            }
+        }
+        else if (manufacturer == mbus_manufacturer_id("REL"))
+        {
+            switch (header->version)
+            {
+                case 0x08:
+                    strcpy(buff, "Relay PadPuls M1");
+                    break;
+                case 0x12:
+                    strcpy(buff, "Relay PadPuls M4");
+                    break;
+                case 0x20:
+                    strcpy(buff, "Relay Padin 4");
+                    break;
+                case 0x30:
+                    strcpy(buff, "Relay AnDi 4");
+                    break;
+                case 0x40:
+                    strcpy(buff, "Relay PadPuls M2");
                     break;
             }
         }
