@@ -2,12 +2,12 @@
 <MBusData>
 
     <SlaveInformation>
-        <Id>1006089</Id>
-        <Manufacturer>SVM</Manufacturer>
-        <Version>9</Version>
-        <ProductName>Elster F4 / Kamstrup SVM F22</ProductName>
-        <Medium>Heat: Inlet</Medium>
-        <AccessNumber>148</AccessNumber>
+        <Id>44493951</Id>
+        <Manufacturer>ELS</Manufacturer>
+        <Version>47</Version>
+        <ProductName>Elster F96 Plus</ProductName>
+        <Medium>Heat: Outlet</Medium>
+        <AccessNumber>161</AccessNumber>
         <Status>70</Status>
         <Signature>0000</Signature>
     </SlaveInformation>
@@ -16,102 +16,120 @@
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
         <Unit>Energy (kWh)</Unit>
-        <Value>28014</Value>
+        <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="1">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>Volume (m m^3)</Unit>
-        <Value>640581</Value>
+        <Tariff>1</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="2">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Tariff>0</Tariff>
-        <Device>1</Device>
+        <Tariff>2</Tariff>
+        <Device>0</Device>
         <Unit>Volume (m m^3)</Unit>
-        <Value>640581</Value>
+        <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="3">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>Flow temperature (deg C)</Unit>
-        <Value>243</Value>
+        <Unit>Volume (m m^3)</Unit>
+        <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="4">
-        <Function>Instantaneous value</Function>
+        <Function>Value during error state</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>Return temperature (deg C)</Unit>
-        <Value>243</Value>
+        <Unit>Power (W)</Unit>
+        <Value>144445223</Value>
     </DataRecord>
 
     <DataRecord id="5">
-        <Function>Instantaneous value</Function>
+        <Function>Value during error state</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>Temperature Difference (1e-1  deg C)</Unit>
-        <Value>0</Value>
+        <Unit>Volume flow (m m^3/h)</Unit>
+        <Value>1445223</Value>
     </DataRecord>
 
     <DataRecord id="6">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>On time (hours)</Unit>
-        <Value>6370</Value>
+        <Unit>Flow temperature (1e-1 deg C)</Unit>
+        <Value>227</Value>
     </DataRecord>
 
     <DataRecord id="7">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>Operating time (hours)</Unit>
-        <Value>6363</Value>
+        <Unit>Return temperature (1e-1 deg C)</Unit>
+        <Value>226</Value>
     </DataRecord>
 
     <DataRecord id="8">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>Volume flow (m m^3/h)</Unit>
-        <Value>0</Value>
+        <Unit>Temperature Difference (1e-1  deg C)</Unit>
+        <Value>1</Value>
     </DataRecord>
 
     <DataRecord id="9">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>Power (10 W)</Unit>
-        <Value>0</Value>
+        <Unit>Operating time (days)</Unit>
+        <Value>730</Value>
     </DataRecord>
 
     <DataRecord id="10">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
         <Unit>Time Point (time &amp; date)</Unit>
-        <Value>2021-02-08T21:12:00</Value>
+        <Value>2014-03-13T13:09:00</Value>
     </DataRecord>
 
     <DataRecord id="11">
         <Function>Instantaneous value</Function>
-        <StorageNumber>0</StorageNumber>
-        <Tariff>0</Tariff>
-        <Device>1</Device>
-        <Unit>Units for H.C.A.</Unit>
+        <StorageNumber>1</StorageNumber>
+        <Unit>Energy (kWh)</Unit>
         <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="12">
         <Function>Instantaneous value</Function>
-        <StorageNumber>0</StorageNumber>
-        <Tariff>0</Tariff>
-        <Device>2</Device>
-        <Unit>Units for H.C.A.</Unit>
+        <StorageNumber>1</StorageNumber>
+        <Unit>Volume (m m^3)</Unit>
         <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="13">
-        <Function>More records follow</Function>
-        <Value></Value>
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Tariff>1</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="14">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Tariff>2</Tariff>
+        <Device>0</Device>
+        <Unit>Volume (m m^3)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="15">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>Time Point (date)</Unit>
+        <Value>2013-05-31</Value>
     </DataRecord>
 
 </MBusData>

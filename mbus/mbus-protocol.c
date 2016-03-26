@@ -559,9 +559,9 @@ mbus_data_long_decode(unsigned char *int_data, size_t int_data_size, long *value
     {
         return -1;
     }
-    
+
     neg = int_data[int_data_size-1] & 0x80;
-    
+
     for (i = int_data_size; i > 0; i--)
     {
         if (neg)
@@ -857,6 +857,8 @@ mbus_data_product_name(mbus_data_variable_header *header)
     {
         manufacturer = (header->manufacturer[1] << 8) + header->manufacturer[0];
 
+        // please keep this list ordered by manufacturer code
+
         if (manufacturer == mbus_manufacturer_id("ABB"))
         {
             switch (header->version)
@@ -922,7 +924,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
                 {
                     case 0x71:
                         strcpy(buff, "Berg BMB-10S0");
-                        break; 
+                        break;
                 }
             }
         }
@@ -942,6 +944,9 @@ mbus_data_product_name(mbus_data_variable_header *header)
         {
             switch (header->version)
             {
+                case 0x02:
+                    strcpy(buff,"Elster TMP-A");
+                    break;
                 case 0x0A:
                     strcpy(buff,"Elster Falcon");
                     break;
@@ -977,6 +982,15 @@ mbus_data_product_name(mbus_data_variable_header *header)
                 case 0x3A:
                 case 0x3B:
                     strcpy(buff,"Elvaco CMa11");
+                    break;
+            }
+        }
+        else if (manufacturer == mbus_manufacturer_id("EMH"))
+        {
+            switch (header->version)
+            {
+                case 0x00:
+                    strcpy(buff,"EMH DIZ");
                     break;
             }
         }
@@ -1020,6 +1034,18 @@ mbus_data_product_name(mbus_data_variable_header *header)
             {
                 case 0xE6:
                     strcpy(buff,"GMC-I A230 EMMOD 206");
+                    break;
+            }
+        }
+        else if (manufacturer == mbus_manufacturer_id("KAM"))
+        {
+            switch (header->version)
+            {
+                case 0x01:
+                    strcpy(buff,"Kamstrup 382 (6850-005)");
+                    break;
+                case 0x08:
+                    strcpy(buff,"Kamstrup Multical 601");
                     break;
             }
         }
@@ -1074,6 +1100,27 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
+        else if (manufacturer == mbus_manufacturer_id("LSE"))
+        {
+            switch (header->version)
+            {
+                case 0x99:
+                    strcpy(buff,"Siemens WFH21");
+                    break;
+            }
+        }
+        else if (manufacturer == mbus_manufacturer_id("NZR"))
+        {
+            switch (header->version)
+            {
+                case 0x01:
+                    strcpy(buff,"NZR DHZ 5/63");
+                    break;
+                case 0x50:
+                    strcpy(buff,"NZR IC-M2");
+                    break;
+            }
+        }
         else if (manufacturer == mbus_manufacturer_id("RAM"))
         {
             switch (header->version)
@@ -1113,33 +1160,16 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == mbus_manufacturer_id("SVM"))
+        else if (manufacturer == mbus_manufacturer_id("SBC"))
         {
-            switch (header->version)
+            switch (header->id_bcd[3])
             {
-                case 0x08:
-                    strcpy(buff,"Elster F2 / Deltamess F2");
+                case 0x10:
+                case 0x19:
+                    strcpy(buff,"Saia-Burgess ALE3");
                     break;
-                case 0x09:
-                    strcpy(buff,"Elster F4 / Kamstrup SVM F22");
-                    break;
-            }
-        }
-        else if (manufacturer == mbus_manufacturer_id("SON"))
-        {
-            switch (header->version)
-            {
-                case 0x0D:
-                    strcpy(buff,"Sontex Supercal 531");
-                    break;
-            }
-        }
-        else if (manufacturer == mbus_manufacturer_id("LSE"))
-        {
-            switch (header->version)
-            {
-                case 0x99:
-                    strcpy(buff,"Siemens WFH21");
+                case 0x11:
+                    strcpy(buff,"Saia-Burgess AWD3");
                     break;
             }
         }
@@ -1158,6 +1188,15 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
+        else if (manufacturer == mbus_manufacturer_id("SON"))
+        {
+            switch (header->version)
+            {
+                case 0x0D:
+                    strcpy(buff,"Sontex Supercal 531");
+                    break;
+            }
+        }
         else if (manufacturer == mbus_manufacturer_id("SPX"))
         {
             switch (header->version)
@@ -1168,46 +1207,15 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
-        else if (manufacturer == mbus_manufacturer_id("ELS"))
+        else if (manufacturer == mbus_manufacturer_id("SVM"))
         {
             switch (header->version)
             {
-                case 0x02:
-                    strcpy(buff,"Elster TMP-A");
-                    break;
-            }
-        }
-        else if (manufacturer == mbus_manufacturer_id("NZR"))
-        {
-            switch (header->version)
-            {
-                case 0x01:
-                    strcpy(buff,"NZR DHZ 5/63");
-                    break;
-                case 0x50:
-                    strcpy(buff,"NZR IC-M2");
-                    break;
-
-            }
-        }
-        else if (manufacturer == mbus_manufacturer_id("KAM"))
-        {
-            switch (header->version)
-            {
-                case 0x01:
-                    strcpy(buff,"Kamstrup 382 (6850-005)");
-                    break;
                 case 0x08:
-                    strcpy(buff,"Kamstrup Multical 601");
+                    strcpy(buff,"Elster F2 / Deltamess F2");
                     break;
-            }
-        }
-        else if (manufacturer == mbus_manufacturer_id("EMH"))
-        {
-            switch (header->version)
-            {
-                case 0x00:
-                    strcpy(buff,"EMH DIZ");
+                case 0x09:
+                    strcpy(buff,"Elster F4 / Kamstrup SVM F22");
                     break;
             }
         }
@@ -1229,19 +1237,6 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
                 case 0x82:
                     strcpy(buff,"Minol Minocal WR3");
-                    break;
-            }
-        }
-        else if (manufacturer == mbus_manufacturer_id("SBC"))
-        {
-            switch (header->id_bcd[3])
-            {
-                case 0x10:
-                case 0x19:
-                    strcpy(buff,"Saia-Burgess ALE3");
-                    break;
-                case 0x11:
-                    strcpy(buff,"Saia-Burgess AWD3");
                     break;
             }
         }
@@ -3757,7 +3752,7 @@ mbus_str_xml_encode(unsigned char *dst, const unsigned char *src, size_t max_len
     {
         return -1;
     }
-    
+
     if (src == NULL)
     {
         dst[len] = '\0';
@@ -3897,7 +3892,7 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
             {
                 len += snprintf(&buff[len], sizeof(buff) - len, "        <Tariff>%ld</Tariff>\n",
                                 tariff);
-                len += snprintf(&buff[len], sizeof(buff) - len, "        <Device>%d</Device>\n", 
+                len += snprintf(&buff[len], sizeof(buff) - len, "        <Device>%d</Device>\n",
                                 mbus_data_record_device(record));
             }
 
@@ -4025,7 +4020,7 @@ mbus_data_fixed_xml(mbus_data_fixed *data)
             mbus_data_int_decode(data->cnt1_val, 4, &val);
         }
         len += snprintf(&buff[len], buff_size - len, "        <Value>%d</Value>\n", val);
-        
+
         len += snprintf(&buff[len], buff_size - len, "    </DataRecord>\n\n");
 
         len += snprintf(&buff[len], buff_size - len, "    <DataRecord id=\"1\">\n");
@@ -4044,7 +4039,7 @@ mbus_data_fixed_xml(mbus_data_fixed *data)
             mbus_data_int_decode(data->cnt2_val, 4, &val);
         }
         len += snprintf(&buff[len], buff_size - len, "        <Value>%d</Value>\n", val);
-        
+
         len += snprintf(&buff[len], buff_size - len, "    </DataRecord>\n\n");
 
         len += snprintf(&buff[len], buff_size - len, "</MBusData>\n");

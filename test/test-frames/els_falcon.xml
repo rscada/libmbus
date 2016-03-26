@@ -4,8 +4,8 @@
     <SlaveInformation>
         <Id>70112345</Id>
         <Manufacturer>ELS</Manufacturer>
-        <Version>2</Version>
-        <ProductName>Elster TMP-A</ProductName>
+        <Version>10</Version>
+        <ProductName></ProductName>
         <Medium>Water</Medium>
         <AccessNumber>2</AccessNumber>
         <Status>00</Status>
@@ -48,8 +48,29 @@
     </DataRecord>
 
     <DataRecord id="5">
+        <Function>Maximum value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume flow (m m^3/h)</Unit>
+        <Value>5945</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>Time Point (date)</Unit>
+        <Value>2008-01-01</Value>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume flow (m m^3/h)</Unit>
+        <Value>6137</Value>
+    </DataRecord>
+
+    <DataRecord id="8">
         <Function>Manufacturer specific</Function>
-        <Value>00</Value>
+        <Value>0E 42 20 01 01 01 00 05 08 5E 01 20 3D 12 08 3D 12 08 00</Value>
     </DataRecord>
 
 </MBusData>

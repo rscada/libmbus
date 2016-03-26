@@ -2,12 +2,12 @@
 <MBusData>
 
     <SlaveInformation>
-        <Id>12345678</Id>
-        <Manufacturer>PAD</Manufacturer>
-        <Version>1</Version>
+        <Id>182007</Id>
+        <Manufacturer>GWF</Manufacturer>
+        <Version>53</Version>
         <ProductName></ProductName>
         <Medium>Water</Medium>
-        <AccessNumber>19</AccessNumber>
+        <AccessNumber>76</AccessNumber>
         <Status>00</Status>
         <Signature>0000</Signature>
     </SlaveInformation>
@@ -16,7 +16,14 @@
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
         <Unit>Fabrication number</Unit>
-        <Value>1020304</Value>
+        <Value>182007</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume ( m^3)</Unit>
+        <Value>269</Value>
     </DataRecord>
 
 </MBusData>

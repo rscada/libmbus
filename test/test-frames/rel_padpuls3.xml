@@ -2,12 +2,12 @@
 <MBusData>
 
     <SlaveInformation>
-        <Id>70112345</Id>
-        <Manufacturer>ELS</Manufacturer>
-        <Version>2</Version>
-        <ProductName>Elster TMP-A</ProductName>
-        <Medium>Water</Medium>
-        <AccessNumber>2</AccessNumber>
+        <Id>1030101</Id>
+        <Manufacturer>REL</Manufacturer>
+        <Version>64</Version>
+        <ProductName></ProductName>
+        <Medium>Heat Cost Allocator</Medium>
+        <AccessNumber>30</AccessNumber>
         <Status>00</Status>
         <Signature>0000</Signature>
     </SlaveInformation>
@@ -15,41 +15,41 @@
     <DataRecord id="0">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>Volume (m m^3)</Unit>
-        <Value>1234567</Value>
+        <Unit>Units for H.C.A.</Unit>
+        <Value>1987</Value>
     </DataRecord>
 
     <DataRecord id="1">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
         <Unit>Time Point (time &amp; date)</Unit>
-        <Value>2007-02-06T13:58:00</Value>
+        <Value>2000-12-31T10:41:00</Value>
     </DataRecord>
 
     <DataRecord id="2">
         <Function>Instantaneous value</Function>
         <StorageNumber>1</StorageNumber>
         <Unit>Time Point (date)</Unit>
-        <Value>2007-01-01</Value>
+        <Value>2000-12-31</Value>
     </DataRecord>
 
     <DataRecord id="3">
         <Function>Instantaneous value</Function>
         <StorageNumber>1</StorageNumber>
-        <Unit>Volume (m m^3)</Unit>
-        <Value>456951</Value>
+        <Unit>Units for H.C.A.</Unit>
+        <Value>1302</Value>
     </DataRecord>
 
     <DataRecord id="4">
         <Function>Instantaneous value</Function>
         <StorageNumber>1</StorageNumber>
         <Unit>Time Point (date)</Unit>
-        <Value>2008-01-01</Value>
+        <Value>2001-12-31</Value>
     </DataRecord>
 
     <DataRecord id="5">
         <Function>Manufacturer specific</Function>
-        <Value>00</Value>
+        <Value>C0 01 01 0C</Value>
     </DataRecord>
 
 </MBusData>

@@ -2,12 +2,12 @@
 <MBusData>
 
     <SlaveInformation>
-        <Id>5000244</Id>
+        <Id>19000055</Id>
         <Manufacturer>SBC</Manufacturer>
-        <Version>18</Version>
-        <ProductName></ProductName>
+        <Version>22</Version>
+        <ProductName>Saia-Burgess ALE3</ProductName>
         <Medium>Electricity</Medium>
-        <AccessNumber>19</AccessNumber>
+        <AccessNumber>191</AccessNumber>
         <Status>00</Status>
         <Signature>0000</Signature>
     </SlaveInformation>
@@ -18,7 +18,7 @@
         <Tariff>1</Tariff>
         <Device>0</Device>
         <Unit>Energy (10 Wh)</Unit>
-        <Value>1252</Value>
+        <Value>293</Value>
     </DataRecord>
 
     <DataRecord id="1">
@@ -27,7 +27,7 @@
         <Tariff>1</Tariff>
         <Device>0</Device>
         <Unit>Energy (10 Wh)</Unit>
-        <Value>1252</Value>
+        <Value>293</Value>
     </DataRecord>
 
     <DataRecord id="2">
@@ -36,7 +36,7 @@
         <Tariff>2</Tariff>
         <Device>0</Device>
         <Unit>Energy (10 Wh)</Unit>
-        <Value>1774433</Value>
+        <Value>6</Value>
     </DataRecord>
 
     <DataRecord id="3">
@@ -45,28 +45,28 @@
         <Tariff>2</Tariff>
         <Device>0</Device>
         <Unit>Energy (10 Wh)</Unit>
-        <Value>1774433</Value>
+        <Value>6</Value>
     </DataRecord>
 
     <DataRecord id="4">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
         <Unit> V</Unit>
-        <Value>237</Value>
+        <Value>223</Value>
     </DataRecord>
 
     <DataRecord id="5">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
         <Unit>1e-1  A</Unit>
-        <Value>32</Value>
+        <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="6">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
         <Unit>Power (10 W)</Unit>
-        <Value>79</Value>
+        <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="7">
@@ -75,28 +75,28 @@
         <Tariff>0</Tariff>
         <Device>1</Device>
         <Unit>Power (10 W)</Unit>
-        <Value>-18</Value>
+        <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="8">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
         <Unit> V</Unit>
-        <Value>231</Value>
+        <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="9">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
         <Unit>1e-1  A</Unit>
-        <Value>35</Value>
+        <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="10">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
         <Unit>Power (10 W)</Unit>
-        <Value>81</Value>
+        <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="11">
@@ -105,28 +105,28 @@
         <Tariff>0</Tariff>
         <Device>1</Device>
         <Unit>Power (10 W)</Unit>
-        <Value>-15</Value>
+        <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="12">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
         <Unit> V</Unit>
-        <Value>228</Value>
+        <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="13">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
         <Unit>1e-1  A</Unit>
-        <Value>69</Value>
+        <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="14">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
         <Unit>Power (10 W)</Unit>
-        <Value>160</Value>
+        <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="15">
@@ -135,7 +135,7 @@
         <Tariff>0</Tariff>
         <Device>1</Device>
         <Unit>Power (10 W)</Unit>
-        <Value>-32</Value>
+        <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="16">
@@ -149,7 +149,7 @@
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
         <Unit>Power (10 W)</Unit>
-        <Value>320</Value>
+        <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="18">
@@ -158,14 +158,14 @@
         <Tariff>0</Tariff>
         <Device>1</Device>
         <Unit>Power (10 W)</Unit>
-        <Value>-65</Value>
+        <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="19">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
         <Unit>Manufacturer specific</Unit>
-        <Value>4</Value>
+        <Value>0</Value>
     </DataRecord>
 
 </MBusData>
