@@ -12,7 +12,6 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
-#include <arpa/inet.h>
 
 #include "mbus-protocol.h"
 
@@ -691,7 +690,6 @@ mbus_data_float_decode(unsigned char *float_data)
             float f;
         } data;
         memcpy(&(data.u32), float_data, sizeof(uint32_t));
-        data.u32 = ntohl(data.u32);
         return data.f;
     }
 #endif
