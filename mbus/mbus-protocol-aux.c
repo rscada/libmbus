@@ -1928,7 +1928,7 @@ mbus_send_user_data_frame(mbus_handle * handle, int address, const unsigned char
 
     if ((data_size > MBUS_FRAME_DATA_LENGTH) || (data_size == 0))
     {
-        MBUS_ERROR("%s: illegal data_size %d\n", __PRETTY_FUNCTION__, data_size);
+        MBUS_ERROR("%s: illegal data_size %zu\n", __PRETTY_FUNCTION__, data_size);
         return -1;
     }
 
