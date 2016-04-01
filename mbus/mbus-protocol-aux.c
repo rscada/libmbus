@@ -1399,7 +1399,7 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
                 buff = new_buff;
             }
 
-            len += snprintf(&buff[len], buff_size - len, "    <DataRecord id=\"%zd\">\n", i);
+            len += snprintf(&buff[len], buff_size - len, "    <DataRecord id=\"%zu\">\n", i);
 
             if (norm_record != NULL)
             {
@@ -1788,7 +1788,7 @@ mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, long baudrate
         control_information = MBUS_CONTROL_INFO_SET_BAUDRATE_38400;
         break;
       default:
-        MBUS_ERROR("%s: invalid baudrate %lu\n", __PRETTY_FUNCTION__, baudrate);
+        MBUS_ERROR("%s: invalid baudrate %ld\n", __PRETTY_FUNCTION__, baudrate);
         return -1;
     }
 
