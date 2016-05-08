@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>0</Id>
+        <Manufacturer>ABB</Manufacturer>
+        <Version>2</Version>
+        <ProductName>ABB Delta-Meter</ProductName>
+        <Medium>Electricity</Medium>
+        <AccessNumber>0</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Energy (10 Wh)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>1</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (10 Wh)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>2</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (10 Wh)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>3</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (10 Wh)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>4</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (10 Wh)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>2</Device>
+        <Unit>Energy (10 Wh)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>1</Tariff>
+        <Device>2</Device>
+        <Unit>Energy (10 Wh)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>2</Tariff>
+        <Device>2</Device>
+        <Unit>Energy (10 Wh)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="8">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>3</Tariff>
+        <Device>2</Device>
+        <Unit>Energy (10 Wh)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="9">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>4</Tariff>
+        <Device>2</Device>
+        <Unit>Energy (10 Wh)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="10">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Manufacturer specific</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="11">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Manufacturer specific</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="12">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Manufacturer specific</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="13">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Manufacturer specific</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="14">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Error flags</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="15">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Manufacturer specific</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="16">
+        <Function>More records follow</Function>
+        <Value>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</Value>
+    </DataRecord>
+
+</MBusData>

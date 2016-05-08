@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>11490378</Id>
+        <Manufacturer>ACW</Manufacturer>
+        <Version>14</Version>
+        <ProductName>Itron BM +m</ProductName>
+        <Medium>Cold water</Medium>
+        <AccessNumber>41</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Fabrication number</Unit>
+        <Value>11490378</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume (m m^3)</Unit>
+        <Value>54321</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>Time Point (date)</Unit>
+        <Value>2000-00-00</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>Volume (m m^3)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Time Point (time &amp; date)</Unit>
+        <Value>2012-01-24T13:29:00</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Operating time (days)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Firmware version</Unit>
+        <Value>2</Value>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Software version</Unit>
+        <Value>6</Value>
+    </DataRecord>
+
+    <DataRecord id="8">
+        <Function>Manufacturer specific</Function>
+        <Value>00 00 8F 13</Value>
+    </DataRecord>
+
+</MBusData>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>21519982</Id>
+        <Manufacturer>TCH</Manufacturer>
+        <Version>38</Version>
+        <ProductName>Techem m-bus S</ProductName>
+        <Medium>Heat: Outlet</Medium>
+        <AccessNumber>133</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Energy (100 Wh)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Time Point (time &amp; date)</Unit>
+        <Value>2000-09-29T13:50:00</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>Energy (100 Wh)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>Time Point (date)</Unit>
+        <Value>2000-05-29</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume flow (1e-4  m^3/h)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Flow temperature (1e-1 deg C)</Unit>
+        <Value>234</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Return temperature (1e-1 deg C)</Unit>
+        <Value>224</Value>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Power (1e-1 W)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="8">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume (m m^3)</Unit>
+        <Value>64</Value>
+    </DataRecord>
+
+    <DataRecord id="9">
+        <Function>More records follow</Function>
+        <Value></Value>
+    </DataRecord>
+
+</MBusData>

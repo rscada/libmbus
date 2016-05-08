@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>11788</Id>
+        <Manufacturer>SEN</Manufacturer>
+        <Version>6</Version>
+        <ProductName></ProductName>
+        <Medium>Heat / Cooling load meter</Medium>
+        <AccessNumber>62</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Time Point (time &amp; date)</Unit>
+        <Value>2015-04-07T14:59:00</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Value during error state</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Time Point (time &amp; date)</Unit>
+        <Value>2000-01-01T00:00:00</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Value during error state</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Error flags</Unit>
+        <Value>67108864</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>On time (seconds)</Unit>
+        <Value>15803026</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Operating time (seconds)</Unit>
+        <Value>15145636</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Energy (kWh)</Unit>
+        <Value>39831</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume (m m^3)</Unit>
+        <Value>6162878</Value>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Power (kW)</Unit>
+        <Value>-0.170722</Value>
+    </DataRecord>
+
+    <DataRecord id="8">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume flow ( m^3/h)</Unit>
+        <Value>3.230039</Value>
+    </DataRecord>
+
+    <DataRecord id="9">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Flow temperature (deg C)</Unit>
+        <Value>31.147324</Value>
+    </DataRecord>
+
+    <DataRecord id="10">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Return temperature (deg C)</Unit>
+        <Value>31.193100</Value>
+    </DataRecord>
+
+    <DataRecord id="11">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Temperature Difference ( deg C)</Unit>
+        <Value>-0.045776</Value>
+    </DataRecord>
+
+    <DataRecord id="12">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume flow ( m^3/h)</Unit>
+        <Value>11582321</Value>
+    </DataRecord>
+
+    <DataRecord id="13">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume flow ( m^3/h)</Unit>
+        <Value>756</Value>
+    </DataRecord>
+
+    <DataRecord id="14">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Fabrication number</Unit>
+        <Value>11788</Value>
+    </DataRecord>
+
+    <DataRecord id="15">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Manufacturer specific</Unit>
+        <Value>-19184</Value>
+    </DataRecord>
+
+</MBusData>

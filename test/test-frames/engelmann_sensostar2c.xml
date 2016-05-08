@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>10380010</Id>
+        <Manufacturer>EFE</Manufacturer>
+        <Version>1</Version>
+        <ProductName>Engelmann SensoStar 2C</ProductName>
+        <Medium>Heat: Outlet</Medium>
+        <AccessNumber>30</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Fabrication number</Unit>
+        <Value>10380010</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Time Point (time &amp; date)</Unit>
+        <Value>2012-06-06T20:50:00</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume (1e-1  m^3)</Unit>
+        <Value>129</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Unrecognized VIF extension: 0x00</Unit>
+        <Value>8</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>2</Tariff>
+        <Device>0</Device>
+        <Unit>Unrecognized VIF extension: 0x00</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>3</Tariff>
+        <Device>0</Device>
+        <Unit>Unrecognized VIF extension: 0x00</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume flow (1e-1  m^3/h)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Power (100 W)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="8">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Flow temperature (deg C)</Unit>
+        <Value>95</Value>
+    </DataRecord>
+
+    <DataRecord id="9">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Return temperature (deg C)</Unit>
+        <Value>43</Value>
+    </DataRecord>
+
+    <DataRecord id="10">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Temperature Difference (1e-2  deg C)</Unit>
+        <Value>5258</Value>
+    </DataRecord>
+
+    <DataRecord id="11">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Operating time (days)</Unit>
+        <Value>506</Value>
+    </DataRecord>
+
+    <DataRecord id="12">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Error flags</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="13">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume (my m^3)</Unit>
+        <Value>100000</Value>
+    </DataRecord>
+
+    <DataRecord id="14">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>Time Point (date)</Unit>
+        <Value>2011-12-31</Value>
+    </DataRecord>
+
+    <DataRecord id="15">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>Volume (1e-1  m^3)</Unit>
+        <Value>129</Value>
+    </DataRecord>
+
+    <DataRecord id="16">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>Unrecognized VIF extension: 0x00</Unit>
+        <Value>8</Value>
+    </DataRecord>
+
+    <DataRecord id="17">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Tariff>2</Tariff>
+        <Device>0</Device>
+        <Unit>Unrecognized VIF extension: 0x00</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="18">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Tariff>3</Tariff>
+        <Device>0</Device>
+        <Unit>Unrecognized VIF extension: 0x00</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="19">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>2</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Time Point (date)</Unit>
+        <Value>2010-12-31</Value>
+    </DataRecord>
+
+    <DataRecord id="20">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>2</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Volume (1e-1  m^3)</Unit>
+        <Value>84</Value>
+    </DataRecord>
+
+    <DataRecord id="21">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>2</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Unrecognized VIF extension: 0x00</Unit>
+        <Value>5</Value>
+    </DataRecord>
+
+    <DataRecord id="22">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>2</StorageNumber>
+        <Tariff>2</Tariff>
+        <Device>0</Device>
+        <Unit>Unrecognized VIF extension: 0x00</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="23">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>2</StorageNumber>
+        <Tariff>3</Tariff>
+        <Device>0</Device>
+        <Unit>Unrecognized VIF extension: 0x00</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+</MBusData>

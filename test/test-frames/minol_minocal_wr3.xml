@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>31802759</Id>
+        <Manufacturer>ZRM</Manufacturer>
+        <Version>130</Version>
+        <ProductName>Minol Minocal WR3</ProductName>
+        <Medium>Heat: Outlet</Medium>
+        <AccessNumber>43</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Energy (kWh)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume (1e-2  m^3)</Unit>
+        <Value>1</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Power (100 W)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume flow (1e-2  m^3/h)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Flow temperature (1e-2 deg C)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Return temperature (1e-2 deg C)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>8</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>9</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Time Point (time &amp; date)</Unit>
+        <Value>2012-01-01T00:00:00</Value>
+    </DataRecord>
+
+    <DataRecord id="8">
+        <Function>Maximum value</Function>
+        <StorageNumber>2</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Power (100 W)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="9">
+        <Function>Maximum value</Function>
+        <StorageNumber>2</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Time Point (time &amp; date)</Unit>
+        <Value>2012-01-13T11:30:00</Value>
+    </DataRecord>
+
+    <DataRecord id="10">
+        <Function>Maximum value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>Volume flow (1e-2  m^3/h)</Unit>
+        <Value>1</Value>
+    </DataRecord>
+
+    <DataRecord id="11">
+        <Function>Maximum value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>Time Point (time &amp; date)</Unit>
+        <Value>2011-03-24T07:30:00</Value>
+    </DataRecord>
+
+    <DataRecord id="12">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>1</Device>
+        <Unit>Unknown (VIF=0x79)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="13">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>1</Device>
+        <Unit>Medium (as in fixed header)</Unit>
+        <Value>7</Value>
+    </DataRecord>
+
+    <DataRecord id="14">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>1</Device>
+        <Unit>Volume (m m^3)</Unit>
+        <Value>1</Value>
+    </DataRecord>
+
+    <DataRecord id="15">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>9</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Volume (m m^3)</Unit>
+        <Value>1</Value>
+    </DataRecord>
+
+    <DataRecord id="16">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>2</Device>
+        <Unit>Unknown (VIF=0x79)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="17">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>2</Device>
+        <Unit>Volume (m m^3)</Unit>
+        <Value>1</Value>
+    </DataRecord>
+
+    <DataRecord id="18">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>2</Device>
+        <Unit>Medium (as in fixed header)</Unit>
+        <Value>7</Value>
+    </DataRecord>
+
+    <DataRecord id="19">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>10</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Volume (m m^3)</Unit>
+        <Value>1</Value>
+    </DataRecord>
+
+    <DataRecord id="20">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Error flags</Unit>
+        <Value>4</Value>
+    </DataRecord>
+
+    <DataRecord id="21">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Time Point (time &amp; date)</Unit>
+        <Value>2012-01-13T12:01:00</Value>
+    </DataRecord>
+
+    <DataRecord id="22">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>32</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Time Point (date)</Unit>
+        <Value>2012-01-01</Value>
+    </DataRecord>
+
+    <DataRecord id="23">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>32</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="24">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>32</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>1</Device>
+        <Unit>Volume (m m^3)</Unit>
+        <Value>1</Value>
+    </DataRecord>
+
+    <DataRecord id="25">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>32</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>2</Device>
+        <Unit>Volume (m m^3)</Unit>
+        <Value>1</Value>
+    </DataRecord>
+
+    <DataRecord id="26">
+        <Function>Maximum value</Function>
+        <StorageNumber>32</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Time Point (date)</Unit>
+        <Value>2012-01-01</Value>
+    </DataRecord>
+
+    <DataRecord id="27">
+        <Function>Maximum value</Function>
+        <StorageNumber>32</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Volume flow (1e-2  m^3/h)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="28">
+        <Function>Maximum value</Function>
+        <StorageNumber>32</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Power (100 W)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+</MBusData>
