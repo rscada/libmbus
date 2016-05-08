@@ -4027,7 +4027,7 @@ mbus_data_fixed_xml(mbus_data_fixed *data)
         len += snprintf(&buff[len], buff_size - len, "        <Unit>%s</Unit>\n", str_encoded);
         if ((data->status & MBUS_DATA_FIXED_STATUS_FORMAT_MASK) == MBUS_DATA_FIXED_STATUS_FORMAT_BCD)
         {
-            len += snprintf(&buff[len], buff_size - len, "        <Value>%lld</Value>\n", mbus_data_bcd_decode(data->cnt1_val, 4));
+            len += snprintf(&buff[len], buff_size - len, "        <Value>%lld</Value>\n", mbus_data_bcd_decode(data->cnt2_val, 4));
         }
         else
         {
