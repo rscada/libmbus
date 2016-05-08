@@ -8,4 +8,6 @@ os:
   - linux
   - osx
 
-script: ./build.sh
+script: 
+  - ./build.sh
+  - cd test && make && ./generate-xml.sh test-frames
