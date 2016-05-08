@@ -54,7 +54,7 @@
         <Tariff>0</Tariff>
         <Device>0</Device>
         <Unit>Flow temperature (deg C)</Unit>
-        <Value>0.000000</Value>
+        <Value>21.536703</Value>
     </DataRecord>
 
     <DataRecord id="5">
@@ -63,7 +63,7 @@
         <Tariff>0</Tariff>
         <Device>0</Device>
         <Unit>Return temperature (deg C)</Unit>
-        <Value>0.000000</Value>
+        <Value>21.605042</Value>
     </DataRecord>
 
     <DataRecord id="6">
@@ -72,7 +72,7 @@
         <Tariff>0</Tariff>
         <Device>1</Device>
         <Unit>Flow temperature (deg C)</Unit>
-        <Value>0.000000</Value>
+        <Value>92.000000</Value>
     </DataRecord>
 
     <DataRecord id="7">
@@ -81,7 +81,7 @@
         <Tariff>0</Tariff>
         <Device>1</Device>
         <Unit>Return temperature (deg C)</Unit>
-        <Value>0.000000</Value>
+        <Value>92.000000</Value>
     </DataRecord>
 
     <DataRecord id="8">
@@ -90,7 +90,7 @@
         <Tariff>0</Tariff>
         <Device>0</Device>
         <Unit>Volume flow (m m^3/h)</Unit>
-        <Value>-0.000000</Value>
+        <Value>0.707039</Value>
     </DataRecord>
 
     <DataRecord id="9">
@@ -108,7 +108,7 @@
         <Tariff>0</Tariff>
         <Device>0</Device>
         <Unit>Volume flow (m m^3/h)</Unit>
-        <Value>-0.000000</Value>
+        <Value>357.621735</Value>
     </DataRecord>
 
     <DataRecord id="11">
@@ -144,7 +144,7 @@
         <Tariff>0</Tariff>
         <Device>0</Device>
         <Unit>Power (W)</Unit>
-        <Value>-1370640613376.000000</Value>
+        <Value>18511.912109</Value>
     </DataRecord>
 
     <DataRecord id="15">
