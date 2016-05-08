@@ -10,7 +10,7 @@ pkgconfig_DATA = libmbus.pc
 
 docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
 dist_docdir = $(DESTDIR)$(docdir)
-doc_DATA = README \
+doc_DATA = README.md \
            COPYING \
            hardware/MBus_USB.pdf \
            hardware/MBus_USB.txt

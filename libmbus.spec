@@ -64,7 +64,7 @@ rm -rf "%buildroot"
 
 %files
 %defattr (-,root,root)
-%doc COPYING README
+%doc COPYING README.md
 %{_bindir}/mbus-serial-*
 %{_bindir}/mbus-tcp-*
 %{_libdir}/libmbus.so*
