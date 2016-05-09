@@ -68,4 +68,6 @@ test/mbus_parse_hex
 
 # test cases temp files
 test/test-frames/*.xml.new
+test/error-frames/*.xml.new
+test/unsupported-frames/*.xml.new
 

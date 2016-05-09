@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>17677731</Id>
+        <Manufacturer>KAM</Manufacturer>
+        <Version>1</Version>
+        <ProductName>Kamstrup 382 (6850-005)</ProductName>
+        <Medium>Electricity</Medium>
+        <AccessNumber>0</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Energy (Wh)</Unit>
+        <Value>5000</Value>
+    </DataRecord>
+
+</MBusData>

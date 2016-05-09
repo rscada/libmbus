@@ -2,12 +2,12 @@
 <MBusData>
 
     <SlaveInformation>
-        <Id>70112345</Id>
-        <Manufacturer>ELS</Manufacturer>
-        <Version>10</Version>
-        <ProductName>Elster Falcon</ProductName>
-        <Medium>Water</Medium>
-        <AccessNumber>2</AccessNumber>
+        <Id>11490378</Id>
+        <Manufacturer>ACW</Manufacturer>
+        <Version>14</Version>
+        <ProductName>Itron BM +m</ProductName>
+        <Medium>Cold water</Medium>
+        <AccessNumber>41</AccessNumber>
         <Status>00</Status>
         <Signature>0000</Signature>
     </SlaveInformation>
@@ -15,62 +15,62 @@
     <DataRecord id="0">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>Volume (m m^3)</Unit>
-        <Value>1234567</Value>
+        <Unit>Fabrication number</Unit>
+        <Value>11490378</Value>
     </DataRecord>
 
     <DataRecord id="1">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>Time Point (time &amp; date)</Unit>
-        <Value>2007-02-06T13:58:00</Value>
+        <Unit>Volume (m m^3)</Unit>
+        <Value>54321</Value>
     </DataRecord>
 
     <DataRecord id="2">
         <Function>Instantaneous value</Function>
         <StorageNumber>1</StorageNumber>
         <Unit>Time Point (date)</Unit>
-        <Value>2007-01-01</Value>
+        <Value>2000-00-00</Value>
     </DataRecord>
 
     <DataRecord id="3">
         <Function>Instantaneous value</Function>
         <StorageNumber>1</StorageNumber>
         <Unit>Volume (m m^3)</Unit>
-        <Value>456951</Value>
+        <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="4">
         <Function>Instantaneous value</Function>
-        <StorageNumber>1</StorageNumber>
-        <Unit>Time Point (date)</Unit>
-        <Value>2008-01-01</Value>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Time Point (time &amp; date)</Unit>
+        <Value>2012-01-24T13:29:00</Value>
     </DataRecord>
 
     <DataRecord id="5">
-        <Function>Maximum value</Function>
+        <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>Volume flow (m m^3/h)</Unit>
-        <Value>5945</Value>
+        <Unit>Operating time (days)</Unit>
+        <Value>0</Value>
     </DataRecord>
 
     <DataRecord id="6">
         <Function>Instantaneous value</Function>
-        <StorageNumber>1</StorageNumber>
-        <Unit>Time Point (date)</Unit>
-        <Value>2008-01-01</Value>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Firmware version</Unit>
+        <Value>2</Value>
     </DataRecord>
 
     <DataRecord id="7">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>Volume flow (m m^3/h)</Unit>
-        <Value>6137</Value>
+        <Unit>Software version</Unit>
+        <Value>6</Value>
     </DataRecord>
 
     <DataRecord id="8">
         <Function>Manufacturer specific</Function>
-        <Value>0E 42 20 01 01 01 00 05 08 5E 01 20 3D 12 08 3D 12 08 00</Value>
+        <Value>00 00 8F 13</Value>
     </DataRecord>
 
 </MBusData>
