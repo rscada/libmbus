@@ -3511,7 +3511,7 @@ mbus_frame_print(mbus_frame *frame)
             return -2;
         }
 
-        printf("%s: Dumping M-Bus frame [type %d, %d bytes]: ", __PRETTY_FUNCTION__, iter->type, len);
+        printf("%s: Dumping M-Bus frame [type %s, %d bytes]: ", __PRETTY_FUNCTION__, mbus_frame_type_print(iter->type), len);
         for (i = 0; i < len; i++)
         {
             printf("%.2X ", data_buff[i]);
@@ -3520,6 +3520,43 @@ mbus_frame_print(mbus_frame *frame)
     }
 
     return 0;
+}
+
+//------------------------------------------------------------------------------
+/// Return a string containing the frame type
+//------------------------------------------------------------------------------
+const char *
+mbus_frame_type_print(const int type)
+{
+    static char buff[128];
+
+    switch (type)
+    {
+        case MBUS_FRAME_TYPE_ANY:
+            snprintf(buff, sizeof(buff), "Any");
+            break;
+
+        case MBUS_FRAME_TYPE_ACK:
+            snprintf(buff, sizeof(buff), "Ack");
+            break;
+
+        case MBUS_FRAME_TYPE_SHORT:
+            snprintf(buff, sizeof(buff), "Short");
+            break;
+
+        case MBUS_FRAME_TYPE_CONTROL:
+            snprintf(buff, sizeof(buff), "Control");
+            break;
+
+        case MBUS_FRAME_TYPE_LONG:
+            snprintf(buff, sizeof(buff), "Long");
+            break;
+
+        default:
+            snprintf(buff, sizeof(buff), "unknown");
+    }
+
+    return buff;
 }
 
 //------------------------------------------------------------------------------
