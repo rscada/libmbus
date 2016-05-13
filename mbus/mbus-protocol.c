@@ -3686,6 +3686,8 @@ mbus_data_variable_print(mbus_data_variable *data)
 
             printf("\n");
         }
+
+        return 0;
     }
 
     return -1;
@@ -3726,6 +3728,8 @@ mbus_data_fixed_print(mbus_data_fixed *data)
             mbus_data_int_decode(data->cnt2_val, 4, &val);
             printf("%s: Counter2 = %d\n", __PRETTY_FUNCTION__, val);
         }
+
+        return 0;
     }
 
     return -1;
@@ -3761,7 +3765,7 @@ mbus_data_error_print(int error)
 {
     printf("%s: Error = %d\n", __PRETTY_FUNCTION__, error);
 
-    return -1;
+    return 0;
 }
 
 //------------------------------------------------------------------------------
