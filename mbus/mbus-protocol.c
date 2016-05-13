@@ -3279,11 +3279,15 @@ mbus_frame_pack(mbus_frame *frame, unsigned char *data, size_t data_size)
     {
         if (mbus_frame_calc_length(frame) == -1)
         {
+            snprintf(error_str, sizeof(error_str), "Length calculation of frame failed");
+
             return -2;
         }
 
         if (mbus_frame_calc_checksum(frame) == -1)
         {
+            snprintf(error_str, sizeof(error_str), "Checksum calculation of frame failed");
+
             return -3;
         }
 
@@ -3293,6 +3297,8 @@ mbus_frame_pack(mbus_frame *frame, unsigned char *data, size_t data_size)
 
                 if (data_size < MBUS_FRAME_ACK_BASE_SIZE)
                 {
+                    snprintf(error_str, sizeof(error_str), "data_size (%d) < MBUS_FRAME_ACK_BASE_SIZE (%d)", data_size, MBUS_FRAME_ACK_BASE_SIZE);
+
                     return -4;
                 }
 
@@ -3304,6 +3310,8 @@ mbus_frame_pack(mbus_frame *frame, unsigned char *data, size_t data_size)
 
                 if (data_size < MBUS_FRAME_SHORT_BASE_SIZE)
                 {
+                    snprintf(error_str, sizeof(error_str), "data_size (%d) < MBUS_FRAME_SHORT_BASE_SIZE (%d)", data_size, MBUS_FRAME_SHORT_BASE_SIZE);
+
                     return -4;
                 }
 
@@ -3319,6 +3327,8 @@ mbus_frame_pack(mbus_frame *frame, unsigned char *data, size_t data_size)
 
                 if (data_size < MBUS_FRAME_CONTROL_BASE_SIZE)
                 {
+                    snprintf(error_str, sizeof(error_str), "data_size (%d) < MBUS_FRAME_CONTROL_BASE_SIZE (%d)", data_size, MBUS_FRAME_CONTROL_BASE_SIZE);
+
                     return -4;
                 }
 
@@ -3340,6 +3350,8 @@ mbus_frame_pack(mbus_frame *frame, unsigned char *data, size_t data_size)
 
                 if (data_size < frame->data_size + MBUS_FRAME_LONG_BASE_SIZE)
                 {
+                    snprintf(error_str, sizeof(error_str), "data_size (%d) < frame->data_size + MBUS_FRAME_LONG_BASE_SIZE (%d + %d = %d)", data_size, frame->data_size, MBUS_FRAME_LONG_BASE_SIZE, frame->data_size + MBUS_FRAME_LONG_BASE_SIZE);
+
                     return -4;
                 }
 
@@ -3363,6 +3375,8 @@ mbus_frame_pack(mbus_frame *frame, unsigned char *data, size_t data_size)
                 return offset;
 
             default:
+                snprintf(error_str, sizeof(error_str), "frame->type (%d) in unknown.", frame->type);
+
                 return -5;
         }
     }
