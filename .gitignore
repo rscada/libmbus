@@ -65,6 +65,7 @@ bin/mbus-tcp-application-reset
 # test binaries
 test/mbus_parse
 test/mbus_parse_hex
+test/mbus_sendrecv
 
 # test cases temp files
 test/test-frames/*.xml.new
