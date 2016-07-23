@@ -878,7 +878,7 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                         return -1;
                     }
                     *value_out_str_size = snprintf(*value_out_str, 11, "%04d-%02d-%02d",
-                                                 (time.tm_year + 2000),
+                                                 (time.tm_year + 1900),
                                                  (time.tm_mon + 1),
                                                   time.tm_mday);
                     result = 0;
@@ -910,7 +910,7 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                         return -1;
                     }
                     *value_out_str_size = snprintf(*value_out_str, 20, "%04d-%02d-%02dT%02d:%02d:%02d",
-                                                 (time.tm_year + 2000),
+                                                 (time.tm_year + 1900),
                                                  (time.tm_mon + 1),
                                                   time.tm_mday,
                                                   time.tm_hour,

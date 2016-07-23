@@ -781,8 +781,8 @@ mbus_data_tm_decode(struct tm *t, unsigned char *t_data, size_t t_data_size)
                 t->tm_hour  = t_data[1] & 0x1F;
                 t->tm_mday  = t_data[2] & 0x1F;
                 t->tm_mon   = (t_data[3] & 0x0F) - 1;
-                t->tm_year  = ((t_data[2] & 0xE0) >> 5) |
-                              ((t_data[3] & 0xF0) >> 1);
+                t->tm_year  = 100 + (((t_data[2] & 0xE0) >> 5) |
+                              ((t_data[3] & 0xF0) >> 1));
                 t->tm_isdst = (t_data[1] & 0x80) ? 1 : 0;  // day saving time
             }
         }
@@ -790,8 +790,8 @@ mbus_data_tm_decode(struct tm *t, unsigned char *t_data, size_t t_data_size)
         {
             t->tm_mday = t_data[0] & 0x1F;
             t->tm_mon  = (t_data[1] & 0x0F) - 1;
-            t->tm_year = ((t_data[0] & 0xE0) >> 5) |
-                         ((t_data[1] & 0xF0) >> 1);
+            t->tm_year = 100 + (((t_data[0] & 0xE0) >> 5) |
+                         ((t_data[1] & 0xF0) >> 1));
         }
     }
 }
@@ -2436,7 +2436,7 @@ mbus_data_record_decode(mbus_data_record *record)
                 {
                     mbus_data_tm_decode(&time, record->data, 2);
                     snprintf(buff, sizeof(buff), "%04d-%02d-%02d",
-                                                 (time.tm_year + 2000),
+                                                 (time.tm_year + 1900),
                                                  (time.tm_mon + 1),
                                                   time.tm_mday);
                 }
@@ -2473,7 +2473,7 @@ mbus_data_record_decode(mbus_data_record *record)
                 {
                     mbus_data_tm_decode(&time, record->data, 4);
                     snprintf(buff, sizeof(buff), "%04d-%02d-%02dT%02d:%02d:%02d",
-                                                 (time.tm_year + 2000),
+                                                 (time.tm_year + 1900),
                                                  (time.tm_mon + 1),
                                                   time.tm_mday,
                                                   time.tm_hour,
