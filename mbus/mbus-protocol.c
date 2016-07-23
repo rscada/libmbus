@@ -750,7 +750,15 @@ mbus_data_bin_decode(unsigned char *dst, const unsigned char *src, size_t len, s
 
 //------------------------------------------------------------------------------
 ///
-/// Decode time data (usable for type f = 4 bytes or type g = 2 bytes)
+/// Decode time data
+///
+/// Usable for the following types:
+///   I = 6 bytes (Date and time)
+///   F = 4 bytes (Date and time)
+///   G = 2 bytes (Date)
+///
+/// TODO:
+///   J = 3 bytes (Time)
 ///
 //------------------------------------------------------------------------------
 void
@@ -773,7 +781,21 @@ mbus_data_tm_decode(struct tm *t, unsigned char *t_data, size_t t_data_size)
 
     if (t_data)
     {
-        if (t_data_size == 4)                // Type F = Compound CP32: Date and Time
+        if (t_data_size == 6)                // Type I = Compound CP48: Date and Time
+        {
+            if ((t_data[1] & 0x80) == 0)     // Time valid ?
+            {
+                t->tm_sec   = t_data[0] & 0x3F;
+                t->tm_min   = t_data[1] & 0x3F;
+                t->tm_hour  = t_data[2] & 0x1F;
+                t->tm_mday  = t_data[3] & 0x1F;
+                t->tm_mon   = (t_data[4] & 0x0F) - 1;
+                t->tm_year  = 100 + (((t_data[3] & 0xE0) >> 5) |
+                              ((t_data[4] & 0xF0) >> 1));
+                t->tm_isdst = (t_data[0] & 0x40) ? 1 : 0;  // day saving time
+            }
+        }
+        else if (t_data_size == 4)           // Type F = Compound CP32: Date and Time
         {
             if ((t_data[0] & 0x80) == 0)     // Time valid ?
             {
@@ -2502,11 +2524,29 @@ mbus_data_record_decode(mbus_data_record *record)
 
                 break;
 
-            case 0x06: // 6 byte integer (48 bit)
+            case 0x06: // 6 byte (48 bit)
 
-                mbus_data_long_long_decode(record->data, 6, &long_long_val);
-
-                snprintf(buff, sizeof(buff), "%lld", long_long_val);
+                // E110 1101  Time Point (date/time)
+                // E011 0000  Start (date/time) of tariff
+                // E111 0000  Date and time of battery change
+                if ( (vif == 0x6D) ||
+                    ((record->drh.vib.vif == 0xFD) && (vife == 0x30)) ||
+                    ((record->drh.vib.vif == 0xFD) && (vife == 0x70)))
+                {
+                    mbus_data_tm_decode(&time, record->data, 6);
+                    snprintf(buff, sizeof(buff), "%04d-%02d-%02dT%02d:%02d:%02d",
+                                                 (time.tm_year + 1900),
+                                                 (time.tm_mon + 1),
+                                                  time.tm_mday,
+                                                  time.tm_hour,
+                                                  time.tm_min,
+                                                  time.tm_sec);
+                }
+                else  // 6 byte integer
+                {
+                    mbus_data_long_long_decode(record->data, 6, &long_long_val);
+                    snprintf(buff, sizeof(buff), "%lld", long_long_val);
+                }
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 6 byte integer\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
