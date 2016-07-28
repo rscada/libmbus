@@ -878,7 +878,7 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                         return -1;
                     }
                     *value_out_str_size = snprintf(*value_out_str, 11, "%04d-%02d-%02d",
-                                                 (time.tm_year + 2000),
+                                                 (time.tm_year + 1900),
                                                  (time.tm_mon + 1),
                                                   time.tm_mday);
                     result = 0;
@@ -910,7 +910,7 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                         return -1;
                     }
                     *value_out_str_size = snprintf(*value_out_str, 20, "%04d-%02d-%02dT%02d:%02d:%02d",
-                                                 (time.tm_year + 2000),
+                                                 (time.tm_year + 1900),
                                                  (time.tm_mon + 1),
                                                   time.tm_mday,
                                                   time.tm_hour,
@@ -931,8 +931,33 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                 break;
 
             case 0x06: /* 6 byte integer (48 bit) */
-                result = mbus_data_long_long_decode(record->data, 6, &value_out_long_long);
-                *value_out_real = value_out_long_long;
+                // E110 1101  Time Point (date/time)
+                // E011 0000  Start (date/time) of tariff
+                // E111 0000  Date and time of battery change
+                if ( (vif == 0x6D) ||
+                    ((record->drh.vib.vif == 0xFD) && (vife == 0x30)) ||
+                    ((record->drh.vib.vif == 0xFD) && (vife == 0x70)))
+                {
+                    mbus_data_tm_decode(&time, record->data, 6);
+                    if ((*value_out_str = (char*) malloc(20)) == NULL)
+                    {
+                        MBUS_ERROR("Unable to allocate memory");
+                        return -1;
+                    }
+                    *value_out_str_size = snprintf(*value_out_str, 20, "%04d-%02d-%02dT%02d:%02d:%02d",
+                                                 (time.tm_year + 1900),
+                                                 (time.tm_mon + 1),
+                                                  time.tm_mday,
+                                                  time.tm_hour,
+                                                  time.tm_min,
+                                                  time.tm_sec);
+                    result = 0;
+                }
+                else  // normal integer
+                {
+                    result = mbus_data_long_long_decode(record->data, 6, &value_out_long_long);
+                    *value_out_real = value_out_long_long;
+                }
                 break;
 
             case 0x07: /* 8 byte integer (64 bit) */
