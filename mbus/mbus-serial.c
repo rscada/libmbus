@@ -72,10 +72,13 @@ mbus_serial_connect(mbus_handle *handle)
     // between the end of a master send telegram and the beginning of the response telegram of the slave shall be
     // between 11 bit times and (330 bit times + 50ms).
     //
-    // For 2400Bd this means (330 + 11) / 2400 + 0.05 = 188.75 ms (added 11 bit periods to receive first byte).
-    // I.e. timeout of 0.2s seems appropriate for 2400Bd.
+    // Nowadays the usage of USB to serial adapter is very common, which could
+    // result in additional delay of 100 ms in worst case.
+    //
+    // For 2400Bd this means (330 + 11) / 2400 + 0.15 = 292 ms (added 11 bit periods to receive first byte).
+    // I.e. timeout of 0.3s seems appropriate for 2400Bd.
 
-    term->c_cc[VTIME] = (cc_t) 2; // Timeout in 1/10 sec
+    term->c_cc[VTIME] = (cc_t) 3; // Timeout in 1/10 sec
 
     cfsetispeed(term, B2400);
     cfsetospeed(term, B2400);
@@ -113,42 +116,42 @@ mbus_serial_set_baudrate(mbus_handle *handle, long baudrate)
     {
         case 300:
             speed = B300;
-            serial_data->t.c_cc[VTIME] = (cc_t) 12; // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = (cc_t) 13; // Timeout in 1/10 sec
             break;
 
         case 600:
             speed = B600;
-            serial_data->t.c_cc[VTIME] = (cc_t) 6;  // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = (cc_t) 8;  // Timeout in 1/10 sec
             break;
 
         case 1200:
             speed = B1200;
-            serial_data->t.c_cc[VTIME] = (cc_t) 4;  // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = (cc_t) 5;  // Timeout in 1/10 sec
             break;
 
         case 2400:
             speed = B2400;
-            serial_data->t.c_cc[VTIME] = (cc_t) 2;  // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = (cc_t) 3;  // Timeout in 1/10 sec
             break;
 
         case 4800:
             speed = B4800;
-            serial_data->t.c_cc[VTIME] = (cc_t) 2;  // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = (cc_t) 3;  // Timeout in 1/10 sec
             break;
 
         case 9600:
             speed = B9600;
-            serial_data->t.c_cc[VTIME] = (cc_t) 1;  // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = (cc_t) 2;  // Timeout in 1/10 sec
             break;
 
         case 19200:
             speed = B19200;
-            serial_data->t.c_cc[VTIME] = (cc_t) 1;  // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = (cc_t) 2;  // Timeout in 1/10 sec
             break;
 
         case 38400:
             speed = B38400;
-            serial_data->t.c_cc[VTIME] = (cc_t) 1;  // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = (cc_t) 2;  // Timeout in 1/10 sec
             break;
 
        default:
