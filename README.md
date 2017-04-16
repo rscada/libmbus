@@ -8,4 +8,17 @@ signals on the M-Bus, and the protocol and data format used in transmissions on
 the M-Bus. The role of libmbus is to decode/encode M-bus data, and to handle
 the communication with M-Bus devices.
 
+## Building
+
+To configure and build the library simply run the build script
+
+    ./build.sh
+
+## Testing
+
+After you've build the project you might run the tests
+
+    cd test
+    make check
+
 For more information see http://www.rscada.se/libmbus
