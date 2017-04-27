@@ -337,7 +337,7 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
             }
         }
 
-        if (len > (SSIZE_MAX-nread))
+        if (len > (SSIZE_MAX - nread))
         {
             // avoid overflow
             return MBUS_RECV_RESULT_ERROR;
@@ -345,7 +345,7 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
 
         len += nread;
 
-    } while ((remaining = mbus_parse(frame, buff, len)) > 0);
+    } while (len == 0 || (remaining = mbus_parse(frame, buff, len)) > 0);
 
     if (len == 0)
     {
