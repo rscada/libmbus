@@ -2105,8 +2105,9 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
         {
             more_frames = 0;
 
+            // Only readout max_frames or no limit, if max_frames == 0.
             if (reply_data.data_var.more_records_follow &&
-                ((max_frames > 0) && (frame_count < max_frames))) // only readout max_frames
+                (max_frames == 0 || (max_frames > 0 && frame_count < max_frames)))
             {
                 if (debug)
                     printf("%s: debug: expecting more frames\n", __PRETTY_FUNCTION__);
