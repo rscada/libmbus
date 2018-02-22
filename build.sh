@@ -15,7 +15,8 @@ else
           *) libtoolize --ltdl --copy --force ;; esac \
         && automake --add-missing --copy \
         && autoconf \
-        && ./configure
+        && ./configure \
+        && autoreconf
 fi
 
 make
