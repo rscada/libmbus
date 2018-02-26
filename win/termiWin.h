@@ -110,6 +110,7 @@
 
 //Baud speed
 #define B300 CBR_300
+#define B600 CBR_600
 #define B1200 CBR_2400
 #define B2400 CBR_2400
 #define B4800 CBR_4800
