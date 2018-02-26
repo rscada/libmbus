@@ -111,9 +111,15 @@ mbus_tcp_connect(mbus_handle *handle)
     // Set a timeout
     time_out.tv_sec  = tcp_timeout_sec;   // seconds
     time_out.tv_usec = tcp_timeout_usec;  // microseconds
-    setsockopt(handle->fd, SOL_SOCKET, SO_SNDTIMEO, (struct timeval *)&time_out, sizeof(time_out));
-    setsockopt(handle->fd, SOL_SOCKET, SO_RCVTIMEO, (struct timeval *)&time_out, sizeof(time_out));
 
+    #ifdef _WIN32
+    uint64_t millis = (time->tv_sec * (uint64_t)1000) + (time->tv_usec / 1000);
+    setsockopt(handle->fd, SOL_SOCKET, SO_SNDTIMEO, (char *)&millis, sizeof(time_out));
+    setsockopt(handle->fd, SOL_SOCKET, SO_RCVTIMEO, (char *)&millis, sizeof(time_out));
+    #else
+    setsockopt(handle->fd, SOL_SOCKET, SO_SNDTIMEO, &time_out, sizeof(time_out));
+    setsockopt(handle->fd, SOL_SOCKET, SO_RCVTIMEO, &time_out, sizeof(time_out));
+    #endif
     return 0;
 }
 
