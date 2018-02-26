@@ -27,6 +27,7 @@
 /*@ignore@*/
 #define MBUS_ERROR(...) fprintf (stderr, __VA_ARGS__)
 
+#define _DEBUG_
 #ifdef _DEBUG_
 #define MBUS_DEBUG(...) fprintf (stderr, __VA_ARGS__)
 #else
