@@ -144,6 +144,8 @@ typedef unsigned tcflag_t; /*This is an unsigned integer type used to represent 
 typedef unsigned cc_t; /*This is an unsigned integer type used to represent characters associated with various terminal control functions.*/
 typedef unsigned speed_t; /*used for terminal baud rates*/
 
+#ifndef TERMIOS_DEFINED
+#define TERMIOS_DEFINED
 typedef struct termios
 {
 
@@ -154,6 +156,7 @@ typedef struct termios
 	cc_t c_cc[NCCS]; /*special character*/
 
 } termios;
+#endif
 
 //Serial configuration functions
 
