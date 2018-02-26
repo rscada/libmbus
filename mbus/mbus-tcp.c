@@ -9,11 +9,12 @@
 //------------------------------------------------------------------------------
 
 #ifdef _WIN32
-#define __PRETTY_FUNCTION__ = __FUNCSIG__
+#define __PRETTY_FUNCTION__ __FUNCSIG__
 #endif
 
 
 #ifdef _WIN32
+#include <windows.h>
 #include <stdlib.h>
 #include <io.h>
 #include <winsock2.h>

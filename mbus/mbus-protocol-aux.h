@@ -97,7 +97,7 @@ typedef struct _mbus_handle {
     void (*recv_event) (unsigned char src_type, const char *buff, size_t len);
     void (*send_event) (unsigned char src_type, const char *buff, size_t len);
     void (*scan_progress) (struct _mbus_handle *handle, const char *mask);
-    void (*found_event) (struct _mbus_handle *handle, mbus_frame *frame);    
+    void (*found_event) (struct _mbus_handle *handle, mbus_frame *frame);
     void *auxdata;
 } mbus_handle;
 
