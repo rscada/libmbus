@@ -23,15 +23,14 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <netinet/in.h>
+#include <netdb.h>
 #endif
 
 #include <limits.h>
 #include <fcntl.h>
 
 #include <sys/types.h>
-
-#include <netinet/in.h>
-#include <netdb.h>
 
 #include <stdio.h>
 #include <string.h>
