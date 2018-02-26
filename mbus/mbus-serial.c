@@ -14,6 +14,7 @@
 
 
 #ifdef _WIN32
+#include <../win/termiWin.h>
 #include <stdlib.h>
 #include <io.h>
 #include <string.h>
