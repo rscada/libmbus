@@ -8,7 +8,13 @@
 //
 //------------------------------------------------------------------------------
 
+#ifdef _WIN32
+#include <stdlib.h>
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
+
 #include <limits.h>
 #include <fcntl.h>
 
@@ -262,4 +268,3 @@ mbus_tcp_set_timeout_set(double seconds)
 
     return 0;
 }
-

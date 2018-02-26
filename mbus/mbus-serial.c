@@ -8,7 +8,16 @@
 //
 //------------------------------------------------------------------------------
 
+#ifdef _WIN32
+#include <stdlib.h>
+#include <io.h>
+#include <termio.h>
+#else
 #include <unistd.h>
+#include <termios.h>
+#endif
+
+
 #include <limits.h>
 #include <fcntl.h>
 
@@ -17,7 +26,6 @@
 #include <stdio.h>
 #include <strings.h>
 
-#include <termios.h>
 #include <errno.h>
 #include <string.h>
 
@@ -374,4 +382,3 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
 
     return MBUS_RECV_RESULT_OK;
 }
-
