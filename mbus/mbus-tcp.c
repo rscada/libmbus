@@ -17,7 +17,6 @@
 #include <windows.h>
 #include <stdlib.h>
 #include <io.h>
-#include <winsock2.h>
 #else
 #include <unistd.h>
 #include <sys/socket.h>
