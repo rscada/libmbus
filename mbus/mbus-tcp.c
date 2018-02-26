@@ -174,18 +174,22 @@ mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
 
     if (handle == NULL || frame == NULL)
     {
+        fprintf(stderr, "%s: handle NULL.\n", __PRETTY_FUNCTION__);
         return -1;
     }
 
     if ((len = mbus_frame_pack(frame, buff, sizeof(buff))) == -1)
     {
+        fprintf(stderr, "%s: mbus_frame_pack failed\n", __PRETTY_FUNCTION__);
         snprintf(error_str, sizeof(error_str), "%s: mbus_frame_pack failed\n", __PRETTY_FUNCTION__);
         mbus_error_str_set(error_str);
         return -1;
     }
+    fprintf(stderr, "%s: before write\n", __PRETTY_FUNCTION__);
 
     if ((ret = write(handle->fd, buff, len)) == len)
     {
+        fprintf(stderr, "%s: write failed\n", __PRETTY_FUNCTION__);
         //
         // call the send event function, if the callback function is registered
         //
