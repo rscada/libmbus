@@ -14,7 +14,6 @@
 
 
 #ifdef _WIN32
-//#include <windows.h>
 #include <stdlib.h>
 #include <io.h>
 #include <string.h>
@@ -32,7 +31,6 @@ typedef SSIZE_T ssize_t;
 
 #else
 #include <unistd.h>
-//#include <termios.h>
 #include <strings.h>
 #include <string.h>
 #endif
