@@ -9,11 +9,14 @@
 //------------------------------------------------------------------------------
 
 #ifdef _WIN32
+#include <windows.h>
 #include <stdlib.h>
 #include <io.h>
+#include <string.h>
 #else
 #include <unistd.h>
 #include <termios.h>
+#include <strings.h>
 #endif
 
 #ifdef _WIN32
@@ -28,7 +31,6 @@
 #include <sys/types.h>
 
 #include <stdio.h>
-#include <strings.h>
 
 #include <errno.h>
 #include <string.h>

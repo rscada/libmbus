@@ -16,14 +16,15 @@
 #ifdef _WIN32
 #include <stdlib.h>
 #include <io.h>
+#include <winsock2.h>
 #else
 #include <unistd.h>
+#include <sys/socket.h>
 #endif
 
 #include <limits.h>
 #include <fcntl.h>
 
-#include <sys/socket.h>
 #include <sys/types.h>
 
 #include <arpa/inet.h>
