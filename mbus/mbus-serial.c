@@ -15,7 +15,7 @@
 #include <string.h>
 #else
 #include <unistd.h>
-#include <termios.h>
+//#include <termios.h>
 #include <strings.h>
 #endif
 
