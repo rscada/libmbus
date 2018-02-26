@@ -26,9 +26,9 @@
 #ifdef _WIN32
 
 #define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #include <winsock2.h>
 #pragma comment(lib, "Ws2_32.lib")
-#include <windows.h>
 
 /*Redefining functions from winsock to termiWin. This is very important since winsock2 defines functions such as close as closesocket we have to redefine it*/
 

@@ -15,8 +15,8 @@
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
-#include <winsock2.h>
 #include <windows.h>
+#include <winsock2.h>
 #include <stdlib.h>
 #include <io.h>
 #else
@@ -25,6 +25,7 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <strings.h>
 #endif
 
 #include <limits.h>
@@ -34,7 +35,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <strings.h>
 #include <errno.h>
 
 #include "mbus-tcp.h"

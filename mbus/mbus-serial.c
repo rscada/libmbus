@@ -22,6 +22,7 @@
 #include <unistd.h>
 //#include <termios.h>
 #include <strings.h>
+#include <string.h>
 #endif
 
 #include <limits.h>
@@ -32,7 +33,6 @@
 #include <stdio.h>
 
 #include <errno.h>
-#include <string.h>
 
 #include "mbus-serial.h"
 #include "mbus-protocol-aux.h"
