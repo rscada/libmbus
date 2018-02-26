@@ -26,7 +26,7 @@ typedef SSIZE_T ssize_t;
 #ifdef _WIN64
 #define SSIZE_MAX _I64_MAX
 #else
-#define SSIZE_MAX INT_MAX
+#define SSIZE_MAX LONG_MAX
 #endif
 #endif
 
