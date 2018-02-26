@@ -29,9 +29,15 @@ typedef _W64 unsigned int   ssize_t;
 #define _SSIZE_T_DEFINED
 #endif
 */
-#if defined(_MSC_VER)
 #include <BaseTsd.h>
 typedef SSIZE_T ssize_t;
+
+#ifndef SSIZE_MAX
+#ifdef _WIN64
+#define SSIZE_MAX _I64_MAX
+#else
+#define SSIZE_MAX INT_MAX
+#endif
 #endif
 
 #else
