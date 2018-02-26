@@ -80,6 +80,8 @@
 #define CS7			0x00000800	/*This specifies seven bits per byte. */
 #define CS8			0x00000c00	/*This specifies eight bits per byte. */
 
+#define CLOCAL 0x00000000  // No idea if this makes sense
+#define CREAD 0x00000000   // No idea if this makes sense
 //oFlag
 
 #define OPOST	0x00000100 	/*If this bit is set, output data is processed in some unspecified way so that it is displayed appropriately on the terminal device. This typically includes mapping newline characters ('\n') onto carriage return and linefeed pairs. */

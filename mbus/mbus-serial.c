@@ -29,6 +29,8 @@ typedef SSIZE_T ssize_t;
 #endif
 #endif
 
+#define O_NOCTTY 0x0000 // No idea if this makes sense
+
 #else
 #include <unistd.h>
 #include <strings.h>
