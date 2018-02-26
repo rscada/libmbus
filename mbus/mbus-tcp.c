@@ -9,6 +9,11 @@
 //------------------------------------------------------------------------------
 
 #ifdef _WIN32
+#define __PRETTY_FUNCTION__ = __FUNCSIG__
+#endif
+
+
+#ifdef _WIN32
 #include <stdlib.h>
 #include <io.h>
 #else

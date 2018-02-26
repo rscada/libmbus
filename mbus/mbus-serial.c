@@ -11,11 +11,15 @@
 #ifdef _WIN32
 #include <stdlib.h>
 #include <io.h>
-#include <termio.h>
 #else
 #include <unistd.h>
 #include <termios.h>
 #endif
+
+#ifdef _WIN32
+#define __PRETTY_FUNCTION__ = __FUNCSIG__
+#endif
+
 
 
 #include <limits.h>

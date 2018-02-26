@@ -18,7 +18,13 @@
 #ifndef MBUS_SERIAL_H
 #define MBUS_SERIAL_H
 
+#ifdef _WIN32
+#include <stdlib.h>
+#include <io.h>
+#else
 #include <termios.h>
+#endif
+
 #include "mbus-protocol-aux.h"
 #include "mbus-protocol.h"
 
@@ -45,4 +51,3 @@ void mbus_serial_data_free(mbus_handle *handle);
 #endif
 
 #endif /* MBUS_SERIAL_H */
-

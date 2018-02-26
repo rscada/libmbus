@@ -8,6 +8,11 @@
 //
 //------------------------------------------------------------------------------
 
+#ifdef _WIN32
+#define __PRETTY_FUNCTION__ = __FUNCSIG__
+#endif
+
+
 #include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
