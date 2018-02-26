@@ -14,7 +14,7 @@
 
 
 #ifdef _WIN32
-#include <windows.h>
+//#include <windows.h>
 #include <stdlib.h>
 #include <io.h>
 #include <string.h>
