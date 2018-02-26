@@ -113,7 +113,7 @@ mbus_tcp_connect(mbus_handle *handle)
     time_out.tv_usec = tcp_timeout_usec;  // microseconds
 
     #ifdef _WIN32
-    uint64_t millis = (time->tv_sec * (uint64_t)1000) + (time->tv_usec / 1000);
+    uint64_t millis = (time_out.tv_sec * (uint64_t)1000) + (time_out.tv_usec / 1000);
     setsockopt(handle->fd, SOL_SOCKET, SO_SNDTIMEO, (char *)&millis, sizeof(time_out));
     setsockopt(handle->fd, SOL_SOCKET, SO_RCVTIMEO, (char *)&millis, sizeof(time_out));
     #else
