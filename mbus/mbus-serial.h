@@ -19,7 +19,6 @@
 #define MBUS_SERIAL_H
 
 #ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
 #include <../win/termiWin.h>
 #include <stdlib.h>
 #include <io.h>

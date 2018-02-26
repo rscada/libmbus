@@ -9,7 +9,11 @@
 //------------------------------------------------------------------------------
 
 #ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
+#define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif
+
+
+#ifdef _WIN32
 #include <windows.h>
 #include <stdlib.h>
 #include <io.h>
@@ -19,12 +23,6 @@
 //#include <termios.h>
 #include <strings.h>
 #endif
-
-#ifdef _WIN32
-#define __PRETTY_FUNCTION__ __FUNCSIG__
-#endif
-
-
 
 #include <limits.h>
 #include <fcntl.h>
