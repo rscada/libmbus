@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <io.h>
 #include <string.h>
+#include <../win/termiWin.h>
 #else
 #include <unistd.h>
 #include <termios.h>

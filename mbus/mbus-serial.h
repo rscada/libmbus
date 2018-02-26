@@ -21,6 +21,7 @@
 #ifdef _WIN32
 #include <stdlib.h>
 #include <io.h>
+#include <../win/termiWin.h>
 #else
 #include <termios.h>
 #endif
