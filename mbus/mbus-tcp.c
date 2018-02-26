@@ -107,6 +107,7 @@ mbus_tcp_connect(mbus_handle *handle)
         mbus_error_str_set(error_str);
         return -1;
     }
+    fprintf(stderr, "%s: HUHU\n", __PRETTY_FUNCTION__);
 
     // Set a timeout
     time_out.tv_sec  = tcp_timeout_sec;   // seconds
