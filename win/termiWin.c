@@ -23,6 +23,12 @@
 #include <fcntl.h>
 #include <stdlib.h>
 
+#define read readFromSerial
+#define write writeToSerial
+#define select selectSerial
+#define open openSerial
+#define close closeSerial
+
 typedef struct COM
 {
 	HANDLE hComm;

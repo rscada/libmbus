@@ -32,12 +32,13 @@
 
 /*Redefining functions from winsock to termiWin. This is very important since winsock2 defines functions such as close as closesocket we have to redefine it*/
 
+/*
 #define read readFromSerial
 #define write writeToSerial
 #define select selectSerial
 #define open openSerial
 #define close closeSerial
-
+*/
 //Serial options - Linux -> Windows
 
 /*setAttr flags - ~ in front of flags -> deny them*/
