@@ -30,6 +30,8 @@ typedef SSIZE_T ssize_t;
 #endif
 #endif
 
+#define errno WSAGetLastError()
+
 #else
 #include <unistd.h>
 #include <sys/socket.h>
@@ -244,7 +246,6 @@ retry:
         nread = recv(handle->fd, &buff[len], remaining, 0);
         #else
         nread = read(handle->fd, &buff[len], remaining);
-        #endif
         switch (nread) {
         case -1:
             if (errno == EINTR)
@@ -269,6 +270,7 @@ retry:
 
             len += nread;
         }
+        #endif
     } while ((remaining = mbus_parse(frame, buff, len)) > 0);
 
     //
