@@ -30,6 +30,10 @@ typedef SSIZE_T ssize_t;
 #endif
 #endif
 
+#define write send // On Win the method is "send"
+#define read recv // On Win the method is "recv"
+#define close closesocket // On Win the method is "closesocket"
+
 #else
 #include <unistd.h>
 #include <sys/socket.h>
