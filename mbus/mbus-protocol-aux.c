@@ -2199,7 +2199,7 @@ mbus_send_ping_frame(mbus_handle *handle, int address, char purge_response)
 int
 mbus_select_secondary_address(mbus_handle * handle, const char *mask)
 {
-    int ret;
+    int ret, frameType;
     mbus_frame reply;
 
     if (mask == NULL || strlen(mask) != 16)
@@ -2232,7 +2232,7 @@ mbus_select_secondary_address(mbus_handle * handle, const char *mask)
         return MBUS_PROBE_COLLISION;
     }
 
-    if (mbus_frame_type(&reply) == MBUS_FRAME_TYPE_ACK)
+    if (frameType = mbus_frame_type(&reply) == MBUS_FRAME_TYPE_ACK)
     {
         /* check for more data (collision) */
         if (mbus_purge_frames(handle))
@@ -2243,7 +2243,7 @@ mbus_select_secondary_address(mbus_handle * handle, const char *mask)
         return MBUS_PROBE_SINGLE;
     }
 
-    MBUS_ERROR("%s: Unexpected reply for address [%s].\n", __PRETTY_FUNCTION__, mask);
+    MBUS_ERROR("%s: Unexpected reply for address [%s]. ret=%d, frameType=%d\n", __PRETTY_FUNCTION__, mask, ret, frameType);
 
     return MBUS_PROBE_NOTHING;
 }
