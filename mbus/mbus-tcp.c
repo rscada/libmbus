@@ -14,8 +14,6 @@
 
 
 #ifdef _WIN32
-#define errno WSAGetLastError()
-
 #include <winsock2.h>
 #include <windows.h>
 #include <stdlib.h>
@@ -81,21 +79,21 @@ mbus_tcp_connect(mbus_handle *handle)
     port = tcp_data->port;
 
     #ifdef _WIN32
-    WORD wVersionRequested;
-    WSADATA wsaData;
-    int err;
+        WORD wVersionRequested;
+        WSADATA wsaData;
+        int err;
 
-    /* Use the MAKEWORD(lowbyte, highbyte) macro declared in Windef.h */
-    wVersionRequested = MAKEWORD(2, 2);
+        /* Use the MAKEWORD(lowbyte, highbyte) macro declared in Windef.h */
+        wVersionRequested = MAKEWORD(2, 2);
 
-    err = WSAStartup(wVersionRequested, &wsaData);
-    if (err != 0) {
-        /* Tell the user that we could not find a usable */
-        /* Winsock DLL.                                  */
-        snprintf(error_str, sizeof(error_str), "%s: WSAStartup failed with error: %d", __PRETTY_FUNCTION__, err);
-        mbus_error_str_set(error_str);
-        return -1;
-    }
+        err = WSAStartup(wVersionRequested, &wsaData);
+        if (err != 0) {
+            /* Tell the user that we could not find a usable */
+            /* Winsock DLL.                                  */
+            snprintf(error_str, sizeof(error_str), "%s: WSAStartup failed with error: %d", __PRETTY_FUNCTION__, err);
+            mbus_error_str_set(error_str);
+            return -1;
+        }
     #endif
     //
     // create the TCP connection
@@ -261,9 +259,11 @@ retry:
         }
 
         #ifdef _WIN32
-        nread = recv(handle->fd, &buff[len], remaining, 0);
+            nread = recv(handle->fd, &buff[len], remaining, 0);
+            errno = WSAGetLastError();
         #else
-        nread = read(handle->fd, &buff[len], remaining);
+            nread = read(handle->fd, &buff[len], remaining);
+        #endif
         switch (nread) {
         case -1:
             if (errno == EINTR)
@@ -288,7 +288,6 @@ retry:
 
             len += nread;
         }
-        #endif
     } while ((remaining = mbus_parse(frame, buff, len)) > 0);
 
     //
