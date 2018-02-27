@@ -30,10 +30,6 @@ typedef SSIZE_T ssize_t;
 #endif
 #endif
 
-#define write send // On Win the method is "send"
-#define read recv // On Win the method is "recv"
-#define close closesocket // On Win the method is "closesocket"
-
 #else
 #include <unistd.h>
 #include <sys/socket.h>
@@ -161,7 +157,11 @@ mbus_tcp_disconnect(mbus_handle *handle)
         return -1;
     }
 
+    #ifdef _WIN32
+    closesocket(handle->fd);
+    #else
     close(handle->fd);
+    #endif
 
     return 0;
 }
@@ -188,7 +188,11 @@ mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
         return -1;
     }
 
+    #ifdef _WIN32
+    if ((ret = send(handle->fd, buff, len, 0)) == len)
+    #else
     if ((ret = write(handle->fd, buff, len)) == len)
+    #endif
     {
         //
         // call the send event function, if the callback function is registered
@@ -236,7 +240,11 @@ retry:
             return MBUS_RECV_RESULT_ERROR;
         }
 
+        #ifdef _WIN32
+        nread = recv(handle->fd, &buff[len], remaining, 0);
+        #else
         nread = read(handle->fd, &buff[len], remaining);
+        #endif
         switch (nread) {
         case -1:
             if (errno == EINTR)
