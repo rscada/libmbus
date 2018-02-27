@@ -80,6 +80,23 @@ mbus_tcp_connect(mbus_handle *handle)
     host = tcp_data->host;
     port = tcp_data->port;
 
+    #ifdef _WIN32
+    WORD wVersionRequested;
+    WSADATA wsaData;
+    int err;
+
+    /* Use the MAKEWORD(lowbyte, highbyte) macro declared in Windef.h */
+    wVersionRequested = MAKEWORD(2, 2);
+
+    err = WSAStartup(wVersionRequested, &wsaData);
+    if (err != 0) {
+        /* Tell the user that we could not find a usable */
+        /* Winsock DLL.                                  */
+        snprintf(error_str, sizeof(error_str), "%s: WSAStartup failed with error: %d", __PRETTY_FUNCTION__, err));
+        mbus_error_str_set(error_str);
+        return -1;
+    }
+    #endif
     //
     // create the TCP connection
     //
@@ -161,6 +178,7 @@ mbus_tcp_disconnect(mbus_handle *handle)
 
     #ifdef _WIN32
     closesocket(handle->fd);
+    WSACleanup();
     #else
     close(handle->fd);
     #endif
