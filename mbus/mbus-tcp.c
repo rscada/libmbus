@@ -92,7 +92,7 @@ mbus_tcp_connect(mbus_handle *handle)
     if (err != 0) {
         /* Tell the user that we could not find a usable */
         /* Winsock DLL.                                  */
-        snprintf(error_str, sizeof(error_str), "%s: WSAStartup failed with error: %d", __PRETTY_FUNCTION__, err));
+        snprintf(error_str, sizeof(error_str), "%s: WSAStartup failed with error: %d", __PRETTY_FUNCTION__, err);
         mbus_error_str_set(error_str);
         return -1;
     }
