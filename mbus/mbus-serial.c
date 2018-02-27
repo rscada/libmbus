@@ -31,13 +31,6 @@ typedef SSIZE_T ssize_t;
 
 #define O_NOCTTY 0x0000 // No idea if this makes sense
 
-#define read readFromSerial
-#define write writeToSerial
-#define select selectSerial
-#define open openSerial
-#define close closeSerial
-
-
 #else
 #include <unistd.h>
 #include <strings.h>
