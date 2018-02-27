@@ -12,6 +12,8 @@
 #define __PRETTY_FUNCTION__ __FUNCSIG__
 #endif
 
+#define MBUS_ERROR(...) fprintf (stderr, __VA_ARGS__)
+
 
 #ifdef _WIN32
 #include <winsock2.h>
@@ -271,13 +273,16 @@ retry:
 
             if (errno == EAGAIN || errno == EWOULDBLOCK) {
                 mbus_error_str_set("M-Bus tcp transport layer response timeout has been reached.");
+                MBUS_ERROR("%s: M-Bus tcp transport layer response timeout has been reached. (%d)\n", __PRETTY_FUNCTION__, errno);
                 return MBUS_RECV_RESULT_TIMEOUT;
             }
 
             mbus_error_str_set("M-Bus tcp transport layer failed to read data.");
+            MBUS_ERROR("%s: M-Bus tcp transport layer failed to read data. (%d)\n", __PRETTY_FUNCTION__, errno);
             return MBUS_RECV_RESULT_ERROR;
         case 0:
             mbus_error_str_set("M-Bus tcp transport layer connection closed by remote host.");
+            MBUS_ERROR("%s: M-Bus tcp transport layer connection closed by remote host. (%d)\n", __PRETTY_FUNCTION__, errno);
             return MBUS_RECV_RESULT_RESET;
         default:
             if (len > (SSIZE_MAX-nread))
