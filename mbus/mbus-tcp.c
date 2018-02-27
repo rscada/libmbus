@@ -271,7 +271,11 @@ retry:
             if (errno == EINTR)
                 goto retry;
 
-            if (errno == EAGAIN || errno == EWOULDBLOCK || errno == ETIMEDOUT) {
+            if (errno == EAGAIN || errno == EWOULDBLOCK
+                #ifdef _WIN32
+                 || errno == WSAETIMEDOUT
+                #endif
+            ) {
                 mbus_error_str_set("M-Bus tcp transport layer response timeout has been reached.");
                 MBUS_ERROR("%s: M-Bus tcp transport layer response timeout has been reached. (%d)\n", __PRETTY_FUNCTION__, errno);
                 return MBUS_RECV_RESULT_TIMEOUT;
