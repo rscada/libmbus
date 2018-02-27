@@ -14,6 +14,8 @@
 
 
 #ifdef _WIN32
+#define errno WSAGetLastError()
+
 #include <winsock2.h>
 #include <windows.h>
 #include <stdlib.h>
@@ -29,8 +31,6 @@ typedef SSIZE_T ssize_t;
 #define SSIZE_MAX LONG_MAX
 #endif
 #endif
-
-#define errno WSAGetLastError()
 
 #else
 #include <unistd.h>
