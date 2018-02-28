@@ -9,8 +9,12 @@
 //------------------------------------------------------------------------------
 
 #include "mbus-protocol.h"
-#include "../config.h"
 
+#ifdef _WIN32
+#define VERSION "0.9.0"
+#else
+#include "../config.h"
+#endif
 //
 //
 //

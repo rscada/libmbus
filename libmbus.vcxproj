@@ -10,6 +10,11 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <PropertyGroup>
+      <VcpkgConfiguration Condition="'$(Configuration)' == 'Release'">Release</VcpkgConfiguration>
+      <VcpkgConfiguration Condition="'$(Configuration)' == 'Debug'">Debug</VcpkgConfiguration>
+      <VcpkgConfiguration Condition="'$(Configuration)' == ''">Release</VcpkgConfiguration>
+  </PropertyGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B03220E0-285E-8766-5959-75355F21213E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
