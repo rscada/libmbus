@@ -77,12 +77,12 @@ mbus_serial_connect(mbus_handle *handle)
 
     // Use blocking read and handle it by serial port VMIN/VTIME setting
     #ifdef _WIN32
-    if ((handle->fd = openSerial(device, O_RDWR | O_NOCTTY)) < 0)
+    if ((handle->fd = openSerial(device, O_RDWR)) < 0)
     #else
     if ((handle->fd = open(device, O_RDWR | O_NOCTTY)) < 0)
     #endif
     {
-        fprintf(stderr, "%s: failed to open tty.", __PRETTY_FUNCTION__);
+        fprintf(stderr, "%s: failed to open tty.\n", __PRETTY_FUNCTION__);
         return -1;
     }
 
