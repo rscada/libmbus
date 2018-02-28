@@ -85,7 +85,8 @@ mbus_serial_connect(mbus_handle *handle)
         #ifdef _WIN32
         fprintf(stderr, "%s: failed to open tty. %d\n", __PRETTY_FUNCTION__, GetLastError());
         #else
-        fprintf(stderr, "%s: failed to open tty.\n", __PRETTY_FUNCTION__);
+        fprintf(stderr, "%s: failed to open tty.\n", __PRETTY_FUNCTION__
+    );
         #endif
         return -1;
     }
