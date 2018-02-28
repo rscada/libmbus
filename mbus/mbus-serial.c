@@ -82,7 +82,7 @@ mbus_serial_connect(mbus_handle *handle)
     if ((handle->fd = open(device, O_RDWR | O_NOCTTY)) < 0)
     #endif
     {
-        fprintf(stderr, "%s: failed to open tty.\n", __PRETTY_FUNCTION__);
+        fprintf(stderr, "%s: failed to open tty. %d\n", __PRETTY_FUNCTION__, GetLastError());
         return -1;
     }
 
