@@ -12,7 +12,6 @@
 #define __PRETTY_FUNCTION__ __FUNCSIG__
 #endif
 
-
 #ifdef _WIN32
 #include <stdlib.h>
 #include <io.h>
@@ -27,6 +26,13 @@ typedef SSIZE_T ssize_t;
 #else
 #define SSIZE_MAX LONG_MAX
 #endif
+
+#define read readFromSerial
+#define write writeToSerial
+#define select selectSerial
+#define open openSerial
+#define close closeSerial
+
 #endif
 
 #define O_NOCTTY 0x0000 // No idea if this makes sense
