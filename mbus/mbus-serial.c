@@ -27,12 +27,6 @@ typedef SSIZE_T ssize_t;
 #define SSIZE_MAX LONG_MAX
 #endif
 
-#define read readFromSerial
-#define write writeToSerial
-#define select selectSerial
-#define open openSerial
-#define close closeSerial
-
 #endif
 
 #define O_NOCTTY 0x0000 // No idea if this makes sense
@@ -82,7 +76,11 @@ mbus_serial_connect(mbus_handle *handle)
     //
 
     // Use blocking read and handle it by serial port VMIN/VTIME setting
+    #ifdef _WIN32
+    if ((handle->fd = openSerial(device, O_RDWR | O_NOCTTY)) < 0)
+    #else
     if ((handle->fd = open(device, O_RDWR | O_NOCTTY)) < 0)
+    #endif
     {
         fprintf(stderr, "%s: failed to open tty.", __PRETTY_FUNCTION__);
         return -1;
@@ -222,7 +220,11 @@ mbus_serial_disconnect(mbus_handle *handle)
         return -1;
     }
 
+    #ifdef _WIN32
+    closeSerial(handle->fd);
+    #else
     close(handle->fd);
+    #endif
 
     return 0;
 }
@@ -284,7 +286,11 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
     printf("\n");
 #endif
 
+    #ifdef _WIN32
+    if ((ret = writeToSerial(handle->fd, buff, len)) == len)
+    #else
     if ((ret = write(handle->fd, buff, len)) == len)
+    #endif
     {
         //
         // call the send event function, if the callback function is registered
@@ -347,7 +353,11 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
 
         //printf("%s: Attempt to read %d bytes [len = %d]\n", __PRETTY_FUNCTION__, remaining, len);
 
+        #ifdef _WIN32
+        if ((nread = readFromSerial(handle->fd, &buff[len], remaining)) == -1)
+        #else
         if ((nread = read(handle->fd, &buff[len], remaining)) == -1)
+        #endif
         {
        //     fprintf(stderr, "%s: aborting recv frame (remaining = %d, len = %d, nread = %d)\n",
          //          __PRETTY_FUNCTION__, remaining, len, nread);
