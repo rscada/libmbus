@@ -18,7 +18,7 @@ clean:
 	rm -rf *.o *core core $(LIB)
 
 test:
-	(cd test && make)
+	(cd test && make && ./generate_xml.sh test-frames)
 
 install: all
 	cp $(LIB) /usr/local/freescada/lib
