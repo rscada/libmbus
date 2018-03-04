@@ -10,10 +10,6 @@
 
 #include "mbus-protocol.h"
 
-#ifdef _WIN64
-#define _WIN32
-#endif
-
 #ifdef _WIN32
 #define VERSION "0.9.0"
 #else

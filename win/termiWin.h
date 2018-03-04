@@ -24,7 +24,6 @@
 #endif
 
 #ifdef _WIN64
-#define _WIN32
 #define WIN64_LEAN_AND_MEAN
 #endif
 
