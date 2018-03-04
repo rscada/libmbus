@@ -34,12 +34,6 @@ typedef SSIZE_T ssize_t;
 
 #define O_NOCTTY 0x0000 // No idea if this makes sense
 
-#define read(...) readFromSerial(__VA_ARGS__)
-#define write(...) writeToSerial(__VA_ARGS__)
-#define select(...) selectSerial(__VA_ARGS__)
-#define open(...) openSerial(__VA_ARGS__)
-#define close(...) closeSerial(__VA_ARGS__)
-
 #else
 #include <unistd.h>
 #include <strings.h>
@@ -61,6 +55,13 @@ typedef SSIZE_T ssize_t;
 
 #define PACKET_BUFF_SIZE 2048
 
+#ifdef _WIN32
+#define read(...) readFromSerial(__VA_ARGS__)
+#define write(...) writeToSerial(__VA_ARGS__)
+#define select(...) selectSerial(__VA_ARGS__)
+#define open(...) openSerial(__VA_ARGS__)
+#define close(...) closeSerial(__VA_ARGS__)
+#endif
 
 //------------------------------------------------------------------------------
 /// Set up a serial connection handle.
