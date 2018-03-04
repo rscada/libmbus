@@ -23,13 +23,21 @@
 #define TERMIWIN_H_
 #endif
 
+#ifdef _WIN64
+#define _WIN32
+#define WIN32_LEAN_AND_MEAN
+#endif
+
 #ifdef _WIN32
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <winsock2.h>
+#ifdef _WIN64
+#pragma comment(lib, "Ws2_64.lib")
+#else
 #pragma comment(lib, "Ws2_32.lib")
-
+#endif
 /*Redefining functions from winsock to termiWin. This is very important since winsock2 defines functions such as close as closesocket we have to redefine it*/
 
 /*

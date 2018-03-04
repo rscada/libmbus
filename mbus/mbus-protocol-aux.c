@@ -10,6 +10,9 @@
 // Large parts of this file was contributed by Tomas Menzl.
 //
 //------------------------------------------------------------------------------
+#ifdef _WIN64
+#define _WIN32
+#endif
 
 #ifdef _WIN32
 #define __PRETTY_FUNCTION__ __FUNCSIG__
