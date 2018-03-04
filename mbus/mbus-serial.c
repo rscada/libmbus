@@ -13,7 +13,9 @@
 #endif
 
 #define MBUS_ERROR(...) fprintf (stderr, __VA_ARGS__)
+#ifdef DEBUG
 #define MBUS_SERIAL_DEBUG
+#endif
 
 #ifdef _WIN32
 #include <stdlib.h>
