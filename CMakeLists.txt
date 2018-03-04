@@ -16,3 +16,9 @@ target_link_libraries(mbus-serial-scan mbus)
 
 add_executable(mbus-serial-select-secondary mbus-serial-select-secondary.c)
 target_link_libraries(mbus-serial-select-secondary mbus)
+
+add_executable(mbus_parse mbus_parse.c)
+target_link_libraries(mbus_parse.c mbus)
+
+add_executable(mbus_parse_hex mbus_parse_hex.c)
+target_link_libraries(mbus_parse_hex.c mbus)
