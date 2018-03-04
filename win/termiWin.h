@@ -178,7 +178,8 @@ int writeToSerial(int fd, char* buffer, int count);
 int openSerial(char* portname, int opt);
 int closeSerial(int fd);
 
-
+//get Handle out of the COM structure
+HANDLE getHandle();
 
 #endif
 

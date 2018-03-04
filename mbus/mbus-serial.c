@@ -12,6 +12,9 @@
 #define __PRETTY_FUNCTION__ __FUNCSIG__
 #endif
 
+#define MBUS_ERROR(...) fprintf (stderr, __VA_ARGS__)
+#define MBUS_SERIAL_DEBUG
+
 #ifdef _WIN32
 #include <stdlib.h>
 #include <io.h>
@@ -30,6 +33,12 @@ typedef SSIZE_T ssize_t;
 #endif
 
 #define O_NOCTTY 0x0000 // No idea if this makes sense
+
+#define read(...) readFromSerial(__VA_ARGS__)
+#define write(...) writeToSerial(__VA_ARGS__)
+#define select(...) selectSerial(__VA_ARGS__)
+#define open(...) openSerial(__VA_ARGS__)
+#define close(...) closeSerial(__VA_ARGS__)
 
 #else
 #include <unistd.h>
@@ -51,6 +60,7 @@ typedef SSIZE_T ssize_t;
 #include "mbus-protocol.h"
 
 #define PACKET_BUFF_SIZE 2048
+
 
 //------------------------------------------------------------------------------
 /// Set up a serial connection handle.
@@ -76,18 +86,10 @@ mbus_serial_connect(mbus_handle *handle)
     //
 
     // Use blocking read and handle it by serial port VMIN/VTIME setting
-    #ifdef _WIN32
-    if ((handle->fd = openSerial(device, O_RDWR)) < 0)
-    #else
     if ((handle->fd = open(device, O_RDWR | O_NOCTTY)) < 0)
-    #endif
     {
-        #ifdef _WIN32
-        fprintf(stderr, "%s: failed to open tty. %d\n", __PRETTY_FUNCTION__, GetLastError());
-        #else
         fprintf(stderr, "%s: failed to open tty.\n", __PRETTY_FUNCTION__
     );
-        #endif
         return -1;
     }
 
@@ -112,7 +114,7 @@ mbus_serial_connect(mbus_handle *handle)
     // For 2400Bd this means (330 + 11) / 2400 + 0.15 = 292 ms (added 11 bit periods to receive first byte).
     // I.e. timeout of 0.3s seems appropriate for 2400Bd.
 
-    term->c_cc[VTIME] = (cc_t) 3; // Timeout in 1/10 sec
+    term->c_cc[VTIME] = (cc_t) 30; // Timeout in 1/10 sec
 
     cfsetispeed(term, B2400);
     cfsetospeed(term, B2400);
@@ -165,7 +167,7 @@ mbus_serial_set_baudrate(mbus_handle *handle, long baudrate)
 
         case 2400:
             speed = B2400;
-            serial_data->t.c_cc[VTIME] = (cc_t) 3;  // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = (cc_t) 30;  // Timeout in 1/10 sec
             break;
 
         case 4800:
@@ -225,11 +227,7 @@ mbus_serial_disconnect(mbus_handle *handle)
         return -1;
     }
 
-    #ifdef _WIN32
-    closeSerial(handle->fd);
-    #else
     close(handle->fd);
-    #endif
 
     return 0;
 }
@@ -269,8 +267,13 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
     }
 
     // Make sure serial connection is open
+    #ifdef _WIN32
+    if (GetFileType(getHandle()) != FILE_TYPE_CHAR )
+    #else
     if (isatty(handle->fd) == 0)
+    #endif
     {
+        MBUS_ERROR("%s: connection not open\n", __PRETTY_FUNCTION__);
         return -1;
     }
 
@@ -291,11 +294,7 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
     printf("\n");
 #endif
 
-    #ifdef _WIN32
-    if ((ret = writeToSerial(handle->fd, buff, len)) == len)
-    #else
     if ((ret = write(handle->fd, buff, len)) == len)
-    #endif
     {
         //
         // call the send event function, if the callback function is registered
@@ -312,7 +311,9 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
     //
     // wait until complete frame has been transmitted
     //
+    #ifndef _WIN32
     tcdrain(handle->fd);
+    #endif
 
     return 0;
 }
@@ -323,7 +324,7 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
 int
 mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
 {
-    char buff[PACKET_BUFF_SIZE];
+    unsigned char buff[PACKET_BUFF_SIZE];
     int remaining, timeouts;
     ssize_t len, nread;
 
@@ -334,7 +335,11 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
     }
 
     // Make sure serial connection is open
+    #ifdef _WIN32
+    if (GetFileType(getHandle()) != FILE_TYPE_CHAR )
+    #else
     if (isatty(handle->fd) == 0)
+    #endif
     {
         fprintf(stderr, "%s: Serial connection is not available.\n", __PRETTY_FUNCTION__);
         return MBUS_RECV_RESULT_ERROR;
@@ -356,20 +361,26 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
             return MBUS_RECV_RESULT_ERROR;
         }
 
-        //printf("%s: Attempt to read %d bytes [len = %d]\n", __PRETTY_FUNCTION__, remaining, len);
-
-        #ifdef _WIN32
-        if ((nread = readFromSerial(handle->fd, &buff[len], remaining)) == -1)
-        #else
-        if ((nread = read(handle->fd, &buff[len], remaining)) == -1)
+        #ifdef MBUS_SERIAL_DEBUG
+        printf("%s: Attempt to read %d bytes [len = %d]\n", __PRETTY_FUNCTION__, remaining, len);
         #endif
+
+        if ((nread = read(handle->fd, &buff[len], remaining)) == -1)
         {
        //     fprintf(stderr, "%s: aborting recv frame (remaining = %d, len = %d, nread = %d)\n",
          //          __PRETTY_FUNCTION__, remaining, len, nread);
             return MBUS_RECV_RESULT_ERROR;
         }
 
-//   printf("%s: Got %d byte [remaining %d, len %d]\n", __PRETTY_FUNCTION__, nread, remaining, len);
+        #ifdef MBUS_SERIAL_DEBUG
+        printf("%s: Got %d byte [remaining %d, len %d]\n", __PRETTY_FUNCTION__, nread, remaining, len);
+        int i;
+        for (i = len; i < len+nread; i++)
+        {
+           printf("%.2X ", buff[i]);
+        }
+        printf("\n");
+        #endif
 
         if (nread == 0)
         {

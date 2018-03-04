@@ -1,0 +1,7 @@
+version: 'test-{build}'
+platform:
+  - x86
+  - x64
+clone_folder: 'c:\projects\%APPVEYOR_PROJECT_NAME%'
+test_script:
+  - echo %cd%

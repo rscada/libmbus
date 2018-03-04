@@ -23,13 +23,6 @@
 #include <fcntl.h>
 #include <stdlib.h>
 
-/*
-#define read readFromSerial
-#define write writeToSerial
-#define select selectSerial
-#define open openSerial
-#define close closeSerial
-*/
 
 typedef struct COM
 {
@@ -135,7 +128,7 @@ int getToStop(tcflag_t flag) {
 int getCharSet(tcflag_t flag) {
 
 	//FLAG IS MADE UP OF 8 BYTES, A FLAG IS MADE UP OF A NIBBLE -> 4 BITS, WE NEED TO EXTRACT THE SECOND NIBBLE (1st) FROM THE FIFTH BYTE (6th).
-	int byte = getByte(flag,5,1);
+	int byte = getByte(flag,1,1);
 
 	switch(byte) {
 
@@ -172,7 +165,7 @@ int getControlOptions(tcflag_t flag) {
 	#define c_NOPARENB_CSTOPB 0x10
 	#define c_ALL_DISABLED 0x00
 
-	int byte = getByte(flag,5,0);
+	int byte = getByte(flag,1,0);
 	return byte;
 
 }
@@ -429,7 +422,7 @@ void cfmakeraw(struct termios *termios_p) {
 
 	SerialParams.ByteSize = 8;
 	SerialParams.StopBits = ONESTOPBIT;
-	SerialParams.Parity = NOPARITY;
+	SerialParams.Parity = EVENPARITY;
 
 }
 
@@ -531,6 +524,9 @@ int openSerial(char* portname, int opt) {
 	strncpy(portname, portname + 3, 1);
 	com.fd = atoi(portname); //COMx
 	SerialParams.DCBlength = sizeof(SerialParams);
+
+    if (!GetCommState(com.hComm, &SerialParams))
+        return -1;
 	return com.fd;
 
 }
@@ -541,4 +537,9 @@ int closeSerial(int fd) {
 	if(ret != 0) return 0;
 	else return -1;
 
+}
+
+//Returns hComm from the COM structure
+HANDLE getHandle() {
+	return com.hComm;
 }
