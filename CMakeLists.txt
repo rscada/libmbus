@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(libmbus)
 
-add_definitions(-DWIN32 -D_WIN32 -d__FUNCSIG__=not-available) 
+add_definitions(-DWIN32 -D_WIN32 -D__FUNCSIG__="not-available") 
 
 include_directories(../mbus/ ../test/ ../win/)
 
