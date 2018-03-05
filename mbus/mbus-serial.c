@@ -8,8 +8,10 @@
 //
 //------------------------------------------------------------------------------
 
+#ifdef _WIN32
 #ifndef __PRETTY_FUNCTION__
 #define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif
 #endif
 
 #define MBUS_ERROR(...) fprintf (stderr, __VA_ARGS__)

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(libmbus)
 
-add_definitions(-DWIN32) 
+add_definitions(-DWIN32 -D_WIN32) 
 
 include_directories(../mbus/ ../test/ ../win/)
 
