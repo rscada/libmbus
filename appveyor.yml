@@ -5,10 +5,6 @@ platform:
 configuration:
   - Debug
   - Release
-install:
-  - set PATH=C:\MinGW\bin;%PATH%
-  - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
-  - cmake_build.bat
 clone_folder: 'c:\projects\%APPVEYOR_PROJECT_NAME%'
 test_script:
   - echo %cd%
