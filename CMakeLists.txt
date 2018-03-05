@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 project(libmbus)
 
+add_definitions(-DWIN32)
+
 include_directories(../mbus/ ../test/ ../win/)
 
 add_library(mbus SHARED ../mbus/mbus.c ../mbus/mbus-protocol.c ../mbus/mbus-protocol-aux.c ../mbus/mbus-serial.c ../mbus/mbus-tcp.c ../win/termiWin.c)
