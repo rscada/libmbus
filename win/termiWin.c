@@ -507,17 +507,16 @@ int openSerial(char* portname, int opt) {
 	switch (opt) {
 
 		case O_RDWR:
-		com.hComm = CreateFile(com.port, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
+		com.hComm = CreateFile(com.port, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, FILE_FLAG_OVERLAPPED);
 		break;
 
 		case O_RDONLY:
-		com.hComm = CreateFile(com.port, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
+		com.hComm = CreateFile(com.port, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, FILE_FLAG_OVERLAPPED);
 		break;
 
 		case O_WRONLY:
-		com.hComm = CreateFile(com.port, GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
+		com.hComm = CreateFile(com.port, GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, FILE_FLAG_OVERLAPPED);
 		break;
-
 	}
 
 	if (com.hComm == INVALID_HANDLE_VALUE) return -1;
