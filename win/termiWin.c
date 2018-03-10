@@ -59,7 +59,7 @@ int getIXOptions(tcflag_t flag) {
 	#define i_PARMRK_IXON 0x06
 	#define i_PARMRK_IXON_IXOFF 0x07
 
-	int byte = getByte(flag,4,1);
+	int byte = getByte(flag,1,1);
 
 	return byte;
 
@@ -86,7 +86,7 @@ int getEchoOptions(tcflag_t flag) {
 	#define l_ECHOK_ECHONL 0x0c
 	#define l_ECHONL 0x08
 
-	int byte = getByte(flag,5,1);
+	int byte = getByte(flag,1,1);
 	return byte;
 
 }
@@ -109,7 +109,7 @@ int getLocalOptions(tcflag_t flag) {
 	#define l_IEXTEN_NOFLSH 0xa0
 	#define l_NOFLSH 0x80
 
-	int byte = getByte(flag,5,0);
+	int byte = getByte(flag,1,0);
 	return byte;
 
 }
@@ -118,7 +118,7 @@ int getToStop(tcflag_t flag) {
 
 	#define l_TOSTOP 0x01
 
-	int byte = getByte(flag,4,1);
+	int byte = getByte(flag,1,1);
 	return byte;
 
 }
