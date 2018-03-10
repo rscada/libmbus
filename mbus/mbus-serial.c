@@ -269,11 +269,7 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
     }
 
     // Make sure serial connection is open
-    #ifdef _WIN32
-    if (GetFileType(getHandle()) != FILE_TYPE_CHAR )
-    #else
     if (isatty(handle->fd) == 0)
-    #endif
     {
         MBUS_ERROR("%s: connection not open\n", __PRETTY_FUNCTION__);
         return -1;
