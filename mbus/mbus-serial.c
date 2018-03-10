@@ -47,9 +47,7 @@ typedef SSIZE_T ssize_t;
 
 #include <sys/types.h>
 
-#ifndef _WIN32
 #include <stdio.h>
-#endif
 
 #include <errno.h>
 
