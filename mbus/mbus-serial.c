@@ -18,8 +18,6 @@
 #endif
 
 #ifdef _WIN32
-//#include <stdlib.h>
-//#include <io.h>
 #include <string.h>
 
 #include <BaseTsd.h>
