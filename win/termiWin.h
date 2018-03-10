@@ -184,6 +184,8 @@ int closeSerial(int fd);
 //get Handle out of the COM structure
 HANDLE getHandle();
 
+int isatty(int fd);
+
 #endif
 
 #ifndef _WIN32

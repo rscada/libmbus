@@ -313,9 +313,7 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
     //
     // wait until complete frame has been transmitted
     //
-    #ifndef _WIN32
     tcdrain(handle->fd);
-    #endif
 
     return 0;
 }

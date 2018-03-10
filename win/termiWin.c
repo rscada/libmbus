@@ -345,11 +345,7 @@ int tcsendbreak(int fd, int duration) {
 int tcdrain(int fd) {
 
 	if(fd != com.fd) return -1;
-	SetCommMask(com.hComm, EV_TXEMPTY);
-	DWORD dwEventMask;
-	WaitCommEvent(com.hComm, &dwEventMask, NULL);
-
-	return 0;
+    return FlushFileBuffers(com.hComm);
 
 }
 
@@ -541,4 +537,12 @@ int closeSerial(int fd) {
 //Returns hComm from the COM structure
 HANDLE getHandle() {
 	return com.hComm;
+}
+
+int isatty(int fd) {
+
+    if(fd != com.fd) return -1;
+    if (GetFileType(com.hComm) != FILE_TYPE_CHAR ) return 0;
+    else return -1;
+
 }
