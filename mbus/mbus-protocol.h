@@ -566,7 +566,6 @@ int mbus_frame_direction(mbus_frame *frame);
 //
 mbus_slave_data *mbus_slave_data_get(size_t i);
 
-
 //
 // XML generating functions
 //
