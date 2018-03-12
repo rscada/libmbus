@@ -654,7 +654,7 @@ mbus_variable_vif vif_table[] = {
     { 0x276, 1.0e-1, "°C", "Cold / Warm Temperature Limit" },
     { 0x277, 1.0e0,  "°C", "Cold / Warm Temperature Limit" },
 
-    /* E111 1nnn cumul. count max power ° 10(nnn-3) W 0.001W to 10000W */
+    /* E111 1nnn cumul. count max power § 10(nnn-3) W 0.001W to 10000W */
     { 0x278, 1.0e-3, "W", "Cumul count max power" },
     { 0x279, 1.0e-3, "W", "Cumul count max power" },
     { 0x27A, 1.0e-1, "W", "Cumul count max power" },
