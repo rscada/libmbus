@@ -657,7 +657,7 @@ mbus_variable_vif vif_table[] = {
     { 0x276, 1.0e-1, "°C", "Cold / Warm Temperature Limit" },
     { 0x277, 1.0e0,  "°C", "Cold / Warm Temperature Limit" },
 
-    /* E111 1nnn cumul. count max power � 10(nnn-3) W 0.001W to 10000W */
+    /* E111 1nnn cumul. count max power § 10(nnn-3) W 0.001W to 10000W */
     { 0x278, 1.0e-3, "W", "Cumul count max power" },
     { 0x279, 1.0e-3, "W", "Cumul count max power" },
     { 0x27A, 1.0e-1, "W", "Cumul count max power" },
@@ -907,12 +907,12 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                     ((record->drh.vib.vif == 0xFD) && (vife == 0x70)))
                 {
                     mbus_data_tm_decode(&time, record->data, 4);
-                    if ((*value_out_str = (char*) malloc(20)) == NULL)
+                    if ((*value_out_str = (char*) malloc(21)) == NULL)
                     {
                         MBUS_ERROR("Unable to allocate memory");
                         return -1;
                     }
-                    *value_out_str_size = snprintf(*value_out_str, 20, "%04d-%02d-%02dT%02d:%02d:%02d",
+                    *value_out_str_size = snprintf(*value_out_str, 21, "%04d-%02d-%02dT%02d:%02d:%02dZ",
                                                  (time.tm_year + 1900),
                                                  (time.tm_mon + 1),
                                                   time.tm_mday,
@@ -942,12 +942,12 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                     ((record->drh.vib.vif == 0xFD) && (vife == 0x70)))
                 {
                     mbus_data_tm_decode(&time, record->data, 6);
-                    if ((*value_out_str = (char*) malloc(20)) == NULL)
+                    if ((*value_out_str = (char*) malloc(21)) == NULL)
                     {
                         MBUS_ERROR("Unable to allocate memory");
                         return -1;
                     }
-                    *value_out_str_size = snprintf(*value_out_str, 20, "%04d-%02d-%02dT%02d:%02d:%02d",
+                    *value_out_str_size = snprintf(*value_out_str, 21, "%04d-%02d-%02dT%02d:%02d:%02dZ",
                                                  (time.tm_year + 1900),
                                                  (time.tm_mon + 1),
                                                   time.tm_mday,
