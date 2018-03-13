@@ -503,15 +503,15 @@ int openSerial(char* portname, int opt) {
 	switch (opt) {
 
 		case O_RDWR:
-		com.hComm = CreateFile(com.port, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL);
+		com.hComm = CreateFile(com.port, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
 		break;
 
 		case O_RDONLY:
-		com.hComm = CreateFile(com.port, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL);
+		com.hComm = CreateFile(com.port, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
 		break;
 
 		case O_WRONLY:
-		com.hComm = CreateFile(com.port, GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL);
+		com.hComm = CreateFile(com.port, GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
 		break;
 	}
 
