@@ -497,8 +497,8 @@ int openSerial(char* portname, int opt) {
 
 	if (strlen(portname) < 4) return -1;
 
-	com.port = calloc(1,sizeof(char)*(strlen("\\\\.\\")+4));
-	strncat(com.port, portname, 4);
+	com.port = calloc(1,sizeof(char)*(strlen(portname)+1));
+	strncat(com.port, portname, strlen(portname));
 
 	switch (opt) {
 
