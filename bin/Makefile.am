@@ -17,7 +17,8 @@ bin_PROGRAMS			= mbus-tcp-scan mbus-tcp-request-data mbus-tcp-request-data-multi
                           mbus-tcp-select-secondary mbus-tcp-scan-secondary \
                           mbus-serial-scan mbus-serial-request-data mbus-serial-request-data-multi-reply \
                           mbus-serial-select-secondary mbus-serial-scan-secondary \
-                          mbus-serial-switch-baudrate mbus-tcp-raw-send mbus-tcp-application-reset
+                          mbus-serial-switch-baudrate mbus-tcp-raw-send mbus-tcp-application-reset \
+                          mbus-serial-set-address
 
 # tcp
 mbus_tcp_scan_LDFLAGS	= -L$(top_builddir)/mbus
@@ -72,6 +73,10 @@ mbus_serial_scan_secondary_SOURCES = mbus-serial-scan-secondary.c
 mbus_serial_switch_baudrate_LDFLAGS = -L$(top_builddir)/mbus
 mbus_serial_switch_baudrate_LDADD   = -lmbus -lm
 mbus_serial_switch_baudrate_SOURCES = mbus-serial-switch-baudrate.c
+
+mbus_serial_set_address_LDFLAGS = -L$(top_builddir)/mbus
+mbus_serial_set_address_LDADD   = -lmbus -lm
+mbus_serial_set_address_SOURCES = mbus-serial-set-address.c
 
 # man pages
 dist_man_MANS = libmbus.1 \
