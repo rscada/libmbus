@@ -246,7 +246,7 @@ mbus_serial_data_free(mbus_handle *handle)
             return;
         }
 
-        if (serial_data->device == NULL)
+        if (serial_data->device != NULL)
         {
             free(serial_data->device);
         }
