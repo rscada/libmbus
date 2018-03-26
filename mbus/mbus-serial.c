@@ -222,26 +222,12 @@ mbus_serial_set_baudrate(mbus_handle *handle, long baudrate)
 int
 mbus_serial_disconnect(mbus_handle *handle)
 {
-    MBUS_ERROR("%s: start disconnect\n", __PRETTY_FUNCTION__);
     if (handle == NULL)
     {
         return -1;
     }
 
-    // Make sure serial connection is open
-    #ifdef _WIN32
-    if (GetFileType(getHandle()) != FILE_TYPE_CHAR )
-    #else
-    if (isatty(handle->fd) == 0)
-    #endif
-    {
-        MBUS_ERROR("%s: connection not open\n", __PRETTY_FUNCTION__);
-        //return -1;
-    }
-
-    MBUS_ERROR("%s: disconnect before close\n", __PRETTY_FUNCTION__);
     close(handle->fd);
-    MBUS_ERROR("%s: end disconnect\n", __PRETTY_FUNCTION__);
 
     return 0;
 }
@@ -284,11 +270,7 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
     }
 
     // Make sure serial connection is open
-    #ifdef _WIN32
-    if (GetFileType(getHandle()) != FILE_TYPE_CHAR )
-    #else
     if (isatty(handle->fd) == 0)
-    #endif
     {
         MBUS_ERROR("%s: connection not open\n", __PRETTY_FUNCTION__);
         return -1;
