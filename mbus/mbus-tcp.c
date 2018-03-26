@@ -173,12 +173,18 @@ mbus_tcp_disconnect(mbus_handle *handle)
         return -1;
     }
 
+    if (handle->fd == NULL)
+    {
+        return -1;
+    }
+
     #ifdef _WIN32
     closesocket(handle->fd);
     WSACleanup();
     #else
     close(handle->fd);
     #endif
+    handle->fd = NULL;
 
     return 0;
 }

@@ -227,7 +227,13 @@ mbus_serial_disconnect(mbus_handle *handle)
         return -1;
     }
 
+    if (handle->fd == NULL)
+    {
+        return -1;
+    }
+
     close(handle->fd);
+    handle->fd = NULL;
 
     return 0;
 }
