@@ -173,7 +173,7 @@ mbus_tcp_disconnect(mbus_handle *handle)
         return -1;
     }
 
-    if (handle->fd == NULL)
+    if (handle->fd == -1)
     {
         return -1;
     }
@@ -184,7 +184,7 @@ mbus_tcp_disconnect(mbus_handle *handle)
     #else
     close(handle->fd);
     #endif
-    handle->fd = NULL;
+    handle->fd = -1;
 
     return 0;
 }
