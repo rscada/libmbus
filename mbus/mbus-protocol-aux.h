@@ -308,6 +308,17 @@ int mbus_send_request_frame(mbus_handle * handle, int address);
 int mbus_send_user_data_frame(mbus_handle * handle, int address, const unsigned char *data, size_t data_size);
 
 /**
+ * Sends frame to change primary address of given slave using "unified" handle
+ *
+ * @param handle      Initialized handle
+ * @param old_address Old Address (0-255)
+ * @param new_address New Address (0-250)
+ *
+ * @return Zero when successful.
+ */
+int mbus_set_primary_address(mbus_handle * handle, int old_address, int new_address);
+
+/**
  * Sends a request and read replies until no more records available
  * or limit is reached.
  *

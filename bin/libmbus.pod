@@ -10,6 +10,8 @@ the communication with M-Bus devices.
 
 B<mbus-serial-switch-baudrate> [-b BAUDRATE] device address target-baudrate
 
+B<mbus-serial-set-address> [-d] [-b BAUDRATE] device mbus-address new-primary-address
+
 B<mbus-serial-scan> [-d] [-b BAUDRATE] [-r RETRIES] device
 
 B<mbus-tcp-scan> [-d] [-r RETRIES] host port

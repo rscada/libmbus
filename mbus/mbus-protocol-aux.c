@@ -1985,6 +1985,33 @@ mbus_send_user_data_frame(mbus_handle * handle, int address, const unsigned char
 }
 
 //------------------------------------------------------------------------------
+// send a request from master to slave in order to change the primary address
+//------------------------------------------------------------------------------
+int
+mbus_set_primary_address(mbus_handle * handle, int old_address, int new_address)
+{
+    /* primary address record, see chapter 6.4.2 */
+    unsigned char buffer[3] = { 0x01, 0x7A, new_address };
+
+    if (mbus_is_primary_address(new_address) == 0)
+    {
+        MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, new_address);
+        return -1;
+    }
+
+    switch (new_address)
+    {
+        case MBUS_ADDRESS_NETWORK_LAYER:
+        case MBUS_ADDRESS_BROADCAST_REPLY:
+        case MBUS_ADDRESS_BROADCAST_NOREPLY:
+            MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, new_address);
+            return -1;
+    }
+
+    return mbus_send_user_data_frame(handle, old_address, buffer, sizeof(buffer));
+}
+
+//------------------------------------------------------------------------------
 // send a request from master to slave and collect the reply (replies)
 // from the slave.
 //------------------------------------------------------------------------------
