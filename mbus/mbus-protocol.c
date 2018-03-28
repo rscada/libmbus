@@ -3739,7 +3739,7 @@ mbus_hex_dump(const char *label, const char *buff, size_t len)
 {
     time_t rawtime;
     struct tm * timeinfo;
-    char timestamp[21];
+    char timestamp[22];
     size_t i;
 
     if (label == NULL || buff == NULL)
@@ -3748,7 +3748,7 @@ mbus_hex_dump(const char *label, const char *buff, size_t len)
     time ( &rawtime );
     timeinfo = gmtime ( &rawtime );
 
-    strftime(timestamp,20,"%Y-%m-%d %H:%M:%S",timeinfo);
+    strftime(timestamp,21,"%Y-%m-%d %H:%M:%SZ",timeinfo);
     fprintf(stderr, "[%s] %s (%03zu):", timestamp, label, len);
 
     for (i = 0; i < len; i++)
@@ -3766,6 +3766,7 @@ mbus_data_error_print(int error)
 
     return -1;
 }
+
 
 //------------------------------------------------------------------------------
 //
@@ -3886,7 +3887,7 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
     char str_encoded[768];
     size_t len = 0;
     struct tm * timeinfo;
-    char timestamp[21];
+    char timestamp[22];
     long tariff;
 
     if (record)
@@ -3942,7 +3943,7 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
         if (record->timestamp > 0)
         {
             timeinfo = gmtime (&(record->timestamp));
-            strftime(timestamp,20,"%Y-%m-%dT%H:%M:%S",timeinfo);
+            strftime(timestamp,21,"%Y-%m-%dT%H:%M:%SZ",timeinfo);
             len += snprintf(&buff[len], sizeof(buff) - len,
                             "        <Timestamp>%s</Timestamp>\n", timestamp);
         }
