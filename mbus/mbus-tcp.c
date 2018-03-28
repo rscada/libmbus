@@ -127,7 +127,13 @@ mbus_tcp_disconnect(mbus_handle *handle)
         return -1;
     }
 
+    if (handle->fd < 0)
+    {
+       return -1;
+    }
+
     close(handle->fd);
+    handle->fd = -1;
 
     return 0;
 }
@@ -262,4 +268,3 @@ mbus_tcp_set_timeout_set(double seconds)
 
     return 0;
 }
-
