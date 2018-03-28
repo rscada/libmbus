@@ -154,17 +154,17 @@ mbus_variable_vif vif_table[] = {
     { 0x56, 1.0e3,  "kg/h", "Mass flow" },
     { 0x57, 1.0e4,  "kg/h", "Mass flow" },
 
-    /* E101 10nn     Flow Temperature 캜 (0.001캜 to 1캜) */
-    { 0x58, 1.0e-3, "캜", "Flow temperature" },
-    { 0x59, 1.0e-2, "캜", "Flow temperature" },
-    { 0x5A, 1.0e-1, "캜", "Flow temperature" },
-    { 0x5B, 1.0e0,  "캜", "Flow temperature" },
+    /* E101 10nn     Flow Temperature 째C (0.001째C to 1째C) */
+    { 0x58, 1.0e-3, "째C", "Flow temperature" },
+    { 0x59, 1.0e-2, "째C", "Flow temperature" },
+    { 0x5A, 1.0e-1, "째C", "Flow temperature" },
+    { 0x5B, 1.0e0,  "째C", "Flow temperature" },
 
-    /* E101 11nn Return Temperature 캜 (0.001캜 to 1캜) */
-    { 0x5C, 1.0e-3, "캜", "Return temperature" },
-    { 0x5D, 1.0e-2, "캜", "Return temperature" },
-    { 0x5E, 1.0e-1, "캜", "Return temperature" },
-    { 0x5F, 1.0e0,  "캜", "Return temperature" },
+    /* E101 11nn Return Temperature 째C (0.001째C to 1째C) */
+    { 0x5C, 1.0e-3, "째C", "Return temperature" },
+    { 0x5D, 1.0e-2, "째C", "Return temperature" },
+    { 0x5E, 1.0e-1, "째C", "Return temperature" },
+    { 0x5F, 1.0e0,  "째C", "Return temperature" },
 
     /* E110 00nn    Temperature Difference  K   (mK to  K) */
     { 0x60, 1.0e-3, "K", "Temperature difference" },
@@ -172,11 +172,11 @@ mbus_variable_vif vif_table[] = {
     { 0x62, 1.0e-1, "K", "Temperature difference" },
     { 0x63, 1.0e0,  "K", "Temperature difference" },
 
-    /* E110 01nn     External Temperature 캜 (0.001캜 to 1캜) */
-    { 0x64, 1.0e-3, "캜", "External temperature" },
-    { 0x65, 1.0e-2, "캜", "External temperature" },
-    { 0x66, 1.0e-1, "캜", "External temperature" },
-    { 0x67, 1.0e0,  "캜", "External temperature" },
+    /* E110 01nn     External Temperature 째C (0.001째C to 1째C) */
+    { 0x64, 1.0e-3, "째C", "External temperature" },
+    { 0x65, 1.0e-2, "째C", "External temperature" },
+    { 0x66, 1.0e-1, "째C", "External temperature" },
+    { 0x67, 1.0e0,  "째C", "External temperature" },
 
     /* E110 10nn     Pressure bar (1mbar to 1000mbar) */
     { 0x68, 1.0e-3, "bar", "Pressure" },
@@ -608,29 +608,29 @@ mbus_variable_vif vif_table[] = {
     { 0x256, 1.0e0, "Reserved", "Reserved" },
     { 0x257, 1.0e0, "Reserved", "Reserved" },
 
-    /* E101 10nn Flow Temperature 10(nn-3) 캟 0.001캟 to 1캟 */
-    { 0x258, 1.0e-3, "캟", "Flow temperature" },
-    { 0x259, 1.0e-2, "캟", "Flow temperature" },
-    { 0x25A, 1.0e-1, "캟", "Flow temperature" },
-    { 0x25B, 1.0e0,  "캟", "Flow temperature" },
+    /* E101 10nn Flow Temperature 10(nn-3) 째F 0.001째F to 1째F */
+    { 0x258, 1.0e-3, "째F", "Flow temperature" },
+    { 0x259, 1.0e-2, "째F", "Flow temperature" },
+    { 0x25A, 1.0e-1, "째F", "Flow temperature" },
+    { 0x25B, 1.0e0,  "째F", "Flow temperature" },
 
-    /* E101 11nn Return Temperature 10(nn-3) 캟 0.001캟 to 1캟 */
-    { 0x25C, 1.0e-3, "캟", "Return temperature" },
-    { 0x25D, 1.0e-2, "캟", "Return temperature" },
-    { 0x25E, 1.0e-1, "캟", "Return temperature" },
-    { 0x25F, 1.0e0,  "캟", "Return temperature" },
+    /* E101 11nn Return Temperature 10(nn-3) 째F 0.001째F to 1째F */
+    { 0x25C, 1.0e-3, "째F", "Return temperature" },
+    { 0x25D, 1.0e-2, "째F", "Return temperature" },
+    { 0x25E, 1.0e-1, "째F", "Return temperature" },
+    { 0x25F, 1.0e0,  "째F", "Return temperature" },
 
-    /* E110 00nn Temperature Difference 10(nn-3) 캟 0.001캟 to 1캟 */
-    { 0x260, 1.0e-3, "캟", "Temperature difference" },
-    { 0x261, 1.0e-2, "캟", "Temperature difference" },
-    { 0x262, 1.0e-1, "캟", "Temperature difference" },
-    { 0x263, 1.0e0,  "캟", "Temperature difference" },
+    /* E110 00nn Temperature Difference 10(nn-3) 째F 0.001째F to 1째F */
+    { 0x260, 1.0e-3, "째F", "Temperature difference" },
+    { 0x261, 1.0e-2, "째F", "Temperature difference" },
+    { 0x262, 1.0e-1, "째F", "Temperature difference" },
+    { 0x263, 1.0e0,  "째F", "Temperature difference" },
 
-    /* E110 01nn External Temperature 10(nn-3) 캟 0.001캟 to 1캟 */
-    { 0x264, 1.0e-3, "캟", "External temperature" },
-    { 0x265, 1.0e-2, "캟", "External temperature" },
-    { 0x266, 1.0e-1, "캟", "External temperature" },
-    { 0x267, 1.0e0,  "캟", "External temperature" },
+    /* E110 01nn External Temperature 10(nn-3) 째F 0.001째F to 1째F */
+    { 0x264, 1.0e-3, "째F", "External temperature" },
+    { 0x265, 1.0e-2, "째F", "External temperature" },
+    { 0x266, 1.0e-1, "째F", "External temperature" },
+    { 0x267, 1.0e0,  "째F", "External temperature" },
 
     /* E110 1nnn Reserved */
     { 0x268, 1.0e0, "Reserved", "Reserved" },
@@ -642,19 +642,19 @@ mbus_variable_vif vif_table[] = {
     { 0x26E, 1.0e0, "Reserved", "Reserved" },
     { 0x26F, 1.0e0, "Reserved", "Reserved" },
 
-    /* E111 00nn Cold / Warm Temperature Limit 10(nn-3) 캟 0.001캟 to 1캟 */
-    { 0x270, 1.0e-3, "캟", "Cold / Warm Temperature Limit" },
-    { 0x271, 1.0e-2, "캟", "Cold / Warm Temperature Limit" },
-    { 0x272, 1.0e-1, "캟", "Cold / Warm Temperature Limit" },
-    { 0x273, 1.0e0,  "캟", "Cold / Warm Temperature Limit" },
+    /* E111 00nn Cold / Warm Temperature Limit 10(nn-3) 째F 0.001째F to 1째F */
+    { 0x270, 1.0e-3, "째F", "Cold / Warm Temperature Limit" },
+    { 0x271, 1.0e-2, "째F", "Cold / Warm Temperature Limit" },
+    { 0x272, 1.0e-1, "째F", "Cold / Warm Temperature Limit" },
+    { 0x273, 1.0e0,  "째F", "Cold / Warm Temperature Limit" },
 
-    /* E111 01nn Cold / Warm Temperature Limit 10(nn-3) 캜 0.001캜 to 1캜 */
-    { 0x274, 1.0e-3, "캜", "Cold / Warm Temperature Limit" },
-    { 0x275, 1.0e-2, "캜", "Cold / Warm Temperature Limit" },
-    { 0x276, 1.0e-1, "캜", "Cold / Warm Temperature Limit" },
-    { 0x277, 1.0e0,  "캜", "Cold / Warm Temperature Limit" },
+    /* E111 01nn Cold / Warm Temperature Limit 10(nn-3) 째C 0.001째C to 1째C */
+    { 0x274, 1.0e-3, "째C", "Cold / Warm Temperature Limit" },
+    { 0x275, 1.0e-2, "째C", "Cold / Warm Temperature Limit" },
+    { 0x276, 1.0e-1, "째C", "Cold / Warm Temperature Limit" },
+    { 0x277, 1.0e0,  "째C", "Cold / Warm Temperature Limit" },
 
-    /* E111 1nnn cumul. count max power � 10(nnn-3) W 0.001W to 10000W */
+    /* E111 1nnn cumul. count max power 짠 10(nnn-3) W 0.001W to 10000W */
     { 0x278, 1.0e-3, "W", "Cumul count max power" },
     { 0x279, 1.0e-3, "W", "Cumul count max power" },
     { 0x27A, 1.0e-1, "W", "Cumul count max power" },
@@ -730,7 +730,7 @@ mbus_variable_vif fixed_table[] = {
     { 0x36, 1.0e1, "m^3/h", "Volume flow" },
     { 0x37, 1.0e2, "m^3/h", "Volume flow" },
 
-    { 0x38, 1.0e-3, "캜", "Temperature" },
+    { 0x38, 1.0e-3, "째C", "Temperature" },
 
     { 0x39, 1.0e0,  "Units for H.C.A.", "H.C.A." },
 
@@ -886,7 +886,7 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                 else  // normal integer
                 {
                     result = mbus_data_int_decode(record->data, 2, &value_out_int);
-                    *value_out_real = value_out_int; 
+                    *value_out_real = value_out_int;
                 }
                 break;
 
@@ -904,12 +904,12 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                     ((record->drh.vib.vif == 0xFD) && (vife == 0x70)))
                 {
                     mbus_data_tm_decode(&time, record->data, 4);
-                    if ((*value_out_str = (char*) malloc(20)) == NULL)
+                    if ((*value_out_str = (char*) malloc(21)) == NULL)
                     {
                         MBUS_ERROR("Unable to allocate memory");
                         return -1;
                     }
-                    *value_out_str_size = snprintf(*value_out_str, 20, "%04d-%02d-%02dT%02d:%02d:%02d",
+                    *value_out_str_size = snprintf(*value_out_str, 21, "%04d-%02d-%02dT%02d:%02d:%02dZ",
                                                  (time.tm_year + 1900),
                                                  (time.tm_mon + 1),
                                                   time.tm_mday,
@@ -921,7 +921,7 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                 else  // normal integer
                 {
                     result = mbus_data_int_decode(record->data, 4, &value_out_int);
-                    *value_out_real = value_out_int; 
+                    *value_out_real = value_out_int;
                 }
                 break;
 
@@ -939,12 +939,12 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                     ((record->drh.vib.vif == 0xFD) && (vife == 0x70)))
                 {
                     mbus_data_tm_decode(&time, record->data, 6);
-                    if ((*value_out_str = (char*) malloc(20)) == NULL)
+                    if ((*value_out_str = (char*) malloc(21)) == NULL)
                     {
                         MBUS_ERROR("Unable to allocate memory");
                         return -1;
                     }
-                    *value_out_str_size = snprintf(*value_out_str, 20, "%04d-%02d-%02dT%02d:%02d:%02d",
+                    *value_out_str_size = snprintf(*value_out_str, 21, "%04d-%02d-%02dT%02d:%02d:%02dZ",
                                                  (time.tm_year + 1900),
                                                  (time.tm_mon + 1),
                                                   time.tm_mday,
@@ -1286,7 +1286,7 @@ mbus_parse_variable_record(mbus_data_record *data)
         MBUS_ERROR("%s: memory allocation error\n", __PRETTY_FUNCTION__);
         return NULL;
     }
-    
+
     record->storage_number = mbus_data_record_storage_number(data);
     record->tariff = mbus_data_record_tariff(data);
     record->device = mbus_data_record_device(data);
@@ -2331,7 +2331,7 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
                 if (addr == NULL)
                 {
                     // show error message, but procede with scan
-                    MBUS_ERROR("Failed to generate secondary address from M-Bus reply frame: %s\n", 
+                    MBUS_ERROR("Failed to generate secondary address from M-Bus reply frame: %s\n",
                                mbus_error_str());
                     return MBUS_PROBE_NOTHING;
                 }
