@@ -191,7 +191,7 @@ mbus_serial_disconnect(mbus_handle *handle)
         return -1;
     }
 
-    if (handle->fd < -1)
+    if (handle->fd < 0)
     {
        return -1;
     }
