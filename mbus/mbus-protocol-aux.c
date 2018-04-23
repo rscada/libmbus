@@ -1931,6 +1931,42 @@ mbus_send_request_frame(mbus_handle * handle, int address)
 }
 
 //------------------------------------------------------------------------------
+// send a request packet to from master to slave
+//------------------------------------------------------------------------------
+int
+mbus_send_request_frame_fcb(mbus_handle * handle, int address)
+{
+    int retval = 0;
+    mbus_frame *frame;
+
+    if (mbus_is_primary_address(address) == 0)
+    {
+        MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, address);
+        return -1;
+    }
+
+    frame = mbus_frame_new(MBUS_FRAME_TYPE_SHORT);
+
+    if (frame == NULL)
+    {
+        MBUS_ERROR("%s: failed to allocate mbus frame.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+
+    frame->control = MBUS_CONTROL_MASK_REQ_UD2 | MBUS_CONTROL_MASK_DIR_M2S | MBUS_CONTROL_MASK_FCB;
+    frame->address = address;
+
+    if (mbus_send_frame(handle, frame) == -1)
+    {
+        MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
+        retval = -1;
+    }
+
+    mbus_frame_free(frame);
+    return retval;
+}
+
+//------------------------------------------------------------------------------
 // send a user data packet from master to slave
 //------------------------------------------------------------------------------
 int
