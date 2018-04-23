@@ -294,6 +294,7 @@ int mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, long baud
  * @return Zero when successful.
  */
 int mbus_send_request_frame(mbus_handle * handle, int address);
+int mbus_send_request_frame_fcb(mbus_handle * handle, int address);
 
 /**
  * Sends user data frame (SND_UD) to given slave using "unified" handle
