@@ -55,11 +55,11 @@ main(int argc, char **argv)
 {
     mbus_handle *handle;
     char *device;
-    int address, retries = 0;
+    int address, retries = 0, timeout = 0;
     long baudrate = 9600;
     int opt, ret;
 
-    while ((opt = getopt(argc, argv, "db:r:")) != -1)
+    while ((opt = getopt(argc, argv, "db:r:t:")) != -1)
     {
         switch (opt)
         {
@@ -72,8 +72,11 @@ main(int argc, char **argv)
             case 'r':
                 retries = atoi(optarg);
                 break;
+            case 't':
+                timeout = atoi(optarg);
+                break;
             default:
-                fprintf(stderr,"usage: %s [-d] [-b BAUDRATE] [-r RETRIES] device\n",
+                fprintf(stderr,"usage: %s [-d] [-b BAUDRATE] [-r RETRIES] [-t TIMEOUT] device\n",
                         argv[0]);
 
                 return 0;
@@ -81,7 +84,7 @@ main(int argc, char **argv)
     }
 
     if (optind >= argc) {
-        fprintf(stderr,"usage: %s [-d] [-b BAUDRATE] [-r RETRIES] device\n",
+        fprintf(stderr,"usage: %s [-d] [-b BAUDRATE] [-r RETRIES] [-t TIMEOUT] device\n",
                 argv[0]);
 
         return 0;
@@ -110,6 +113,12 @@ main(int argc, char **argv)
     if (mbus_context_set_option(handle, MBUS_OPTION_MAX_SEARCH_RETRY, retries) == -1)
     {
         fprintf(stderr,"Failed to set retry count\n");
+        return 1;
+    }
+
+    if (mbus_context_set_option(handle, MBUS_OPTION_TIMEOUT_OFFSET, timeout) == -1)
+    {
+        fprintf(stderr,"Failed to set timeout offset\n");
         return 1;
     }
 
