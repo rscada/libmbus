@@ -11,6 +11,7 @@
 #include <string.h>
 
 #include <stdio.h>
+#include <unistd.h>
 #include <mbus/mbus.h>
 
 static int debug = 0;
@@ -56,57 +57,37 @@ main(int argc, char **argv)
     char *device;
     int address, retries = 0;
     long baudrate = 9600;
-    int ret;
+    int opt, ret;
 
-    if (argc == 2)
+    while ((opt = getopt(argc, argv, "db:r:")) != -1)
     {
-        device = argv[1];
+        switch (opt)
+        {
+            case 'd':
+                debug = 1;
+                break;
+            case 'b':
+                baudrate = atol(optarg);
+                break;
+            case 'r':
+                retries = atoi(optarg);
+                break;
+            default:
+                fprintf(stderr,"usage: %s [-d] [-b BAUDRATE] [-r RETRIES] device\n",
+                        argv[0]);
+
+                return 0;
+        }
     }
-    else if (argc == 3 && strcmp(argv[1], "-d") == 0)
-    {
-        debug = 1;
-        device = argv[2];
-    }
-    else if (argc == 4 && strcmp(argv[1], "-b") == 0)
-    {
-        baudrate = atol(argv[2]);
-        device = argv[3];
-    }
-    else if (argc == 4 && strcmp(argv[1], "-r") == 0)
-    {
-        retries = atoi(argv[2]);
-        device = argv[3];
-    }
-    else if (argc == 5 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-b") == 0)
-    {
-        debug = 1;
-        baudrate = atol(argv[3]);
-        device = argv[4];
-    }
-    else if (argc == 5 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-r") == 0)
-    {
-        debug = 1;
-        retries = atoi(argv[3]);
-        device = argv[4];
-    }
-    else if (argc == 6 && strcmp(argv[1], "-b") == 0 && strcmp(argv[3], "-r") == 0)
-    {
-        baudrate = atol(argv[2]);
-        retries = atoi(argv[4]);
-        device = argv[5];
-    }
-    else if (argc == 7 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-b") == 0 && strcmp(argv[4], "-r") == 0)
-    {
-        debug = 1;
-        baudrate = atol(argv[3]);
-        retries = atoi(argv[5]);
-        device = argv[6];
-    }
-    else
-    {
-        fprintf(stderr,"usage: %s [-d] [-b BAUDRATE] [-r RETRIES] device\n", argv[0]);
+
+    if (optind >= argc) {
+        fprintf(stderr,"usage: %s [-d] [-b BAUDRATE] [-r RETRIES] device\n",
+                argv[0]);
+
         return 0;
     }
+
+    device = argv[optind];
 
     if ((handle = mbus_context_serial(device)) == NULL)
     {
