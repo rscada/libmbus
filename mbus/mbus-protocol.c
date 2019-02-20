@@ -466,9 +466,9 @@ mbus_data_bcd_encode(unsigned char *bcd_data, size_t bcd_data_size, int value)
     int v0, v1, v2, x1, x2;
     size_t i;
 
-    if (bcd_data && bcd_data_size && (value >= 0))
+    if (bcd_data && bcd_data_size)
     {
-        v2 = value;
+        v2 = abs(value);
 
         for (i = 0; i < bcd_data_size; i++)
         {
@@ -480,6 +480,11 @@ mbus_data_bcd_encode(unsigned char *bcd_data, size_t bcd_data_size, int value)
             x2 = v1 - v2 * 10;
 
             bcd_data[bcd_data_size-1-i] = (x2 << 4) | x1;
+        }
+
+        if (value < 0)
+        {
+            bcd_data[bcd_data_size-1] |= 0xF0;
         }
 
         return 0;
@@ -503,8 +508,20 @@ mbus_data_bcd_decode(unsigned char *bcd_data, size_t bcd_data_size)
     {
         for (i = bcd_data_size; i > 0; i--)
         {
-            val = (val * 10) + ((bcd_data[i-1]>>4) & 0xF);
-            val = (val * 10) + ( bcd_data[i-1]     & 0xF);
+            val *= 10;
+
+            if (bcd_data[i-1]>>4 < 0xA)
+            {
+                val += ((bcd_data[i-1]>>4) & 0xF);
+            }
+
+            val = (val * 10) + (bcd_data[i-1] & 0xF);
+        }
+
+        // hex code Fh in the MSD position signals a negative BCD number
+        if (bcd_data[bcd_data_size-1]>>4 == 0xF)
+        {
+            val *= -1;
         }
 
         return val;
