@@ -508,14 +508,14 @@ mbus_data_bcd_decode(unsigned char *bcd_data, size_t bcd_data_size)
     {
         for (i = bcd_data_size; i > 0; i--)
         {
-            val *= 10;
+            val = (val * 10);
 
             if (bcd_data[i-1]>>4 < 0xA)
             {
                 val += ((bcd_data[i-1]>>4) & 0xF);
             }
 
-            val = (val * 10) + (bcd_data[i-1] & 0xF);
+            val = (val * 10) + ( bcd_data[i-1] & 0xF);
         }
 
         // hex code Fh in the MSD position signals a negative BCD number
@@ -1109,6 +1109,9 @@ mbus_data_product_name(mbus_data_variable_header *header)
             {
                 case 0x28:
                     strcpy(buff,"ABB F95 Typ US770");
+                    break;
+                case 0x2F:
+                    strcpy(buff,"Hydrometer Sharky 775");
                     break;
             }
         }
