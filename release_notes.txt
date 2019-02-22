@@ -1,5 +1,14 @@
 Release notes for libmbus
 
+Version 0.9.0 (2019-02-22):
+
+Added support for negative BCD numbers (type A) and date time CP48 (type I),
+new program (set primary address), extended XML output (storage number,
+tariff, device), echo cancelation and better retry handling. Also this version
+has countless bug fixes.
+
+Many thanks to all contributers
+
 Version 0.8.0 (2012-06-18):
 --------------------------
 
