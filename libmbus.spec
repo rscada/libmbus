@@ -11,10 +11,10 @@
 
 Summary: 	Open source M-bus (Meter-Bus) library
 Name: 		libmbus
-Version: 	0.8.0
+Version: 	0.9.0
 Release: 	1
-Source:	 	http://www.rscada.se/public-dist/%{name}-%{version}.tar.gz
-URL:		http://www.rscada.se/libmbus/
+Source:	 	https://github.com/rscada/%{name}/archive/%{version}.tar.gz
+URL:		https://github.com/rscada/libmbus/
 License:	BSD
 Vendor:		Raditex Control AB
 Packager:	Stefan Wahren <info@lategoodbye.de>
@@ -68,9 +68,8 @@ rm -rf "%buildroot"
 %{_bindir}/mbus-serial-*
 %{_bindir}/mbus-tcp-*
 %{_libdir}/libmbus.so*
-# man pages doesn't exist in this version
-# %{_mandir}/man1/libmbus.1
-# %{_mandir}/man1/mbus-*
+%{_mandir}/man1/libmbus.1
+%{_mandir}/man1/mbus-*
 
 %files devel
 %defattr (-,root,root)
@@ -80,5 +79,9 @@ rm -rf "%buildroot"
 %{_libdir}/pkgconfig/libmbus.pc
 
 %changelog
+* Fri Feb 22 2019 Stefan Wahren <info@lategoodbye.de> - 0.9.0-1
+- switch to github repo
+- enable man pages
+
 * Fri Mar 29 2013 Stefan Wahren <info@lategoodbye.de> - 0.8.0-1
 - Initial package based on the last official release
