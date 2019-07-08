@@ -1584,7 +1584,7 @@ mbus_data_fixed_unit(int medium_unit_byte)
             snprintf(buff, sizeof(buff), "10 m^3");
             break;
         case 0x2E:
-            snprintf(buff, sizeof(buff), "m^3");
+            snprintf(buff, sizeof(buff), "100 m^3");
             break;
 
         case 0x2F:
@@ -1828,7 +1828,7 @@ mbus_unit_prefix(int exp)
             break;
 
         case 9:
-            snprintf(buff, sizeof(buff), "T");
+            snprintf(buff, sizeof(buff), "G");
             break;
 
         default:
