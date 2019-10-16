@@ -15,6 +15,11 @@
 #else
 #include "../config.h"
 #endif
+
+#ifndef VERSION
+#define VERSION "0.9.0"
+#endif
+
 //
 //
 //
