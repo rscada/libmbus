@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 
 #include "mbus-protocol.h"
-#include "../config.h"
+#include "mbus/config.h"
 
 //
 //
