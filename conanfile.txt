@@ -1,0 +1,6 @@
+[requires]
+fmt/6.0.0
+
+[generators]
+cmake_find_package
+cmake_paths

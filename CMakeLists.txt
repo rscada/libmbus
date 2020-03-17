@@ -11,6 +11,8 @@ endif()
 
 option(LIBMBUS_BUILD_EXAMPLES "build examples" OFF)
 option(LIBMBUS_BUILD_TESTS "build tests" OFF)
+option(LIBMBUS_USE_CONAN_PACKAGE "use conan package manager" OFF)
+option(LIBMBUS_BUILD_CONTRIB "build c++ wrapper" OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -24,6 +26,14 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 # Set the output of the libraries and executables.
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
+
+if(LIBMBUS_USE_CONAN_PACKAGE)
+  include(${CMAKE_SOURCE_DIR}/cmake/conan.cmake)
+  conan_cmake_run(CONANFILE conanfile.txt BASIC_SETUP BUILD missing)
+  message(STATUS "Using Conan packages")
+else()
+  message(STATUS "Not using Conan packages")
+endif()
 
 #
 # static analysis
@@ -41,6 +51,10 @@ if(LIBMBUS_RUN_CLANG_TIDY)
     set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}")
   endif()
 endif(LIBMBUS_RUN_CLANG_TIDY)
+
+if(LIBMBUS_BUILD_CONTRIB)
+  find_package(fmt)
+endif()
 
 include(CheckIncludeFile)
 
@@ -67,6 +81,10 @@ configure_file(${CMAKE_CURRENT_LIST_DIR}/mbus/config.h.in
 
 add_library(
   ${PROJECT_NAME}
+  $<$<BOOL:${LIBMBUS_BUILD_CONTRIB}>:${CMAKE_CURRENT_LIST_DIR}/mbus/contrib/mbusdata.cpp>
+  $<$<BOOL:${LIBMBUS_BUILD_CONTRIB}>:${CMAKE_CURRENT_LIST_DIR}/mbus/contrib/mbusdata.hpp>
+  $<$<BOOL:${LIBMBUS_BUILD_CONTRIB}>:${CMAKE_CURRENT_LIST_DIR}/mbus/contrib/mbus.cpp>
+  $<$<BOOL:${LIBMBUS_BUILD_CONTRIB}>:${CMAKE_CURRENT_LIST_DIR}/mbus/contrib/mbus.hpp>
   ${CMAKE_CURRENT_LIST_DIR}/mbus/mbus-protocol.c
   ${CMAKE_CURRENT_LIST_DIR}/mbus/mbus-protocol.h
   ${CMAKE_CURRENT_LIST_DIR}/mbus/mbus-tcp.c
@@ -80,9 +98,10 @@ add_library(
 target_include_directories(
   ${PROJECT_NAME}
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
-         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/mbus>
          $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
-target_link_libraries(${PROJECT_NAME} PRIVATE m)
+target_link_libraries(${PROJECT_NAME}
+                      PRIVATE m $<$<BOOL:${LIBMBUS_BUILD_CONTRIB}>:fmt::fmt>)
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wno-pedantic)
 
 if(CLANG_TIDY_EXE)
