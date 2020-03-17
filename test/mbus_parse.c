@@ -18,7 +18,7 @@ int
 main(int argc, char *argv[])
 {
     FILE *fp = NULL;
-    size_t buff_len, len;
+    size_t len;
     int normalized = 0;
     unsigned char buf[1024];
     mbus_frame reply;
@@ -53,6 +53,7 @@ main(int argc, char *argv[])
     if (ferror(fp) != 0)
     {
         fprintf(stderr, "%s: failed to read '%s'\n", argv[0], file);
+        fclose(fp);
         return 1;
     }
 

@@ -18,7 +18,7 @@ int
 main(int argc, char *argv[])
 {
     FILE *fp = NULL;
-    size_t buff_len, len;
+    size_t buff_len;
     int result, normalized = 0;
     unsigned char raw_buff[4096], buff[4096];
     mbus_frame reply;
@@ -48,11 +48,12 @@ main(int argc, char *argv[])
     }
 
     memset(raw_buff, 0, sizeof(raw_buff));
-    len = fread(raw_buff, 1, sizeof(raw_buff), fp);
+    fread(raw_buff, 1, sizeof(raw_buff), fp);
 
     if (ferror(fp) != 0)
     {
         fprintf(stderr, "%s: failed to read '%s'\n", argv[0], file);
+        fclose(fp);
         return 1;
     }
 
