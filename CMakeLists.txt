@@ -11,6 +11,8 @@ endif()
 
 option(LIBMBUS_BUILD_EXAMPLES "build examples" OFF)
 option(LIBMBUS_BUILD_TESTS "build tests" OFF)
+option(LIBMBUS_ENABLE_COVERAGE "Build with coverage support" ON)
+option(LIBMBUS_RUN_CLANG_TIDY "Use Clang-Tidy for static analysis" OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -41,6 +43,35 @@ if(LIBMBUS_RUN_CLANG_TIDY)
     set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}")
   endif()
 endif(LIBMBUS_RUN_CLANG_TIDY)
+
+if(LIBMBUS_ENABLE_COVERAGE)
+  if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(
+      WARNING
+        "Code coverage results with an optimised (non-Debug) build may be misleading"
+    )
+  endif(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+  # https://discuss.circleci.com/t/problems-using-lcov-gcov-for-c-code/13898
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    # using Clang
+    message(STATUS "Not doing coverage...")
+  elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    # using GCC
+    message(STATUS "Building with code coverage...")
+    set(CMAKE_BUILD_TYPE DEBUG)
+    set(CMAKE_CXX_FLAGS
+        "${CMAKE_CXX_FLAGS} -fPIC -ggdb3 -O0 --coverage -fprofile-arcs -ftest-coverage"
+    )
+    set(CMAKE_C_FLAGS
+        "${CMAKE_C_FLAGS} -fPIC -ggdb3 -O0 --coverage -fprofile-arcs -ftest-coverage "
+    )
+    set(CMAKE_EXE_LINKER_FLAGS
+        "${CMAKE_CXX_FLAGS} --coverage -fprofile-arcs -ftest-coverage ")
+    set(CMAKE_SHARED_LINKER_FLAGS
+        "${CMAKE_CXX_FLAGS} --coverage -fprofile-arcs -ftest-coverage ")
+    link_libraries(-lgcov)
+  endif()
+endif()
 
 include(CheckIncludeFile)
 
