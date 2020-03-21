@@ -788,8 +788,6 @@ mbus_register_found_event(mbus_handle * handle, void (*event)(mbus_handle * hand
 
 int mbus_fixed_normalize(int medium_unit, long medium_value, char **unit_out, double *value_out, char **quantity_out)
 {
-    double exponent = 0.0;
-    int i;
     medium_unit = medium_unit & 0x3F;
 
     if (unit_out == NULL || value_out == NULL || quantity_out == NULL)
@@ -810,7 +808,7 @@ int mbus_fixed_normalize(int medium_unit, long medium_value, char **unit_out, do
             break;
 
     default:
-        for(i=0; fixed_table[i].vif < 0xfff; ++i)
+        for(int i=0; fixed_table[i].vif < 0xfff; ++i)
         {
             if (fixed_table[i].vif == medium_unit)
             {
@@ -823,7 +821,6 @@ int mbus_fixed_normalize(int medium_unit, long medium_value, char **unit_out, do
 
         *unit_out = strdup("Unknown");
         *quantity_out = strdup("Unknown");
-        exponent = 0.0;
         *value_out = 0.0;
         return -1;
     }
@@ -838,7 +835,6 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
     unsigned char vif, vife;
     struct tm time;
     int value_out_int;
-    long value_out_long;
     long long value_out_long_long;
     *value_out_real = 0.0;
     *value_out_str = NULL;
@@ -1041,7 +1037,6 @@ int
 mbus_vif_unit_normalize(int vif, double value, char **unit_out, double *value_out, char **quantity_out)
 {
     int i;
-    double exponent = 1.0;
     unsigned newVif = vif & 0xF7F; /* clear extension bit */
 
     MBUS_DEBUG("vif_unit_normalize = 0x%03X \n", vif);
@@ -1066,7 +1061,6 @@ mbus_vif_unit_normalize(int vif, double value, char **unit_out, double *value_ou
     MBUS_ERROR("%s: Unknown VIF 0x%03X\n", __PRETTY_FUNCTION__, newVif);
     *unit_out = strdup("Unknown (VIF=0x%.02X)");
     *quantity_out = strdup("Unknown");
-    exponent = 0.0;
     *value_out = 0.0;
     return -1;
 }
