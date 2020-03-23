@@ -24,5 +24,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: build doxygen documentation
+      run: sudo apt install -y doxygen
+      
+    - name: build doxygen documentation
       run: rm -rf build || true && mkdir build && cd build && cmake .. -DLIBMBUS_BUILD_DOCS=ON && cmake --build . --target doc
 
