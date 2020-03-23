@@ -15,3 +15,10 @@ cmake --build .
 # cmake .. -DLIBMBUS_PACKAGE_DEB=ON
 # cpack ..
 # dpkg -i *.deb
+
+# build doc
+
+# mkdir build
+# cd build
+# cmake .. -DLIBMBUS_BUILD_DOCS=ON
+# cmake --build . --target doc

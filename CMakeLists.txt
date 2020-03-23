@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(libmbus LANGUAGES CXX C VERSION "0.9.0")
+project(
+  libmbus
+  LANGUAGES CXX C
+  VERSION "0.9.0")
 
 if(CMAKE_BUILD_TYPE STREQUAL "")
   message(STATUS "CMAKE_BUILD_TYPE empty setting to Debug")
@@ -18,6 +21,7 @@ option(LIBMBUS_ENABLE_COVERAGE "build with coverage support" ON)
 option(LIBMBUS_RUN_CLANG_TIDY "use Clang-Tidy for static analysis" OFF)
 option(LIBMBUS_PACKAGE_DEB "build debian package" OFF)
 option(LIBMBUS_PACKAGE_RPM "build rpm package" OFF)
+option(LIBMBUS_BUILD_DOCS "build documentation" OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -200,7 +204,8 @@ set(CPACK_COMPONENTS_ALL devel libs)
 set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE)
 
 set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
-set(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+set(CPACK_PACKAGE_FILE_NAME
+    "${CMAKE_PROJECT_NAME}_${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
 set(CPACK_COMPONENTS_ALL Libraries ApplicationData)
 
 if(LIBMBUS_PACKAGE_DEB)
@@ -219,3 +224,37 @@ if(LIBMBUS_PACKAGE_RPM)
 endif()
 
 include(CPack)
+
+# ##############################################################################
+# doc
+# mkdir build ; cd build ; cmake .. -DLIBMBUS_BUILD_DOCS=ON ; cmake --build . --target doc
+# ##############################################################################
+
+if(LIBMBUS_BUILD_DOCS)
+  message(STATUS "building with documentation")
+  # Generate targets for documentation
+  # check if Doxygen is installed
+  find_package(Doxygen)
+
+  if(Doxygen_FOUND)
+    # set input and output files
+    set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
+    set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+
+    # request to configure the file
+    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+
+    # note the option ALL which allows to build the docs together with the application
+    add_custom_target(
+      doc ALL
+      COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+      COMMENT "Generating API documentation with Doxygen"
+      VERBATIM)
+
+    message(STATUS "Setup up the Doxygen documention build")
+
+  else(Doxygen_FOUND)
+    message(WARNING "Doxygen need to be installed to generate the doxygen documentation")
+  endif(Doxygen_FOUND)
+endif()
