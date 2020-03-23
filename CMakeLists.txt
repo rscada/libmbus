@@ -1,18 +1,23 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(libmbus LANGUAGES CXX C)
-
-set(PROJECT_VERSION "0.9.0")
+project(libmbus LANGUAGES CXX C VERSION "0.9.0")
 
 if(CMAKE_BUILD_TYPE STREQUAL "")
   message(STATUS "CMAKE_BUILD_TYPE empty setting to Debug")
   set(CMAKE_BUILD_TYPE "Debug")
 endif()
 
+# ##############################################################################
+# default options -> changed with e.g. cd build && cmake ..
+# -DLIBMBUS_BUILD_TESTS=ON
+# ##############################################################################
+
 option(LIBMBUS_BUILD_EXAMPLES "build examples" OFF)
 option(LIBMBUS_BUILD_TESTS "build tests" OFF)
-option(LIBMBUS_ENABLE_COVERAGE "Build with coverage support" ON)
-option(LIBMBUS_RUN_CLANG_TIDY "Use Clang-Tidy for static analysis" OFF)
+option(LIBMBUS_ENABLE_COVERAGE "build with coverage support" ON)
+option(LIBMBUS_RUN_CLANG_TIDY "use Clang-Tidy for static analysis" OFF)
+option(LIBMBUS_PACKAGE_DEB "build debian package" OFF)
+option(LIBMBUS_PACKAGE_RPM "build rpm package" OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -27,9 +32,9 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
-#
+# ##############################################################################
 # static analysis
-#
+# ##############################################################################
 
 if(LIBMBUS_RUN_CLANG_TIDY)
   find_program(
@@ -46,12 +51,9 @@ endif(LIBMBUS_RUN_CLANG_TIDY)
 
 if(LIBMBUS_ENABLE_COVERAGE)
   if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(
-      WARNING
-        "Code coverage results with an optimised (non-Debug) build may be misleading"
-    )
-  endif(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-  # https://discuss.circleci.com/t/problems-using-lcov-gcov-for-c-code/13898
+    message(WARNING "Code coverage results with an optimised (non-Debug) build may be misleading")
+  endif()
+
   if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     # using Clang
     message(STATUS "Not doing coverage...")
@@ -59,16 +61,10 @@ if(LIBMBUS_ENABLE_COVERAGE)
     # using GCC
     message(STATUS "Building with code coverage...")
     set(CMAKE_BUILD_TYPE DEBUG)
-    set(CMAKE_CXX_FLAGS
-        "${CMAKE_CXX_FLAGS} -fPIC -ggdb3 -O0 --coverage -fprofile-arcs -ftest-coverage"
-    )
-    set(CMAKE_C_FLAGS
-        "${CMAKE_C_FLAGS} -fPIC -ggdb3 -O0 --coverage -fprofile-arcs -ftest-coverage "
-    )
-    set(CMAKE_EXE_LINKER_FLAGS
-        "${CMAKE_CXX_FLAGS} --coverage -fprofile-arcs -ftest-coverage ")
-    set(CMAKE_SHARED_LINKER_FLAGS
-        "${CMAKE_CXX_FLAGS} --coverage -fprofile-arcs -ftest-coverage ")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -ggdb3 -O0 --coverage -fprofile-arcs -ftest-coverage")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -ggdb3 -O0 --coverage -fprofile-arcs -ftest-coverage ")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_CXX_FLAGS} --coverage -fprofile-arcs -ftest-coverage ")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_CXX_FLAGS} --coverage -fprofile-arcs -ftest-coverage ")
     link_libraries(-lgcov)
   endif()
 endif()
@@ -86,15 +82,15 @@ check_include_file(sys/stat.h HAVE_SYS_STAT_H)
 check_include_file(sys/types.h HAVE_SYS_TYPES_H)
 check_include_file(unistd.h HAVE_UNISTD_H)
 
-#
+# ##############################################################################
 # library
-#
+# ##############################################################################
+
 set(PACKAGE_STRING "${PROJECT_NAME} ${PROJECT_VERSION}")
 
 set(PACKAGE_VERSION "${PROJECT_VERSION}")
 set(VERSION "${PROJECT_VERSION}")
-configure_file(${CMAKE_CURRENT_LIST_DIR}/mbus/config.h.in
-               ${CMAKE_CURRENT_LIST_DIR}/config.h)
+configure_file(${CMAKE_CURRENT_LIST_DIR}/mbus/config.h.in ${CMAKE_CURRENT_LIST_DIR}/config.h)
 
 add_library(
   ${PROJECT_NAME}
@@ -109,32 +105,29 @@ add_library(
   ${CMAKE_CURRENT_LIST_DIR}/mbus/mbus-serial.c
   ${CMAKE_CURRENT_LIST_DIR}/mbus/mbus-serial.h)
 target_include_directories(
-  ${PROJECT_NAME}
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
-         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+  ${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+                         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 target_link_libraries(${PROJECT_NAME} PRIVATE m)
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wno-pedantic)
 
 if(CLANG_TIDY_EXE)
-  set_target_properties(${PROJECT_NAME} PROPERTIES CXX_CLANG_TIDY
-                                                   "${DO_CLANG_TIDY}")
+  set_target_properties(${PROJECT_NAME} PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
 endif()
 
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
-#
+# ##############################################################################
 # examples
-#
+# ##############################################################################
 
 if(LIBMBUS_BUILD_EXAMPLES)
   message(STATUS "building examples")
   add_subdirectory(bin)
 endif()
 
-#
+# ##############################################################################
 # tests
-#
+# ##############################################################################
 
 if(LIBMBUS_BUILD_TESTS)
   message(STATUS "building tests")
@@ -142,9 +135,9 @@ if(LIBMBUS_BUILD_TESTS)
   add_subdirectory(test)
 endif()
 
-#
+# ##############################################################################
 # install
-#
+# ##############################################################################
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
@@ -162,20 +155,67 @@ install(
   NAMESPACE ${PROJECT_NAME}::
   COMPONENT dev)
 
-configure_package_config_file(cmake/Config.cmake.in ${PROJECT_NAME}Config.cmake
-                              INSTALL_DESTINATION ${LIBMBUS_CONFIG_INSTALL_DIR})
-write_basic_package_version_file(${PROJECT_NAME}ConfigVersion.cmake
-                                 COMPATIBILITY SameMajorVersion)
+configure_package_config_file(cmake/Config.cmake.in ${PROJECT_NAME}Config.cmake INSTALL_DESTINATION
+                              ${LIBMBUS_CONFIG_INSTALL_DIR})
+write_basic_package_version_file(${PROJECT_NAME}ConfigVersion.cmake COMPATIBILITY SameMajorVersion)
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
   DESTINATION ${LIBMBUS_CONFIG_INSTALL_DIR}
   COMPONENT dev)
 
-# BUG: installing empty dirs https://gitlab.kitware.com/cmake/cmake/issues/17122
 install(
   DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/mbus/
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/mbus/
   COMPONENT dev
   FILES_MATCHING
   PATTERN "*.h")
+
+# ##############################################################################
+# package
+# mkdir build ; cd build ; cmake .. -DLIBMBUS_PACKAGE_DEB=ON ; cpack ..
+# ##############################################################################
+
+include(InstallRequiredSystemLibraries)
+
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Open source M-bus (Meter-Bus) library.")
+set(CPACK_PACKAGE_DESCRIPTION
+    "libmbus is an open source library for the M-bus (Meter-Bus) protocol.
+The Meter-Bus is a standard for reading out meter data from electricity meters,
+heat meters, gas meters, etc. The M-bus standard deals with both the electrical
+signals on the M-Bus, and the protocol and data format used in transmissions
+on the M-Bus. The role of libmbus is to decode/encode M-bus data, and to handle
+the communication with M-Bus devices.
+
+For more information see http://www.rscada.se/libmbus")
+
+set(CPACK_PACKAGE_VENDOR "Raditex Control AB")
+set(CPACK_PACKAGE_CONTACT "Stefan Wahren <info@lategoodbye.de>")
+set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/rscada/libmbus/")
+set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
+set(CPACK_PACKAGE_RELEASE 1)
+set(CPACK_COMPONENTS_ALL devel libs)
+set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE)
+
+set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
+set(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+set(CPACK_COMPONENTS_ALL Libraries ApplicationData)
+
+if(LIBMBUS_PACKAGE_DEB)
+  set(CPACK_GENERATOR "DEB")
+  set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Stefan Wahren <info@lategoodbye.de>")
+  set(CPACK_DEBIAN_PACKAGE_SECTION "Development/Languages/C and C++")
+  set(CPACK_DEBIAN_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
+  set(CPACK_DEBIAN_PACKAGE_VERSION
+      "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}-${CPACK_PACKAGE_RELEASE}"
+  )
+endif()
+
+if(LIBMBUS_PACKAGE_RPM)
+  set(CPACK_GENERATOR "RPM")
+  set(CPACK_RPM_PACKAGE_LICENSE "BSD")
+endif()
+
+include(CPack)
