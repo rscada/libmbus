@@ -11,16 +11,6 @@ jobs:
     - name: build examples and tests
       run: rm -rf build || true && mkdir build && cd build && cmake .. -DLIBMBUS_BUILD_EXAMPLES=ON -DLIBMBUS_BUILD_TESTS=ON && cmake --build . -j
 
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: package
-      run: sudo apt install socat
-    - name: test
-      run: sudo python3 test/slave-test.py
-
   debian:
     runs-on: ubuntu-latest
     
