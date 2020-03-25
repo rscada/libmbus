@@ -15,8 +15,7 @@ jobs:
       run: ./test/generate-xml.sh test/test-frames build/bin/mbus_parse_hex
 
     - name: install and run gcovr
-      run: sudo pip install gcovr
-      run: gcovr build/.
+      run: sudo pip install gcovr && gcovr build/.
 
   debian:
     runs-on: ubuntu-latest
