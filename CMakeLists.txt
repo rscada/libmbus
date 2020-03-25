@@ -150,6 +150,19 @@ endif()
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
+set(INSTALL_PKGCONFIG_DIR
+    "${CMAKE_INSTALL_PREFIX}/share/pkgconfig"
+    CACHE PATH "Installation directory for pkgconfig (.pc) files")
+set(INSTALL_INC_DIR
+    "${CMAKE_INSTALL_PREFIX}/mbus"
+    CACHE PATH "Installation directory for headers")
+set(INSTALL_LIB_DIR
+    "${CMAKE_INSTALL_PREFIX}/lib"
+    CACHE PATH "Installation directory for libraries")
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libmbus.pc.in ${CMAKE_CURRENT_BINARY_DIR}/libmbus.pc @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libmbus.pc DESTINATION "${INSTALL_PKGCONFIG_DIR}")
+
 set(LIBMBUS_CONFIG_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 install(
   TARGETS ${PROJECT_NAME}
