@@ -14,12 +14,9 @@ jobs:
     - name: generate test frames
       run: ./test/generate-xml.sh test/test-frames build/bin/mbus_parse_hex
 
-    - name: install gcovr
+    - name: install and run gcovr
       run: sudo pip install gcovr
-
-    - name: execute tests and get coverage
-      working-directory: ${{runner.workspace}}/build
-      run:  gcovr .
+      run: gcovr build/.
 
   debian:
     runs-on: ubuntu-latest
