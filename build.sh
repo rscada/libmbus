@@ -4,7 +4,7 @@
 rm -rf _build
 mkdir _build
 cd _build
-cmake .. -DLIBMBUS_BUILD_EXAMPLES=ON -DLIBMBUS_BUILD_TESTS=ON -DLIBMBUS_BUILD_TESTS=ON
+cmake .. -DLIBMBUS_BUILD_EXAMPLES=ON -DLIBMBUS_BUILD_TESTS=ON -DLIBMBUS_ENABLE_COVERAGE=ON
 cmake --build . -j
 
 # build deb
