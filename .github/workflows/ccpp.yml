@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: build examples and tests
-      run: rm -rf build || true && mkdir build && cd build && cmake .. -DLIBMBUS_BUILD_EXAMPLES=ON -DLIBMBUS_BUILD_TESTS=ON -DLIBMBUS_ENABLE_COVERAGE=ON && cmake --build . -j && cd ..
+      run: rm -rf build || true && mkdir build && cd build && cmake .. -DLIBMBUS_BUILD_EXAMPLES=ON -DLIBMBUS_BUILD_TESTS=ON -DLIBMBUS_ENABLE_COVERAGE=ON -DLIBMBUS_SANITIZE_MEMORY=ON && cmake --build . -j && cd ..
 
     - name: generate test frames
       run: ./test/generate-xml.sh test/test-frames build/bin/mbus_parse_hex
