@@ -10,7 +10,6 @@ test/Makefile.in
 /compile
 config.guess
 config.sub
-config.h.in
 configure
 /depcomp
 /install-sh
@@ -72,3 +71,9 @@ test/test-frames/*.xml.new
 test/error-frames/*.xml.new
 test/unsupported-frames/*.xml.new
 
+/build/
+_build/
+
+# IDE
+/.vscode/
+CMakeLists.txt.user
