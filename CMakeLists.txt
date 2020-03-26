@@ -43,8 +43,8 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 if(LIBMBUS_RUN_CLANG_TIDY)
   find_program(
     CLANG_TIDY_EXE
-    NAMES "clang-tidy"
-    DOC "/usr/bin/clang-tidy")
+    NAMES "clang-tidy-9"
+    DOC "/usr/bin/clang-tidy-9")
   if(NOT CLANG_TIDY_EXE)
     message(WARNING "clang-tidy not found.")
   else()
