@@ -54,7 +54,7 @@ if(LIBMBUS_RUN_CLANG_TIDY)
 endif(LIBMBUS_RUN_CLANG_TIDY)
 
 if(LIBMBUS_ENABLE_COVERAGE)
-  if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+  if(NOT CMAKE_BUILD_TYPE MATCHES "(Debug)|(RelWithDebInfo)")
     message(WARNING "Code coverage results with an optimised (non-Debug) build may be misleading")
   endif()
 
@@ -94,7 +94,7 @@ set(PACKAGE_STRING "${PROJECT_NAME} ${PROJECT_VERSION}")
 
 set(PACKAGE_VERSION "${PROJECT_VERSION}")
 set(VERSION "${PROJECT_VERSION}")
-configure_file(${CMAKE_CURRENT_LIST_DIR}/mbus/config.h.in ${CMAKE_CURRENT_LIST_DIR}/config.h)
+configure_file(${CMAKE_CURRENT_LIST_DIR}/mbus/config.h.in ${CMAKE_CURRENT_LIST_DIR}/config.h @ONLY)
 
 add_library(
   ${PROJECT_NAME}
@@ -111,7 +111,7 @@ add_library(
 target_include_directories(
   ${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
                          $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
-if(CMAKE_SYSTEM_NAME STREQUAL Linux OR CMAKE_SYSTEM_NAME STREQUAL Android)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Android")
   target_link_libraries(${PROJECT_NAME} PRIVATE m)
 endif()
 if(NOT MSVC)
@@ -151,13 +151,13 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
 set(INSTALL_PKGCONFIG_DIR
-    "${CMAKE_INSTALL_PREFIX}/share/pkgconfig"
+    "${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig"
     CACHE PATH "Installation directory for pkgconfig (.pc) files")
 set(INSTALL_INC_DIR
-    "${CMAKE_INSTALL_PREFIX}/mbus"
+    "${CMAKE_INSTALL_INCLUDEDIR}/mbus"
     CACHE PATH "Installation directory for headers")
 set(INSTALL_LIB_DIR
-    "${CMAKE_INSTALL_PREFIX}/lib"
+    "${CMAKE_INSTALL_LIBDIR}"
     CACHE PATH "Installation directory for libraries")
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libmbus.pc.in ${CMAKE_CURRENT_BINARY_DIR}/libmbus.pc @ONLY)
