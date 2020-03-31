@@ -17,7 +17,7 @@ endif()
 
 option(LIBMBUS_BUILD_EXAMPLES "build examples" OFF)
 option(LIBMBUS_BUILD_TESTS "build tests" OFF)
-option(LIBMBUS_ENABLE_COVERAGE "build with coverage support" ON)
+option(LIBMBUS_ENABLE_COVERAGE "build with coverage support" OFF)
 option(LIBMBUS_RUN_CLANG_TIDY "use Clang-Tidy for static analysis" OFF)
 option(LIBMBUS_PACKAGE_DEB "build debian package" OFF)
 option(LIBMBUS_PACKAGE_RPM "build rpm package" OFF)
