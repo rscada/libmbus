@@ -49,7 +49,6 @@ if(LIBMBUS_RUN_CLANG_TIDY)
     message(WARNING "clang-tidy not found.")
   else()
     message(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
-    set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}")
   endif()
 endif(LIBMBUS_RUN_CLANG_TIDY)
 
@@ -119,7 +118,7 @@ if(NOT MSVC)
 endif()
 
 if(CLANG_TIDY_EXE)
-  set_target_properties(${PROJECT_NAME} PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
+  set_target_properties(${PROJECT_NAME} PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
 endif()
 
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
