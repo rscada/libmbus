@@ -226,10 +226,8 @@ set(CPACK_PACKAGE_RELEASE 1)
 
 # create 2 components, libmbus, libmbus-dev
 set(CPACK_COMPONENTS_ALL lib dev)
-set(CPACK_COMPONENT_LIB_DESCRIPTION
-    "FreeSCADA M-Bus Library.
-    A free and open-source library for M-Bus (Meter Bus) from the rSCADA project.
-   ")
+set(CPACK_COMPONENT_LIB_DESCRIPTION "FreeSCADA M-Bus Library.
+    A free and open-source library for M-Bus (Meter Bus) from the rSCADA project.")
 set(CPACK_DEBIAN_LIB_PACKAGE_SECTION libs)
 
 set(CPACK_COMPONENT_DEVEL_DESCRIPTION
