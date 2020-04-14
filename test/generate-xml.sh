@@ -12,23 +12,25 @@
 #
 #------------------------------------------------------------------------------
 
-# Check if mbus_parse_hex exists
-if [ ! -x ./mbus_parse_hex ]; then
-    echo "mbus_parse_hex not found"
-    exit 3
-fi
-
 # Check commandline parameter
-if [ $# -ne 1 ]; then
+if [ $# -ne 2 ]; then
     echo "usage: $0 directory"
     exit 3
 fi
 
 directory="$1"
 
-# Check directory
+# Check if mbus_parse_hex exists
+if [ ! -x $2 ]; then
+    echo "mbus_parse_hex not found"
+    exit 3
+fi
+
+mbus_parse_hex="$2"
+
+# # Check directory
 if [ ! -d "$directory" ]; then
-    echo "usage: $0 directory"
+    echo "$directory not found"
     exit 3
 fi
 
@@ -40,7 +42,7 @@ for hexfile in "$directory"/*.hex;  do
     filename=`basename $hexfile .hex`
 
     # Parse hex file and write XML in file
-    ./mbus_parse_hex "$hexfile" > "$directory/$filename.xml.new"
+    $mbus_parse_hex "$hexfile" > "$directory/$filename.xml.new"
     result=$?
 
     # Check parsing result
@@ -73,5 +75,4 @@ for hexfile in "$directory"/*.hex;  do
              ;;
     esac
 done
-
 
