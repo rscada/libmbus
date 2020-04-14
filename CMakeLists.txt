@@ -22,6 +22,7 @@ option(LIBMBUS_RUN_CLANG_TIDY "use Clang-Tidy for static analysis" OFF)
 option(LIBMBUS_PACKAGE_DEB "build debian package" OFF)
 option(LIBMBUS_PACKAGE_RPM "build rpm package" OFF)
 option(LIBMBUS_BUILD_DOCS "build documentation" OFF)
+option(BUILD_SHARED_LIBS "build shared lib" ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -107,8 +108,9 @@ add_library(
   "${CMAKE_CURRENT_LIST_DIR}/mbus/mbus-serial.c"
   "${CMAKE_CURRENT_LIST_DIR}/mbus/mbus-serial.h")
 target_include_directories(
-  ${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>" "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>"
-                         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
+  ${PROJECT_NAME}
+  PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>" "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>"
+         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Android")
   target_link_libraries(${PROJECT_NAME} PRIVATE m)
 endif()
@@ -159,7 +161,10 @@ set(INSTALL_LIB_DIR
     CACHE PATH "Installation directory for libraries")
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libmbus.pc.in ${CMAKE_CURRENT_BINARY_DIR}/libmbus.pc @ONLY)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libmbus.pc DESTINATION "${INSTALL_PKGCONFIG_DIR}")
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/libmbus.pc
+  DESTINATION "${INSTALL_PKGCONFIG_DIR}"
+  COMPONENT dev)
 
 set(LIBMBUS_CONFIG_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 install(
@@ -211,17 +216,33 @@ For more information see http://www.rscada.se/libmbus")
 set(CPACK_PACKAGE_VENDOR "Raditex Control AB")
 set(CPACK_PACKAGE_CONTACT "Stefan Wahren <info@lategoodbye.de>")
 set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/rscada/libmbus/")
+set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE)
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
 set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
 set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
+set(CPACK_DEB_COMPONENT_INSTALL ON)
+set(CPACK_DEBIAN_PACKAGE_DEBUG ON)
 set(CPACK_PACKAGE_RELEASE 1)
-set(CPACK_COMPONENTS_ALL devel libs)
-set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE)
+
+# create 2 components, libmbus, libmbus-dev
+set(CPACK_COMPONENTS_ALL lib dev)
+set(CPACK_COMPONENT_LIB_DESCRIPTION
+    "FreeSCADA M-Bus Library.
+    A free and open-source library for M-Bus (Meter Bus) from the rSCADA project.
+   ")
+set(CPACK_DEBIAN_LIB_PACKAGE_SECTION libs)
+
+set(CPACK_COMPONENT_DEVEL_DESCRIPTION
+    "FreeSCADA M-Bus Library Development files.
+A free and open-source library for M-Bus (Meter Bus) from the rSCADA project,
+including development files.")
+set(CPACK_DEBIAN_DEVEL_PACKAGE_SECTION libdevel)
+
+set(CPACK_COMPONENT_DEVEL_DEPENDS lib)
 
 set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 set(CPACK_PACKAGE_FILE_NAME
     "${CMAKE_PROJECT_NAME}_${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
-set(CPACK_COMPONENTS_ALL Libraries ApplicationData)
 
 if(LIBMBUS_PACKAGE_DEB)
   set(CPACK_GENERATOR "DEB")
