@@ -14,7 +14,7 @@
 
 # Check commandline parameter
 if [ $# -ne 2 ]; then
-    echo "usage: $0 directory"
+    echo "usage: $0 path_to_directory_with_xml_files path_to_mbus_parse_hex_with_filename"
     exit 3
 fi
 
