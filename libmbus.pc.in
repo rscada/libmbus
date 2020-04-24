@@ -1,12 +1,12 @@
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-libdir=@libdir@
-includedir=@includedir@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=@CMAKE_INSTALL_PREFIX@
+libdir=@INSTALL_LIB_DIR@
+includedir=@INSTALL_INC_DIR@
 
 Name: libmbus
 Description: Open source M-bus (Meter-Bus) library.
 Requires: 
-Version: @PACKAGE_VERSION@
+Version: @PROJECT_VERSION@
 URL: http://www.rscada.se/libmbus/
 Libs: -L${libdir} -lmbus -lm
 Cflags: -I${includedir}

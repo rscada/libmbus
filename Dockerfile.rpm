@@ -1,0 +1,14 @@
+# docker build . -f Dockerfile.rpm -t rpm_builder
+
+FROM fedora
+
+RUN dnf install -y cmake gcc g++ make rpm-build
+COPY . /tmp
+RUN cd /tmp && \
+    mkdir build && \
+    cd build && \
+    cmake .. -DLIBMBUS_PACKAGE_RPM=ON && \
+    cpack .. && \
+    ls -al && \
+    rpm -i *.rpm
+
