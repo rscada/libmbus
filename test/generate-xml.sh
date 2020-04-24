@@ -13,24 +13,33 @@
 #------------------------------------------------------------------------------
 
 # Check commandline parameter
-if [ $# -ne 2 ]; then
+if [ $# -ne 1 ]; then
+    echo "usage: $0 path_to_directory_with_xml_files"
+    echo "or"
     echo "usage: $0 path_to_directory_with_xml_files path_to_mbus_parse_hex_with_filename"
     exit 3
 fi
 
 directory="$1"
 
-# Check if mbus_parse_hex exists
-if [ ! -x $2 ]; then
-    echo "mbus_parse_hex not found"
-    exit 3
-fi
-
-mbus_parse_hex="$2"
-
 # # Check directory
 if [ ! -d "$directory" ]; then
     echo "$directory not found"
+    exit 3
+fi
+
+# Default location is this one
+mbus_parse_hex="build/bin/mbus_parse_hex"
+
+# though can be overriten
+if [ $# -eq 2 ]; then
+    mbus_parse_hex="$2"
+fi
+
+# Check if mbus_parse_hex exists
+if [ ! -x $mbus_parse_hex ]; then
+    echo "mbus_parse_hex not found"
+    echo "path to mbus_parse_hex: $mbus_parse_hex"
     exit 3
 fi
 
