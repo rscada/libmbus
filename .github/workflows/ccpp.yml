@@ -3,27 +3,58 @@ name: CMake
 on: [push, pull_request]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    
+  build_and_test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        COMPILER: [gcc, clang]
+        LIBMBUS_SANITIZE_MEMORY: ["ON", "OFF"]
+
     steps:
+    - name: setup (linux)
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.COMPILER, 'clang') 
+      run: |
+        sudo apt install clang
+
     - uses: actions/checkout@v2
     - name: build examples and tests
-      run: rm -rf build || true && mkdir build && cd build && cmake .. -DLIBMBUS_BUILD_EXAMPLES=ON -DLIBMBUS_BUILD_TESTS=ON -DLIBMBUS_ENABLE_COVERAGE=ON && cmake --build . -j && cd ..
+      run: |
+        if [[ ${{matrix.COMPILER}} == *"clang"* ]]; then
+          export CC=clang
+          export CXX=clang++
+        fi
+        rm -rf build || true
+        mkdir build
+        cd build
+        cmake .. \
+        -DLIBMBUS_BUILD_EXAMPLES=ON \
+        -DLIBMBUS_BUILD_TESTS=ON \
+        -DLIBMBUS_ENABLE_COVERAGE=ON \
+        -DLIBMBUS_SANITIZE_MEMORY=${{matrix.LIBMBUS_SANITIZE_MEMORY}}
+        cmake --build . -j
+        cd ..
 
     - name: generate test frames
       run: ./test/generate-xml.sh test/test-frames
 
     - name: install and run gcovr
+      if: startsWith(matrix.COMPILER, 'gcc') 
       run: sudo pip install gcovr && gcovr build/.
 
-  debian:
+  debian_package:
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v2
     - name: build debian package
-      run: rm -rf build || true && mkdir build && cd build && cmake .. -DLIBMBUS_PACKAGE_DEB=ON && cpack .. && sudo dpkg -i *.deb && ls /usr/lib
+      run: |
+        rm -rf build || true
+        mkdir build
+        cd build
+        cmake .. \
+        -DLIBMBUS_PACKAGE_DEB=ON
+        cpack .. && sudo dpkg -i *.deb && ls /usr/lib
 
   doc:
     runs-on: ubuntu-latest
@@ -34,5 +65,11 @@ jobs:
       run: sudo apt install -y doxygen
       
     - name: build doxygen documentation
-      run: rm -rf build || true && mkdir build && cd build && cmake .. -DLIBMBUS_BUILD_DOCS=ON && cmake --build . --target doc
+      run: |
+        rm -rf build || true
+        mkdir build
+        cd build
+        cmake .. \
+        -DLIBMBUS_BUILD_DOCS=ON
+        cmake --build . --target doc
 
