@@ -1703,8 +1703,8 @@ mbus_data_variable_medium_lookup(unsigned char medium)
             snprintf(buff, sizeof(buff), "Steam");
             break;
 
-        case MBUS_VARIABLE_DATA_MEDIUM_HOT_WATER:
-            snprintf(buff, sizeof(buff), "Hot water");
+        case MBUS_VARIABLE_DATA_MEDIUM_WARM_WATER:
+            snprintf(buff, sizeof(buff), "Warm water (30-90°C)");
             break;
 
         case MBUS_VARIABLE_DATA_MEDIUM_WATER:
@@ -1743,6 +1743,14 @@ mbus_data_variable_medium_lookup(unsigned char medium)
             snprintf(buff, sizeof(buff), "Unknown Medium");
             break;
 
+        case MBUS_VARIABLE_DATA_MEDIUM_COLORIFIC:
+            snprintf(buff, sizeof(buff), "Calorific value");
+            break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_HOT_WATER:
+            snprintf(buff, sizeof(buff), "Hot water (>90°C)");
+            break;
+
         case MBUS_VARIABLE_DATA_MEDIUM_COLD_WATER:
             snprintf(buff, sizeof(buff), "Cold water");
             break;
@@ -1759,8 +1767,74 @@ mbus_data_variable_medium_lookup(unsigned char medium)
             snprintf(buff, sizeof(buff), "A/D Converter");
             break;
 
-        case 0x10: // - 0x15
-        case 0x20: // - 0xFF
+        case MBUS_VARIABLE_DATA_MEDIUM_SMOKE         :
+          snprintf(buff, sizeof(buff), "Smoke Detector");
+          break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_ROOM_SENSOR   :
+          snprintf(buff, sizeof(buff), "Ambient Sensor");
+          break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_GAS_DETECTOR  :
+          snprintf(buff, sizeof(buff), "Gas Detector");
+          break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_BREAKER_E     :
+          snprintf(buff, sizeof(buff), "Breaker: Electricity");
+          break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_VALVE         :
+          snprintf(buff, sizeof(buff), "Valve: Gas or Water");
+          break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_CUSTOMER_UNIT :
+          snprintf(buff, sizeof(buff), "Customer Unit: Display Device");
+          break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_WASTE_WATER   :
+          snprintf(buff, sizeof(buff), "Waste Water");
+          break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_GARBAGE       :
+          snprintf(buff, sizeof(buff), "Garbage");
+          break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_RC_SYSTEM     :
+          snprintf(buff, sizeof(buff), "Radio Converter: System");
+          break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_RC_METER      :
+          snprintf(buff, sizeof(buff), "Radio Converter: Meter");
+          break;
+
+        case 0x10:
+        case 0x11:
+        case 0x12:
+        case 0x13:
+        case 0x22:
+        case 0x23:
+        case 0x24:
+        case 0x26:
+        case 0x27:
+        case 0x2A:
+        case 0x2B:
+        case 0x2C:
+        case 0x2D:
+        case 0x2E:
+        case 0x2F:
+        case 0x30:
+        case 0x31:
+        case 0x32:
+        case 0x33:
+        case 0x34:
+        case 0x38:
+        case 0x39:
+        case 0x3A:
+        case 0x3B:
+        case 0x3C:
+        case 0x3D:
+        case 0x3E:
+        case 0x3F:
             snprintf(buff, sizeof(buff), "Reserved");
             break;
 
