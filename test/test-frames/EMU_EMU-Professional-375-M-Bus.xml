@@ -241,7 +241,7 @@
     <DataRecord id="30">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>Unrecognized VIF extension: 0x60</Unit>
+        <Unit>Reset counter</Unit>
         <Value>56</Value>
     </DataRecord>
 
