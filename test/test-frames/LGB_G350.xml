@@ -52,7 +52,7 @@
     <DataRecord id="5">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>Unrecognized VIF extension: 0x67</Unit>
+        <Unit>Special supplier information</Unit>
         <Value>15</Value>
     </DataRecord>
 
