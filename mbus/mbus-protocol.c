@@ -2443,6 +2443,356 @@ mbus_data_error_lookup(int error)
     return buff;
 }
 
+static const char *
+mbus_unit_duration_nn(int nn)
+{
+    switch (nn)
+    {
+        case 0:
+            return "second(s)";
+        case 1:
+            return "minute(s)";
+        case 2:
+            return "hour(s)";
+        case 3:
+            return "day(s)";
+    }
+    return "error: out-of-range";
+}
+
+static const char *
+mbus_unit_duration_pp(int pp)
+{
+    switch (pp)
+    {
+        case 0:
+            return "hour(s)";
+
+        case 1:
+            return "day(s)";
+
+        case 2:
+            return "month(s)";
+
+        case 3:
+            return "year(s)";
+    }
+    return "error: out-of-range";
+}
+
+static const char *
+mbus_vib_unit_lookup_fb(mbus_value_information_block *vib)
+{
+    static char buff[256];
+    snprintf(buff, sizeof(buff), "Unrecognized VIF extension: 0xFB,0x%.2X", vib->vife[0]);
+    return buff;
+}
+
+static const char *
+mbus_vib_unit_lookup_fd(mbus_value_information_block *vib)
+{
+    static char buff[256];
+    int n;
+
+    // ignore the extension bit in this selection
+    const unsigned char masked_vife0 = vib->vife[0] & MBUS_DIB_VIF_WITHOUT_EXTENSION;
+
+    if ((masked_vife0 & 0x7C) == 0x00)
+    {
+        // VIFE = E000 00nn	Credit of 10nn-3 of the nominal local legal currency units
+        n = (masked_vife0 & 0x03);
+        snprintf(buff, sizeof(buff), "Credit of %s of the nominal local legal currency units", mbus_unit_prefix(n - 3));
+    }
+    else if ((masked_vife0 & 0x7C) == 0x04)
+    {
+        // VIFE = E000 01nn Debit of 10nn-3 of the nominal local legal currency units
+        n = (masked_vife0 & 0x03);
+        snprintf(buff, sizeof(buff), "Debit of %s of the nominal local legal currency units", mbus_unit_prefix(n - 3));
+    }
+    else if (masked_vife0 == 0x08)
+    {
+        // E000 1000
+        snprintf(buff, sizeof(buff), "Access Number (transmission count)");
+    }
+    else if (masked_vife0 == 0x09)
+    {
+        // E000 1001
+        snprintf(buff, sizeof(buff), "Medium (as in fixed header)");
+    }
+    else if (masked_vife0 == 0x0A)
+    {
+        // E000 1010
+        snprintf(buff, sizeof(buff), "Manufacturer (as in fixed header)");
+    }
+    else if (masked_vife0 == 0x0B)
+    {
+        // E000 1010
+        snprintf(buff, sizeof(buff), "Parameter set identification");
+    }
+    else if (masked_vife0 == 0x0C)
+    {
+        // E000 1100
+        snprintf(buff, sizeof(buff), "Model / Version");
+    }
+    else if (masked_vife0 == 0x0D)
+    {
+        // E000 1100
+        snprintf(buff, sizeof(buff), "Hardware version");
+    }
+    else if (masked_vife0 == 0x0E)
+    {
+        // E000 1101
+        snprintf(buff, sizeof(buff), "Firmware version");
+    }
+    else if (masked_vife0 == 0x0F)
+    {
+        // E000 1101
+        snprintf(buff, sizeof(buff), "Software version");
+    }
+    else if (masked_vife0 == 0x10)
+    {
+        // VIFE = E001 0000 Customer location
+        snprintf(buff, sizeof(buff), "Customer location");
+    }
+    else if (masked_vife0 == 0x11)
+    {
+        // VIFE = E001 0001 Customer
+        snprintf(buff, sizeof(buff), "Customer");
+    }
+    else if (masked_vife0 == 0x12)
+    {
+        // VIFE = E001 0010	Access Code User
+        snprintf(buff, sizeof(buff), "Access Code User");
+    }
+    else if (masked_vife0 == 0x13)
+    {
+        // VIFE = E001 0011	Access Code Operator
+        snprintf(buff, sizeof(buff), "Access Code Operator");
+    }
+    else if (masked_vife0 == 0x14)
+    {
+        // VIFE = E001 0100	Access Code System Operator
+        snprintf(buff, sizeof(buff), "Access Code System Operator");
+    }
+    else if (masked_vife0 == 0x15)
+    {
+        // VIFE = E001 0101	Access Code Developer
+        snprintf(buff, sizeof(buff), "Access Code Developer");
+    }
+    else if (masked_vife0 == 0x16)
+    {
+        // VIFE = E001 0110 Password
+        snprintf(buff, sizeof(buff), "Password");
+    }
+    else if (masked_vife0 == 0x17)
+    {
+        // VIFE = E001 0111 Error flags
+        snprintf(buff, sizeof(buff), "Error flags");
+    }
+    else if (masked_vife0 == 0x18)
+    {
+        // VIFE = E001 1000	Error mask
+        snprintf(buff, sizeof(buff), "Error mask");
+    }
+    else if (masked_vife0 == 0x19)
+    {
+        // VIFE = E001 1001	Reserved
+        snprintf(buff, sizeof(buff), "Reserved");
+    }
+    else if (masked_vife0 == 0x1A)
+    {
+        // VIFE = E001 1010 Digital output (binary)
+        snprintf(buff, sizeof(buff), "Digital output (binary)");
+    }
+    else if (masked_vife0 == 0x1B)
+    {
+        // VIFE = E001 1011 Digital input (binary)
+        snprintf(buff, sizeof(buff), "Digital input (binary)");
+    }
+    else if (masked_vife0 == 0x1C)
+    {
+        // VIFE = E001 1100	Baudrate [Baud]
+        snprintf(buff, sizeof(buff), "Baudrate");
+    }
+    else if (masked_vife0 == 0x1D)
+    {
+        // VIFE = E001 1101	response delay time [bittimes]
+        snprintf(buff, sizeof(buff), "response delay time");
+    }
+    else if (masked_vife0 == 0x1E)
+    {
+        // VIFE = E001 1110	Retry
+        snprintf(buff, sizeof(buff), "Retry");
+    }
+    else if (masked_vife0 == 0x1F)
+    {
+        // VIFE = E001 1111	Reserved
+        snprintf(buff, sizeof(buff), "Reserved");
+    }
+    else if (masked_vife0 == 0x20)
+    {
+        // VIFE = E010 0000	First storage # for cyclic storage
+        snprintf(buff, sizeof(buff), "First storage # for cyclic storage");
+    }
+    else if (masked_vife0 == 0x21)
+    {
+        // VIFE = E010 0001	Last storage # for cyclic storage
+        snprintf(buff, sizeof(buff), "Last storage # for cyclic storage");
+    }
+    else if (masked_vife0 == 0x22)
+    {
+        // VIFE = E010 0010	Size of storage block
+        snprintf(buff, sizeof(buff), "Size of storage block");
+    }
+    else if (masked_vife0 == 0x23)
+    {
+        // VIFE = E010 0011	Reserved
+        snprintf(buff, sizeof(buff), "Reserved");
+    }
+    else if ((masked_vife0 & 0x7C) == 0x24)
+    {
+        // VIFE = E010 01nn	Storage interval [sec(s)..day(s)]
+        n = (masked_vife0 & 0x03);
+        snprintf(buff, sizeof(buff), "Storage interval %s", mbus_unit_duration_nn(n));
+    }
+    else if (masked_vife0 == 0x28)
+    {
+        // VIFE = E010 1000	Storage interval month(s)
+        snprintf(buff, sizeof(buff), "Storage interval month(s)");
+    }
+    else if (masked_vife0 == 0x29)
+    {
+        // VIFE = E010 1001	Storage interval year(s)
+        snprintf(buff, sizeof(buff), "Storage interval year(s)");
+    }
+    else if (masked_vife0 == 0x2A)
+    {
+        // VIFE = E010 1010	Reserved
+        snprintf(buff, sizeof(buff), "Reserved");
+    }
+    else if (masked_vife0 == 0x2B)
+    {
+        // VIFE = E010 1011	Reserved
+        snprintf(buff, sizeof(buff), "Reserved");
+    }
+    else if ((masked_vife0 & 0x7C) == 0x2C)
+    {
+        // VIFE = E010 11nn	Duration since last readout [sec(s)..day(s)]
+        n = (masked_vife0 & 0x03);
+        snprintf(buff, sizeof(buff), "Duration since last readout %s", mbus_unit_duration_nn(n));
+    }
+    else if (masked_vife0 == 0x30)
+    {
+        // VIFE = E011 0000	Start (date/time) of tariff
+        snprintf(buff, sizeof(buff), "Start (date/time) of tariff");
+    }
+    else if ((masked_vife0 & 0x7C) == 0x30)
+    {
+        // VIFE = E011 00nn	Duration of tariff (nn=01 ..11: min to days)
+        n = (masked_vife0 & 0x03);
+        snprintf(buff, sizeof(buff), "Duration of tariff %s", mbus_unit_duration_nn(n));
+    }
+    else if ((masked_vife0 & 0x7C) == 0x34)
+    {
+        // VIFE = E011 01nn	Period of tariff [sec(s) to day(s)]
+        n = (masked_vife0 & 0x03);
+        snprintf(buff, sizeof(buff), "Period of tariff %s", mbus_unit_duration_nn(n));
+    }
+    else if (masked_vife0 == 0x38)
+    {
+        // VIFE = E011 1000	Period of tariff months(s)
+        snprintf(buff, sizeof(buff), "Period of tariff months(s)");
+    }
+    else if (masked_vife0 == 0x39)
+    {
+        // VIFE = E011 1001	Period of tariff year(s)
+        snprintf(buff, sizeof(buff), "Period of tariff year(s)");
+    }
+    else if (masked_vife0 == 0x3A)
+    {
+        // VIFE = E011 1010	dimensionless / no VIF
+        snprintf(buff, sizeof(buff), "dimensionless / no VIF");
+    }
+    else if (masked_vife0 == 0x3B)
+    {
+        // VIFE = E011 1011	Reserved
+        snprintf(buff, sizeof(buff), "Reserved");
+    }
+    else if ((masked_vife0 & 0x7C) == 0x3C)
+    {
+        // VIFE = E011 11xx	Reserved
+        snprintf(buff, sizeof(buff), "Reserved");
+    }
+    else if ((masked_vife0 & 0x70) == 0x40)
+    {
+        // VIFE = E100 nnnn 10^(nnnn-9) V
+        n = (masked_vife0 & 0x0F);
+        snprintf(buff, sizeof(buff), "%s V", mbus_unit_prefix(n - 9));
+    }
+    else if ((masked_vife0 & 0x70) == 0x50)
+    {
+        // VIFE = E101 nnnn 10nnnn-12 A
+        n = (masked_vife0 & 0x0F);
+        snprintf(buff, sizeof(buff), "%s A", mbus_unit_prefix(n - 12));
+    }
+    else if (masked_vife0 == 0x60) {
+        // VIFE = E110 0000	Reset counter
+        snprintf(buff, sizeof(buff), "Reset counter");
+    }
+    else if (masked_vife0 == 0x61) {
+        // VIFE = E110 0001	Cumulation counter
+        snprintf(buff, sizeof(buff), "Cumulation counter");
+    }
+    else if (masked_vife0 == 0x62) {
+        // VIFE = E110 0010	Control signal
+        snprintf(buff, sizeof(buff), "Control signal");
+    }
+    else if (masked_vife0 == 0x63) {
+        // VIFE = E110 0011	Day of week
+        snprintf(buff, sizeof(buff), "Day of week");
+    }
+    else if (masked_vife0 == 0x64) {
+        // VIFE = E110 0100	Week number
+        snprintf(buff, sizeof(buff), "Week number");
+    }
+    else if (masked_vife0 == 0x65) {
+        // VIFE = E110 0101	Time point of day change
+        snprintf(buff, sizeof(buff), "Time point of day change");
+    }
+    else if (masked_vife0 == 0x66) {
+        // VIFE = E110 0110	State of parameter activation
+        snprintf(buff, sizeof(buff), "State of parameter activation");
+    }
+    else if (masked_vife0 == 0x67) {
+        // VIFE = E110 0111	Special supplier information
+        snprintf(buff, sizeof(buff), "Special supplier information");
+    }
+    else if ((masked_vife0 & 0x7C) == 0x68) {
+        // VIFE = E110 10pp	Duration since last cumulation [hour(s)..years(s)]Ž
+        n = (masked_vife0 & 0x03);
+        snprintf(buff, sizeof(buff), "Duration since last cumulation %s", mbus_unit_duration_pp(n));
+    }
+    else if ((masked_vife0 & 0x7C) == 0x6C) {
+        // VIFE = E110 11pp	Operating time battery [hour(s)..years(s)]Ž
+        n = (masked_vife0 & 0x03);
+        snprintf(buff, sizeof(buff), "Operating time battery %s", mbus_unit_duration_pp(n));
+    }
+    else if (masked_vife0 == 0x70) {
+        // VIFE = E111 0000	Date and time of battery change
+        snprintf(buff, sizeof(buff), "Date and time of battery change");
+    }
+    else if ((masked_vife0 & 0x70) == 0x70)
+    {
+        // VIFE = E111 nnn Reserved
+        snprintf(buff, sizeof(buff), "Reserved VIF extension");
+    }
+    else
+    {
+        snprintf(buff, sizeof(buff), "Unrecognized VIF 0xFD extension: 0x%.2x", masked_vife0);
+    }
+
+    return buff;
+}
 
 //------------------------------------------------------------------------------
 /// Lookup the unit from the VIB (VIF or VIFE)
@@ -2466,104 +2816,23 @@ mbus_vib_unit_lookup(mbus_value_information_block *vib)
     if (vib == NULL)
         return "";
 
-    if (vib->vif == 0xFD || vib->vif == 0xFB) // first type of VIF extention: see table 8.4.4
+    if (vib->vif == 0xFB) // first type of VIF extention: see table 8.4.4
     {
         if (vib->nvife == 0)
         {
-            snprintf(buff, sizeof(buff), "Missing VIF extension");
+            return "Missing VIF extension";
         }
-        else if (vib->vife[0] == 0x08 || vib->vife[0] == 0x88)
+
+        return mbus_vib_unit_lookup_fb(vib);
+    }
+    else if (vib->vif == 0xFD) // first type of VIF extention: see table 8.4.4
+    {
+        if (vib->nvife == 0)
         {
-            // E000 1000
-            snprintf(buff, sizeof(buff), "Access Number (transmission count)");
+            return "Missing VIF extension";
         }
-        else if (vib->vife[0] == 0x09|| vib->vife[0] == 0x89)
-        {
-            // E000 1001
-            snprintf(buff, sizeof(buff), "Medium (as in fixed header)");
-        }
-        else if (vib->vife[0] == 0x0A || vib->vife[0] == 0x8A)
-        {
-            // E000 1010
-            snprintf(buff, sizeof(buff), "Manufacturer (as in fixed header)");
-        }
-        else if (vib->vife[0] == 0x0B || vib->vife[0] == 0x8B)
-        {
-            // E000 1010
-            snprintf(buff, sizeof(buff), "Parameter set identification");
-        }
-        else if (vib->vife[0] == 0x0C || vib->vife[0] == 0x8C)
-        {
-            // E000 1100
-            snprintf(buff, sizeof(buff), "Model / Version");
-        }
-        else if (vib->vife[0] == 0x0D || vib->vife[0] == 0x8D)
-        {
-            // E000 1100
-            snprintf(buff, sizeof(buff), "Hardware version");
-        }
-        else if (vib->vife[0] == 0x0E || vib->vife[0] == 0x8E)
-        {
-            // E000 1101
-            snprintf(buff, sizeof(buff), "Firmware version");
-        }
-        else if (vib->vife[0] == 0x0F || vib->vife[0] == 0x8F)
-        {
-            // E000 1101
-            snprintf(buff, sizeof(buff), "Software version");
-        }
-        else if (vib->vife[0] == 0x16)
-        {
-            // VIFE = E001 0110 Password
-            snprintf(buff, sizeof(buff), "Password");
-        }
-        else if (vib->vife[0] == 0x17 || vib->vife[0] == 0x97)
-        {
-            // VIFE = E001 0111 Error flags
-            snprintf(buff, sizeof(buff), "Error flags");
-        }
-        else if (vib->vife[0] == 0x10)
-        {
-            // VIFE = E001 0000 Customer location
-            snprintf(buff, sizeof(buff), "Customer location");
-        }
-        else if (vib->vife[0] == 0x11)
-        {
-            // VIFE = E001 0001 Customer
-            snprintf(buff, sizeof(buff), "Customer");
-        }
-        else if (vib->vife[0] == 0x1A)
-        {
-            // VIFE = E001 1010 Digital output (binary)
-            snprintf(buff, sizeof(buff), "Digital output (binary)");
-        }
-        else if (vib->vife[0] == 0x1B)
-        {
-            // VIFE = E001 1011 Digital input (binary)
-            snprintf(buff, sizeof(buff), "Digital input (binary)");
-        }
-        else if ((vib->vife[0] & 0x70) == 0x40)
-        {
-            // VIFE = E100 nnnn 10^(nnnn-9) V
-            n = (vib->vife[0] & 0x0F);
-            snprintf(buff, sizeof(buff), "%s V", mbus_unit_prefix(n-9));
-        }
-        else if ((vib->vife[0] & 0x70) == 0x50)
-        {
-            // VIFE = E101 nnnn 10nnnn-12 A
-            n = (vib->vife[0] & 0x0F);
-            snprintf(buff, sizeof(buff), "%s A", mbus_unit_prefix(n-12));
-        }
-        else if ((vib->vife[0] & 0xF0) == 0x70)
-        {
-            // VIFE = E111 nnn Reserved
-            snprintf(buff, sizeof(buff), "Reserved VIF extension");
-        }
-        else
-        {
-            snprintf(buff, sizeof(buff), "Unrecognized VIF extension: 0x%.2x", vib->vife[0]);
-        }
-        return buff;
+
+        return mbus_vib_unit_lookup_fd(vib);
     }
     else if (vib->vif == 0x7C)
     {
