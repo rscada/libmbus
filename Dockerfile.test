@@ -1,0 +1,18 @@
+# docker build . -f Dockerfile.test -t test_builder
+
+FROM ubuntu
+
+RUN apt update -y && apt install -y cmake gcc g++ make
+COPY . /tmp
+RUN cd /tmp && \
+    mkdir build && \
+    cd build && \
+    cmake .. -DLIBMBUS_BUILD_EXAMPLES=ON -DLIBMBUS_BUILD_TESTS=ON -DLIBMBUS_ENABLE_COVERAGE=ON && \
+    cmake --build . -j && \
+    cd .. && \
+    ./test/generate-xml.sh test/test-frames
+
+RUN cd /tmp && \
+    echo "NOTE: error-frames have about 30 parse errors, and unsupported-frames have 12" && \
+    ./test/generate-xml.sh test/error-frames || true ; \
+    ./test/generate-xml.sh test/unsupported-frames || true
