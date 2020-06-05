@@ -1218,6 +1218,31 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
+        else if (manufacturer == mbus_manufacturer_id("SEO") || manufacturer == mbus_manufacturer_id("GTE"))
+        {
+            switch (header->id_bcd[3])
+            {
+                case 0x30:
+                    strcpy(buff,"Sensoco PT100");
+                    break;
+                case 0x41:
+                    strcpy(buff,"Sensoco 2-NTC");
+                    break;
+                case 0x45:
+                    strcpy(buff,"Sensoco Laser Light");
+                    break;
+                case 0x48:
+                    strcpy(buff,"Sensoco ADIO");
+                    break;
+                case 0x51:
+                case 0x61:
+                    strcpy(buff,"Sensoco THU");
+                    break;
+                case 0x80:
+                    strcpy(buff,"Sensoco PulseCounter for E-Meter");
+                    break;
+            }
+        }
         else if (manufacturer == mbus_manufacturer_id("SEN"))
         {
             switch (header->version)
