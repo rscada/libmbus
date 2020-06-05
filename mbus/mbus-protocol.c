@@ -1686,12 +1686,40 @@ mbus_data_fixed_unit(int medium_unit_byte)
 // Heat / Cooling load meter ♣                                        0000 1101        OD
 // Bus / System                                                       0000 1110        0E
 // Unknown Medium                                                     0000 1111        0F
-// Reserved                                                           .......... 10 to 15
+// Irrigation Water (Non Drinkable)                                   0001 0000        10
+// Water data logger                                                  0001 0001        11
+// Gas data logger                                                    0001 0010        12
+// Gas converter                                                      0001 0011        13
+// Heat Value                                                         0001 0100        14
+// Hot Water (>=90°C) (Non Drinkable)                                 0001 0101        15
 // Cold Water                                                         0001 0110        16
 // Dual Water                                                         0001 0111        17
 // Pressure                                                           0001 1000        18
 // A/D Converter                                                      0001 1001        19
-// Reserved                                                           .......... 20 to FF
+// Smoke detector                                                     0001 1010        1A
+// Room sensor (e.g. Temperature or Humidity)                         0001 1011        1B
+// Gas detector                                                       0001 1100        1C
+// Reserved for Sensors                                               .......... 1D to 1F
+// Breaker (Electricity)                                              0010 0000        20
+// Valve (Gas or Water)                                               0010 0001        21
+// Reserved for Switching Units                                       .......... 22 to 24
+// Customer Unit (Display)                                            0010 0101        25
+// Reserved for End User Units                                        .......... 26 to 27
+// Waste Water (Non Drinkable)                                        0010 1000        28
+// Waste                                                              0010 1001        29
+// Reserved for CO2                                                   0010 1010        2A
+// Reserved for environmental meter                                   .......... 2B to 2F
+// Service tool                                                       0011 0000        30
+// Gateway                                                            0011 0001        31
+// Unidirectional Repeater                                            0011 0010        32
+// Bidirectional Repeater                                             0011 0011        33
+// Reserved for System Units                                          .......... 34 to 35
+// Radio Control Unit (System Side)                                   0011 0110        36
+// Radio Control Unit (Meter Side)                                    0011 0111        37
+// Bus Control Unit (Meter Side)                                      0011 1000        38
+// Reserved for System Units                                          .......... 38 to 3F
+// Reserved                                                           .......... 40 to FE
+// Placeholder                                                        1111 1111        FF
 //------------------------------------------------------------------------------
 
 ///
@@ -1729,7 +1757,7 @@ mbus_data_variable_medium_lookup(unsigned char medium)
             break;
 
         case MBUS_VARIABLE_DATA_MEDIUM_HOT_WATER:
-            snprintf(buff, sizeof(buff), "Hot water");
+            snprintf(buff, sizeof(buff), "Warm water (30-90°C)");
             break;
 
         case MBUS_VARIABLE_DATA_MEDIUM_WATER:
@@ -1768,6 +1796,30 @@ mbus_data_variable_medium_lookup(unsigned char medium)
             snprintf(buff, sizeof(buff), "Unknown Medium");
             break;
 
+        case MBUS_VARIABLE_DATA_MEDIUM_IRRIGATION:
+            snprintf(buff, sizeof(buff), "Irrigation Water");
+            break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_WATER_LOGGER:
+            snprintf(buff, sizeof(buff), "Water Logger");
+            break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_GAS_LOGGER:
+            snprintf(buff, sizeof(buff), "Gas Logger");
+            break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_GAS_CONV:
+            snprintf(buff, sizeof(buff), "Gas Converter");
+            break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_COLORIFIC:
+            snprintf(buff, sizeof(buff), "Calorific value");
+            break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_BOIL_WATER:
+            snprintf(buff, sizeof(buff), "Hot water (>90°C)");
+            break;
+
         case MBUS_VARIABLE_DATA_MEDIUM_COLD_WATER:
             snprintf(buff, sizeof(buff), "Cold water");
             break;
@@ -1784,8 +1836,73 @@ mbus_data_variable_medium_lookup(unsigned char medium)
             snprintf(buff, sizeof(buff), "A/D Converter");
             break;
 
-        case 0x10: // - 0x15
-        case 0x20: // - 0xFF
+        case MBUS_VARIABLE_DATA_MEDIUM_SMOKE:
+          snprintf(buff, sizeof(buff), "Smoke Detector");
+          break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_ROOM_SENSOR:
+          snprintf(buff, sizeof(buff), "Ambient Sensor");
+          break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_GAS_DETECTOR:
+          snprintf(buff, sizeof(buff), "Gas Detector");
+          break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_BREAKER_E:
+          snprintf(buff, sizeof(buff), "Breaker: Electricity");
+          break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_VALVE:
+          snprintf(buff, sizeof(buff), "Valve: Gas or Water");
+          break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_CUSTOMER_UNIT:
+          snprintf(buff, sizeof(buff), "Customer Unit: Display Device");
+          break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_WASTE_WATER:
+          snprintf(buff, sizeof(buff), "Waste Water");
+          break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_GARBAGE:
+          snprintf(buff, sizeof(buff), "Garbage");
+          break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_SERVICE_UNIT:
+          snprintf(buff, sizeof(buff), "Service Unit");
+          break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_RC_SYSTEM:
+          snprintf(buff, sizeof(buff), "Radio Converter: System");
+          break;
+
+        case MBUS_VARIABLE_DATA_MEDIUM_RC_METER:
+          snprintf(buff, sizeof(buff), "Radio Converter: Meter");
+          break;
+
+        case 0x22:
+        case 0x23:
+        case 0x24:
+        case 0x26:
+        case 0x27:
+        case 0x2A:
+        case 0x2B:
+        case 0x2C:
+        case 0x2D:
+        case 0x2E:
+        case 0x2F:
+        case 0x31:
+        case 0x32:
+        case 0x33:
+        case 0x34:
+        case 0x38:
+        case 0x39:
+        case 0x3A:
+        case 0x3B:
+        case 0x3C:
+        case 0x3D:
+        case 0x3E:
+        case 0x3F:
             snprintf(buff, sizeof(buff), "Reserved");
             break;
 
