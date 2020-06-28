@@ -627,6 +627,7 @@ int mbus_data_bcd_encode(unsigned char *bcd_data, size_t bcd_data_size, int valu
 int mbus_data_int_encode(unsigned char *int_data, size_t int_data_size, int value);
 
 long long mbus_data_bcd_decode(unsigned char *bcd_data, size_t bcd_data_size);
+long long mbus_data_bcd_decode_hex(unsigned char *bcd_data, size_t bcd_data_size);
 int mbus_data_int_decode(unsigned char *int_data, size_t int_data_size, int *value);
 int mbus_data_long_decode(unsigned char *int_data, size_t int_data_size, long *value);
 int mbus_data_long_long_decode(unsigned char *int_data, size_t int_data_size, long long *value);
