@@ -48,14 +48,14 @@
         <Function>Value during error state</Function>
         <StorageNumber>0</StorageNumber>
         <Unit>Power (W)</Unit>
-        <Value>144445223</Value>
+        <Value>DDDDEBBD</Value>
     </DataRecord>
 
     <DataRecord id="5">
         <Function>Value during error state</Function>
         <StorageNumber>0</StorageNumber>
         <Unit>Volume flow (m m^3/h)</Unit>
-        <Value>1445223</Value>
+        <Value>DDEBBD</Value>
     </DataRecord>
 
     <DataRecord id="6">
