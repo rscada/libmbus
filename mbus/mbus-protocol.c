@@ -495,7 +495,7 @@ mbus_data_bcd_encode(unsigned char *bcd_data, size_t bcd_data_size, int value)
 
 //------------------------------------------------------------------------------
 ///
-/// Decode BCD data
+/// Decode BCD data (decimal)
 ///
 //------------------------------------------------------------------------------
 long long
@@ -522,6 +522,30 @@ mbus_data_bcd_decode(unsigned char *bcd_data, size_t bcd_data_size)
         if (bcd_data[bcd_data_size-1]>>4 == 0xF)
         {
             val *= -1;
+        }
+
+        return val;
+    }
+
+    return -1;
+}
+
+//------------------------------------------------------------------------------
+///
+/// Decode BCD data (hexadecimal)
+///
+//------------------------------------------------------------------------------
+long long
+mbus_data_bcd_decode_hex(unsigned char *bcd_data, size_t bcd_data_size)
+{
+    long long val = 0;
+    size_t i;
+
+    if (bcd_data)
+    {
+        for (i = bcd_data_size; i > 0; i--)
+        {
+            val = (val << 8) | bcd_data[i-1];
         }
 
         return val;
@@ -2735,8 +2759,8 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x09: // 2 digit BCD (8 bit)
 
-                int_val = (int)mbus_data_bcd_decode(record->data, 1);
-                snprintf(buff, sizeof(buff), "%d", int_val);
+                int_val = (int)mbus_data_bcd_decode_hex(record->data, 1);
+                snprintf(buff, sizeof(buff), "%X", int_val);
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 2 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
@@ -2745,8 +2769,8 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x0A: // 4 digit BCD (16 bit)
 
-                int_val = (int)mbus_data_bcd_decode(record->data, 2);
-                snprintf(buff, sizeof(buff), "%d", int_val);
+                int_val = (int)mbus_data_bcd_decode_hex(record->data, 2);
+                snprintf(buff, sizeof(buff), "%X", int_val);
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 4 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
@@ -2755,8 +2779,8 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x0B: // 6 digit BCD (24 bit)
 
-                int_val = (int)mbus_data_bcd_decode(record->data, 3);
-                snprintf(buff, sizeof(buff), "%d", int_val);
+                int_val = (int)mbus_data_bcd_decode_hex(record->data, 3);
+                snprintf(buff, sizeof(buff), "%X", int_val);
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 6 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
@@ -2765,8 +2789,8 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x0C: // 8 digit BCD (32 bit)
 
-                int_val = (int)mbus_data_bcd_decode(record->data, 4);
-                snprintf(buff, sizeof(buff), "%d", int_val);
+                int_val = (int)mbus_data_bcd_decode_hex(record->data, 4);
+                snprintf(buff, sizeof(buff), "%X", int_val);
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 8 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
@@ -2775,8 +2799,8 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x0E: // 12 digit BCD (48 bit)
 
-                long_long_val = mbus_data_bcd_decode(record->data, 6);
-                snprintf(buff, sizeof(buff), "%lld", long_long_val);
+                long_long_val = mbus_data_bcd_decode_hex(record->data, 6);
+                snprintf(buff, sizeof(buff), "%llX", long_long_val);
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 12 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
@@ -3766,8 +3790,8 @@ mbus_data_variable_header_print(mbus_data_variable_header *header)
 {
     if (header)
     {
-        printf("%s: ID           = %lld\n", __PRETTY_FUNCTION__,
-               mbus_data_bcd_decode(header->id_bcd, 4));
+        printf("%s: ID           = %llX\n", __PRETTY_FUNCTION__,
+               mbus_data_bcd_decode_hex(header->id_bcd, 4));
 
         printf("%s: Manufacturer = 0x%.2X%.2X\n", __PRETTY_FUNCTION__,
                header->manufacturer[1], header->manufacturer[0]);
@@ -3868,7 +3892,7 @@ mbus_data_fixed_print(mbus_data_fixed *data)
 
     if (data)
     {
-        printf("%s: ID       = %lld\n", __PRETTY_FUNCTION__, mbus_data_bcd_decode(data->id_bcd, 4));
+        printf("%s: ID       = %llX\n", __PRETTY_FUNCTION__, mbus_data_bcd_decode_hex(data->id_bcd, 4));
         printf("%s: Access # = 0x%.2X\n", __PRETTY_FUNCTION__, data->tx_cnt);
         printf("%s: Status   = 0x%.2X\n", __PRETTY_FUNCTION__, data->status);
         printf("%s: Function = %s\n", __PRETTY_FUNCTION__, mbus_data_fixed_function(data->status));
@@ -3877,7 +3901,7 @@ mbus_data_fixed_print(mbus_data_fixed *data)
         printf("%s: Unit1    = %s\n", __PRETTY_FUNCTION__, mbus_data_fixed_unit(data->cnt1_type));
         if ((data->status & MBUS_DATA_FIXED_STATUS_FORMAT_MASK) == MBUS_DATA_FIXED_STATUS_FORMAT_BCD)
         {
-            printf("%s: Counter1 = %lld\n", __PRETTY_FUNCTION__, mbus_data_bcd_decode(data->cnt1_val, 4));
+            printf("%s: Counter1 = %llX\n", __PRETTY_FUNCTION__, mbus_data_bcd_decode_hex(data->cnt1_val, 4));
         }
         else
         {
@@ -3889,7 +3913,7 @@ mbus_data_fixed_print(mbus_data_fixed *data)
         printf("%s: Unit2    = %s\n", __PRETTY_FUNCTION__, mbus_data_fixed_unit(data->cnt2_type));
         if ((data->status & MBUS_DATA_FIXED_STATUS_FORMAT_MASK) == MBUS_DATA_FIXED_STATUS_FORMAT_BCD)
         {
-            printf("%s: Counter2 = %lld\n", __PRETTY_FUNCTION__, mbus_data_bcd_decode(data->cnt2_val, 4));
+            printf("%s: Counter2 = %llX\n", __PRETTY_FUNCTION__, mbus_data_bcd_decode_hex(data->cnt2_val, 4));
         }
         else
         {
@@ -4020,7 +4044,7 @@ mbus_data_variable_header_xml(mbus_data_variable_header *header)
     {
         len += snprintf(&buff[len], sizeof(buff) - len, "    <SlaveInformation>\n");
 
-        len += snprintf(&buff[len], sizeof(buff) - len, "        <Id>%lld</Id>\n", mbus_data_bcd_decode(header->id_bcd, 4));
+        len += snprintf(&buff[len], sizeof(buff) - len, "        <Id>%llX</Id>\n", mbus_data_bcd_decode_hex(header->id_bcd, 4));
         len += snprintf(&buff[len], sizeof(buff) - len, "        <Manufacturer>%s</Manufacturer>\n",
                 mbus_decode_manufacturer(header->manufacturer[0], header->manufacturer[1]));
         len += snprintf(&buff[len], sizeof(buff) - len, "        <Version>%d</Version>\n", header->version);
@@ -4198,7 +4222,7 @@ mbus_data_fixed_xml(mbus_data_fixed *data)
         len += snprintf(&buff[len], buff_size - len, "<MBusData>\n\n");
 
         len += snprintf(&buff[len], buff_size - len, "    <SlaveInformation>\n");
-        len += snprintf(&buff[len], buff_size - len, "        <Id>%lld</Id>\n", mbus_data_bcd_decode(data->id_bcd, 4));
+        len += snprintf(&buff[len], buff_size - len, "        <Id>%llX</Id>\n", mbus_data_bcd_decode_hex(data->id_bcd, 4));
 
         mbus_str_xml_encode(str_encoded, mbus_data_fixed_medium(data), sizeof(str_encoded));
         len += snprintf(&buff[len], buff_size - len, "        <Medium>%s</Medium>\n", str_encoded);
@@ -4216,7 +4240,7 @@ mbus_data_fixed_xml(mbus_data_fixed *data)
         len += snprintf(&buff[len], buff_size - len, "        <Unit>%s</Unit>\n", str_encoded);
         if ((data->status & MBUS_DATA_FIXED_STATUS_FORMAT_MASK) == MBUS_DATA_FIXED_STATUS_FORMAT_BCD)
         {
-            len += snprintf(&buff[len], buff_size - len, "        <Value>%lld</Value>\n", mbus_data_bcd_decode(data->cnt1_val, 4));
+            len += snprintf(&buff[len], buff_size - len, "        <Value>%llX</Value>\n", mbus_data_bcd_decode_hex(data->cnt1_val, 4));
         }
         else
         {
@@ -4235,7 +4259,7 @@ mbus_data_fixed_xml(mbus_data_fixed *data)
         len += snprintf(&buff[len], buff_size - len, "        <Unit>%s</Unit>\n", str_encoded);
         if ((data->status & MBUS_DATA_FIXED_STATUS_FORMAT_MASK) == MBUS_DATA_FIXED_STATUS_FORMAT_BCD)
         {
-            len += snprintf(&buff[len], buff_size - len, "        <Value>%lld</Value>\n", mbus_data_bcd_decode(data->cnt2_val, 4));
+            len += snprintf(&buff[len], buff_size - len, "        <Value>%llX</Value>\n", mbus_data_bcd_decode_hex(data->cnt2_val, 4));
         }
         else
         {
@@ -4594,9 +4618,9 @@ mbus_frame_get_secondary_address(mbus_frame *frame)
         return NULL;
     }
 
-    id = (unsigned long) mbus_data_bcd_decode(data->data_var.header.id_bcd, 4);
+    id = (unsigned long) mbus_data_bcd_decode_hex(data->data_var.header.id_bcd, 4);
 
-    snprintf(addr, sizeof(addr), "%08lu%02X%02X%02X%02X",
+    snprintf(addr, sizeof(addr), "%08lX%02X%02X%02X%02X",
              id,
              data->data_var.header.manufacturer[0],
              data->data_var.header.manufacturer[1],
