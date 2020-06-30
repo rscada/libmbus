@@ -8,20 +8,43 @@
 //
 //------------------------------------------------------------------------------
 
+#ifdef _WIN32
+#define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif
+
+#ifdef _WIN32
+#include <winsock2.h>
+#include <windows.h>
+#include <stdlib.h>
+#include <io.h>
+
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+
+#ifndef SSIZE_MAX
+#ifdef _WIN64
+#define SSIZE_MAX _I64_MAX
+#else
+#define SSIZE_MAX LONG_MAX
+#endif
+#endif
+
+#else
 #include <unistd.h>
-#include <limits.h>
-#include <fcntl.h>
-
 #include <sys/socket.h>
-#include <sys/types.h>
-
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <strings.h>
+#endif
+
+#include <limits.h>
+#include <fcntl.h>
+
+#include <sys/types.h>
 
 #include <stdio.h>
 #include <string.h>
-#include <strings.h>
 #include <errno.h>
 
 #include "mbus-tcp.h"
@@ -54,6 +77,23 @@ mbus_tcp_connect(mbus_handle *handle)
     host = tcp_data->host;
     port = tcp_data->port;
 
+    #ifdef _WIN32
+        WORD wVersionRequested;
+        WSADATA wsaData;
+        int err;
+
+        /* Use the MAKEWORD(lowbyte, highbyte) macro declared in Windef.h */
+        wVersionRequested = MAKEWORD(2, 2);
+
+        err = WSAStartup(wVersionRequested, &wsaData);
+        if (err != 0) {
+            /* Tell the user that we could not find a usable */
+            /* Winsock DLL.                                  */
+            snprintf(error_str, sizeof(error_str), "%s: WSAStartup failed with error: %d", __PRETTY_FUNCTION__, err);
+            mbus_error_str_set(error_str);
+            return -1;
+        }
+    #endif
     //
     // create the TCP connection
     //
@@ -87,9 +127,15 @@ mbus_tcp_connect(mbus_handle *handle)
     // Set a timeout
     time_out.tv_sec  = tcp_timeout_sec;   // seconds
     time_out.tv_usec = tcp_timeout_usec;  // microseconds
+
+    #ifdef _WIN32
+    uint64_t millis = (time_out.tv_sec * (uint64_t)1000) + (time_out.tv_usec / 1000);
+    setsockopt(handle->fd, SOL_SOCKET, SO_SNDTIMEO, (char *)&millis, sizeof(time_out));
+    setsockopt(handle->fd, SOL_SOCKET, SO_RCVTIMEO, (char *)&millis, sizeof(time_out));
+    #else
     setsockopt(handle->fd, SOL_SOCKET, SO_SNDTIMEO, &time_out, sizeof(time_out));
     setsockopt(handle->fd, SOL_SOCKET, SO_RCVTIMEO, &time_out, sizeof(time_out));
-
+    #endif
     return 0;
 }
 
@@ -129,10 +175,15 @@ mbus_tcp_disconnect(mbus_handle *handle)
 
     if (handle->fd < 0)
     {
-       return -1;
+        return -1;
     }
 
+    #ifdef _WIN32
+    closesocket(handle->fd);
+    WSACleanup();
+    #else
     close(handle->fd);
+    #endif
     handle->fd = -1;
 
     return 0;
@@ -160,7 +211,11 @@ mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
         return -1;
     }
 
+    #ifdef _WIN32
+    if ((ret = send(handle->fd, buff, len, 0)) == len)
+    #else
     if ((ret = write(handle->fd, buff, len)) == len)
+    #endif
     {
         //
         // call the send event function, if the callback function is registered
@@ -208,13 +263,22 @@ retry:
             return MBUS_RECV_RESULT_ERROR;
         }
 
-        nread = read(handle->fd, &buff[len], remaining);
+        #ifdef _WIN32
+            nread = recv(handle->fd, &buff[len], remaining, 0);
+            errno = WSAGetLastError();
+        #else
+            nread = read(handle->fd, &buff[len], remaining);
+        #endif
         switch (nread) {
         case -1:
             if (errno == EINTR)
                 goto retry;
 
-            if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            if (errno == EAGAIN || errno == EWOULDBLOCK
+                #ifdef _WIN32
+                 || errno == WSAETIMEDOUT
+                #endif
+            ) {
                 mbus_error_str_set("M-Bus tcp transport layer response timeout has been reached.");
                 return MBUS_RECV_RESULT_TIMEOUT;
             }
