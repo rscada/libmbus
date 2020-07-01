@@ -12,6 +12,12 @@
 #
 #------------------------------------------------------------------------------
 
+NUMBER_OF_PARSING_ERRORS=0
+FAILING_TESTS=failing_tests.txt
+NEW_TESTS=new_tests.txt
+touch $FAILING_TESTS
+touch $NEW_TESTS
+
 # Check commandline parameter
 if [ $# -ne 1 ]; then
     echo "usage: $0 path_to_directory_with_xml_files"
@@ -64,6 +70,7 @@ generate_xml() {
 
     # Check parsing result
     if [ $result -ne 0 ]; then
+        NUMBER_OF_PARSING_ERRORS=$((NUMBER_OF_PARSING_ERRORS + 1))
         echo "Unable to generate XML for $hexfile"
         rm "$directory/$filename$mode.xml.new"
         return 1
@@ -81,14 +88,17 @@ generate_xml() {
              ;;
         1)
              # different -> print diff
+             echo "== $directory/$filename$mode failed"
              cat "$directory/$filename$mode.dif" && rm "$directory/$filename$mode.dif"
              echo ""
+             echo "$filename$mode" >> $FAILING_TESTS
              ;;
         *)
              # no old -> rename XML
              echo "Create $filename$mode.xml"
              mv "$directory/$filename$mode.xml.new" "$directory/$filename$mode.xml"
              rm "$directory/$filename$mode.dif"
+             echo "$filename$mode" >> $NEW_TESTS
              ;;
     esac
 
@@ -105,3 +115,27 @@ for hexfile in "$directory"/*.hex;  do
     generate_xml "$directory" "$hexfile" "normalized"
 done
 
+# Check the size of the file $FAILING_TESTS. Make sure to indicate failure.
+if [ -s $FAILING_TESTS ]; then
+    echo "** There were errors in the following file(s):"
+    cat $FAILING_TESTS
+    exit 1
+else
+    rm $FAILING_TESTS
+fi
+if [ -s $NEW_TESTS ]; then
+    echo "** There were new test in the following file(s):"
+    cat $NEW_TESTS
+else
+    rm $NEW_TESTS
+fi
+
+# Check that there was no files that failed to parse
+if [ $NUMBER_OF_PARSING_ERRORS -ne 0 ]; then
+    echo "** There were $NUMBER_OF_PARSING_ERRORS files that did not parse, expected 0 files."
+    echo
+    exit $NUMBER_OF_PARSING_ERRORS
+fi
+DIRECTORY_BASENAME="$(basename "$directory")"
+echo "** Tests executed successfully in \"$DIRECTORY_BASENAME\"."
+echo
