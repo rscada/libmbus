@@ -11,3 +11,5 @@ os:
 script: 
   - ./build.sh
   - ./test/generate-xml.sh test/test-frames
+  - ./test/generate-xml.sh test/error-frames || true
+  - ./test/generate-xml.sh test/unsupported-frames || true
