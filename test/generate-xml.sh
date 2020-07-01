@@ -19,7 +19,7 @@ touch $FAILING_TESTS
 touch $NEW_TESTS
 
 # Check commandline parameter
-if [ $# -ne 1 ]; then
+if [ $# -lt 1 ] || [ $# -gt 2 ]; then
     echo "usage: $0 path_to_directory_with_xml_files"
     echo "or"
     echo "usage: $0 path_to_directory_with_xml_files path_to_mbus_parse_hex_with_filename"
