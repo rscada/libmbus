@@ -9,7 +9,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: build examples and tests
-      run: rm -rf build || true && mkdir build && cd build && cmake .. -DLIBMBUS_BUILD_EXAMPLES=ON -DLIBMBUS_BUILD_TESTS=ON -DLIBMBUS_ENABLE_COVERAGE=ON && cmake --build . -j && cd ..
+      run: |
+        rm -rf build || true
+        mkdir -p build
+        cd build
+        cmake .. -DLIBMBUS_BUILD_EXAMPLES=ON -DLIBMBUS_BUILD_TESTS=ON -DLIBMBUS_ENABLE_COVERAGE=ON && cmake --build . -j
+        cd ..
 
     - name: generate test frames
       run: |
@@ -27,7 +32,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: build debian package
-      run: rm -rf build || true && mkdir build && cd build && cmake .. -DLIBMBUS_PACKAGE_DEB=ON && cpack .. && sudo dpkg -i *.deb && ls /usr/lib
+      run: |
+        rm -rf build || true
+        mkdir -p build
+        cd build
+        cmake .. -DLIBMBUS_PACKAGE_DEB=ON
+        cpack ..
+        sudo dpkg -i *.deb
+        ls /usr/lib
 
   doc:
     runs-on: ubuntu-latest
@@ -38,5 +50,9 @@ jobs:
       run: sudo apt install -y doxygen
       
     - name: build doxygen documentation
-      run: rm -rf build || true && mkdir build && cd build && cmake .. -DLIBMBUS_BUILD_DOCS=ON && cmake --build . --target doc
-
+      run: |
+        rm -rf build || true
+        mkdir build
+        cd build
+        cmake .. -DLIBMBUS_BUILD_DOCS=ON
+        cmake --build . --target doc
