@@ -12,7 +12,11 @@ jobs:
       run: rm -rf build || true && mkdir build && cd build && cmake .. -DLIBMBUS_BUILD_EXAMPLES=ON -DLIBMBUS_BUILD_TESTS=ON -DLIBMBUS_ENABLE_COVERAGE=ON && cmake --build . -j && cd ..
 
     - name: generate test frames
-      run: ./test/generate-xml.sh test/test-frames
+      run: |
+        ./test/generate-xml.sh test/test-frames
+        echo "NOTE: error-frames have about 30 parse errors, and unsupported-frames have 12"
+        ./test/generate-xml.sh test/error-frames || true
+        ./test/generate-xml.sh test/unsupported-frames || true
 
     - name: install and run gcovr
       run: sudo pip install gcovr && gcovr build/.
