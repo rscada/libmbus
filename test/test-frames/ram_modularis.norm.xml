@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>25776</Id>
+        <Manufacturer>RAM</Manufacturer>
+        <Version>3</Version>
+        <ProductName>Rossweiner ETK/ETW Modularis</ProductName>
+        <Medium>Water</Medium>
+        <AccessNumber>139</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>10.116000</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>Time point (date &amp; time)</Quantity>
+        <Value>2013-10-18T21:40:00Z</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2013-09-28</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>8.393000</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2014-09-28</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Fabrication No</Quantity>
+        <Value>25776.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>2</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2013-09-30</Value>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>2</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>8.527000</Value>
+    </DataRecord>
+
+    <DataRecord id="8">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>3</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2012-10-31</Value>
+    </DataRecord>
+
+    <DataRecord id="9">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>3</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>99999.995000</Value>
+    </DataRecord>
+
+    <DataRecord id="10">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>4</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2012-11-30</Value>
+    </DataRecord>
+
+    <DataRecord id="11">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>4</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>99999.993000</Value>
+    </DataRecord>
+
+    <DataRecord id="12">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>5</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2012-12-31</Value>
+    </DataRecord>
+
+    <DataRecord id="13">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>5</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>0.782000</Value>
+    </DataRecord>
+
+    <DataRecord id="14">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>6</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2013-01-31</Value>
+    </DataRecord>
+
+    <DataRecord id="15">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>6</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>1.929000</Value>
+    </DataRecord>
+
+    <DataRecord id="16">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>7</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2013-02-28</Value>
+    </DataRecord>
+
+    <DataRecord id="17">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>7</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>3.092000</Value>
+    </DataRecord>
+
+    <DataRecord id="18">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>8</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2013-03-31</Value>
+    </DataRecord>
+
+    <DataRecord id="19">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>8</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>4.661000</Value>
+    </DataRecord>
+
+    <DataRecord id="20">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>9</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2013-04-30</Value>
+    </DataRecord>
+
+    <DataRecord id="21">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>9</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>4.767000</Value>
+    </DataRecord>
+
+    <DataRecord id="22">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>10</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2013-05-31</Value>
+    </DataRecord>
+
+    <DataRecord id="23">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>10</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>5.124000</Value>
+    </DataRecord>
+
+    <DataRecord id="24">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>11</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2013-06-30</Value>
+    </DataRecord>
+
+    <DataRecord id="25">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>11</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>5.176000</Value>
+    </DataRecord>
+
+    <DataRecord id="26">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>12</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2013-07-31</Value>
+    </DataRecord>
+
+    <DataRecord id="27">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>12</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>5.246000</Value>
+    </DataRecord>
+
+    <DataRecord id="28">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>13</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2013-08-31</Value>
+    </DataRecord>
+
+    <DataRecord id="29">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>13</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>5.668000</Value>
+    </DataRecord>
+
+    <DataRecord id="30">
+        <Function>Manufacturer specific</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity></Quantity>
+        <Value>01 00 00</Value>
+    </DataRecord>
+
+</MBusData>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>70112345</Id>
+        <Manufacturer>ELS</Manufacturer>
+        <Version>10</Version>
+        <ProductName>Elster Falcon</ProductName>
+        <Medium>Water</Medium>
+        <AccessNumber>2</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>1234.567000</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>Time point (date &amp; time)</Quantity>
+        <Value>2007-02-06T13:58:00Z</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2007-01-01</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>456.951000</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2008-01-01</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Maximum value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>m^3/h</Unit>
+        <Quantity>Volume flow</Quantity>
+        <Value>5.945000</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2008-01-01</Value>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>m^3/h</Unit>
+        <Quantity>Volume flow</Quantity>
+        <Value>6.137000</Value>
+    </DataRecord>
+
+    <DataRecord id="8">
+        <Function>Manufacturer specific</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity></Quantity>
+        <Value>0E 42 20 01 01 01 00 05 08 5E 01 20 3D 12 08 3D 12 08 00</Value>
+    </DataRecord>
+
+</MBusData>
