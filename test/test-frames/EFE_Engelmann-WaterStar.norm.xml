@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>4990254</Id>
+        <Manufacturer>EFE</Manufacturer>
+        <Version>0</Version>
+        <ProductName>Engelmann WaterStar</ProductName>
+        <Medium>Warm water (30-90°C)</Medium>
+        <AccessNumber>12</AccessNumber>
+        <Status>27</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Fabrication No</Quantity>
+        <Value>4990254.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>Time point (date &amp; time)</Quantity>
+        <Value>2014-03-13T12:10:00Z</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>0.332000</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>0.331000</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>2</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>0.332000</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2013-12-31</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2014-12-31</Value>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>m^3/h</Unit>
+        <Quantity>Volume flow</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="8">
+        <Function>Maximum value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>m^3/h</Unit>
+        <Quantity>Volume flow</Quantity>
+        <Value>2.070000</Value>
+    </DataRecord>
+
+    <DataRecord id="9">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>s</Unit>
+        <Quantity>On time</Quantity>
+        <Value>102902400.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="10">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Error flags</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="11">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>0.000008</Value>
+    </DataRecord>
+
+</MBusData>

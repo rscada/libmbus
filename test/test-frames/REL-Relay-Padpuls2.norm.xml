@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>11216301</Id>
+        <Manufacturer>REL</Manufacturer>
+        <Version>65</Version>
+        <ProductName></ProductName>
+        <Medium>Gas</Medium>
+        <AccessNumber>177</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>28760.810000</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>Time point (date &amp; time)</Quantity>
+        <Value>1900-01-00T00:00:00Z</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2014-12-31</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>25973.820000</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2015-12-31</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Manufacturer specific</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity></Quantity>
+        <Value>C0 01 01 0C</Value>
+    </DataRecord>
+
+</MBusData>

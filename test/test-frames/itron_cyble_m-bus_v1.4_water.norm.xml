@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>12000071</Id>
+        <Manufacturer>ACW</Manufacturer>
+        <Version>20</Version>
+        <ProductName>Itron CYBLE M-Bus 1.4</ProductName>
+        <Medium>Water</Medium>
+        <AccessNumber>10</AccessNumber>
+        <Status>30</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Fabrication No</Quantity>
+        <Value>12000071.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>cust. ID</Quantity>
+        <Value>TEST CYBLE</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>Time point (date &amp; time)</Quantity>
+        <Value>2012-01-24T13:43:00Z</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>bat. time</Quantity>
+        <Value>4338.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>123.490000</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>0.200000</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Manufacturer specific</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity></Quantity>
+        <Value>10 01 1F</Value>
+    </DataRecord>
+
+</MBusData>
