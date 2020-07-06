@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>12345678</Id>
+        <Medium>Water</Medium>
+        <AccessNumber>10</AccessNumber>
+        <Status>00</Status>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Actual value</Function>
+        <Unit>l</Unit>
+        <Value>1</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Actual value</Function>
+        <Unit>reserved but historic</Unit>
+        <Value>135</Value>
+    </DataRecord>
+
+</MBusData>
