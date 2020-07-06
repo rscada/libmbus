@@ -56,7 +56,7 @@
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
         <Unit></Unit>
-        <Quantity>Device type</Quantity>
+        <Quantity>Model / Version</Quantity>
         <Value>2173253517322.000000</Value>
     </DataRecord>
 
