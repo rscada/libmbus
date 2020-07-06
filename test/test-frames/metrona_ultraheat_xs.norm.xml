@@ -16,7 +16,7 @@
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
         <Unit>s</Unit>
-        <Quantity>Averaging Duration</Quantity>
+        <Quantity>Actuality Duration</Quantity>
         <Value>4.000000</Value>
     </DataRecord>
 
