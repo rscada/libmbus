@@ -201,10 +201,10 @@ mbus_variable_vif vif_table[] = {
     { 0x73, 86400.0, "s", "Averaging Duration" },  /* days    */
 
     /* E111 01nn     Actuality Duration s */
-    { 0x74,     1.0, "s", "Averaging Duration" },  /* seconds */
-    { 0x75,    60.0, "s", "Averaging Duration" },  /* minutes */
-    { 0x76,  3600.0, "s", "Averaging Duration" },  /* hours   */
-    { 0x77, 86400.0, "s", "Averaging Duration" },  /* days    */
+    { 0x74,     1.0, "s", "Actuality Duration" },  /* seconds */
+    { 0x75,    60.0, "s", "Actuality Duration" },  /* minutes */
+    { 0x76,  3600.0, "s", "Actuality Duration" },  /* hours   */
+    { 0x77, 86400.0, "s", "Actuality Duration" },  /* days    */
 
     /* Fabrication No */
     { 0x78, 1.0, "", "Fabrication No" },
@@ -247,7 +247,7 @@ mbus_variable_vif vif_table[] = {
     { 0x108, 1.0e0,  "", "Access Number (transmission count)" },
 
     /* E000 1001 Medium (as in fixed header) */
-    { 0x109, 1.0e0,  "", "Device type" },
+    { 0x109, 1.0e0,  "", "Medium" },
 
     /* E000 1010 Manufacturer (as in fixed header) */
     { 0x10A, 1.0e0,  "", "Manufacturer" },
@@ -256,7 +256,7 @@ mbus_variable_vif vif_table[] = {
     { 0x10B, 1.0e0,  "", "Parameter set identification" },
 
     /* E000 1100 Model / Version */
-    { 0x10C, 1.0e0,  "", "Device type" },
+    { 0x10C, 1.0e0,  "", "Model / Version" },
 
     /* E000 1101 Hardware version # */
     { 0x10D, 1.0e0,  "", "Hardware version" },
@@ -356,9 +356,9 @@ mbus_variable_vif vif_table[] = {
     { 0x130, 1.0e0,  "Reserved", "Reserved" }, /* ???? */
 
     /* E011 00nn Duration of tariff (nn=01 ..11: min to days) */
-    { 0x131,       60.0,  "s", "Storage interval" },   /* minute(s) */
-    { 0x132,     3600.0,  "s", "Storage interval" },   /* hour(s)   */
-    { 0x133,    86400.0,  "s", "Storage interval" },   /* day(s)    */
+    { 0x131,       60.0,  "s", "Duration of tariff" },   /* minute(s) */
+    { 0x132,     3600.0,  "s", "Duration of tariff" },   /* hour(s)   */
+    { 0x133,    86400.0,  "s", "Duration of tariff" },   /* day(s)    */
 
     /* E011 01nn Period of tariff [sec(s) to day(s)]  */
     { 0x134,        1.0, "s", "Period of tariff" },  /* seconds  */
