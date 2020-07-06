@@ -132,7 +132,7 @@
         <Tariff>0</Tariff>
         <Device>1</Device>
         <Unit></Unit>
-        <Quantity>Device type</Quantity>
+        <Quantity>Medium</Quantity>
         <Value>7.000000</Value>
     </DataRecord>
 
@@ -182,7 +182,7 @@
         <Tariff>0</Tariff>
         <Device>2</Device>
         <Unit></Unit>
-        <Quantity>Device type</Quantity>
+        <Quantity>Medium</Quantity>
         <Value>7.000000</Value>
     </DataRecord>
 
