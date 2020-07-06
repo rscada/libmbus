@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>31425084</Id>
+        <Manufacturer>ZRM</Manufacturer>
+        <Version>129</Version>
+        <ProductName>Minol Minocal C2</ProductName>
+        <Medium>Heat: Outlet</Medium>
+        <AccessNumber>115</AccessNumber>
+        <Status>27</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Wh</Unit>
+        <Quantity>Energy</Quantity>
+        <Value>3000.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Error flags</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>8</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date &amp; time)</Quantity>
+        <Value>2015-01-01T00:00:00Z</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>8</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Wh</Unit>
+        <Quantity>Energy</Quantity>
+        <Value>3000.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>10</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Wh</Unit>
+        <Quantity>Energy</Quantity>
+        <Value>3000.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>0.074000</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>m^3/h</Unit>
+        <Quantity>Volume flow</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Maximum value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>m^3/h</Unit>
+        <Quantity>Volume flow</Quantity>
+        <Value>0.043000</Value>
+    </DataRecord>
+
+    <DataRecord id="8">
+        <Function>Maximum value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>Time point (date &amp; time)</Quantity>
+        <Value>2011-09-01T08:30:00Z</Value>
+    </DataRecord>
+
+    <DataRecord id="9">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>W</Unit>
+        <Quantity>Power</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="10">
+        <Function>Maximum value</Function>
+        <StorageNumber>2</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>W</Unit>
+        <Quantity>Power</Quantity>
+        <Value>2000.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="11">
+        <Function>Maximum value</Function>
+        <StorageNumber>2</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date &amp; time)</Quantity>
+        <Value>2011-09-01T08:30:00Z</Value>
+    </DataRecord>
+
+    <DataRecord id="12">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>°C</Unit>
+        <Quantity>Flow temperature</Quantity>
+        <Value>20.710000</Value>
+    </DataRecord>
+
+    <DataRecord id="13">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>°C</Unit>
+        <Quantity>Return temperature</Quantity>
+        <Value>20.380000</Value>
+    </DataRecord>
+
+    <DataRecord id="14">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>Time point (date &amp; time)</Quantity>
+        <Value>2014-03-13T12:45:00Z</Value>
+    </DataRecord>
+
+    <DataRecord id="15">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>32</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2014-03-01</Value>
+    </DataRecord>
+
+    <DataRecord id="16">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>32</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Wh</Unit>
+        <Quantity>Energy</Quantity>
+        <Value>3000.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="17">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>33</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2014-02-01</Value>
+    </DataRecord>
+
+    <DataRecord id="18">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>33</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Wh</Unit>
+        <Quantity>Energy</Quantity>
+        <Value>3000.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="19">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>34</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2014-01-01</Value>
+    </DataRecord>
+
+    <DataRecord id="20">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>34</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Wh</Unit>
+        <Quantity>Energy</Quantity>
+        <Value>3000.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="21">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>35</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2013-12-01</Value>
+    </DataRecord>
+
+    <DataRecord id="22">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>35</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Wh</Unit>
+        <Quantity>Energy</Quantity>
+        <Value>3000.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="23">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>36</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2013-11-01</Value>
+    </DataRecord>
+
+    <DataRecord id="24">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>36</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Wh</Unit>
+        <Quantity>Energy</Quantity>
+        <Value>3000.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="25">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>37</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2013-10-01</Value>
+    </DataRecord>
+
+    <DataRecord id="26">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>37</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Wh</Unit>
+        <Quantity>Energy</Quantity>
+        <Value>3000.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="27">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>38</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2013-09-01</Value>
+    </DataRecord>
+
+    <DataRecord id="28">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>38</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Wh</Unit>
+        <Quantity>Energy</Quantity>
+        <Value>3000.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="29">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>39</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2013-08-01</Value>
+    </DataRecord>
+
+    <DataRecord id="30">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>39</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Wh</Unit>
+        <Quantity>Energy</Quantity>
+        <Value>3000.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="31">
+        <Function>Maximum value</Function>
+        <StorageNumber>32</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>-</Unit>
+        <Quantity>Time point (date)</Quantity>
+        <Value>2014-03-01</Value>
+    </DataRecord>
+
+    <DataRecord id="32">
+        <Function>Maximum value</Function>
+        <StorageNumber>32</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>m^3/h</Unit>
+        <Quantity>Volume flow</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="33">
+        <Function>Maximum value</Function>
+        <StorageNumber>32</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>W</Unit>
+        <Quantity>Power</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+</MBusData>

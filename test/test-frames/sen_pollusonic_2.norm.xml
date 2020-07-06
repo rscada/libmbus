@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>90919293</Id>
+        <Medium>Heat</Medium>
+        <AccessNumber>16</AccessNumber>
+        <Status>00</Status>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Actual value</Function>
+        <Unit>kWh</Unit>
+        <Value>6531</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Actual value</Function>
+        <Unit>l</Unit>
+        <Value>69</Value>
+    </DataRecord>
+
+</MBusData>
