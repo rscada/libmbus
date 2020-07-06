@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>2</Id>
+        <Manufacturer>ELV</Manufacturer>
+        <Version>21</Version>
+        <ProductName>Elvaco CMa10</ProductName>
+        <Medium>Other</Medium>
+        <AccessNumber>13</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Digital Input</Quantity>
+        <Value>2.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>%RH</Quantity>
+        <Value>46.600000</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Minimum value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>%RH</Quantity>
+        <Value>37.820000</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Maximum value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>%RH</Quantity>
+        <Value>51.220000</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>°C</Unit>
+        <Quantity>External temperature</Quantity>
+        <Value>22.620000</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Minimum value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>°C</Unit>
+        <Quantity>External temperature</Quantity>
+        <Value>22.500000</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Maximum value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>°C</Unit>
+        <Quantity>External temperature</Quantity>
+        <Value>23.260000</Value>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>s</Unit>
+        <Quantity>Averaging Duration</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="8">
+        <Function>Value during error state</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>°C</Unit>
+        <Quantity>External temperature</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="9">
+        <Function>Value during error state</Function>
+        <StorageNumber>2</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>°C</Unit>
+        <Quantity>External temperature</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="10">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Fabrication No</Quantity>
+        <Value>2.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="11">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Software version</Quantity>
+        <Value>772.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="12">
+        <Function>More records follow</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity></Quantity>
+        <Value></Value>
+    </DataRecord>
+
+</MBusData>

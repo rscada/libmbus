@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>44950146</Id>
+        <Manufacturer>SPX</Manufacturer>
+        <Version>52</Version>
+        <ProductName>Sensus PolluTherm</ProductName>
+        <Medium>Heat: Outlet</Medium>
+        <AccessNumber>84</AccessNumber>
+        <Status>10</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Wh</Unit>
+        <Quantity>Energy</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>m^3/h</Unit>
+        <Quantity>Volume flow</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>W</Unit>
+        <Quantity>Power</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>°C</Unit>
+        <Quantity>Flow temperature</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>°C</Unit>
+        <Quantity>Return temperature</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>K</Unit>
+        <Quantity>Temperature difference</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Fabrication No</Quantity>
+        <Value>44950146.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="8">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Customer location</Quantity>
+        <Value>44950146.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="9">
+        <Function>More records follow</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity></Quantity>
+        <Value></Value>
+    </DataRecord>
+
+</MBusData>

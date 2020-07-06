@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>14839120</Id>
+        <Manufacturer>KAM</Manufacturer>
+        <Version>1</Version>
+        <ProductName>Kamstrup 382 (6850-005)</ProductName>
+        <Medium>Electricity</Medium>
+        <AccessNumber>4</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Wh</Unit>
+        <Quantity>Energy</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>s</Unit>
+        <Quantity>On time</Quantity>
+        <Value>32400.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>W</Unit>
+        <Quantity>Power</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Maximum value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>W</Unit>
+        <Quantity>Power</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>1</Tariff>
+        <Device>1</Device>
+        <Unit>Wh</Unit>
+        <Quantity>Energy</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>2</Tariff>
+        <Device>1</Device>
+        <Unit>Wh</Unit>
+        <Quantity>Energy</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Manufacturer specific</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity></Quantity>
+        <Value>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 10</Value>
+    </DataRecord>
+
+</MBusData>

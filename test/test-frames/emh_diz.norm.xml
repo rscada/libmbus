@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>623702</Id>
+        <Manufacturer>EMH</Manufacturer>
+        <Version>0</Version>
+        <ProductName>EMH DIZ</ProductName>
+        <Medium>Electricity</Medium>
+        <AccessNumber>7</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>1</Tariff>
+        <Device>0</Device>
+        <Unit>Wh</Unit>
+        <Quantity>Energy</Quantity>
+        <Value>4090.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>W</Unit>
+        <Quantity>Power</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Error flags</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+</MBusData>

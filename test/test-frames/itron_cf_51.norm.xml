@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>11155185</Id>
+        <Manufacturer>ACW</Manufacturer>
+        <Version>10</Version>
+        <ProductName>Itron CF 51</ProductName>
+        <Medium>Heat / Cooling load meter</Medium>
+        <AccessNumber>27</AccessNumber>
+        <Status>10</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Fabrication No</Quantity>
+        <Value>11155185.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Wh</Unit>
+        <Quantity>Energy</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Value during error state</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>W</Unit>
+        <Quantity>Power</Quantity>
+        <Value>99999900.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>m^3/h</Unit>
+        <Quantity>Volume flow</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Value during error state</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>°C</Unit>
+        <Quantity>Flow temperature</Quantity>
+        <Value>999.900000</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Value during error state</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>°C</Unit>
+        <Quantity>Return temperature</Quantity>
+        <Value>999.900000</Value>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Value during error state</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>K</Unit>
+        <Quantity>Temperature difference</Quantity>
+        <Value>9999.990000</Value>
+    </DataRecord>
+
+    <DataRecord id="8">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>Time point (date &amp; time)</Quantity>
+        <Value>2012-01-24T13:24:00Z</Value>
+    </DataRecord>
+
+    <DataRecord id="9">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>s</Unit>
+        <Quantity>Operating time</Quantity>
+        <Value>8985600.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="10">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Firmware version</Quantity>
+        <Value>11.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="11">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Software version</Quantity>
+        <Value>26.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="12">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>1</Device>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>321.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="13">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>2</Device>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>1.230000</Value>
+    </DataRecord>
+
+    <DataRecord id="14">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Wh</Unit>
+        <Quantity>Energy</Quantity>
+        <Value>0.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="15">
+        <Function>Manufacturer specific</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity></Quantity>
+        <Value>03 20</Value>
+    </DataRecord>
+
+</MBusData>
