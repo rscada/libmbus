@@ -37,51 +37,71 @@ if [ $# -eq 2 ]; then
 fi
 
 # Check if mbus_parse_hex exists
-if [ ! -x $mbus_parse_hex ]; then
+if [ ! -x "$mbus_parse_hex" ]; then
     echo "mbus_parse_hex not found"
     echo "path to mbus_parse_hex: $mbus_parse_hex"
     exit 3
 fi
+
+generate_xml() {
+    directory="$1"
+    hexfile="$2"
+    mode="$3"
+
+    filename=$(basename "$hexfile" .hex)
+
+    if [ "$mode" = "normalized" ]; then
+        options="-n"
+        mode=".norm"
+    else
+        options=""
+	mode=""
+    fi
+
+    # Parse hex file and write XML in file
+    "$mbus_parse_hex" $options "$hexfile" > "$directory/$filename$mode.xml.new"
+    result=$?
+
+    # Check parsing result
+    if [ $result -ne 0 ]; then
+        echo "Unable to generate XML for $hexfile"
+        rm "$directory/$filename$mode.xml.new"
+        return 1
+    fi
+
+    # Compare old XML with new XML and write in file
+    diff -u "$directory/$filename$mode.xml" "$directory/$filename$mode.xml.new" 2> /dev/null > "$directory/$filename$mode.dif"
+    result=$?
+
+    case "$result" in
+        0)
+             # XML equal -> remove new
+             rm "$directory/$filename$mode.xml.new"
+             rm "$directory/$filename$mode.dif"
+             ;;
+        1)
+             # different -> print diff
+             cat "$directory/$filename$mode.dif" && rm "$directory/$filename$mode.dif"
+             echo ""
+             ;;
+        *)
+             # no old -> rename XML
+             echo "Create $filename$mode.xml"
+             mv "$directory/$filename$mode.xml.new" "$directory/$filename$mode.xml"
+             rm "$directory/$filename$mode.dif"
+             ;;
+    esac
+
+    return $result
+}
 
 for hexfile in "$directory"/*.hex;  do
     if [ ! -f "$hexfile" ]; then
         continue
     fi
 
-    filename=`basename $hexfile .hex`
+    generate_xml "$directory" "$hexfile" "default"
 
-    # Parse hex file and write XML in file
-    $mbus_parse_hex "$hexfile" > "$directory/$filename.xml.new"
-    result=$?
-
-    # Check parsing result
-    if [ $result -ne 0 ]; then
-        echo "Unable to generate XML for $hexfile"
-        rm "$directory/$filename.xml.new"
-        continue
-    fi
-
-    # Compare old XML with new XML and write in file
-    diff -u "$directory/$filename.xml" "$directory/$filename.xml.new" 2> /dev/null > "$directory/$filename.dif"
-    result=$?
-
-    case "$result" in
-        0)
-             # XML equal -> remove new
-             rm "$directory/$filename.xml.new"
-             rm "$directory/$filename.dif"
-             ;;
-        1)
-             # different -> print diff
-             cat "$directory/$filename.dif" && rm "$directory/$filename.dif"
-             echo ""
-             ;;
-        *)
-             # no old -> rename XML
-             echo "Create $filename.xml"
-             mv "$directory/$filename.xml.new" "$directory/$filename.xml"
-             rm "$directory/$filename.dif"
-             ;;
-    esac
+    generate_xml "$directory" "$hexfile" "normalized"
 done
 
