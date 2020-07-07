@@ -36,7 +36,7 @@
     <DataRecord id="3">
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
-        <Unit>Unrecognized VIF extension: 0x00</Unit>
+        <Unit>Energy (0.1 MWh)</Unit>
         <Value>8</Value>
     </DataRecord>
 
@@ -45,7 +45,7 @@
         <StorageNumber>0</StorageNumber>
         <Tariff>2</Tariff>
         <Device>0</Device>
-        <Unit>Unrecognized VIF extension: 0x00</Unit>
+        <Unit>Energy (0.1 MWh)</Unit>
         <Value>0</Value>
     </DataRecord>
 
@@ -54,7 +54,7 @@
         <StorageNumber>0</StorageNumber>
         <Tariff>3</Tariff>
         <Device>0</Device>
-        <Unit>Unrecognized VIF extension: 0x00</Unit>
+        <Unit>Energy (0.1 MWh)</Unit>
         <Value>0</Value>
     </DataRecord>
 
@@ -131,7 +131,7 @@
     <DataRecord id="16">
         <Function>Instantaneous value</Function>
         <StorageNumber>1</StorageNumber>
-        <Unit>Unrecognized VIF extension: 0x00</Unit>
+        <Unit>Energy (0.1 MWh)</Unit>
         <Value>8</Value>
     </DataRecord>
 
@@ -140,7 +140,7 @@
         <StorageNumber>1</StorageNumber>
         <Tariff>2</Tariff>
         <Device>0</Device>
-        <Unit>Unrecognized VIF extension: 0x00</Unit>
+        <Unit>Energy (0.1 MWh)</Unit>
         <Value>0</Value>
     </DataRecord>
 
@@ -149,7 +149,7 @@
         <StorageNumber>1</StorageNumber>
         <Tariff>3</Tariff>
         <Device>0</Device>
-        <Unit>Unrecognized VIF extension: 0x00</Unit>
+        <Unit>Energy (0.1 MWh)</Unit>
         <Value>0</Value>
     </DataRecord>
 
@@ -176,7 +176,7 @@
         <StorageNumber>2</StorageNumber>
         <Tariff>0</Tariff>
         <Device>0</Device>
-        <Unit>Unrecognized VIF extension: 0x00</Unit>
+        <Unit>Energy (0.1 MWh)</Unit>
         <Value>5</Value>
     </DataRecord>
 
@@ -185,7 +185,7 @@
         <StorageNumber>2</StorageNumber>
         <Tariff>2</Tariff>
         <Device>0</Device>
-        <Unit>Unrecognized VIF extension: 0x00</Unit>
+        <Unit>Energy (0.1 MWh)</Unit>
         <Value>0</Value>
     </DataRecord>
 
@@ -194,7 +194,7 @@
         <StorageNumber>2</StorageNumber>
         <Tariff>3</Tariff>
         <Device>0</Device>
-        <Unit>Unrecognized VIF extension: 0x00</Unit>
+        <Unit>Energy (0.1 MWh)</Unit>
         <Value>0</Value>
     </DataRecord>
 

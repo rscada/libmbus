@@ -2479,7 +2479,250 @@ static const char *
 mbus_vib_unit_lookup_fb(mbus_value_information_block *vib)
 {
     static char buff[256];
-    snprintf(buff, sizeof(buff), "Unrecognized VIF extension: 0xFB,0x%.2X", vib->vife[0]);
+    int n;
+    const char * prefix = "";
+    switch (vib->vife[0] & MBUS_DIB_VIF_WITHOUT_EXTENSION)
+    {
+        case 0x0:
+        case 0x0 + 1:
+            // E000 000n
+            n = 0x01 & vib->vife[0];
+            if (n == 0)
+                prefix = "0.1 ";
+        snprintf(buff, sizeof(buff), "Energy (%sMWh)", prefix);
+        break;
+    case 0x2:
+    case 0x2 + 1:
+        // E000 001n
+    case 0x4:
+    case 0x4 + 1:
+    case 0x4 + 2:
+    case 0x4 + 3:
+        // E000 01nn
+        snprintf(buff, sizeof(buff), "Reserved (0x%.2x)", vib->vife[0]);
+        break;
+    case 0x8:
+    case 0x8 + 1:
+        // E000 100n
+        n = 0x01 & vib->vife[0];
+        if (n == 0)
+           prefix = "0.1 ";
+        snprintf(buff, sizeof(buff), "Energy (%sGJ)", prefix);
+        break;
+    case 0xA:
+    case 0xA + 1:
+    case 0xC:
+    case 0xC + 1:
+    case 0xC + 2:
+    case 0xC + 3:
+        // E000 101n
+        // E000 11nn
+        snprintf(buff, sizeof(buff), "Reserved (0x%.2x)", vib->vife[0]);
+        break;
+    case 0x10:
+    case 0x10 + 1:
+        // E001 000n
+        n = 0x01 & vib->vife[0];
+        snprintf(buff, sizeof(buff), "Volume (%sm3)", mbus_unit_prefix(n+2));
+        break;
+    case 0x12:
+    case 0x12 + 1:
+    case 0x14:
+    case 0x14 + 1:
+    case 0x14 + 2:
+    case 0x14 + 3:
+        // E001 001n
+        // E001 01nn
+        snprintf(buff, sizeof(buff), "Reserved (0x%.2x)", vib->vife[0]);
+        break;
+    case 0x18:
+    case 0x18 + 1:
+        // E001 100n
+        n = 0x01 & vib->vife[0];
+        snprintf(buff, sizeof(buff), "Mass (%st)", mbus_unit_prefix(n+2));
+        break;
+    case 0x1A:
+    case 0x1B:
+    case 0x1C:
+    case 0x1D:
+    case 0x1E:
+    case 0x1F:
+    case 0x20:
+        // E001 1010 to E010 0000, Reserved
+        snprintf(buff, sizeof(buff), "Reserved (0x%.2x)", vib->vife[0]);
+        break;
+    case 0x21:
+        // E010 0001
+        snprintf(buff, sizeof(buff), "Volume (0.1 feet^3)");
+        break;
+    case 0x22:
+    case 0x23:
+        // E010 0010
+        // E010 0011
+        n = 0x01 & vib->vife[0];
+        if (n == 0)
+           prefix = "0.1 ";
+        snprintf(buff, sizeof(buff), "Volume (%samerican gallon)", prefix);
+        break;
+
+    case 0x24:
+        // E010 0100
+        snprintf(buff, sizeof(buff), "Volume flow (0.001 american gallon/min)");
+        break;
+    case 0x25:
+        // E010 0101
+        snprintf(buff, sizeof(buff), "Volume flow (american gallon/min)");
+        break;
+    case 0x26:
+        // E010 0110
+        snprintf(buff, sizeof(buff), "Volume flow (american gallon/h)");
+        break;
+    case 0x27:
+        // E010 0111, Reserved
+        snprintf(buff, sizeof(buff), "Reserved (0x%.2x)", vib->vife[0]);
+        break;
+    case 0x28:
+    case 0x28 + 1:
+        // E010 100n
+        n = 0x01 & vib->vife[0];
+        if (n == 0)
+           prefix = "0.1 ";
+        snprintf(buff, sizeof(buff), "Power (%sMW)", prefix);
+        break;
+    case 0x2A:
+    case 0x2A + 1:
+    case 0x2C:
+    case 0x2C + 1:
+    case 0x2C + 2:
+    case 0x2C + 3:
+        // E010 101n, Reserved
+        // E010 11nn, Reserved
+        snprintf(buff, sizeof(buff), "Reserved (0x%.2x)", vib->vife[0]);
+        break;
+    case 0x30:
+    case 0x30 + 1:
+        // E011 000n
+        n = 0x01 & vib->vife[0];
+        if (n == 0)
+           prefix = "0.1 ";
+        snprintf(buff, sizeof(buff), "Power (%sGJ/h)", prefix);
+        break;
+    case 0x32:
+    case 0x33:
+    case 0x34:
+    case 0x35:
+    case 0x36:
+    case 0x37:
+    case 0x38:
+    case 0x39:
+    case 0x3A:
+    case 0x3B:
+    case 0x3C:
+    case 0x3D:
+    case 0x3E:
+    case 0x3F:
+
+    case 0x40:
+    case 0x41:
+    case 0x42:
+    case 0x43:
+    case 0x44:
+    case 0x45:
+    case 0x46:
+    case 0x47:
+    case 0x48:
+    case 0x49:
+    case 0x4A:
+    case 0x4B:
+    case 0x4C:
+    case 0x4D:
+    case 0x4E:
+    case 0x4F:
+
+    case 0x52:
+    case 0x53:
+    case 0x54:
+    case 0x55:
+    case 0x56:
+    case 0x57:
+        // E011 0010 to E101 0111
+        snprintf(buff, sizeof(buff), "Reserved (0x%.2x)", vib->vife[0]);
+        break;
+    case 0x58:
+    case 0x58 + 1:
+    case 0x58 + 2:
+    case 0x58 + 3:
+        // E101 10nn
+        n = 0x03 & vib->vife[0];
+        snprintf(buff, sizeof(buff), "Flow Temperature (%s degree F)", mbus_unit_prefix(n -3));
+        break;
+    case 0x5C:
+    case 0x5C + 1:
+    case 0x5C + 2:
+    case 0x5C + 3:
+        // E101 11nn
+        n = 0x03 & vib->vife[0];
+        snprintf(buff, sizeof(buff), "Return Temperature (%s degree F)", mbus_unit_prefix(n -3));
+        break;
+    case 0x60:
+    case 0x60 + 1:
+    case 0x60 + 2:
+    case 0x60 + 3:
+        // E110 00nn
+        n = 0x03 & vib->vife[0];
+        snprintf(buff, sizeof(buff), "Temperature Difference (%s degree F)", mbus_unit_prefix(n -3));
+        break;
+    case 0x64:
+    case 0x64 + 1:
+    case 0x64 + 2:
+    case 0x64 + 3:
+        // E110 01nn
+        n = 0x03 & vib->vife[0];
+        snprintf(buff, sizeof(buff), "External Temperature (%s degree F)", mbus_unit_prefix(n -3));
+        break;
+    case 0x68:
+    case 0x69:
+    case 0x6A:
+    case 0x6B:
+    case 0x6C:
+    case 0x6D:
+    case 0x6E:
+    case 0x6F:
+        // E110 1nnn
+        snprintf(buff, sizeof(buff), "Reserved (0x%.2x)", vib->vife[0]);
+        break;
+    case 0x70:
+    case 0x70 + 1:
+    case 0x70 + 2:
+    case 0x70 + 3:
+        // E111 00nn
+        n = 0x03 & vib->vife[0];
+        snprintf(buff, sizeof(buff), "Cold / Warm Temperature Limit (%s degree F)", mbus_unit_prefix(n -3));
+        break;
+    case 0x74:
+    case 0x74 + 1:
+    case 0x74 + 2:
+    case 0x74 + 3:
+        // E111 00nn
+        n = 0x03 & vib->vife[0];
+        snprintf(buff, sizeof(buff), "Cold / Warm Temperature Limit (%s degree C)", mbus_unit_prefix(n -3));
+        break;
+    case 0x78:
+    case 0x78 + 1:
+    case 0x78 + 2:
+    case 0x78 + 3:
+    case 0x78 + 4:
+    case 0x78 + 5:
+    case 0x78 + 6:
+    case 0x78 + 7:
+        // E111 1nnn
+        n = 0x07 & vib->vife[0];
+        snprintf(buff, sizeof(buff), "cumul. count max power (%s W)", mbus_unit_prefix(n - 3));
+        break;
+    default:
+        snprintf(buff, sizeof(buff), "Unrecognized VIF 0xFB extension: 0x%.2x", vib->vife[0]);
+        break;
+    }
     return buff;
 }
 
