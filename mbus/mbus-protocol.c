@@ -955,14 +955,21 @@ mbus_data_product_name(mbus_data_variable_header *header)
         }
         else if (manufacturer == mbus_manufacturer_id("AMT"))
         {
-            switch (header->version)
+            if (header->version >= 0xC0)
             {
-                case 0x80:
-                    strcpy(buff,"Aquametro CALEC MB");
-                    break;
-                case 0xC0:
-                    strcpy(buff,"Aquametro CALEC ST");
-                    break;
+                strcpy(buff,"Aquametro CALEC ST");
+            }
+            else if (header->version >= 0x80)
+            {
+                strcpy(buff,"Aquametro CALEC MB");
+            }
+            else if (header->version >= 0x40)
+            {
+                strcpy(buff,"Aquametro SAPHIR");
+            }
+            else
+            {
+                strcpy(buff,"Aquametro AMTRON");
             }
         }
         else if (manufacturer == mbus_manufacturer_id("BEC"))
@@ -1266,14 +1273,15 @@ mbus_data_product_name(mbus_data_variable_header *header)
         {
             switch (header->version)
             {
+                case 0x08:
+                case 0x19:
+                    strcpy(buff,"Sensus PolluCom E");
+                    break;
                 case 0x0B:
                     strcpy(buff,"Sensus PolluTherm");
                     break;
                 case 0x0E:
                     strcpy(buff,"Sensus PolluStat E");
-                    break;
-                case 0x19:
-                    strcpy(buff,"Sensus PolluCom E");
                     break;
             }
         }
