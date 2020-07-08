@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>291104</Id>
+        <Manufacturer>LSZ</Manufacturer>
+        <Version>41</Version>
+        <ProductName></ProductName>
+        <Medium>Breaker: Electricity</Medium>
+        <AccessNumber>12</AccessNumber>
+        <Status>28</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Fabrication number</Unit>
+        <Value>47120</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Model / Version</Unit>
+        <Value>193280672764</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Parameter set identification</Unit>
+        <Value>RVD235</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>3</Tariff>
+        <Device>0</Device>
+        <Unit>Reserved VIF extension</Unit>
+        <Value>1</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>2</Tariff>
+        <Device>0</Device>
+        <Unit>Reserved VIF extension</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Reserved VIF extension</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Manufacturer specific</Function>
+        <Value>02 78 04 00 02 7A 04 00 32 00 1E 09 32 08 00 00 34 10 00 00 00 00 31 18 00 34 18 FF FF FF FF 71 18 00 74 18 FF FF FF FF B1 01 18 00 B4 01 18 FF FF FF FF F1 01 18 00 F4 01 18 FF FF FF FF B1 02 18 00 B4 02 18 FF FF FF FF F1 02 18 00 31 28 00 34 28 FF FF FF FF 71 28 00 01 01 00 01 09 00</Value>
+    </DataRecord>
+
+</MBusData>
