@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>63940045</Id>
+        <Manufacturer>SEN</Manufacturer>
+        <Version>8</Version>
+        <ProductName>Sensus PolluCom E</ProductName>
+        <Medium>Heat: Outlet</Medium>
+        <AccessNumber>249</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Energy (kWh)</Unit>
+        <Value>19019</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume (m m^3)</Unit>
+        <Value>1621119</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume flow (m m^3/h)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Power (W)</Unit>
+        <Value>0</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Flow temperature (1e-1 deg C)</Unit>
+        <Value>359</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Return temperature (1e-1 deg C)</Unit>
+        <Value>233</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Temperature Difference (m deg C)</Unit>
+        <Value>12614</Value>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Fabrication number</Unit>
+        <Value>63940045</Value>
+    </DataRecord>
+
+    <DataRecord id="8">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Customer location</Unit>
+        <Value>63940045</Value>
+    </DataRecord>
+
+    <DataRecord id="9">
+        <Function>More records follow</Function>
+        <Value></Value>
+    </DataRecord>
+
+</MBusData>
