@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>21346578</Id>
+        <Manufacturer>PAD</Manufacturer>
+        <Version>1</Version>
+        <ProductName></ProductName>
+        <Medium>Electricity</Medium>
+        <AccessNumber>85</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>V</Unit>
+        <Quantity>Voltage</Quantity>
+        <Value>1234.560000</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>V</Unit>
+        <Quantity>Voltage</Quantity>
+        <Value>1234.560000</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>V</Unit>
+        <Quantity>Voltage</Quantity>
+        <Value>1234.560000</Value>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>V</Unit>
+        <Quantity>Voltage</Quantity>
+        <Value>1234.560000</Value>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>V</Unit>
+        <Quantity>Voltage</Quantity>
+        <Value>1234.560000</Value>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>V</Unit>
+        <Quantity>Voltage</Quantity>
+        <Value>1234.560000</Value>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>A</Unit>
+        <Quantity>Current</Quantity>
+        <Value>123.456000</Value>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>A</Unit>
+        <Quantity>Current</Quantity>
+        <Value>123.456000</Value>
+    </DataRecord>
+
+    <DataRecord id="8">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>A</Unit>
+        <Quantity>Current</Quantity>
+        <Value>123.456000</Value>
+    </DataRecord>
+
+    <DataRecord id="9">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>A</Unit>
+        <Quantity>Current</Quantity>
+        <Value>123.456000</Value>
+    </DataRecord>
+
+    <DataRecord id="10">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>W</Unit>
+        <Quantity>Power</Quantity>
+        <Value>12345.600000</Value>
+    </DataRecord>
+
+    <DataRecord id="11">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>W</Unit>
+        <Quantity>Power</Quantity>
+        <Value>12345.600000</Value>
+    </DataRecord>
+
+    <DataRecord id="12">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>W</Unit>
+        <Quantity>Power</Quantity>
+        <Value>12345.600000</Value>
+    </DataRecord>
+
+    <DataRecord id="13">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>W</Unit>
+        <Quantity>Power</Quantity>
+        <Value>12345.600000</Value>
+    </DataRecord>
+
+    <DataRecord id="14">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Dimensionless</Quantity>
+        <Value>123456.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="15">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Dimensionless</Quantity>
+        <Value>123456.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="16">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Dimensionless</Quantity>
+        <Value>123456.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="17">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Dimensionless</Quantity>
+        <Value>123456.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="18">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Dimensionless</Quantity>
+        <Value>500.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="19">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Dimensionless</Quantity>
+        <Value>5.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="20">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Dimensionless</Quantity>
+        <Value>5.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="21">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Dimensionless</Quantity>
+        <Value>5.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="22">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit></Unit>
+        <Quantity>Dimensionless</Quantity>
+        <Value>50.000000</Value>
+    </DataRecord>
+
+</MBusData>
