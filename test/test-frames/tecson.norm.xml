@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>78563412</Id>
+        <Manufacturer>TEC</Manufacturer>
+        <Version>16</Version>
+        <ProductName></ProductName>
+        <Medium>Oil</Medium>
+        <AccessNumber>1</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>°C</Unit>
+        <Quantity>External temperature</Quantity>
+        <Value>9.000000</Value>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>45.600000</Value>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Maximum value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>1</Tariff>
+        <Device>0</Device>
+        <Unit>m^3</Unit>
+        <Quantity>Volume</Quantity>
+        <Value>50.000000</Value>
+    </DataRecord>
+
+</MBusData>
