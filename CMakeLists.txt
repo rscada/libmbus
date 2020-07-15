@@ -95,8 +95,8 @@ set(PACKAGE_VERSION "${PROJECT_VERSION}")
 set(VERSION "${PROJECT_VERSION}")
 configure_file(${CMAKE_CURRENT_LIST_DIR}/mbus/config.h.in ${CMAKE_CURRENT_LIST_DIR}/config.h @ONLY)
 
-add_library(
-  ${PROJECT_NAME}
+# list of source files
+add_library(objlib OBJECT
   "${CMAKE_CURRENT_LIST_DIR}/mbus/mbus-protocol.c"
   "${CMAKE_CURRENT_LIST_DIR}/mbus/mbus-protocol.h"
   "${CMAKE_CURRENT_LIST_DIR}/mbus/mbus-tcp.c"
@@ -107,6 +107,14 @@ add_library(
   "${CMAKE_CURRENT_LIST_DIR}/mbus/mbus-protocol-aux.h"
   "${CMAKE_CURRENT_LIST_DIR}/mbus/mbus-serial.c"
   "${CMAKE_CURRENT_LIST_DIR}/mbus/mbus-serial.h")
+
+# shared and static libraries built from the same object files
+add_library(${PROJECT_NAME} SHARED $<TARGET_OBJECTS:objlib>)
+add_library(libmbus_static STATIC $<TARGET_OBJECTS:objlib>)
+
+set_property(TARGET objlib PROPERTY POSITION_INDEPENDENT_CODE 1)
+set_target_properties(libmbus_static PROPERTIES OUTPUT_NAME mbus)
+
 target_include_directories(
   ${PROJECT_NAME}
   PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>" "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>"
@@ -175,7 +183,6 @@ install(
   TARGETS ${PROJECT_NAME}
   EXPORT ${PROJECT_NAME}Targets
   LIBRARY DESTINATION "${INSTALL_LIB_DIR}" COMPONENT lib
-  ARCHIVE DESTINATION "${INSTALL_LIB_DIR}" COMPONENT dev
   RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT lib)
 install(
   EXPORT ${PROJECT_NAME}Targets
@@ -198,6 +205,10 @@ install(
   COMPONENT dev
   FILES_MATCHING
   PATTERN "*.h")
+
+install(
+  TARGETS libmbus_static
+  ARCHIVE DESTINATION "${INSTALL_LIB_DIR}" COMPONENT dev)
 
 # ##############################################################################
 # package
