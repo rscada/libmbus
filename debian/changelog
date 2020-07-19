@@ -1,3 +1,15 @@
+libmbus (0.9.0) xenial; urgency=medium
+
+  * New official release
+    - major improvement to frame decoding
+    - new binaries: mbus-tcp-raw-send, mbus-tcp-application-reset,
+      mbus-serial-set-address
+    - simple echo cancellation
+    - replace CUnit test with test/generate-xml.sh
+  * debian/control: new package libmbus1-dbg
+
+ -- Stefan Wahren <stefan.wahren@i2se.com>  Fri, 22 Feb 2019 19:08:04 +0100
+
 libmbus (0.8.0) precise; urgency=low
 
   * New official release. Includes support for multi-telegram communication.
