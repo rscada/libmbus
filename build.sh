@@ -1,24 +1,21 @@
 #!/bin/sh
+#
 
+if [ -f Makefile ]; then
+    # use existing automake files
+    echo >> /dev/null
+else
+    # regenerate automake files
+    echo "Running autotools..."
 
-rm -rf build
-mkdir build
-cd build
-cmake .. -DLIBMBUS_BUILD_EXAMPLES=ON -DLIBMBUS_BUILD_TESTS=ON
-cmake --build .
+    autoheader \
+        && aclocal \
+        && case \
+          $(uname) in Darwin*) glibtoolize --ltdl --copy --force ;; \
+          *) libtoolize --ltdl --copy --force ;; esac \
+        && automake --add-missing --copy \
+        && autoconf \
+        && ./configure
+fi
 
-# build deb
-
-# rm -rf build
-# mkdir build
-# cd build
-# cmake .. -DLIBMBUS_PACKAGE_DEB=ON
-# cpack ..
-# dpkg -i *.deb
-
-# build doc
-
-# mkdir build
-# cd build
-# cmake .. -DLIBMBUS_BUILD_DOCS=ON
-# cmake --build . --target doc
+make
