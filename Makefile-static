@@ -1,0 +1,25 @@
+# Copyright (c) 2010
+# Robert Johansson
+# Raditex AB.
+# All rights reserved.
+
+LIB = libmbus.so
+
+CFLAGS = -Wall -W -g -fPIC -I.
+HEADERS = mbus.h mbus-protocol.h
+OBJS    = mbus.o mbus-protocol.o
+
+$(LIB): $(OBJS)
+	gcc -shared -o $(LIB) $(OBJS)
+
+all: $(LIB)
+
+clean:
+	rm -rf *.o *core core $(LIB)
+
+test:
+	(cd test && make)
+
+install: all
+	cp $(LIB) /usr/local/freescada/lib
+	cp $(HEADERS) /usr/local/freescada/include
