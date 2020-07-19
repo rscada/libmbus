@@ -1,0 +1,24 @@
+#
+# Copyright (C) 2011, Robert Johansson, Raditex AB
+# All rights reserved.
+#
+# rSCADA 
+# http://www.rSCADA.se
+# info@rscada.se
+#
+CFLAGS=-Wall -g -I..
+LDFLAGS=-L.. -lm -lmbus
+
+all: mbus-tcp-scan mbus-tcp-request-data
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $< -o $@
+
+mbus-tcp-scan: mbus-tcp-scan.o mbus-tcp.o
+	gcc -o $@ $^ $(LDFLAGS) 
+	
+mbus-tcp-request-data: mbus-tcp-request-data.o mbus-tcp.o
+	gcc -o $@ $^ $(LDFLAGS) 
+
+clean:
+	rm -rf mbus-tcp-request-data mbus-tcp-scan *.o *~
