@@ -25,6 +25,19 @@ while [ $# -gt 0 ] && [ "$1" != "--" ]; do
             SIGN_KEY=$2
             shift
             ;;
+        *)
+            echo "Usage: $0 [--build-source-pkg] [--skip-binary]"
+            echo "          [{--sign-key|-l} <GPG KEY ID>"
+            echo "          [-- <dpkg-buildpackage options>"
+            case "$1" in
+                "-h"|"-?"|--help)
+                    exit 0
+                    ;;
+                *)
+                    echo "Unrecognised argument ${1}"
+                    exit 1
+                    ;;
+            esac
     esac
     shift
 done
