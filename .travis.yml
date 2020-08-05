@@ -8,8 +8,10 @@ os:
   - linux
   - osx
 
-script: 
+script:
   - ./build.sh
-  - ./test/generate-xml.sh test/test-frames
-  - ./test/generate-xml.sh test/error-frames || true
-  - ./test/generate-xml.sh test/unsupported-frames || true
+  - cd test && make && cd ..
+  - PROG=test/mbus_parse_hex
+  - test/generate-xml.sh test/test-frames $PROG
+  - test/generate-xml.sh test/error-frames $PROG || true
+  - test/generate-xml.sh test/unsupported-frames $PROG || true
