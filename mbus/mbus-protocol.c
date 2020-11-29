@@ -4649,9 +4649,11 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
         if (record->timestamp > 0)
         {
             timeinfo = gmtime (&(record->timestamp));
-            strftime(timestamp,21,"%Y-%m-%dT%H:%M:%SZ",timeinfo);
-            len += snprintf(&buff[len], sizeof(buff) - len,
+            if(timeinfo) {
+                strftime(timestamp,21,"%Y-%m-%dT%H:%M:%SZ",timeinfo);
+                len += snprintf(&buff[len], sizeof(buff) - len,
                             "        <Timestamp>%s</Timestamp>\n", timestamp);
+            }
         }
 
         len += snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");
