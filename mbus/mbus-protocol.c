@@ -3810,7 +3810,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             {
                 unsigned char dife;
 
-                if (record->drh.dib.ndife >= NITEMS(record->drh.dib.dife))
+                if (record->drh.dib.ndife >= MBUS_DATA_INRO_BLOCK_DIFE_SIZE)
                 {
                     mbus_data_record_free(record);
                     snprintf(error_str, sizeof(error_str), "Too many DIFE.");
@@ -3842,7 +3842,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 // variable length VIF in ASCII format
                 int var_vif_len;
                 var_vif_len = frame->data[i++];
-                if (var_vif_len > sizeof(record->drh.vib.custom_vif))
+                if (var_vif_len > MBUS_VALUE_INFO_BLOCK_CUSTOM_VIF_SIZE)
                 {
                     mbus_data_record_free(record);
                     snprintf(error_str, sizeof(error_str), "Too long variable length VIF.");
@@ -3872,7 +3872,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 {
                     unsigned char vife;
 
-                    if (record->drh.vib.nvife >= NITEMS(record->drh.vib.vife))
+                    if (record->drh.vib.nvife >= MBUS_VALUE_INFO_BLOCK_VIFE_SIZE)
                     {
                         mbus_data_record_free(record);
                         snprintf(error_str, sizeof(error_str), "Too many VIFE.");
