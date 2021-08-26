@@ -135,14 +135,14 @@ typedef struct _mbus_slave_data {
 #define MBUS_DIB_DIF_IDLE_FILLER           0x2F
 
 
-#define MBUS_DATA_INRO_BLOCK_DIFE_SIZE         10
+#define MBUS_DATA_INFO_BLOCK_DIFE_SIZE         10
 #define MBUS_VALUE_INFO_BLOCK_VIFE_SIZE        10
 #define MBUS_VALUE_INFO_BLOCK_CUSTOM_VIF_SIZE  128
 
 typedef struct _mbus_data_information_block {
 
         unsigned char dif;
-        unsigned char dife[MBUS_DATA_INRO_BLOCK_DIFE_SIZE];
+        unsigned char dife[MBUS_DATA_INFO_BLOCK_DIFE_SIZE];
         size_t  ndife;
 
 } mbus_data_information_block;
