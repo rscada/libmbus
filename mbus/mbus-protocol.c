@@ -1325,6 +1325,15 @@ mbus_data_product_name(mbus_data_variable_header *header)
                     break;
             }
         }
+        else if (manufacturer == mbus_manufacturer_id("WZG"))
+        {
+            switch (header->version)
+            {
+                case 0x03:
+                    strcpy(buff,"ETW-EAX");
+                    break;
+            }
+        }
         else if (manufacturer == mbus_manufacturer_id("ZRM"))
         {
             switch (header->version)
