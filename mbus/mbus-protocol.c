@@ -927,6 +927,9 @@ mbus_data_product_name(mbus_data_variable_header *header)
                 case 0x02:
                     strcpy(buff,"ABB Delta-Meter");
                     break;
+                case 0x20:
+                    strcpy(buff,"ABB B21 113-100");
+                    break;
             }
         }
         else if (manufacturer == mbus_manufacturer_id("ACW"))
