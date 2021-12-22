@@ -1323,6 +1323,9 @@ mbus_data_product_name(mbus_data_variable_header *header)
                 case 0x26:
                     strcpy(buff,"Techem m-bus S");
                     break;
+                case 0x40:
+                    strcpy(buff,"Techem ultra S3");
+                    break;
             }
         }
         else if (manufacturer == mbus_manufacturer_id("ZRM"))
