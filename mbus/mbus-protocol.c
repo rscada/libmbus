@@ -1330,7 +1330,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
             switch (header->version)
             {
                 case 0x03:
-                    strcpy(buff,"ETW-EAX");
+                    strcpy(buff,"Modularis ETW-EAX");
                     break;
             }
         }
