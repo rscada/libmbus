@@ -4346,18 +4346,20 @@ mbus_data_variable_print(mbus_data_variable *data)
 {
     mbus_data_record *record;
     size_t j;
+    int i;
 
     if (data)
     {
         mbus_data_variable_header_print(&(data->header));
 
-        for (record = data->record; record; record = record->next)
+        for (record = data->record, i = 0; record; record = record->next, i++)
         {
+            printf("Record ID         = %d\n", i);
             // DIF
             printf("DIF               = %.2X\n", record->drh.dib.dif);
             printf("DIF.Extension     = %s\n",  (record->drh.dib.dif & MBUS_DIB_DIF_EXTENSION_BIT) ? "Yes":"No");
             printf("DIF.StorageNumber = %d\n",  (record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_STORAGE_NO) >> 6);
-            printf("DIF.Function      = %s\n",  (record->drh.dib.dif & 0x30) ? "Minimum value" : "Instantaneous value" );
+            printf("DIF.Function      = %s\n",  (record->drh.dib.dif & 0x30) ? "Value during error state" : "Instantaneous value" );
             printf("DIF.Data          = %.2X\n", record->drh.dib.dif & 0x0F);
 
             // VENDOR SPECIFIC
