@@ -58,7 +58,7 @@
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
         <Unit>Temperature Difference (1e-2  deg C)</Unit>
-        <Value>F00018</Value>
+        <Value>-18</Value>
     </DataRecord>
 
     <DataRecord id="7">
