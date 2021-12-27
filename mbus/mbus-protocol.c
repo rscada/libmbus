@@ -3294,8 +3294,16 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x09: // 2 digit BCD (8 bit)
 
-                int_val = (int)mbus_data_bcd_decode_hex(record->data, 1);
-                snprintf(buff, sizeof(buff), "%X", int_val);
+                if ((record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_FUNCTION) == 0x30)
+                {
+                    int_val = (int)mbus_data_bcd_decode_hex(record->data, 1);
+                    snprintf(buff, sizeof(buff), "%X", int_val);
+                }
+                else
+                {
+                    int_val = (int)mbus_data_bcd_decode(record->data, 1);
+                    snprintf(buff, sizeof(buff), "%d", int_val);
+                }
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 2 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
@@ -3304,8 +3312,16 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x0A: // 4 digit BCD (16 bit)
 
-                int_val = (int)mbus_data_bcd_decode_hex(record->data, 2);
-                snprintf(buff, sizeof(buff), "%X", int_val);
+                if ((record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_FUNCTION) == 0x30)
+                {
+                    int_val = (int)mbus_data_bcd_decode_hex(record->data, 2);
+                    snprintf(buff, sizeof(buff), "%X", int_val);
+                }
+                else
+                {
+                    int_val = (int)mbus_data_bcd_decode(record->data, 2);
+                    snprintf(buff, sizeof(buff), "%d", int_val);
+                }
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 4 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
@@ -3314,8 +3330,16 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x0B: // 6 digit BCD (24 bit)
 
-                int_val = (int)mbus_data_bcd_decode_hex(record->data, 3);
-                snprintf(buff, sizeof(buff), "%X", int_val);
+                if ((record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_FUNCTION) == 0x30)
+                {
+                    int_val = (int)mbus_data_bcd_decode_hex(record->data, 3);
+                    snprintf(buff, sizeof(buff), "%X", int_val);
+                }
+                else
+                {
+                    int_val = (int)mbus_data_bcd_decode(record->data, 3);
+                    snprintf(buff, sizeof(buff), "%d", int_val);
+                }
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 6 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
@@ -3324,8 +3348,16 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x0C: // 8 digit BCD (32 bit)
 
-                int_val = (int)mbus_data_bcd_decode_hex(record->data, 4);
-                snprintf(buff, sizeof(buff), "%X", int_val);
+                if ((record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_FUNCTION) == 0x30)
+                {
+                    int_val = (int)mbus_data_bcd_decode_hex(record->data, 4);
+                    snprintf(buff, sizeof(buff), "%X", int_val);
+                }
+                else
+                {
+                    int_val = (int)mbus_data_bcd_decode(record->data, 4);
+                    snprintf(buff, sizeof(buff), "%d", int_val);
+                }
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 8 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
@@ -3334,8 +3366,16 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x0E: // 12 digit BCD (48 bit)
 
-                long_long_val = mbus_data_bcd_decode_hex(record->data, 6);
-                snprintf(buff, sizeof(buff), "%llX", long_long_val);
+                if ((record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_FUNCTION) == 0x30)
+                {
+                    long_long_val = mbus_data_bcd_decode_hex(record->data, 6);
+                    snprintf(buff, sizeof(buff), "%llX", long_long_val);
+                }
+                else
+                {
+                    long_long_val = mbus_data_bcd_decode(record->data, 6);
+                    snprintf(buff, sizeof(buff), "%lld", long_long_val);
+                }
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 12 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
