@@ -607,6 +607,7 @@ char *mbus_frame_xml(mbus_frame *frame);
 // Debug/dump
 //
 int mbus_frame_print(mbus_frame *frame);
+const char * mbus_frame_type_print(const int type);
 int mbus_frame_data_print(mbus_frame_data *data);
 int mbus_data_fixed_print(mbus_data_fixed *data);
 int mbus_data_error_print(int error);
