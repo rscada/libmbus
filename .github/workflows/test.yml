@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v1
 
       - name: Install automake (macos)
-        if: startsWith(runner.OS, 'darwin')
+        if: startsWith(runner.OS, 'macOS')
         run: brew install automake
 
       - name: Build
