@@ -97,7 +97,7 @@ typedef struct _mbus_handle {
     void (*recv_event) (unsigned char src_type, const char *buff, size_t len);
     void (*send_event) (unsigned char src_type, const char *buff, size_t len);
     void (*scan_progress) (struct _mbus_handle *handle, const char *mask);
-    void (*found_event) (struct _mbus_handle *handle, mbus_frame *frame);    
+    void (*found_event) (struct _mbus_handle *handle, mbus_frame *frame);
     void *auxdata;
 } mbus_handle;
 
@@ -293,7 +293,8 @@ int mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, long baud
  *
  * @return Zero when successful.
  */
-int mbus_send_request_frame(mbus_handle * handle, int address);
+ int mbus_send_request_frame(mbus_handle * handle, int address);
+ int mbus_send_request_frame_fcb(mbus_handle * handle, int address);
 
 /**
  * Sends user data frame (SND_UD) to given slave using "unified" handle

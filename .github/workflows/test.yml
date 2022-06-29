@@ -1,0 +1,42 @@
+name: Test
+
+# Run this job on all pushes and pull requests
+# as well as tags with a semantic version
+on:
+  push:
+    branches:
+      - '*'
+  pull_request: {}
+
+jobs:
+
+  # Runs lib tests on all supported node versions and OSes
+  build-and-test:
+    if: contains(github.event.head_commit.message, '[skip ci]') == false
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Install automake (macos)
+        if: startsWith(runner.OS, 'macOS')
+        run: brew install automake
+
+      - name: Build
+        run: ./build.sh
+
+      - name: Build tests
+        run: cd test && make
+
+      - name: Test Success Frames
+        run: cd test && ./generate-xml.sh test-frames
+
+      - name: Test Error Frames
+        run: cd test && ./generate-xml.sh error-frames || true
+
+      - name: Test Unsupported Frames
+        run: cd test && ./generate-xml.sh unsupported-frames || true
