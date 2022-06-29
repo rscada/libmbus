@@ -35,7 +35,7 @@ if [ ! -d "$directory" ]; then
 fi
 
 # Default location is this one
-mbus_parse_hex="build/bin/mbus_parse_hex"
+mbus_parse_hex="./mbus_parse_hex"
 
 # though can be overriten
 if [ $# -eq 2 ]; then

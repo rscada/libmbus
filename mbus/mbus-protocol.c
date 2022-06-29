@@ -932,6 +932,9 @@ mbus_data_product_name(mbus_data_variable_header *header)
                 case 0x02:
                     strcpy(buff,"ABB Delta-Meter");
                     break;
+                case 0x20:
+                    strcpy(buff,"ABB B21 113-100");
+                    break;
             }
         }
         else if (manufacturer == mbus_manufacturer_id("ACW"))
@@ -1327,6 +1330,18 @@ mbus_data_product_name(mbus_data_variable_header *header)
             {
                 case 0x26:
                     strcpy(buff,"Techem m-bus S");
+                    break;
+                case 0x40:
+                    strcpy(buff,"Techem ultra S3");
+                    break;
+            }
+        }
+        else if (manufacturer == mbus_manufacturer_id("WZG"))
+        {
+            switch (header->version)
+            {
+                case 0x03:
+                    strcpy(buff,"Modularis ETW-EAX");
                     break;
             }
         }
@@ -3815,7 +3830,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             {
                 unsigned char dife;
 
-                if (record->drh.dib.ndife >= NITEMS(record->drh.dib.dife))
+                if (record->drh.dib.ndife >= MBUS_DATA_INFO_BLOCK_DIFE_SIZE)
                 {
                     mbus_data_record_free(record);
                     snprintf(error_str, sizeof(error_str), "Too many DIFE.");
@@ -3847,7 +3862,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 // variable length VIF in ASCII format
                 int var_vif_len;
                 var_vif_len = frame->data[i++];
-                if (var_vif_len > sizeof(record->drh.vib.custom_vif))
+                if (var_vif_len > MBUS_VALUE_INFO_BLOCK_CUSTOM_VIF_SIZE)
                 {
                     mbus_data_record_free(record);
                     snprintf(error_str, sizeof(error_str), "Too long variable length VIF.");
@@ -3877,7 +3892,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 {
                     unsigned char vife;
 
-                    if (record->drh.vib.nvife >= NITEMS(record->drh.vib.vife))
+                    if (record->drh.vib.nvife >= MBUS_VALUE_INFO_BLOCK_VIFE_SIZE)
                     {
                         mbus_data_record_free(record);
                         snprintf(error_str, sizeof(error_str), "Too many VIFE.");
@@ -4336,18 +4351,20 @@ mbus_data_variable_print(mbus_data_variable *data)
 {
     mbus_data_record *record;
     size_t j;
+    int i;
 
     if (data)
     {
         mbus_data_variable_header_print(&(data->header));
 
-        for (record = data->record; record; record = record->next)
+        for (record = data->record, i = 0; record; record = record->next, i++)
         {
+            printf("Record ID         = %d\n", i);
             // DIF
             printf("DIF               = %.2X\n", record->drh.dib.dif);
             printf("DIF.Extension     = %s\n",  (record->drh.dib.dif & MBUS_DIB_DIF_EXTENSION_BIT) ? "Yes":"No");
             printf("DIF.StorageNumber = %d\n",  (record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_STORAGE_NO) >> 6);
-            printf("DIF.Function      = %s\n",  (record->drh.dib.dif & 0x30) ? "Minimum value" : "Instantaneous value" );
+            printf("DIF.Function      = %s\n",  (record->drh.dib.dif & 0x30) ? "Value during error state" : "Instantaneous value" );
             printf("DIF.Data          = %.2X\n", record->drh.dib.dif & 0x0F);
 
             // VENDOR SPECIFIC
