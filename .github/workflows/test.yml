@@ -36,7 +36,7 @@ jobs:
 
       - name: Build (Windows)
         if: startsWith(runner.OS, 'Windows')
-        run: msbuild src\YourProjectFile.csproj -t:rebuild -verbosity:diag -property:Configuration=Release
+        run: msbuild libmbus.vcxproj -t:rebuild -verbosity:diag -property:Configuration=Release
 
       - name: Build tests
         run: cd test && make
