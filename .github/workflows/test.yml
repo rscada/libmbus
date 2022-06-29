@@ -29,11 +29,14 @@ jobs:
       - name: Build
         run: ./build.sh
 
+      - name: Build tests
+        run: cd test && make
+
       - name: Test Success Frames
-        run: cd test && make && ./generate-xml.sh test-frames
+        run: ./generate-xml.sh test-frames
 
       - name: Test Error Frames
-        run: cd test && make && ./generate-xml.sh test/error-frames || true
+        run: ./generate-xml.sh error-frames || true
 
       - name: Test Unsupported Frames
-        run: cd test && make && ./generate-xml.sh test/unsupported-frames || true
+        run: ./generate-xml.sh unsupported-frames || true
