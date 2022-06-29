@@ -44,6 +44,3 @@ int  mbus_tcp_set_timeout_set(double seconds);
 #endif
 
 #endif /* MBUS_TCP_H */
-
-
-

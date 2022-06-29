@@ -8,24 +8,60 @@
 //
 //------------------------------------------------------------------------------
 
+#ifdef _WIN32
+#define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif
+
+#define MBUS_ERROR(...) fprintf (stderr, __VA_ARGS__)
+#ifdef DEBUG
+#define MBUS_SERIAL_DEBUG
+#endif
+
+#ifdef _WIN32
+#include <string.h>
+
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+
+#ifndef SSIZE_MAX
+#ifdef _WIN64
+#define SSIZE_MAX _I64_MAX
+#else
+#define SSIZE_MAX LONG_MAX
+#endif
+
+#endif
+
+#define O_NOCTTY 0x0000 // No idea if this makes sense
+
+#else
 #include <unistd.h>
+#include <strings.h>
+#include <string.h>
+#endif
+
 #include <limits.h>
 #include <fcntl.h>
 
 #include <sys/types.h>
 
 #include <stdio.h>
-#include <strings.h>
 
-#include <termios.h>
 #include <errno.h>
-#include <string.h>
 
 #include "mbus-serial.h"
 #include "mbus-protocol-aux.h"
 #include "mbus-protocol.h"
 
 #define PACKET_BUFF_SIZE 2048
+
+#ifdef _WIN32
+#define read(...) readFromSerial(__VA_ARGS__)
+#define write(...) writeToSerial(__VA_ARGS__)
+#define select(...) selectSerial(__VA_ARGS__)
+#define open(...) openSerial(__VA_ARGS__)
+#define close(...) closeSerial(__VA_ARGS__)
+#endif
 
 //------------------------------------------------------------------------------
 /// Set up a serial connection handle.
@@ -53,7 +89,7 @@ mbus_serial_connect(mbus_handle *handle)
     // Use blocking read and handle it by serial port VMIN/VTIME setting
     if ((handle->fd = open(device, O_RDWR | O_NOCTTY)) < 0)
     {
-        fprintf(stderr, "%s: failed to open tty.", __PRETTY_FUNCTION__);
+        fprintf(stderr, "%s: failed to open tty.\n", __PRETTY_FUNCTION__);
         return -1;
     }
 
@@ -193,7 +229,7 @@ mbus_serial_disconnect(mbus_handle *handle)
 
     if (handle->fd < 0)
     {
-       return -1;
+        return -1;
     }
 
     close(handle->fd);
@@ -216,7 +252,10 @@ mbus_serial_data_free(mbus_handle *handle)
             return;
         }
 
-        free(serial_data->device);
+        //if (serial_data->device != NULL)
+        //{
+            free(serial_data->device);
+        //}
         free(serial_data);
         handle->auxdata = NULL;
     }
@@ -239,6 +278,7 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
     // Make sure serial connection is open
     if (isatty(handle->fd) == 0)
     {
+        MBUS_ERROR("%s: connection not open\n", __PRETTY_FUNCTION__);
         return -1;
     }
 
@@ -287,7 +327,7 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
 int
 mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
 {
-    char buff[PACKET_BUFF_SIZE];
+    unsigned char buff[PACKET_BUFF_SIZE];
     int remaining, timeouts;
     ssize_t len, nread;
 
@@ -298,7 +338,11 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
     }
 
     // Make sure serial connection is open
+    #ifdef _WIN32
+    if (GetFileType(getHandle()) != FILE_TYPE_CHAR )
+    #else
     if (isatty(handle->fd) == 0)
+    #endif
     {
         fprintf(stderr, "%s: Serial connection is not available.\n", __PRETTY_FUNCTION__);
         return MBUS_RECV_RESULT_ERROR;
@@ -320,7 +364,9 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
             return MBUS_RECV_RESULT_ERROR;
         }
 
-        //printf("%s: Attempt to read %d bytes [len = %d]\n", __PRETTY_FUNCTION__, remaining, len);
+        #ifdef MBUS_SERIAL_DEBUG
+        printf("%s: Attempt to read %d bytes [len = %d]\n", __PRETTY_FUNCTION__, remaining, len);
+        #endif
 
         if ((nread = read(handle->fd, &buff[len], remaining)) == -1)
         {
@@ -329,7 +375,15 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
             return MBUS_RECV_RESULT_ERROR;
         }
 
-//   printf("%s: Got %d byte [remaining %d, len %d]\n", __PRETTY_FUNCTION__, nread, remaining, len);
+        #ifdef MBUS_SERIAL_DEBUG
+        printf("%s: Got %d byte [remaining %d, len %d]\n", __PRETTY_FUNCTION__, nread, remaining, len);
+        int i;
+        for (i = len; i < len+nread; i++)
+        {
+           printf("%.2X ", buff[i]);
+        }
+        printf("\n");
+        #endif
 
         if (nread == 0)
         {

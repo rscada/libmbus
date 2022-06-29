@@ -10,6 +10,9 @@
 // Large parts of this file was contributed by Tomas Menzl.
 //
 //------------------------------------------------------------------------------
+#ifdef _WIN32
+#define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif
 
 #include "mbus-protocol-aux.h"
 #include "mbus-serial.h"
@@ -1925,6 +1928,42 @@ mbus_send_request_frame(mbus_handle * handle, int address)
 }
 
 //------------------------------------------------------------------------------
+// send a request packet to from master to slave
+//------------------------------------------------------------------------------
+int
+mbus_send_request_frame_fcb(mbus_handle * handle, int address)
+{
+    int retval = 0;
+    mbus_frame *frame;
+
+    if (mbus_is_primary_address(address) == 0)
+    {
+        MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, address);
+        return -1;
+    }
+
+    frame = mbus_frame_new(MBUS_FRAME_TYPE_SHORT);
+
+    if (frame == NULL)
+    {
+        MBUS_ERROR("%s: failed to allocate mbus frame.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+
+    frame->control = MBUS_CONTROL_MASK_REQ_UD2 | MBUS_CONTROL_MASK_DIR_M2S | MBUS_CONTROL_MASK_FCB;
+    frame->address = address;
+
+    if (mbus_send_frame(handle, frame) == -1)
+    {
+        MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
+        retval = -1;
+    }
+
+    mbus_frame_free(frame);
+    return retval;
+}
+
+//------------------------------------------------------------------------------
 // send a user data packet from master to slave
 //------------------------------------------------------------------------------
 int
@@ -2216,7 +2255,7 @@ mbus_send_ping_frame(mbus_handle *handle, int address, char purge_response)
 int
 mbus_select_secondary_address(mbus_handle * handle, const char *mask)
 {
-    int ret;
+    int ret, frameType;
     mbus_frame reply;
 
     if (mask == NULL || strlen(mask) != 16)
@@ -2249,7 +2288,7 @@ mbus_select_secondary_address(mbus_handle * handle, const char *mask)
         return MBUS_PROBE_COLLISION;
     }
 
-    if (mbus_frame_type(&reply) == MBUS_FRAME_TYPE_ACK)
+    if (frameType = mbus_frame_type(&reply) == MBUS_FRAME_TYPE_ACK)
     {
         /* check for more data (collision) */
         if (mbus_purge_frames(handle))
@@ -2260,7 +2299,7 @@ mbus_select_secondary_address(mbus_handle * handle, const char *mask)
         return MBUS_PROBE_SINGLE;
     }
 
-    MBUS_ERROR("%s: Unexpected reply for address [%s].\n", __PRETTY_FUNCTION__, mask);
+    MBUS_ERROR("%s: Unexpected reply for address [%s]. ret=%d, frameType=%d\n", __PRETTY_FUNCTION__, mask, ret, frameType);
 
     return MBUS_PROBE_NOTHING;
 }

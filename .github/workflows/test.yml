@@ -1,0 +1,62 @@
+name: Test
+
+# Run this job on all pushes and pull requests
+# as well as tags with a semantic version
+on:
+  push:
+    branches:
+      - '*'
+  pull_request: {}
+
+jobs:
+
+  # Runs lib tests on all supported node versions and OSes
+  build-and-test:
+    if: contains(github.event.head_commit.message, '[skip ci]') == false
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-2019]
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Install automake (macos)
+        if: startsWith(runner.OS, 'macOS')
+        run: brew install automake
+
+      - name: Build (Linux/macOS)
+        if: startsWith(runner.OS, 'linux') || startsWith(runner.OS, 'macOS')
+        run: ./build.sh
+
+      - name: Prepare Windows build
+        if: startsWith(runner.OS, 'Windows')
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Install Windows 8.1 SDK
+        if: startsWith(runner.OS, 'Windows')
+        shell: powershell
+        run: |
+          Invoke-WebRequest -Method Get -Uri https://go.microsoft.com/fwlink/p/?LinkId=323507 -OutFile sdksetup.exe -UseBasicParsing
+          Start-Process -Wait sdksetup.exe -ArgumentList "/q", "/norestart", "/features", "OptionId.WindowsDesktopSoftwareDevelopmentKit", "OptionId.NetFxSoftwareDevelopmentKit"
+
+      - name: Build (Windows)
+        if: startsWith(runner.OS, 'Windows')
+        run: msbuild libmbus.vcxproj -t:rebuild -verbosity:diag -property:Configuration=Release
+
+      - name: Build tests
+        if: startsWith(runner.OS, 'linux') || startsWith(runner.OS, 'macOS')
+        run: cd test && make
+
+      - name: Test Success Frames
+        if: startsWith(runner.OS, 'linux') || startsWith(runner.OS, 'macOS')
+        run: cd test && ./generate-xml.sh test-frames
+
+      - name: Test Error Frames
+        if: startsWith(runner.OS, 'linux') || startsWith(runner.OS, 'macOS')
+        run: cd test && ./generate-xml.sh error-frames || true
+
+      - name: Test Unsupported Frames
+        if: startsWith(runner.OS, 'linux') || startsWith(runner.OS, 'macOS')
+        run: cd test && ./generate-xml.sh unsupported-frames || true

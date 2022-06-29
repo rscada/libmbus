@@ -1,0 +1,11 @@
+version: 'test-{build}'
+platform:
+  - x86
+  - x64
+configuration:
+  - Debug
+  - Release
+clone_folder: 'c:\projects\%APPVEYOR_PROJECT_NAME%'
+build: MSBuild
+test_script:
+  - echo %cd%
