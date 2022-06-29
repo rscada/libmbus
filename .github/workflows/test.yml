@@ -26,8 +26,17 @@ jobs:
         if: startsWith(runner.OS, 'macOS')
         run: brew install automake
 
-      - name: Build
+      - name: Build (Linux/macOS)
+        if: !startsWith(runner.OS, 'Windows')
         run: ./build.sh
+
+      - name: Prepair WIndows build
+        if: startsWith(runner.OS, 'Windows')
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Build (Windows)
+        if: startsWith(runner.OS, 'Windows')
+        run: msbuild src\YourProjectFile.csproj -t:rebuild -verbosity:diag -property:Configuration=Release
 
       - name: Build tests
         run: cd test && make
