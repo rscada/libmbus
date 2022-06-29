@@ -20,6 +20,8 @@ jobs:
         os: [ubuntu-latest, macos-latest]
 
     steps:
+      - uses: actions/checkout@v1
+
       - name: Build
         run: ./build.sh
 
