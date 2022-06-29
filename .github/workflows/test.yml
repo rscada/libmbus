@@ -33,10 +33,10 @@ jobs:
         run: cd test && make
 
       - name: Test Success Frames
-        run: ./generate-xml.sh test-frames
+        run: ./test/generate-xml.sh test/test-frames
 
       - name: Test Error Frames
-        run: ./generate-xml.sh error-frames || true
+        run: ./test/generate-xml.sh test/error-frames || true
 
       - name: Test Unsupported Frames
-        run: ./generate-xml.sh unsupported-frames || true
+        run: ./test/generate-xml.sh test/unsupported-frames || true
