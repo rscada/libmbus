@@ -106,7 +106,7 @@ main(int argc, char **argv)
         fprintf(stderr, "Could not initialize M-Bus context: %s\n",  mbus_error_str());
         return 1;
     }
-    
+
     if (debug)
     {
         mbus_register_send_event(handle, &mbus_dump_send_event);
@@ -121,7 +121,7 @@ main(int argc, char **argv)
 
     if (mbus_serial_set_baudrate(handle, baudrate) == -1)
     {
-        fprintf(stderr, "%s: Error: Failed to set baud rate [%s].\n", __PRETTY_FUNCTION__, baudrate);
+        fprintf(stderr, "%s: Error: Failed to set baud rate [%ld].\n", __PRETTY_FUNCTION__, baudrate);
 //        fprintf(stderr,"Failed to set baud rate.\n");
         mbus_disconnect(handle);
         mbus_context_free(handle);
