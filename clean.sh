@@ -37,6 +37,7 @@ true \
     && rm -f bin/mbus-serial-scan-secondary \
     && rm -f bin/mbus-serial-select-secondary \
     && rm -f bin/mbus-serial-switch-baudrate \
+    && rm -f bin/mbus-serial-raw-send \
     && rm -f bin/mbus-tcp-raw-send \
     && rm -f bin/mbus-tcp-request-data \
     && rm -f bin/mbus-tcp-request-data-multi-reply \
