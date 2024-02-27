@@ -80,7 +80,7 @@ main(int argc, char **argv)
         baudrate = atol(argv[2]);
         addr_str = argv[3];
         device = argv[4];
-        file = arv[5];
+        file = argv[5];
         debug = 0;
     }
     else if (argc == 7 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-b") == 0)
@@ -88,7 +88,7 @@ main(int argc, char **argv)
         baudrate = atol(argv[3]);
         addr_str = argv[4];
         device = argv[5];
-        file = arv[6];
+        file = argv[6];
         debug = 1;
     }
 
