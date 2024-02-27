@@ -101,13 +101,13 @@ main(int argc, char **argv)
         return 0;
     }
 
-
+/*
     if (mbus_serial_set_baudrate(handle, baudrate) == -1)
     {
         fprintf(stderr,"Failed to set baud rate.\n");
         return 1;
     }
-
+*/
     if ((handle = mbus_context_serial(device)) == NULL)
     {
         fprintf(stderr, "Could not initialize M-Bus context: %s\n",  mbus_error_str());
