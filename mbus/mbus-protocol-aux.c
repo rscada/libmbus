@@ -2002,6 +2002,32 @@ mbus_set_primary_address(mbus_handle * handle, int old_address, int new_address)
     return mbus_send_user_data_frame(handle, old_address, buffer, sizeof(buffer));
 }
 
+// Addition by Miikka Kosonen; Send custom text string, Elvaco CMa10
+int
+mbus_send_custom_text(mbus_handle * handle, int address, const char *text)
+{
+    size_t text_length = strlen(text);
+    unsigned char *buffer = (unsigned char *)malloc(text_length + 2);
+    int result;
+    
+     if (buffer != NULL) {
+        // Initialize the first two elements of the buffer
+        buffer[0] = 0x0F;
+        buffer[1] = 0x07;
+
+        // Copy the content of *text into the buffer starting from index 2
+        memcpy(buffer + 2, text, text_length);
+        result = mbus_send_user_data_frame(handle, address, buffer, text_length + 2);
+        free(buffer);
+    } else {
+        // Handle memory allocation failure
+        MBUS_ERROR("Memory allocation failed in send custom text\n");
+        result = -1;
+    }
+
+    return result;
+}
+
 //------------------------------------------------------------------------------
 // send a request from master to slave and collect the reply (replies)
 // from the slave.
