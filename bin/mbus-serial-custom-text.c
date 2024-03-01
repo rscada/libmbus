@@ -130,7 +130,7 @@ main(int argc, char **argv)
     //
     if (mbus_send_custom_text(handle, address, text) == -1)
     {
-        fprintf(stderr, "Of course there is some problem: %s\n", mbus_error_str());
+        fprintf(stderr, "Send custom text error: %s\n", mbus_error_str());
         return 1;
     }
 
