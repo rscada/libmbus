@@ -125,23 +125,6 @@ main(int argc, char **argv)
         address = atoi(addr_str);
     }
 
-
-    //
-    // attempt to parse the input data
-    //
-//    result = mbus_parse(&request, buff, buff_len);
-/*
-    if (result < 0)
-    {
-        fprintf(stderr, "mbus_parse: %s\n", mbus_error_str());
-        return 1;
-    }
-    else if (result > 0)
-    {
-        fprintf(stderr, "mbus_parse: need %d more bytes\n", result);
-        return 1;
-    }
-*/
     //
     // send the request
     //
