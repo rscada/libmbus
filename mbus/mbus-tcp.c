@@ -63,19 +63,23 @@ mbus_tcp_connect(mbus_handle *handle)
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
 
-    if ((status = getaddrinfo(host, port, &hints, &servinfo)) != 0) {
+    if ((status = getaddrinfo(host, port, &hints, &servinfo)) != 0)
+    {
         snprintf(error_str, sizeof(error_str), "%s: getaddrinfo: %s", __PRETTY_FUNCTION__, gai_strerror(status));
         mbus_error_str_set(error_str);
         return -1;
     }
 
     // loop through all the results and connect to the first we can
-    for(p = servinfo; p != NULL; p = p->ai_next) {
-        if ((handle->fd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1) {
+    for (p = servinfo; p != NULL; p = p->ai_next)
+    {
+        if ((handle->fd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1)
+        {
             continue;
         }
 
-        if (connect(handle->fd, p->ai_addr, p->ai_addrlen) == -1) {
+        if (connect(handle->fd, p->ai_addr, p->ai_addrlen) == -1)
+        {
             close(handle->fd);
             continue;
         }
@@ -83,7 +87,8 @@ mbus_tcp_connect(mbus_handle *handle)
         break; // if we get here, we must have connected successfully
     }
 
-    if (p == NULL) {
+    if (p == NULL)
+    {
         snprintf(error_str, sizeof(error_str), "%s: failed to connect", __PRETTY_FUNCTION__);
         mbus_error_str_set(error_str);
         return -1;
