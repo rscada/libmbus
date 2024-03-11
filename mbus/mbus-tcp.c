@@ -81,6 +81,9 @@ mbus_tcp_connect(mbus_handle *handle)
         return -1;
     }
 
+    // Free addr info, we do not need it anymore
+    freeaddrinfo(servinfo);
+
     // Set a timeout
     time_out.tv_sec  = tcp_timeout_sec;   // seconds
     time_out.tv_usec = tcp_timeout_usec;  // microseconds
