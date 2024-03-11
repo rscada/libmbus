@@ -24,6 +24,7 @@
 #include "mbus-tcp.h"
 
 #define PACKET_BUFF_SIZE 2048
+#define MAX_PORT_SIZE 6 // Size of port number + NULL char
 
 static int tcp_timeout_sec = 4;
 static int tcp_timeout_usec = 0;
@@ -38,7 +39,7 @@ mbus_tcp_connect(mbus_handle *handle)
     struct addrinfo hints, *servinfo, *p;
     struct timeval time_out;
     mbus_tcp_data *tcp_data;
-    char port[5];
+    char port[MAX_PORT_SIZE];
     int status;
 
     if (handle == NULL)
@@ -48,8 +49,15 @@ mbus_tcp_connect(mbus_handle *handle)
     if (tcp_data == NULL || tcp_data->host == NULL)
         return -1;
 
+    // Check if port is in allowed range
+    if ((tcp_data->port < 0) || (tcp_data->port > 0xFFFF))
+    {
+        snprintf(error_str, sizeof(error_str), "%s: Invalid port: %d", __PRETTY_FUNCTION__, tcp_data->port);
+        return -1;
+    }
+
     host = tcp_data->host;
-    sprintf(port, "%d", tcp_data->port);
+    snprintf(port, MAX_PORT_SIZE, "%d", tcp_data->port);
 
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC;
