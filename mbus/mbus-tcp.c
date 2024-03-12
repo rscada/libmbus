@@ -80,15 +80,15 @@ mbus_tcp_connect(mbus_handle *handle)
         break; // if we get here, we must have connected successfully
     }
 
+    // Free addr info, we do not need it anymore
+    freeaddrinfo(servinfo);
+
     if (p == NULL)
     {
         snprintf(error_str, sizeof(error_str), "%s: failed to connect", __PRETTY_FUNCTION__);
         mbus_error_str_set(error_str);
         return -1;
     }
-
-    // Free addr info, we do not need it anymore
-    freeaddrinfo(servinfo);
 
     // Set a timeout
     time_out.tv_sec  = tcp_timeout_sec;   // seconds
