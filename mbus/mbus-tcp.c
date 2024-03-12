@@ -49,13 +49,6 @@ mbus_tcp_connect(mbus_handle *handle)
     if (tcp_data == NULL || tcp_data->host == NULL)
         return -1;
 
-    // Check if port is in allowed range
-    if ((tcp_data->port < 0) || (tcp_data->port > 0xFFFF))
-    {
-        snprintf(error_str, sizeof(error_str), "%s: Invalid port: %d", __PRETTY_FUNCTION__, tcp_data->port);
-        return -1;
-    }
-
     host = tcp_data->host;
     snprintf(port, MAX_PORT_SIZE, "%d", tcp_data->port);
 
