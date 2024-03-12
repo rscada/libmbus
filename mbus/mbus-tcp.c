@@ -85,7 +85,7 @@ mbus_tcp_connect(mbus_handle *handle)
 
     if (p == NULL)
     {
-        snprintf(error_str, sizeof(error_str), "%s: failed to connect", __PRETTY_FUNCTION__);
+        snprintf(error_str, sizeof(error_str), "%s: Failed to establish connection to %s:%s", __PRETTY_FUNCTION__, host, port);
         mbus_error_str_set(error_str);
         return -1;
     }
