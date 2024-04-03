@@ -82,6 +82,11 @@ mbus_serial_raw_send_LDFLAGS = -L$(top_builddir)/mbus
 mbus_serial_raw_send_LDADD	  = -lmbus -lm
 mbus_serial_raw_send_SOURCES = mbus-serial-raw-send.c
 
+mbus_serial_custom_text_LDFLAGS = -L$(top_builddir)/mbus
+mbus_serial_custom_text_LDADD	  = -lmbus -lm
+mbus_serial_custom_text_SOURCES = mbus-serial-custom-text.c
+
+
 # man pages
 dist_man_MANS = libmbus.1 \
                 mbus-tcp-scan.1 \
@@ -96,7 +101,8 @@ dist_man_MANS = libmbus.1 \
                 mbus-serial-select-secondary.1 \
                 mbus-serial-scan-secondary.1 \
                 mbus-serial-switch-baudrate.1 \
-		mbus-serial-raw-send.1
+		mbus-serial-raw-send.1 \
+		mbus-serial-custom-text.1
 
 .pod.1:
 	pod2man --release=$(VERSION) --center=$(PACKAGE) $< \
