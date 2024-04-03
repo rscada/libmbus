@@ -18,7 +18,7 @@ bin_PROGRAMS			= mbus-tcp-scan mbus-tcp-request-data mbus-tcp-request-data-multi
                           mbus-serial-scan mbus-serial-request-data mbus-serial-request-data-multi-reply \
                           mbus-serial-select-secondary mbus-serial-scan-secondary \
                           mbus-serial-switch-baudrate mbus-tcp-raw-send mbus-tcp-application-reset \
-                          mbus-serial-set-address mbus-serial-raw-send
+                          mbus-serial-set-address mbus-serial-raw-send mbus-serial-custom-text
 
 # tcp
 mbus_tcp_scan_LDFLAGS	= -L$(top_builddir)/mbus
