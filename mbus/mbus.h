@@ -42,6 +42,11 @@
 extern "C" {
 #endif
 
+#ifdef _WIN32
+#define __PRETTY_FUNCTION__ __FUNCSIG__
+#define strdup _strdup
+#endif
+
 //
 //
 //
