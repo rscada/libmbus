@@ -73,7 +73,10 @@ test/unsupported-frames/*.xml.new
 
 /build/
 _build/
+/Debug/
+/Release/
 
 # IDE
 /.vscode/
+/.vs/
 CMakeLists.txt.user
