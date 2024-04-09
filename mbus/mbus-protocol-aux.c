@@ -2029,37 +2029,57 @@ mbus_send_custom_text(mbus_handle * handle, int address, const char *text)
 }
 
 // Addition by Miikka Kosonen; Send global AES128 key, Elvaco CMi-Box
-int
-mbus_send_global_aes128_key(mbus_handle * handle, int address, const char *key)
-{
+int mbus_send_global_aes128_key(mbus_handle *handle, int address, const char *key) {
     size_t key_length = strlen(key);
-    unsigned char *buffer = (unsigned char *)malloc(key_length + 7);
-    int result;
-    
-     if (buffer != NULL) {
-        // Initialize the first seven elements of the buffer
-        buffer[0] = 0x0D;
-        buffer[1] = 0x7C;
-        buffer[2] = 0x03;
-        buffer[3] = 0x79;
-        buffer[4] = 0x65;
-        buffer[5] = 0x6B;
-        buffer[6] = 0x10;
+    unsigned char *buffer = NULL;
+    int result = -1;
 
-        // Copy the content of *key into the buffer starting from index 7
-        memcpy(buffer + 7, key, key_length);
-        result = mbus_send_user_data_frame(handle, address, buffer, key_length + 7);
-        free(buffer);
+    if (key_length == 16) {
+        // If key is exactly 16 characters in length, send as is
+        buffer = (unsigned char *)malloc(key_length + 7);
+        if (buffer != NULL) {
+            buffer[0] = 0x0D;
+            buffer[1] = 0x7C;
+            buffer[2] = 0x03;
+            buffer[3] = 0x79;
+            buffer[4] = 0x65;
+            buffer[5] = 0x6B;
+            buffer[6] = 0x10;
+            memcpy(buffer + 7, key, key_length);
+            result = mbus_send_user_data_frame(handle, address, buffer, key_length + 7);
+            free(buffer);
+        } else {
+            MBUS_ERROR("Memory allocation failed in send custom text\n");
+        }
+    } else if (key_length == 32) {
+        // If key is exactly 32 characters in length, convert to hex array
+        unsigned char hex_buffer[16];
+        size_t hex_length = mbus_hex2bin(hex_buffer, sizeof(hex_buffer), (const unsigned char *)key, key_length);
+        if (hex_length == 16) {
+            buffer = (unsigned char *)malloc(23); // 7 initial bytes + 16 bytes for hex array
+            if (buffer != NULL) {
+                buffer[0] = 0x0D;
+                buffer[1] = 0x7C;
+                buffer[2] = 0x03;
+                buffer[3] = 0x79;
+                buffer[4] = 0x65;
+                buffer[5] = 0x6B;
+                buffer[6] = 0x10;
+                memcpy(buffer + 7, hex_buffer, 16);
+                result = mbus_send_user_data_frame(handle, address, buffer, 23);
+                free(buffer);
+            } else {
+                MBUS_ERROR("Memory allocation failed in send custom text\n");
+            }
+        } else {
+            MBUS_ERROR("Invalid key length for conversion to hex array\n");
+        }
     } else {
-        // Handle memory allocation failure
-        MBUS_ERROR("Memory allocation failed in send custom text\n");
-        result = -1;
+        MBUS_ERROR("Unsupported key length\n");
     }
 
     return result;
 }
-
-
 
 //------------------------------------------------------------------------------
 // send a request from master to slave and collect the reply (replies)
