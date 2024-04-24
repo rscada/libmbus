@@ -3,7 +3,7 @@
 #export DH_VERBOSE=1
 
 execute_before_dh_autoreconf:
-	mkdir -p ./m4
+	mkdir -p m4 libltdl/config
 
 %:
 	dh $@ --with autoreconf
