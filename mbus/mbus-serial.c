@@ -8,6 +8,8 @@
 //
 //------------------------------------------------------------------------------
 
+// NOTE: Custom timeouts in place by Miikka Kosonen, do not merge
+
 #include <unistd.h>
 #include <limits.h>
 #include <fcntl.h>
