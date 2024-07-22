@@ -8,8 +8,6 @@ This works with the popular Elvaco CMa10, you can send text messages to the unit
 function mbus_send_global_aes128_key in mbus-protocol-aux 
 This works with the Elvaco CMi-Box, you can send global AES128 decryption key to module. Note; the length isn't enforced, although the key should be 16 bytes. Doublecheck the key before sending it.
 
-Sorry for the dirty commits, the test device which has the hardware connected to it doesn't have proper IDE so I shoot changes back and forth. It all works now, though, so I try to leave this in peace if someone wants to use it.
-
 # libmbus: M-bus Library from Raditex Control (http://www.rscada.se) <span style="float:right;"><a href="https://travis-ci.org/rscada/libmbus" style="border-bottom:none">![Build Status](https://travis-ci.org/rscada/libmbus.svg?branch=master)</a></span>
 
 libmbus is an open source library for the M-bus (Meter-Bus) protocol.
