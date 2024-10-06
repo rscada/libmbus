@@ -26,14 +26,15 @@
 #define PACKET_BUFF_SIZE 2048
 #define MAX_PORT_SIZE 6 // Size of port number + NULL char
 
-static int tcp_timeout_sec = 4;
+// FIXME: PROMENA ZA CEKANJE PREKO VPN-a
+// TREBA DA SE DODA DA MOZE DA SE PODESAVA AKO JE POTREBNO
+static int tcp_timeout_sec = 17;
 static int tcp_timeout_usec = 0;
 
 //------------------------------------------------------------------------------
 /// Setup a TCP/IP handle.
 //------------------------------------------------------------------------------
-int
-mbus_tcp_connect(mbus_handle *handle)
+int mbus_tcp_connect(mbus_handle *handle)
 {
     char error_str[128], *host;
     struct addrinfo hints, *servinfo, *p;
@@ -45,7 +46,7 @@ mbus_tcp_connect(mbus_handle *handle)
     if (handle == NULL)
         return -1;
 
-    tcp_data = (mbus_tcp_data *) handle->auxdata;
+    tcp_data = (mbus_tcp_data *)handle->auxdata;
     if (tcp_data == NULL || tcp_data->host == NULL)
         return -1;
 
@@ -91,8 +92,8 @@ mbus_tcp_connect(mbus_handle *handle)
     }
 
     // Set a timeout
-    time_out.tv_sec  = tcp_timeout_sec;   // seconds
-    time_out.tv_usec = tcp_timeout_usec;  // microseconds
+    time_out.tv_sec = tcp_timeout_sec;   // seconds
+    time_out.tv_usec = tcp_timeout_usec; // microseconds
     setsockopt(handle->fd, SOL_SOCKET, SO_SNDTIMEO, &time_out, sizeof(time_out));
     setsockopt(handle->fd, SOL_SOCKET, SO_RCVTIMEO, &time_out, sizeof(time_out));
 
@@ -102,14 +103,13 @@ mbus_tcp_connect(mbus_handle *handle)
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-void
-mbus_tcp_data_free(mbus_handle *handle)
+void mbus_tcp_data_free(mbus_handle *handle)
 {
     mbus_tcp_data *tcp_data;
 
     if (handle)
     {
-        tcp_data = (mbus_tcp_data *) handle->auxdata;
+        tcp_data = (mbus_tcp_data *)handle->auxdata;
 
         if (tcp_data == NULL)
         {
@@ -125,8 +125,7 @@ mbus_tcp_data_free(mbus_handle *handle)
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-int
-mbus_tcp_disconnect(mbus_handle *handle)
+int mbus_tcp_disconnect(mbus_handle *handle)
 {
     if (handle == NULL)
     {
@@ -135,7 +134,7 @@ mbus_tcp_disconnect(mbus_handle *handle)
 
     if (handle->fd < 0)
     {
-       return -1;
+        return -1;
     }
 
     close(handle->fd);
@@ -147,8 +146,7 @@ mbus_tcp_disconnect(mbus_handle *handle)
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-int
-mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
+int mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
 {
     unsigned char buff[PACKET_BUFF_SIZE];
     int len, ret;
@@ -193,12 +191,13 @@ int mbus_tcp_recv_frame(mbus_handle *handle, mbus_frame *frame)
     int remaining;
     ssize_t len, nread;
 
-    if (handle == NULL || frame == NULL) {
+    if (handle == NULL || frame == NULL)
+    {
         fprintf(stderr, "%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
         return MBUS_RECV_RESULT_ERROR;
     }
 
-    memset((void *) buff, 0, sizeof(buff));
+    memset((void *)buff, 0, sizeof(buff));
 
     //
     // read data until a packet is received
@@ -206,8 +205,9 @@ int mbus_tcp_recv_frame(mbus_handle *handle, mbus_frame *frame)
     remaining = 1; // start by reading 1 byte
     len = 0;
 
-    do {
-retry:
+    do
+    {
+    retry:
         if (len + remaining > PACKET_BUFF_SIZE)
         {
             // avoid out of bounds access
@@ -215,12 +215,14 @@ retry:
         }
 
         nread = read(handle->fd, &buff[len], remaining);
-        switch (nread) {
+        switch (nread)
+        {
         case -1:
             if (errno == EINTR)
                 goto retry;
 
-            if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            if (errno == EAGAIN || errno == EWOULDBLOCK)
+            {
                 mbus_error_str_set("M-Bus tcp transport layer response timeout has been reached.");
                 return MBUS_RECV_RESULT_TIMEOUT;
             }
@@ -231,7 +233,7 @@ retry:
             mbus_error_str_set("M-Bus tcp transport layer connection closed by remote host.");
             return MBUS_RECV_RESULT_RESET;
         default:
-            if (len > (SSIZE_MAX-nread))
+            if (len > (SSIZE_MAX - nread))
             {
                 // avoid overflow
                 return MBUS_RECV_RESULT_ERROR;
@@ -247,7 +249,8 @@ retry:
     if (handle->recv_event)
         handle->recv_event(MBUS_HANDLE_TYPE_TCP, buff, len);
 
-    if (remaining < 0) {
+    if (remaining < 0)
+    {
         mbus_error_str_set("M-Bus layer failed to parse data.");
         return MBUS_RECV_RESULT_INVALID;
     }
@@ -260,8 +263,7 @@ retry:
 /// a read operation will wait before giving up. Note: This configuration has
 /// to be made before calling mbus_tcp_connect.
 //------------------------------------------------------------------------------
-int
-mbus_tcp_set_timeout_set(double seconds)
+int mbus_tcp_set_timeout_set(double seconds)
 {
     if (seconds < 0.0)
     {
