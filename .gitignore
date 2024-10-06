@@ -3,6 +3,7 @@ Makefile.in
 bin/Makefile.in
 mbus/Makefile.in
 test/Makefile.in
+config.h.in
 
 /INSTALL
 /aclocal.m4
