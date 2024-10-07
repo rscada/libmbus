@@ -21,10 +21,10 @@
 #include <math.h>
 
 /*@ignore@*/
-#define MBUS_ERROR(...) fprintf (stderr, __VA_ARGS__)
+#define MBUS_ERROR(...) fprintf(stderr, __VA_ARGS__)
 
 #ifdef _DEBUG_
-#define MBUS_DEBUG(...) fprintf (stderr, __VA_ARGS__)
+#define MBUS_DEBUG(...) fprintf(stderr, __VA_ARGS__)
 #else
 #define MBUS_DEBUG(...)
 #endif
@@ -32,726 +32,720 @@
 
 static int debug = 0;
 
-typedef struct _mbus_variable_vif {
-    unsigned     vif;
-    double       exponent;
-    const char * unit;
-    const char * quantity;
+typedef struct _mbus_variable_vif
+{
+    unsigned vif;
+    double exponent;
+    const char *unit;
+    const char *quantity;
 } mbus_variable_vif;
 
 mbus_variable_vif vif_table[] = {
-/*  Primary VIFs (main table), range 0x00 - 0xFF */
+    /*  Primary VIFs (main table), range 0x00 - 0xFF */
 
     /*  E000 0nnn    Energy Wh (0.001Wh to 10000Wh) */
-    { 0x00, 1.0e-3, "Wh", "Energy" },
-    { 0x01, 1.0e-2, "Wh", "Energy" },
-    { 0x02, 1.0e-1, "Wh", "Energy" },
-    { 0x03, 1.0e0,  "Wh", "Energy" },
-    { 0x04, 1.0e1,  "Wh", "Energy" },
-    { 0x05, 1.0e2,  "Wh", "Energy" },
-    { 0x06, 1.0e3,  "Wh", "Energy" },
-    { 0x07, 1.0e4,  "Wh", "Energy" },
+    {0x00, 1.0e-3, "Wh", "Energy"},
+    {0x01, 1.0e-2, "Wh", "Energy"},
+    {0x02, 1.0e-1, "Wh", "Energy"},
+    {0x03, 1.0e0, "Wh", "Energy"},
+    {0x04, 1.0e1, "Wh", "Energy"},
+    {0x05, 1.0e2, "Wh", "Energy"},
+    {0x06, 1.0e3, "Wh", "Energy"},
+    {0x07, 1.0e4, "Wh", "Energy"},
 
     /* E000 1nnn    Energy  J (0.001kJ to 10000kJ) */
-    { 0x08, 1.0e0, "J", "Energy" },
-    { 0x09, 1.0e1, "J", "Energy" },
-    { 0x0A, 1.0e2, "J", "Energy" },
-    { 0x0B, 1.0e3, "J", "Energy" },
-    { 0x0C, 1.0e4, "J", "Energy" },
-    { 0x0D, 1.0e5, "J", "Energy" },
-    { 0x0E, 1.0e6, "J", "Energy" },
-    { 0x0F, 1.0e7, "J", "Energy" },
+    {0x08, 1.0e0, "J", "Energy"},
+    {0x09, 1.0e1, "J", "Energy"},
+    {0x0A, 1.0e2, "J", "Energy"},
+    {0x0B, 1.0e3, "J", "Energy"},
+    {0x0C, 1.0e4, "J", "Energy"},
+    {0x0D, 1.0e5, "J", "Energy"},
+    {0x0E, 1.0e6, "J", "Energy"},
+    {0x0F, 1.0e7, "J", "Energy"},
 
     /* E001 0nnn    Volume m^3 (0.001l to 10000l) */
-    { 0x10, 1.0e-6, "m^3", "Volume" },
-    { 0x11, 1.0e-5, "m^3", "Volume" },
-    { 0x12, 1.0e-4, "m^3", "Volume" },
-    { 0x13, 1.0e-3, "m^3", "Volume" },
-    { 0x14, 1.0e-2, "m^3", "Volume" },
-    { 0x15, 1.0e-1, "m^3", "Volume" },
-    { 0x16, 1.0e0,  "m^3", "Volume" },
-    { 0x17, 1.0e1,  "m^3", "Volume" },
+    {0x10, 1.0e-6, "m^3", "Volume"},
+    {0x11, 1.0e-5, "m^3", "Volume"},
+    {0x12, 1.0e-4, "m^3", "Volume"},
+    {0x13, 1.0e-3, "m^3", "Volume"},
+    {0x14, 1.0e-2, "m^3", "Volume"},
+    {0x15, 1.0e-1, "m^3", "Volume"},
+    {0x16, 1.0e0, "m^3", "Volume"},
+    {0x17, 1.0e1, "m^3", "Volume"},
 
     /* E001 1nnn    Mass kg (0.001kg to 10000kg) */
-    { 0x18, 1.0e-3, "kg", "Mass" },
-    { 0x19, 1.0e-2, "kg", "Mass" },
-    { 0x1A, 1.0e-1, "kg", "Mass" },
-    { 0x1B, 1.0e0,  "kg", "Mass" },
-    { 0x1C, 1.0e1,  "kg", "Mass" },
-    { 0x1D, 1.0e2,  "kg", "Mass" },
-    { 0x1E, 1.0e3,  "kg", "Mass" },
-    { 0x1F, 1.0e4,  "kg", "Mass" },
+    {0x18, 1.0e-3, "kg", "Mass"},
+    {0x19, 1.0e-2, "kg", "Mass"},
+    {0x1A, 1.0e-1, "kg", "Mass"},
+    {0x1B, 1.0e0, "kg", "Mass"},
+    {0x1C, 1.0e1, "kg", "Mass"},
+    {0x1D, 1.0e2, "kg", "Mass"},
+    {0x1E, 1.0e3, "kg", "Mass"},
+    {0x1F, 1.0e4, "kg", "Mass"},
 
     /* E010 00nn    On Time s */
-    { 0x20,     1.0, "s", "On time" },  /* seconds */
-    { 0x21,    60.0, "s", "On time" },  /* minutes */
-    { 0x22,  3600.0, "s", "On time" },  /* hours   */
-    { 0x23, 86400.0, "s", "On time" },  /* days    */
+    {0x20, 1.0, "s", "On time"},     /* seconds */
+    {0x21, 60.0, "s", "On time"},    /* minutes */
+    {0x22, 3600.0, "s", "On time"},  /* hours   */
+    {0x23, 86400.0, "s", "On time"}, /* days    */
 
     /* E010 01nn    Operating Time s */
-    { 0x24,     1.0, "s", "Operating time" },  /* seconds */
-    { 0x25,    60.0, "s", "Operating time" },  /* minutes */
-    { 0x26,  3600.0, "s", "Operating time" },  /* hours   */
-    { 0x27, 86400.0, "s", "Operating time" },  /* days    */
+    {0x24, 1.0, "s", "Operating time"},     /* seconds */
+    {0x25, 60.0, "s", "Operating time"},    /* minutes */
+    {0x26, 3600.0, "s", "Operating time"},  /* hours   */
+    {0x27, 86400.0, "s", "Operating time"}, /* days    */
 
     /* E010 1nnn    Power W (0.001W to 10000W) */
-    { 0x28, 1.0e-3, "W", "Power" },
-    { 0x29, 1.0e-2, "W", "Power" },
-    { 0x2A, 1.0e-1, "W", "Power" },
-    { 0x2B, 1.0e0,  "W", "Power" },
-    { 0x2C, 1.0e1,  "W", "Power" },
-    { 0x2D, 1.0e2,  "W", "Power" },
-    { 0x2E, 1.0e3,  "W", "Power" },
-    { 0x2F, 1.0e4,  "W", "Power" },
+    {0x28, 1.0e-3, "W", "Power"},
+    {0x29, 1.0e-2, "W", "Power"},
+    {0x2A, 1.0e-1, "W", "Power"},
+    {0x2B, 1.0e0, "W", "Power"},
+    {0x2C, 1.0e1, "W", "Power"},
+    {0x2D, 1.0e2, "W", "Power"},
+    {0x2E, 1.0e3, "W", "Power"},
+    {0x2F, 1.0e4, "W", "Power"},
 
     /* E011 0nnn    Power J/h (0.001kJ/h to 10000kJ/h) */
-    { 0x30, 1.0e0, "J/h", "Power" },
-    { 0x31, 1.0e1, "J/h", "Power" },
-    { 0x32, 1.0e2, "J/h", "Power" },
-    { 0x33, 1.0e3, "J/h", "Power" },
-    { 0x34, 1.0e4, "J/h", "Power" },
-    { 0x35, 1.0e5, "J/h", "Power" },
-    { 0x36, 1.0e6, "J/h", "Power" },
-    { 0x37, 1.0e7, "J/h", "Power" },
+    {0x30, 1.0e0, "J/h", "Power"},
+    {0x31, 1.0e1, "J/h", "Power"},
+    {0x32, 1.0e2, "J/h", "Power"},
+    {0x33, 1.0e3, "J/h", "Power"},
+    {0x34, 1.0e4, "J/h", "Power"},
+    {0x35, 1.0e5, "J/h", "Power"},
+    {0x36, 1.0e6, "J/h", "Power"},
+    {0x37, 1.0e7, "J/h", "Power"},
 
     /* E011 1nnn    Volume Flow m3/h (0.001l/h to 10000l/h) */
-    { 0x38, 1.0e-6, "m^3/h", "Volume flow" },
-    { 0x39, 1.0e-5, "m^3/h", "Volume flow" },
-    { 0x3A, 1.0e-4, "m^3/h", "Volume flow" },
-    { 0x3B, 1.0e-3, "m^3/h", "Volume flow" },
-    { 0x3C, 1.0e-2, "m^3/h", "Volume flow" },
-    { 0x3D, 1.0e-1, "m^3/h", "Volume flow" },
-    { 0x3E, 1.0e0,  "m^3/h", "Volume flow" },
-    { 0x3F, 1.0e1,  "m^3/h", "Volume flow" },
+    {0x38, 1.0e-6, "m^3/h", "Volume flow"},
+    {0x39, 1.0e-5, "m^3/h", "Volume flow"},
+    {0x3A, 1.0e-4, "m^3/h", "Volume flow"},
+    {0x3B, 1.0e-3, "m^3/h", "Volume flow"},
+    {0x3C, 1.0e-2, "m^3/h", "Volume flow"},
+    {0x3D, 1.0e-1, "m^3/h", "Volume flow"},
+    {0x3E, 1.0e0, "m^3/h", "Volume flow"},
+    {0x3F, 1.0e1, "m^3/h", "Volume flow"},
 
     /* E100 0nnn     Volume Flow ext.  m^3/min (0.0001l/min to 1000l/min) */
-    { 0x40, 1.0e-7, "m^3/min", "Volume flow" },
-    { 0x41, 1.0e-6, "m^3/min", "Volume flow" },
-    { 0x42, 1.0e-5, "m^3/min", "Volume flow" },
-    { 0x43, 1.0e-4, "m^3/min", "Volume flow" },
-    { 0x44, 1.0e-3, "m^3/min", "Volume flow" },
-    { 0x45, 1.0e-2, "m^3/min", "Volume flow" },
-    { 0x46, 1.0e-1, "m^3/min", "Volume flow" },
-    { 0x47, 1.0e0,  "m^3/min", "Volume flow" },
+    {0x40, 1.0e-7, "m^3/min", "Volume flow"},
+    {0x41, 1.0e-6, "m^3/min", "Volume flow"},
+    {0x42, 1.0e-5, "m^3/min", "Volume flow"},
+    {0x43, 1.0e-4, "m^3/min", "Volume flow"},
+    {0x44, 1.0e-3, "m^3/min", "Volume flow"},
+    {0x45, 1.0e-2, "m^3/min", "Volume flow"},
+    {0x46, 1.0e-1, "m^3/min", "Volume flow"},
+    {0x47, 1.0e0, "m^3/min", "Volume flow"},
 
     /* E100 1nnn     Volume Flow ext.  m^3/s (0.001ml/s to 10000ml/s) */
-    { 0x48, 1.0e-9, "m^3/s", "Volume flow" },
-    { 0x49, 1.0e-8, "m^3/s", "Volume flow" },
-    { 0x4A, 1.0e-7, "m^3/s", "Volume flow" },
-    { 0x4B, 1.0e-6, "m^3/s", "Volume flow" },
-    { 0x4C, 1.0e-5, "m^3/s", "Volume flow" },
-    { 0x4D, 1.0e-4, "m^3/s", "Volume flow" },
-    { 0x4E, 1.0e-3, "m^3/s", "Volume flow" },
-    { 0x4F, 1.0e-2, "m^3/s", "Volume flow" },
+    {0x48, 1.0e-9, "m^3/s", "Volume flow"},
+    {0x49, 1.0e-8, "m^3/s", "Volume flow"},
+    {0x4A, 1.0e-7, "m^3/s", "Volume flow"},
+    {0x4B, 1.0e-6, "m^3/s", "Volume flow"},
+    {0x4C, 1.0e-5, "m^3/s", "Volume flow"},
+    {0x4D, 1.0e-4, "m^3/s", "Volume flow"},
+    {0x4E, 1.0e-3, "m^3/s", "Volume flow"},
+    {0x4F, 1.0e-2, "m^3/s", "Volume flow"},
 
     /* E101 0nnn     Mass flow kg/h (0.001kg/h to 10000kg/h) */
-    { 0x50, 1.0e-3, "kg/h", "Mass flow" },
-    { 0x51, 1.0e-2, "kg/h", "Mass flow" },
-    { 0x52, 1.0e-1, "kg/h", "Mass flow" },
-    { 0x53, 1.0e0,  "kg/h", "Mass flow" },
-    { 0x54, 1.0e1,  "kg/h", "Mass flow" },
-    { 0x55, 1.0e2,  "kg/h", "Mass flow" },
-    { 0x56, 1.0e3,  "kg/h", "Mass flow" },
-    { 0x57, 1.0e4,  "kg/h", "Mass flow" },
+    {0x50, 1.0e-3, "kg/h", "Mass flow"},
+    {0x51, 1.0e-2, "kg/h", "Mass flow"},
+    {0x52, 1.0e-1, "kg/h", "Mass flow"},
+    {0x53, 1.0e0, "kg/h", "Mass flow"},
+    {0x54, 1.0e1, "kg/h", "Mass flow"},
+    {0x55, 1.0e2, "kg/h", "Mass flow"},
+    {0x56, 1.0e3, "kg/h", "Mass flow"},
+    {0x57, 1.0e4, "kg/h", "Mass flow"},
 
     /* E101 10nn     Flow Temperature °C (0.001°C to 1°C) */
-    { 0x58, 1.0e-3, "°C", "Flow temperature" },
-    { 0x59, 1.0e-2, "°C", "Flow temperature" },
-    { 0x5A, 1.0e-1, "°C", "Flow temperature" },
-    { 0x5B, 1.0e0,  "°C", "Flow temperature" },
+    {0x58, 1.0e-3, "°C", "Flow temperature"},
+    {0x59, 1.0e-2, "°C", "Flow temperature"},
+    {0x5A, 1.0e-1, "°C", "Flow temperature"},
+    {0x5B, 1.0e0, "°C", "Flow temperature"},
 
     /* E101 11nn Return Temperature °C (0.001°C to 1°C) */
-    { 0x5C, 1.0e-3, "°C", "Return temperature" },
-    { 0x5D, 1.0e-2, "°C", "Return temperature" },
-    { 0x5E, 1.0e-1, "°C", "Return temperature" },
-    { 0x5F, 1.0e0,  "°C", "Return temperature" },
+    {0x5C, 1.0e-3, "°C", "Return temperature"},
+    {0x5D, 1.0e-2, "°C", "Return temperature"},
+    {0x5E, 1.0e-1, "°C", "Return temperature"},
+    {0x5F, 1.0e0, "°C", "Return temperature"},
 
     /* E110 00nn    Temperature Difference  K   (mK to  K) */
-    { 0x60, 1.0e-3, "K", "Temperature difference" },
-    { 0x61, 1.0e-2, "K", "Temperature difference" },
-    { 0x62, 1.0e-1, "K", "Temperature difference" },
-    { 0x63, 1.0e0,  "K", "Temperature difference" },
+    {0x60, 1.0e-3, "K", "Temperature difference"},
+    {0x61, 1.0e-2, "K", "Temperature difference"},
+    {0x62, 1.0e-1, "K", "Temperature difference"},
+    {0x63, 1.0e0, "K", "Temperature difference"},
 
     /* E110 01nn     External Temperature °C (0.001°C to 1°C) */
-    { 0x64, 1.0e-3, "°C", "External temperature" },
-    { 0x65, 1.0e-2, "°C", "External temperature" },
-    { 0x66, 1.0e-1, "°C", "External temperature" },
-    { 0x67, 1.0e0,  "°C", "External temperature" },
+    {0x64, 1.0e-3, "°C", "External temperature"},
+    {0x65, 1.0e-2, "°C", "External temperature"},
+    {0x66, 1.0e-1, "°C", "External temperature"},
+    {0x67, 1.0e0, "°C", "External temperature"},
 
     /* E110 10nn     Pressure bar (1mbar to 1000mbar) */
-    { 0x68, 1.0e-3, "bar", "Pressure" },
-    { 0x69, 1.0e-2, "bar", "Pressure" },
-    { 0x6A, 1.0e-1, "bar", "Pressure" },
-    { 0x6B, 1.0e0,  "bar", "Pressure" },
+    {0x68, 1.0e-3, "bar", "Pressure"},
+    {0x69, 1.0e-2, "bar", "Pressure"},
+    {0x6A, 1.0e-1, "bar", "Pressure"},
+    {0x6B, 1.0e0, "bar", "Pressure"},
 
     /* E110 110n     Time Point */
-    { 0x6C, 1.0e0, "-", "Time point (date)" },            /* n = 0        date, data type G */
-    { 0x6D, 1.0e0, "-", "Time point (date & time)" },     /* n = 1 time & date, data type F */
+    {0x6C, 1.0e0, "-", "Time point (date)"},        /* n = 0        date, data type G */
+    {0x6D, 1.0e0, "-", "Time point (date & time)"}, /* n = 1 time & date, data type F */
 
     /* E110 1110     Units for H.C.A. dimensionless */
-    { 0x6E, 1.0e0,  "Units for H.C.A.", "H.C.A." },
+    {0x6E, 1.0e0, "Units for H.C.A.", "H.C.A."},
 
     /* E110 1111     Reserved */
-    { 0x6F, 0.0,  "Reserved", "Reserved" },
+    {0x6F, 0.0, "Reserved", "Reserved"},
 
     /* E111 00nn     Averaging Duration s */
-    { 0x70,     1.0, "s", "Averaging Duration" },  /* seconds */
-    { 0x71,    60.0, "s", "Averaging Duration" },  /* minutes */
-    { 0x72,  3600.0, "s", "Averaging Duration" },  /* hours   */
-    { 0x73, 86400.0, "s", "Averaging Duration" },  /* days    */
+    {0x70, 1.0, "s", "Averaging Duration"},     /* seconds */
+    {0x71, 60.0, "s", "Averaging Duration"},    /* minutes */
+    {0x72, 3600.0, "s", "Averaging Duration"},  /* hours   */
+    {0x73, 86400.0, "s", "Averaging Duration"}, /* days    */
 
     /* E111 01nn     Actuality Duration s */
-    { 0x74,     1.0, "s", "Actuality Duration" },  /* seconds */
-    { 0x75,    60.0, "s", "Actuality Duration" },  /* minutes */
-    { 0x76,  3600.0, "s", "Actuality Duration" },  /* hours   */
-    { 0x77, 86400.0, "s", "Actuality Duration" },  /* days    */
+    {0x74, 1.0, "s", "Actuality Duration"},     /* seconds */
+    {0x75, 60.0, "s", "Actuality Duration"},    /* minutes */
+    {0x76, 3600.0, "s", "Actuality Duration"},  /* hours   */
+    {0x77, 86400.0, "s", "Actuality Duration"}, /* days    */
 
     /* Fabrication No */
-    { 0x78, 1.0, "", "Fabrication No" },
+    {0x78, 1.0, "", "Fabrication No"},
 
     /* E111 1001 (Enhanced) Identification */
-    { 0x79, 1.0, "", "(Enhanced) Identification" },
+    {0x79, 1.0, "", "(Enhanced) Identification"},
 
     /* E111 1010 Bus Address */
-    { 0x7A, 1.0, "", "Bus Address" },
+    {0x7A, 1.0, "", "Bus Address"},
 
     /* Any VIF: 7Eh */
-    { 0x7E, 1.0, "", "Any VIF" },
+    {0x7E, 1.0, "", "Any VIF"},
 
     /* Manufacturer specific: 7Fh */
-    { 0x7F, 1.0, "", "Manufacturer specific" },
+    {0x7F, 1.0, "", "Manufacturer specific"},
 
     /* Any VIF: 7Eh */
-    { 0xFE, 1.0, "", "Any VIF" },
+    {0xFE, 1.0, "", "Any VIF"},
 
     /* Manufacturer specific: FFh */
-    { 0xFF, 1.0, "", "Manufacturer specific" },
+    {0xFF, 1.0, "", "Manufacturer specific"},
 
-
-/* Main VIFE-Code Extension table (following VIF=FDh for primary VIF)
-   See 8.4.4 a, only some of them are here. Using range 0x100 - 0x1FF */
+    /* Main VIFE-Code Extension table (following VIF=FDh for primary VIF)
+       See 8.4.4 a, only some of them are here. Using range 0x100 - 0x1FF */
 
     /* E000 00nn   Credit of 10nn-3 of the nominal local legal currency units */
-    { 0x100, 1.0e-3, "Currency units", "Credit" },
-    { 0x101, 1.0e-2, "Currency units", "Credit" },
-    { 0x102, 1.0e-1, "Currency units", "Credit" },
-    { 0x103, 1.0e0,  "Currency units", "Credit" },
+    {0x100, 1.0e-3, "Currency units", "Credit"},
+    {0x101, 1.0e-2, "Currency units", "Credit"},
+    {0x102, 1.0e-1, "Currency units", "Credit"},
+    {0x103, 1.0e0, "Currency units", "Credit"},
 
     /* E000 01nn   Debit of 10nn-3 of the nominal local legal currency units */
-    { 0x104, 1.0e-3, "Currency units", "Debit" },
-    { 0x105, 1.0e-2, "Currency units", "Debit" },
-    { 0x106, 1.0e-1, "Currency units", "Debit" },
-    { 0x107, 1.0e0,  "Currency units", "Debit" },
+    {0x104, 1.0e-3, "Currency units", "Debit"},
+    {0x105, 1.0e-2, "Currency units", "Debit"},
+    {0x106, 1.0e-1, "Currency units", "Debit"},
+    {0x107, 1.0e0, "Currency units", "Debit"},
 
     /* E000 1000 Access Number (transmission count) */
-    { 0x108, 1.0e0,  "", "Access Number (transmission count)" },
+    {0x108, 1.0e0, "", "Access Number (transmission count)"},
 
     /* E000 1001 Medium (as in fixed header) */
-    { 0x109, 1.0e0,  "", "Medium" },
+    {0x109, 1.0e0, "", "Medium"},
 
     /* E000 1010 Manufacturer (as in fixed header) */
-    { 0x10A, 1.0e0,  "", "Manufacturer" },
+    {0x10A, 1.0e0, "", "Manufacturer"},
 
     /* E000 1011 Parameter set identification */
-    { 0x10B, 1.0e0,  "", "Parameter set identification" },
+    {0x10B, 1.0e0, "", "Parameter set identification"},
 
     /* E000 1100 Model / Version */
-    { 0x10C, 1.0e0,  "", "Model / Version" },
+    {0x10C, 1.0e0, "", "Model / Version"},
 
     /* E000 1101 Hardware version # */
-    { 0x10D, 1.0e0,  "", "Hardware version" },
+    {0x10D, 1.0e0, "", "Hardware version"},
 
     /* E000 1110 Firmware version # */
-    { 0x10E, 1.0e0,  "", "Firmware version" },
+    {0x10E, 1.0e0, "", "Firmware version"},
 
     /* E000 1111 Software version # */
-    { 0x10F, 1.0e0,  "", "Software version" },
-
+    {0x10F, 1.0e0, "", "Software version"},
 
     /* E001 0000 Customer location */
-    { 0x110, 1.0e0,  "", "Customer location" },
+    {0x110, 1.0e0, "", "Customer location"},
 
     /* E001 0001 Customer */
-    { 0x111, 1.0e0,  "", "Customer" },
+    {0x111, 1.0e0, "", "Customer"},
 
     /* E001 0010 Access Code User */
-    { 0x112, 1.0e0,  "", "Access Code User" },
+    {0x112, 1.0e0, "", "Access Code User"},
 
     /* E001 0011 Access Code Operator */
-    { 0x113, 1.0e0,  "", "Access Code Operator" },
+    {0x113, 1.0e0, "", "Access Code Operator"},
 
     /* E001 0100 Access Code System Operator */
-    { 0x114, 1.0e0,  "", "Access Code System Operator" },
+    {0x114, 1.0e0, "", "Access Code System Operator"},
 
     /* E001 0101 Access Code Developer */
-    { 0x115, 1.0e0,  "", "Access Code Developer" },
+    {0x115, 1.0e0, "", "Access Code Developer"},
 
     /* E001 0110 Password */
-    { 0x116, 1.0e0,  "", "Password" },
+    {0x116, 1.0e0, "", "Password"},
 
     /* E001 0111 Error flags (binary) */
-    { 0x117, 1.0e0,  "", "Error flags" },
+    {0x117, 1.0e0, "", "Error flags"},
 
     /* E001 1000 Error mask */
-    { 0x118, 1.0e0,  "", "Error mask" },
+    {0x118, 1.0e0, "", "Error mask"},
 
     /* E001 1001 Reserved */
-    { 0x119, 1.0e0,  "Reserved", "Reserved" },
-
+    {0x119, 1.0e0, "Reserved", "Reserved"},
 
     /* E001 1010 Digital Output (binary) */
-    { 0x11A, 1.0e0,  "", "Digital Output" },
+    {0x11A, 1.0e0, "", "Digital Output"},
 
     /* E001 1011 Digital Input (binary) */
-    { 0x11B, 1.0e0,  "", "Digital Input" },
+    {0x11B, 1.0e0, "", "Digital Input"},
 
     /* E001 1100 Baudrate [Baud] */
-    { 0x11C, 1.0e0,  "Baud", "Baudrate" },
+    {0x11C, 1.0e0, "Baud", "Baudrate"},
 
     /* E001 1101 Response delay time [bittimes] */
-    { 0x11D, 1.0e0,  "Bittimes", "Response delay time" },
+    {0x11D, 1.0e0, "Bittimes", "Response delay time"},
 
     /* E001 1110 Retry */
-    { 0x11E, 1.0e0,  "", "Retry" },
+    {0x11E, 1.0e0, "", "Retry"},
 
     /* E001 1111 Reserved */
-    { 0x11F, 1.0e0,  "Reserved", "Reserved" },
-
+    {0x11F, 1.0e0, "Reserved", "Reserved"},
 
     /* E010 0000 First storage # for cyclic storage */
-    { 0x120, 1.0e0,  "", "First storage # for cyclic storage" },
+    {0x120, 1.0e0, "", "First storage # for cyclic storage"},
 
     /* E010 0001 Last storage # for cyclic storage */
-    { 0x121, 1.0e0,  "", "Last storage # for cyclic storage" },
+    {0x121, 1.0e0, "", "Last storage # for cyclic storage"},
 
     /* E010 0010 Size of storage block */
-    { 0x122, 1.0e0,  "", "Size of storage block" },
+    {0x122, 1.0e0, "", "Size of storage block"},
 
     /* E010 0011 Reserved */
-    { 0x123, 1.0e0,  "Reserved", "Reserved" },
+    {0x123, 1.0e0, "Reserved", "Reserved"},
 
     /* E010 01nn Storage interval [sec(s)..day(s)] */
-    { 0x124,        1.0,  "s", "Storage interval" },   /* second(s) */
-    { 0x125,       60.0,  "s", "Storage interval" },   /* minute(s) */
-    { 0x126,     3600.0,  "s", "Storage interval" },   /* hour(s)   */
-    { 0x127,    86400.0,  "s", "Storage interval" },   /* day(s)    */
-    { 0x128,  2629743.83, "s", "Storage interval" },   /* month(s)  */
-    { 0x129, 31556926.0,  "s", "Storage interval" },   /* year(s)   */
+    {0x124, 1.0, "s", "Storage interval"},        /* second(s) */
+    {0x125, 60.0, "s", "Storage interval"},       /* minute(s) */
+    {0x126, 3600.0, "s", "Storage interval"},     /* hour(s)   */
+    {0x127, 86400.0, "s", "Storage interval"},    /* day(s)    */
+    {0x128, 2629743.83, "s", "Storage interval"}, /* month(s)  */
+    {0x129, 31556926.0, "s", "Storage interval"}, /* year(s)   */
 
     /* E010 1010 Reserved */
-    { 0x12A, 1.0e0,  "Reserved", "Reserved" },
+    {0x12A, 1.0e0, "Reserved", "Reserved"},
 
     /* E010 1011 Reserved */
-    { 0x12B, 1.0e0,  "Reserved", "Reserved" },
+    {0x12B, 1.0e0, "Reserved", "Reserved"},
 
     /* E010 11nn Duration since last readout [sec(s)..day(s)] */
-    { 0x12C,     1.0, "s", "Duration since last readout" },  /* seconds */
-    { 0x12D,    60.0, "s", "Duration since last readout" },  /* minutes */
-    { 0x12E,  3600.0, "s", "Duration since last readout" },  /* hours   */
-    { 0x12F, 86400.0, "s", "Duration since last readout" },  /* days    */
+    {0x12C, 1.0, "s", "Duration since last readout"},     /* seconds */
+    {0x12D, 60.0, "s", "Duration since last readout"},    /* minutes */
+    {0x12E, 3600.0, "s", "Duration since last readout"},  /* hours   */
+    {0x12F, 86400.0, "s", "Duration since last readout"}, /* days    */
 
     /* E011 0000 Start (date/time) of tariff  */
     /* The information about usage of data type F (date and time) or data type G (date) can */
     /* be derived from the datafield (0010b: type G / 0100: type F). */
-    { 0x130, 1.0e0,  "Reserved", "Reserved" }, /* ???? */
+    {0x130, 1.0e0, "Reserved", "Reserved"}, /* ???? */
 
     /* E011 00nn Duration of tariff (nn=01 ..11: min to days) */
-    { 0x131,       60.0,  "s", "Duration of tariff" },   /* minute(s) */
-    { 0x132,     3600.0,  "s", "Duration of tariff" },   /* hour(s)   */
-    { 0x133,    86400.0,  "s", "Duration of tariff" },   /* day(s)    */
+    {0x131, 60.0, "s", "Duration of tariff"},    /* minute(s) */
+    {0x132, 3600.0, "s", "Duration of tariff"},  /* hour(s)   */
+    {0x133, 86400.0, "s", "Duration of tariff"}, /* day(s)    */
 
     /* E011 01nn Period of tariff [sec(s) to day(s)]  */
-    { 0x134,        1.0, "s", "Period of tariff" },  /* seconds  */
-    { 0x135,       60.0, "s", "Period of tariff" },  /* minutes  */
-    { 0x136,     3600.0, "s", "Period of tariff" },  /* hours    */
-    { 0x137,    86400.0, "s", "Period of tariff" },  /* days     */
-    { 0x138,  2629743.83,"s", "Period of tariff" },  /* month(s) */
-    { 0x139, 31556926.0, "s", "Period of tariff" },  /* year(s)  */
+    {0x134, 1.0, "s", "Period of tariff"},        /* seconds  */
+    {0x135, 60.0, "s", "Period of tariff"},       /* minutes  */
+    {0x136, 3600.0, "s", "Period of tariff"},     /* hours    */
+    {0x137, 86400.0, "s", "Period of tariff"},    /* days     */
+    {0x138, 2629743.83, "s", "Period of tariff"}, /* month(s) */
+    {0x139, 31556926.0, "s", "Period of tariff"}, /* year(s)  */
 
     /* E011 1010 dimensionless / no VIF */
-    { 0x13A, 1.0e0,  "", "Dimensionless" },
+    {0x13A, 1.0e0, "", "Dimensionless"},
 
     /* E011 1011 Reserved */
-    { 0x13B, 1.0e0,  "Reserved", "Reserved" },
+    {0x13B, 1.0e0, "Reserved", "Reserved"},
 
     /* E011 11xx Reserved */
-    { 0x13C, 1.0e0,  "Reserved", "Reserved" },
-    { 0x13D, 1.0e0,  "Reserved", "Reserved" },
-    { 0x13E, 1.0e0,  "Reserved", "Reserved" },
-    { 0x13F, 1.0e0,  "Reserved", "Reserved" },
+    {0x13C, 1.0e0, "Reserved", "Reserved"},
+    {0x13D, 1.0e0, "Reserved", "Reserved"},
+    {0x13E, 1.0e0, "Reserved", "Reserved"},
+    {0x13F, 1.0e0, "Reserved", "Reserved"},
 
     /* E100 nnnn   Volts electrical units */
-    { 0x140, 1.0e-9, "V", "Voltage" },
-    { 0x141, 1.0e-8, "V", "Voltage" },
-    { 0x142, 1.0e-7, "V", "Voltage" },
-    { 0x143, 1.0e-6, "V", "Voltage" },
-    { 0x144, 1.0e-5, "V", "Voltage" },
-    { 0x145, 1.0e-4, "V", "Voltage" },
-    { 0x146, 1.0e-3, "V", "Voltage" },
-    { 0x147, 1.0e-2, "V", "Voltage" },
-    { 0x148, 1.0e-1, "V", "Voltage" },
-    { 0x149, 1.0e0,  "V", "Voltage" },
-    { 0x14A, 1.0e1,  "V", "Voltage" },
-    { 0x14B, 1.0e2,  "V", "Voltage" },
-    { 0x14C, 1.0e3,  "V", "Voltage" },
-    { 0x14D, 1.0e4,  "V", "Voltage" },
-    { 0x14E, 1.0e5,  "V", "Voltage" },
-    { 0x14F, 1.0e6,  "V", "Voltage" },
+    {0x140, 1.0e-9, "V", "Voltage"},
+    {0x141, 1.0e-8, "V", "Voltage"},
+    {0x142, 1.0e-7, "V", "Voltage"},
+    {0x143, 1.0e-6, "V", "Voltage"},
+    {0x144, 1.0e-5, "V", "Voltage"},
+    {0x145, 1.0e-4, "V", "Voltage"},
+    {0x146, 1.0e-3, "V", "Voltage"},
+    {0x147, 1.0e-2, "V", "Voltage"},
+    {0x148, 1.0e-1, "V", "Voltage"},
+    {0x149, 1.0e0, "V", "Voltage"},
+    {0x14A, 1.0e1, "V", "Voltage"},
+    {0x14B, 1.0e2, "V", "Voltage"},
+    {0x14C, 1.0e3, "V", "Voltage"},
+    {0x14D, 1.0e4, "V", "Voltage"},
+    {0x14E, 1.0e5, "V", "Voltage"},
+    {0x14F, 1.0e6, "V", "Voltage"},
 
     /* E101 nnnn   A */
-    { 0x150, 1.0e-12, "A", "Current" },
-    { 0x151, 1.0e-11, "A", "Current" },
-    { 0x152, 1.0e-10, "A", "Current" },
-    { 0x153, 1.0e-9,  "A", "Current" },
-    { 0x154, 1.0e-8,  "A", "Current" },
-    { 0x155, 1.0e-7,  "A", "Current" },
-    { 0x156, 1.0e-6,  "A", "Current" },
-    { 0x157, 1.0e-5,  "A", "Current" },
-    { 0x158, 1.0e-4,  "A", "Current" },
-    { 0x159, 1.0e-3,  "A", "Current" },
-    { 0x15A, 1.0e-2,  "A", "Current" },
-    { 0x15B, 1.0e-1,  "A", "Current" },
-    { 0x15C, 1.0e0,   "A", "Current" },
-    { 0x15D, 1.0e1,   "A", "Current" },
-    { 0x15E, 1.0e2,   "A", "Current" },
-    { 0x15F, 1.0e3,   "A", "Current" },
+    {0x150, 1.0e-12, "A", "Current"},
+    {0x151, 1.0e-11, "A", "Current"},
+    {0x152, 1.0e-10, "A", "Current"},
+    {0x153, 1.0e-9, "A", "Current"},
+    {0x154, 1.0e-8, "A", "Current"},
+    {0x155, 1.0e-7, "A", "Current"},
+    {0x156, 1.0e-6, "A", "Current"},
+    {0x157, 1.0e-5, "A", "Current"},
+    {0x158, 1.0e-4, "A", "Current"},
+    {0x159, 1.0e-3, "A", "Current"},
+    {0x15A, 1.0e-2, "A", "Current"},
+    {0x15B, 1.0e-1, "A", "Current"},
+    {0x15C, 1.0e0, "A", "Current"},
+    {0x15D, 1.0e1, "A", "Current"},
+    {0x15E, 1.0e2, "A", "Current"},
+    {0x15F, 1.0e3, "A", "Current"},
 
     /* E110 0000 Reset counter */
-    { 0x160, 1.0e0,  "", "Reset counter" },
+    {0x160, 1.0e0, "", "Reset counter"},
 
     /* E110 0001 Cumulation counter */
-    { 0x161, 1.0e0,  "", "Cumulation counter" },
+    {0x161, 1.0e0, "", "Cumulation counter"},
 
     /* E110 0010 Control signal */
-    { 0x162, 1.0e0,  "", "Control signal" },
+    {0x162, 1.0e0, "", "Control signal"},
 
     /* E110 0011 Day of week */
-    { 0x163, 1.0e0,  "", "Day of week" },
+    {0x163, 1.0e0, "", "Day of week"},
 
     /* E110 0100 Week number */
-    { 0x164, 1.0e0,  "", "Week number" },
+    {0x164, 1.0e0, "", "Week number"},
 
     /* E110 0101 Time point of day change */
-    { 0x165, 1.0e0,  "", "Time point of day change" },
+    {0x165, 1.0e0, "", "Time point of day change"},
 
     /* E110 0110 State of parameter activation */
-    { 0x166, 1.0e0,  "", "State of parameter activation" },
+    {0x166, 1.0e0, "", "State of parameter activation"},
 
     /* E110 0111 Special supplier information */
-    { 0x167, 1.0e0,  "", "Special supplier information" },
+    {0x167, 1.0e0, "", "Special supplier information"},
 
     /* E110 10pp Duration since last cumulation [hour(s)..years(s)] */
-    { 0x168,     3600.0, "s", "Duration since last cumulation" },  /* hours    */
-    { 0x169,    86400.0, "s", "Duration since last cumulation" },  /* days     */
-    { 0x16A,  2629743.83,"s", "Duration since last cumulation" },  /* month(s) */
-    { 0x16B, 31556926.0, "s", "Duration since last cumulation" },  /* year(s)  */
+    {0x168, 3600.0, "s", "Duration since last cumulation"},     /* hours    */
+    {0x169, 86400.0, "s", "Duration since last cumulation"},    /* days     */
+    {0x16A, 2629743.83, "s", "Duration since last cumulation"}, /* month(s) */
+    {0x16B, 31556926.0, "s", "Duration since last cumulation"}, /* year(s)  */
 
     /* E110 11pp Operating time battery [hour(s)..years(s)] */
-    { 0x16C,     3600.0, "s", "Operating time battery" },  /* hours    */
-    { 0x16D,    86400.0, "s", "Operating time battery" },  /* days     */
-    { 0x16E,  2629743.83,"s", "Operating time battery" },  /* month(s) */
-    { 0x16F, 31556926.0, "s", "Operating time battery" },  /* year(s)  */
+    {0x16C, 3600.0, "s", "Operating time battery"},     /* hours    */
+    {0x16D, 86400.0, "s", "Operating time battery"},    /* days     */
+    {0x16E, 2629743.83, "s", "Operating time battery"}, /* month(s) */
+    {0x16F, 31556926.0, "s", "Operating time battery"}, /* year(s)  */
 
     /* E111 0000 Date and time of battery change */
-    { 0x170, 1.0e0,  "", "Date and time of battery change" },
+    {0x170, 1.0e0, "", "Date and time of battery change"},
 
     /* E111 0001-1111 Reserved */
-    { 0x171, 1.0e0,  "Reserved", "Reserved" },
-    { 0x172, 1.0e0,  "Reserved", "Reserved" },
-    { 0x173, 1.0e0,  "Reserved", "Reserved" },
-    { 0x174, 1.0e0,  "Reserved", "Reserved" },
-    { 0x175, 1.0e0,  "Reserved", "Reserved" },
-    { 0x176, 1.0e0,  "Reserved", "Reserved" },
-    { 0x177, 1.0e0,  "Reserved", "Reserved" },
-    { 0x178, 1.0e0,  "Reserved", "Reserved" },
-    { 0x179, 1.0e0,  "Reserved", "Reserved" },
-    { 0x17A, 1.0e0,  "Reserved", "Reserved" },
-    { 0x17B, 1.0e0,  "Reserved", "Reserved" },
-    { 0x17C, 1.0e0,  "Reserved", "Reserved" },
-    { 0x17D, 1.0e0,  "Reserved", "Reserved" },
-    { 0x17E, 1.0e0,  "Reserved", "Reserved" },
-    { 0x17F, 1.0e0,  "Reserved", "Reserved" },
+    {0x171, 1.0e0, "Reserved", "Reserved"},
+    {0x172, 1.0e0, "Reserved", "Reserved"},
+    {0x173, 1.0e0, "Reserved", "Reserved"},
+    {0x174, 1.0e0, "Reserved", "Reserved"},
+    {0x175, 1.0e0, "Reserved", "Reserved"},
+    {0x176, 1.0e0, "Reserved", "Reserved"},
+    {0x177, 1.0e0, "Reserved", "Reserved"},
+    {0x178, 1.0e0, "Reserved", "Reserved"},
+    {0x179, 1.0e0, "Reserved", "Reserved"},
+    {0x17A, 1.0e0, "Reserved", "Reserved"},
+    {0x17B, 1.0e0, "Reserved", "Reserved"},
+    {0x17C, 1.0e0, "Reserved", "Reserved"},
+    {0x17D, 1.0e0, "Reserved", "Reserved"},
+    {0x17E, 1.0e0, "Reserved", "Reserved"},
+    {0x17F, 1.0e0, "Reserved", "Reserved"},
 
-
-/* Alternate VIFE-Code Extension table (following VIF=0FBh for primary VIF)
-   See 8.4.4 b, only some of them are here. Using range 0x200 - 0x2FF */
+    /* Alternate VIFE-Code Extension table (following VIF=0FBh for primary VIF)
+       See 8.4.4 b, only some of them are here. Using range 0x200 - 0x2FF */
 
     /* E000 000n Energy 10(n-1) MWh 0.1MWh to 1MWh */
-    { 0x200, 1.0e5,  "Wh", "Energy" },
-    { 0x201, 1.0e6,  "Wh", "Energy" },
+    {0x200, 1.0e5, "Wh", "Energy"},
+    {0x201, 1.0e6, "Wh", "Energy"},
 
     /* E000 001n Reserved */
-    { 0x202, 1.0e0,  "Reserved", "Reserved" },
-    { 0x203, 1.0e0,  "Reserved", "Reserved" },
+    {0x202, 1.0e0, "Reserved", "Reserved"},
+    {0x203, 1.0e0, "Reserved", "Reserved"},
 
     /* E000 01nn Reserved */
-    { 0x204, 1.0e0,  "Reserved", "Reserved" },
-    { 0x205, 1.0e0,  "Reserved", "Reserved" },
-    { 0x206, 1.0e0,  "Reserved", "Reserved" },
-    { 0x207, 1.0e0,  "Reserved", "Reserved" },
+    {0x204, 1.0e0, "Reserved", "Reserved"},
+    {0x205, 1.0e0, "Reserved", "Reserved"},
+    {0x206, 1.0e0, "Reserved", "Reserved"},
+    {0x207, 1.0e0, "Reserved", "Reserved"},
 
     /* E000 100n Energy 10(n-1) GJ 0.1GJ to 1GJ */
-    { 0x208, 1.0e8,  "Reserved", "Energy" },
-    { 0x209, 1.0e9,  "Reserved", "Energy" },
+    {0x208, 1.0e8, "Reserved", "Energy"},
+    {0x209, 1.0e9, "Reserved", "Energy"},
 
     /* E000 101n Reserved */
-    { 0x20A, 1.0e0,  "Reserved", "Reserved" },
-    { 0x20B, 1.0e0,  "Reserved", "Reserved" },
+    {0x20A, 1.0e0, "Reserved", "Reserved"},
+    {0x20B, 1.0e0, "Reserved", "Reserved"},
 
     /* E000 11nn Reserved */
-    { 0x20C, 1.0e0,  "Reserved", "Reserved" },
-    { 0x20D, 1.0e0,  "Reserved", "Reserved" },
-    { 0x20E, 1.0e0,  "Reserved", "Reserved" },
-    { 0x20F, 1.0e0,  "Reserved", "Reserved" },
+    {0x20C, 1.0e0, "Reserved", "Reserved"},
+    {0x20D, 1.0e0, "Reserved", "Reserved"},
+    {0x20E, 1.0e0, "Reserved", "Reserved"},
+    {0x20F, 1.0e0, "Reserved", "Reserved"},
 
     /* E001 000n Volume 10(n+2) m3 100m3 to 1000m3 */
-    { 0x210, 1.0e2,  "m^3", "Volume" },
-    { 0x211, 1.0e3,  "m^3", "Volume" },
+    {0x210, 1.0e2, "m^3", "Volume"},
+    {0x211, 1.0e3, "m^3", "Volume"},
 
     /* E001 001n Reserved */
-    { 0x212, 1.0e0,  "Reserved", "Reserved" },
-    { 0x213, 1.0e0,  "Reserved", "Reserved" },
+    {0x212, 1.0e0, "Reserved", "Reserved"},
+    {0x213, 1.0e0, "Reserved", "Reserved"},
 
     /* E001 01nn Reserved */
-    { 0x214, 1.0e0,  "Reserved", "Reserved" },
-    { 0x215, 1.0e0,  "Reserved", "Reserved" },
-    { 0x216, 1.0e0,  "Reserved", "Reserved" },
-    { 0x217, 1.0e0,  "Reserved", "Reserved" },
+    {0x214, 1.0e0, "Reserved", "Reserved"},
+    {0x215, 1.0e0, "Reserved", "Reserved"},
+    {0x216, 1.0e0, "Reserved", "Reserved"},
+    {0x217, 1.0e0, "Reserved", "Reserved"},
 
     /* E001 100n Mass 10(n+2) t 100t to 1000t */
-    { 0x218, 1.0e5,  "kg", "Mass" },
-    { 0x219, 1.0e6,  "kg", "Mass" },
+    {0x218, 1.0e5, "kg", "Mass"},
+    {0x219, 1.0e6, "kg", "Mass"},
 
     /* E001 1010 to E010 0000 Reserved */
-    { 0x21A, 1.0e0,  "Reserved", "Reserved" },
-    { 0x21B, 1.0e0,  "Reserved", "Reserved" },
-    { 0x21C, 1.0e0,  "Reserved", "Reserved" },
-    { 0x21D, 1.0e0,  "Reserved", "Reserved" },
-    { 0x21E, 1.0e0,  "Reserved", "Reserved" },
-    { 0x21F, 1.0e0,  "Reserved", "Reserved" },
-    { 0x220, 1.0e0,  "Reserved", "Reserved" },
+    {0x21A, 1.0e0, "Reserved", "Reserved"},
+    {0x21B, 1.0e0, "Reserved", "Reserved"},
+    {0x21C, 1.0e0, "Reserved", "Reserved"},
+    {0x21D, 1.0e0, "Reserved", "Reserved"},
+    {0x21E, 1.0e0, "Reserved", "Reserved"},
+    {0x21F, 1.0e0, "Reserved", "Reserved"},
+    {0x220, 1.0e0, "Reserved", "Reserved"},
 
     /* E010 0001 Volume 0,1 feet^3 */
-    { 0x221, 1.0e-1, "feet^3", "Volume" },
+    {0x221, 1.0e-1, "feet^3", "Volume"},
 
     /* E010 001n Volume 0,1-1 american gallon */
-    { 0x222, 1.0e-1, "American gallon", "Volume" },
-    { 0x223, 1.0e-0, "American gallon", "Volume" },
+    {0x222, 1.0e-1, "American gallon", "Volume"},
+    {0x223, 1.0e-0, "American gallon", "Volume"},
 
     /* E010 0100    Volume flow 0,001 american gallon/min */
-    { 0x224, 1.0e-3, "American gallon/min", "Volume flow" },
+    {0x224, 1.0e-3, "American gallon/min", "Volume flow"},
 
     /* E010 0101 Volume flow 1 american gallon/min */
-    { 0x225, 1.0e0,  "American gallon/min", "Volume flow" },
+    {0x225, 1.0e0, "American gallon/min", "Volume flow"},
 
     /* E010 0110 Volume flow 1 american gallon/h */
-    { 0x226, 1.0e0,  "American gallon/h", "Volume flow" },
+    {0x226, 1.0e0, "American gallon/h", "Volume flow"},
 
     /* E010 0111 Reserved */
-    { 0x227, 1.0e0, "Reserved", "Reserved" },
+    {0x227, 1.0e0, "Reserved", "Reserved"},
 
     /* E010 100n Power 10(n-1) MW 0.1MW to 1MW */
-    { 0x228, 1.0e5, "W", "Power" },
-    { 0x229, 1.0e6, "W", "Power" },
+    {0x228, 1.0e5, "W", "Power"},
+    {0x229, 1.0e6, "W", "Power"},
 
     /* E010 101n Reserved */
-    { 0x22A, 1.0e0, "Reserved", "Reserved" },
-    { 0x22B, 1.0e0, "Reserved", "Reserved" },
+    {0x22A, 1.0e0, "Reserved", "Reserved"},
+    {0x22B, 1.0e0, "Reserved", "Reserved"},
 
     /* E010 11nn Reserved */
-    { 0x22C, 1.0e0, "Reserved", "Reserved" },
-    { 0x22D, 1.0e0, "Reserved", "Reserved" },
-    { 0x22E, 1.0e0, "Reserved", "Reserved" },
-    { 0x22F, 1.0e0, "Reserved", "Reserved" },
+    {0x22C, 1.0e0, "Reserved", "Reserved"},
+    {0x22D, 1.0e0, "Reserved", "Reserved"},
+    {0x22E, 1.0e0, "Reserved", "Reserved"},
+    {0x22F, 1.0e0, "Reserved", "Reserved"},
 
     /* E011 000n Power 10(n-1) GJ/h 0.1GJ/h to 1GJ/h */
-    { 0x230, 1.0e8, "J", "Power" },
-    { 0x231, 1.0e9, "J", "Power" },
+    {0x230, 1.0e8, "J", "Power"},
+    {0x231, 1.0e9, "J", "Power"},
 
     /* E011 0010 to E101 0111 Reserved */
-    { 0x232, 1.0e0, "Reserved", "Reserved" },
-    { 0x233, 1.0e0, "Reserved", "Reserved" },
-    { 0x234, 1.0e0, "Reserved", "Reserved" },
-    { 0x235, 1.0e0, "Reserved", "Reserved" },
-    { 0x236, 1.0e0, "Reserved", "Reserved" },
-    { 0x237, 1.0e0, "Reserved", "Reserved" },
-    { 0x238, 1.0e0, "Reserved", "Reserved" },
-    { 0x239, 1.0e0, "Reserved", "Reserved" },
-    { 0x23A, 1.0e0, "Reserved", "Reserved" },
-    { 0x23B, 1.0e0, "Reserved", "Reserved" },
-    { 0x23C, 1.0e0, "Reserved", "Reserved" },
-    { 0x23D, 1.0e0, "Reserved", "Reserved" },
-    { 0x23E, 1.0e0, "Reserved", "Reserved" },
-    { 0x23F, 1.0e0, "Reserved", "Reserved" },
-    { 0x240, 1.0e0, "Reserved", "Reserved" },
-    { 0x241, 1.0e0, "Reserved", "Reserved" },
-    { 0x242, 1.0e0, "Reserved", "Reserved" },
-    { 0x243, 1.0e0, "Reserved", "Reserved" },
-    { 0x244, 1.0e0, "Reserved", "Reserved" },
-    { 0x245, 1.0e0, "Reserved", "Reserved" },
-    { 0x246, 1.0e0, "Reserved", "Reserved" },
-    { 0x247, 1.0e0, "Reserved", "Reserved" },
-    { 0x248, 1.0e0, "Reserved", "Reserved" },
-    { 0x249, 1.0e0, "Reserved", "Reserved" },
-    { 0x24A, 1.0e0, "Reserved", "Reserved" },
-    { 0x24B, 1.0e0, "Reserved", "Reserved" },
-    { 0x24C, 1.0e0, "Reserved", "Reserved" },
-    { 0x24D, 1.0e0, "Reserved", "Reserved" },
-    { 0x24E, 1.0e0, "Reserved", "Reserved" },
-    { 0x24F, 1.0e0, "Reserved", "Reserved" },
-    { 0x250, 1.0e0, "Reserved", "Reserved" },
-    { 0x251, 1.0e0, "Reserved", "Reserved" },
-    { 0x252, 1.0e0, "Reserved", "Reserved" },
-    { 0x253, 1.0e0, "Reserved", "Reserved" },
-    { 0x254, 1.0e0, "Reserved", "Reserved" },
-    { 0x255, 1.0e0, "Reserved", "Reserved" },
-    { 0x256, 1.0e0, "Reserved", "Reserved" },
-    { 0x257, 1.0e0, "Reserved", "Reserved" },
+    {0x232, 1.0e0, "Reserved", "Reserved"},
+    {0x233, 1.0e0, "Reserved", "Reserved"},
+    {0x234, 1.0e0, "Reserved", "Reserved"},
+    {0x235, 1.0e0, "Reserved", "Reserved"},
+    {0x236, 1.0e0, "Reserved", "Reserved"},
+    {0x237, 1.0e0, "Reserved", "Reserved"},
+    {0x238, 1.0e0, "Reserved", "Reserved"},
+    {0x239, 1.0e0, "Reserved", "Reserved"},
+    {0x23A, 1.0e0, "Reserved", "Reserved"},
+    {0x23B, 1.0e0, "Reserved", "Reserved"},
+    {0x23C, 1.0e0, "Reserved", "Reserved"},
+    {0x23D, 1.0e0, "Reserved", "Reserved"},
+    {0x23E, 1.0e0, "Reserved", "Reserved"},
+    {0x23F, 1.0e0, "Reserved", "Reserved"},
+    {0x240, 1.0e0, "Reserved", "Reserved"},
+    {0x241, 1.0e0, "Reserved", "Reserved"},
+    {0x242, 1.0e0, "Reserved", "Reserved"},
+    {0x243, 1.0e0, "Reserved", "Reserved"},
+    {0x244, 1.0e0, "Reserved", "Reserved"},
+    {0x245, 1.0e0, "Reserved", "Reserved"},
+    {0x246, 1.0e0, "Reserved", "Reserved"},
+    {0x247, 1.0e0, "Reserved", "Reserved"},
+    {0x248, 1.0e0, "Reserved", "Reserved"},
+    {0x249, 1.0e0, "Reserved", "Reserved"},
+    {0x24A, 1.0e0, "Reserved", "Reserved"},
+    {0x24B, 1.0e0, "Reserved", "Reserved"},
+    {0x24C, 1.0e0, "Reserved", "Reserved"},
+    {0x24D, 1.0e0, "Reserved", "Reserved"},
+    {0x24E, 1.0e0, "Reserved", "Reserved"},
+    {0x24F, 1.0e0, "Reserved", "Reserved"},
+    {0x250, 1.0e0, "Reserved", "Reserved"},
+    {0x251, 1.0e0, "Reserved", "Reserved"},
+    {0x252, 1.0e0, "Reserved", "Reserved"},
+    {0x253, 1.0e0, "Reserved", "Reserved"},
+    {0x254, 1.0e0, "Reserved", "Reserved"},
+    {0x255, 1.0e0, "Reserved", "Reserved"},
+    {0x256, 1.0e0, "Reserved", "Reserved"},
+    {0x257, 1.0e0, "Reserved", "Reserved"},
 
     /* E101 10nn Flow Temperature 10(nn-3) °F 0.001°F to 1°F */
-    { 0x258, 1.0e-3, "°F", "Flow temperature" },
-    { 0x259, 1.0e-2, "°F", "Flow temperature" },
-    { 0x25A, 1.0e-1, "°F", "Flow temperature" },
-    { 0x25B, 1.0e0,  "°F", "Flow temperature" },
+    {0x258, 1.0e-3, "°F", "Flow temperature"},
+    {0x259, 1.0e-2, "°F", "Flow temperature"},
+    {0x25A, 1.0e-1, "°F", "Flow temperature"},
+    {0x25B, 1.0e0, "°F", "Flow temperature"},
 
     /* E101 11nn Return Temperature 10(nn-3) °F 0.001°F to 1°F */
-    { 0x25C, 1.0e-3, "°F", "Return temperature" },
-    { 0x25D, 1.0e-2, "°F", "Return temperature" },
-    { 0x25E, 1.0e-1, "°F", "Return temperature" },
-    { 0x25F, 1.0e0,  "°F", "Return temperature" },
+    {0x25C, 1.0e-3, "°F", "Return temperature"},
+    {0x25D, 1.0e-2, "°F", "Return temperature"},
+    {0x25E, 1.0e-1, "°F", "Return temperature"},
+    {0x25F, 1.0e0, "°F", "Return temperature"},
 
     /* E110 00nn Temperature Difference 10(nn-3) °F 0.001°F to 1°F */
-    { 0x260, 1.0e-3, "°F", "Temperature difference" },
-    { 0x261, 1.0e-2, "°F", "Temperature difference" },
-    { 0x262, 1.0e-1, "°F", "Temperature difference" },
-    { 0x263, 1.0e0,  "°F", "Temperature difference" },
+    {0x260, 1.0e-3, "°F", "Temperature difference"},
+    {0x261, 1.0e-2, "°F", "Temperature difference"},
+    {0x262, 1.0e-1, "°F", "Temperature difference"},
+    {0x263, 1.0e0, "°F", "Temperature difference"},
 
     /* E110 01nn External Temperature 10(nn-3) °F 0.001°F to 1°F */
-    { 0x264, 1.0e-3, "°F", "External temperature" },
-    { 0x265, 1.0e-2, "°F", "External temperature" },
-    { 0x266, 1.0e-1, "°F", "External temperature" },
-    { 0x267, 1.0e0,  "°F", "External temperature" },
+    {0x264, 1.0e-3, "°F", "External temperature"},
+    {0x265, 1.0e-2, "°F", "External temperature"},
+    {0x266, 1.0e-1, "°F", "External temperature"},
+    {0x267, 1.0e0, "°F", "External temperature"},
 
     /* E110 1nnn Reserved */
-    { 0x268, 1.0e0, "Reserved", "Reserved" },
-    { 0x269, 1.0e0, "Reserved", "Reserved" },
-    { 0x26A, 1.0e0, "Reserved", "Reserved" },
-    { 0x26B, 1.0e0, "Reserved", "Reserved" },
-    { 0x26C, 1.0e0, "Reserved", "Reserved" },
-    { 0x26D, 1.0e0, "Reserved", "Reserved" },
-    { 0x26E, 1.0e0, "Reserved", "Reserved" },
-    { 0x26F, 1.0e0, "Reserved", "Reserved" },
+    {0x268, 1.0e0, "Reserved", "Reserved"},
+    {0x269, 1.0e0, "Reserved", "Reserved"},
+    {0x26A, 1.0e0, "Reserved", "Reserved"},
+    {0x26B, 1.0e0, "Reserved", "Reserved"},
+    {0x26C, 1.0e0, "Reserved", "Reserved"},
+    {0x26D, 1.0e0, "Reserved", "Reserved"},
+    {0x26E, 1.0e0, "Reserved", "Reserved"},
+    {0x26F, 1.0e0, "Reserved", "Reserved"},
 
     /* E111 00nn Cold / Warm Temperature Limit 10(nn-3) °F 0.001°F to 1°F */
-    { 0x270, 1.0e-3, "°F", "Cold / Warm Temperature Limit" },
-    { 0x271, 1.0e-2, "°F", "Cold / Warm Temperature Limit" },
-    { 0x272, 1.0e-1, "°F", "Cold / Warm Temperature Limit" },
-    { 0x273, 1.0e0,  "°F", "Cold / Warm Temperature Limit" },
+    {0x270, 1.0e-3, "°F", "Cold / Warm Temperature Limit"},
+    {0x271, 1.0e-2, "°F", "Cold / Warm Temperature Limit"},
+    {0x272, 1.0e-1, "°F", "Cold / Warm Temperature Limit"},
+    {0x273, 1.0e0, "°F", "Cold / Warm Temperature Limit"},
 
     /* E111 01nn Cold / Warm Temperature Limit 10(nn-3) °C 0.001°C to 1°C */
-    { 0x274, 1.0e-3, "°C", "Cold / Warm Temperature Limit" },
-    { 0x275, 1.0e-2, "°C", "Cold / Warm Temperature Limit" },
-    { 0x276, 1.0e-1, "°C", "Cold / Warm Temperature Limit" },
-    { 0x277, 1.0e0,  "°C", "Cold / Warm Temperature Limit" },
+    {0x274, 1.0e-3, "°C", "Cold / Warm Temperature Limit"},
+    {0x275, 1.0e-2, "°C", "Cold / Warm Temperature Limit"},
+    {0x276, 1.0e-1, "°C", "Cold / Warm Temperature Limit"},
+    {0x277, 1.0e0, "°C", "Cold / Warm Temperature Limit"},
 
     /* E111 1nnn cumul. count max power § 10(nnn-3) W 0.001W to 10000W */
-    { 0x278, 1.0e-3, "W", "Cumul count max power" },
-    { 0x279, 1.0e-3, "W", "Cumul count max power" },
-    { 0x27A, 1.0e-1, "W", "Cumul count max power" },
-    { 0x27B, 1.0e0,  "W", "Cumul count max power" },
-    { 0x27C, 1.0e1,  "W", "Cumul count max power" },
-    { 0x27D, 1.0e2,  "W", "Cumul count max power" },
-    { 0x27E, 1.0e3,  "W", "Cumul count max power" },
-    { 0x27F, 1.0e4,  "W", "Cumul count max power" },
+    {0x278, 1.0e-3, "W", "Cumul count max power"},
+    {0x279, 1.0e-3, "W", "Cumul count max power"},
+    {0x27A, 1.0e-1, "W", "Cumul count max power"},
+    {0x27B, 1.0e0, "W", "Cumul count max power"},
+    {0x27C, 1.0e1, "W", "Cumul count max power"},
+    {0x27D, 1.0e2, "W", "Cumul count max power"},
+    {0x27E, 1.0e3, "W", "Cumul count max power"},
+    {0x27F, 1.0e4, "W", "Cumul count max power"},
 
-/* End of array */
-    { 0xFFFF, 0.0, "", "" },
+    /* End of array */
+    {0xFFFF, 0.0, "", ""},
 };
-
 
 mbus_variable_vif fixed_table[] = {
     /* 00, 01 left out */
-    { 0x02, 1.0e0, "Wh", "Energy" },
-    { 0x03, 1.0e1, "Wh", "Energy" },
-    { 0x04, 1.0e2, "Wh", "Energy" },
-    { 0x05, 1.0e3, "Wh", "Energy" },
-    { 0x06, 1.0e4, "Wh", "Energy" },
-    { 0x07, 1.0e5, "Wh", "Energy" },
-    { 0x08, 1.0e6, "Wh", "Energy" },
-    { 0x09, 1.0e7, "Wh", "Energy" },
-    { 0x0A, 1.0e8, "Wh", "Energy" },
+    {0x02, 1.0e0, "Wh", "Energy"},
+    {0x03, 1.0e1, "Wh", "Energy"},
+    {0x04, 1.0e2, "Wh", "Energy"},
+    {0x05, 1.0e3, "Wh", "Energy"},
+    {0x06, 1.0e4, "Wh", "Energy"},
+    {0x07, 1.0e5, "Wh", "Energy"},
+    {0x08, 1.0e6, "Wh", "Energy"},
+    {0x09, 1.0e7, "Wh", "Energy"},
+    {0x0A, 1.0e8, "Wh", "Energy"},
 
-    { 0x0B, 1.0e3, "J", "Energy" },
-    { 0x0C, 1.0e4, "J", "Energy" },
-    { 0x0D, 1.0e5, "J", "Energy" },
-    { 0x0E, 1.0e6, "J", "Energy" },
-    { 0x0F, 1.0e7, "J", "Energy" },
-    { 0x10, 1.0e8, "J", "Energy" },
-    { 0x11, 1.0e9, "J", "Energy" },
-    { 0x12, 1.0e10,"J", "Energy" },
-    { 0x13, 1.0e11,"J", "Energy" },
+    {0x0B, 1.0e3, "J", "Energy"},
+    {0x0C, 1.0e4, "J", "Energy"},
+    {0x0D, 1.0e5, "J", "Energy"},
+    {0x0E, 1.0e6, "J", "Energy"},
+    {0x0F, 1.0e7, "J", "Energy"},
+    {0x10, 1.0e8, "J", "Energy"},
+    {0x11, 1.0e9, "J", "Energy"},
+    {0x12, 1.0e10, "J", "Energy"},
+    {0x13, 1.0e11, "J", "Energy"},
 
-    { 0x14, 1.0e0, "W", "Power" },
-    { 0x15, 1.0e0, "W", "Power" },
-    { 0x16, 1.0e0, "W", "Power" },
-    { 0x17, 1.0e0, "W", "Power" },
-    { 0x18, 1.0e0, "W", "Power" },
-    { 0x19, 1.0e0, "W", "Power" },
-    { 0x1A, 1.0e0, "W", "Power" },
-    { 0x1B, 1.0e0, "W", "Power" },
-    { 0x1C, 1.0e0, "W", "Power" },
+    {0x14, 1.0e0, "W", "Power"},
+    {0x15, 1.0e0, "W", "Power"},
+    {0x16, 1.0e0, "W", "Power"},
+    {0x17, 1.0e0, "W", "Power"},
+    {0x18, 1.0e0, "W", "Power"},
+    {0x19, 1.0e0, "W", "Power"},
+    {0x1A, 1.0e0, "W", "Power"},
+    {0x1B, 1.0e0, "W", "Power"},
+    {0x1C, 1.0e0, "W", "Power"},
 
-    { 0x1D, 1.0e3, "J/h", "Energy" },
-    { 0x1E, 1.0e4, "J/h", "Energy" },
-    { 0x1F, 1.0e5, "J/h", "Energy" },
-    { 0x20, 1.0e6, "J/h", "Energy" },
-    { 0x21, 1.0e7, "J/h", "Energy" },
-    { 0x22, 1.0e8, "J/h", "Energy" },
-    { 0x23, 1.0e9, "J/h", "Energy" },
-    { 0x24, 1.0e10,"J/h", "Energy" },
-    { 0x25, 1.0e11,"J/h", "Energy" },
+    {0x1D, 1.0e3, "J/h", "Energy"},
+    {0x1E, 1.0e4, "J/h", "Energy"},
+    {0x1F, 1.0e5, "J/h", "Energy"},
+    {0x20, 1.0e6, "J/h", "Energy"},
+    {0x21, 1.0e7, "J/h", "Energy"},
+    {0x22, 1.0e8, "J/h", "Energy"},
+    {0x23, 1.0e9, "J/h", "Energy"},
+    {0x24, 1.0e10, "J/h", "Energy"},
+    {0x25, 1.0e11, "J/h", "Energy"},
 
-    { 0x26, 1.0e-6,"m^3", "Volume" },
-    { 0x27, 1.0e-5,"m^3", "Volume" },
-    { 0x28, 1.0e-4,"m^3", "Volume" },
-    { 0x29, 1.0e-3,"m^3", "Volume" },
-    { 0x2A, 1.0e-2,"m^3", "Volume" },
-    { 0x2B, 1.0e-1,"m^3", "Volume" },
-    { 0x2C, 1.0e0, "m^3", "Volume" },
-    { 0x2D, 1.0e1, "m^3", "Volume" },
-    { 0x2E, 1.0e2, "m^3", "Volume" },
+    {0x26, 1.0e-6, "m^3", "Volume"},
+    {0x27, 1.0e-5, "m^3", "Volume"},
+    {0x28, 1.0e-4, "m^3", "Volume"},
+    {0x29, 1.0e-3, "m^3", "Volume"},
+    {0x2A, 1.0e-2, "m^3", "Volume"},
+    {0x2B, 1.0e-1, "m^3", "Volume"},
+    {0x2C, 1.0e0, "m^3", "Volume"},
+    {0x2D, 1.0e1, "m^3", "Volume"},
+    {0x2E, 1.0e2, "m^3", "Volume"},
 
-    { 0x2F, 1.0e-5,"m^3/h", "Volume flow" },
-    { 0x31, 1.0e-4,"m^3/h", "Volume flow" },
-    { 0x32, 1.0e-3,"m^3/h", "Volume flow" },
-    { 0x33, 1.0e-2,"m^3/h", "Volume flow" },
-    { 0x34, 1.0e-1,"m^3/h", "Volume flow" },
-    { 0x35, 1.0e0, "m^3/h", "Volume flow" },
-    { 0x36, 1.0e1, "m^3/h", "Volume flow" },
-    { 0x37, 1.0e2, "m^3/h", "Volume flow" },
+    {0x2F, 1.0e-5, "m^3/h", "Volume flow"},
+    {0x31, 1.0e-4, "m^3/h", "Volume flow"},
+    {0x32, 1.0e-3, "m^3/h", "Volume flow"},
+    {0x33, 1.0e-2, "m^3/h", "Volume flow"},
+    {0x34, 1.0e-1, "m^3/h", "Volume flow"},
+    {0x35, 1.0e0, "m^3/h", "Volume flow"},
+    {0x36, 1.0e1, "m^3/h", "Volume flow"},
+    {0x37, 1.0e2, "m^3/h", "Volume flow"},
 
-    { 0x38, 1.0e-3, "°C", "Temperature" },
+    {0x38, 1.0e-3, "°C", "Temperature"},
 
-    { 0x39, 1.0e0,  "Units for H.C.A.", "H.C.A." },
+    {0x39, 1.0e0, "Units for H.C.A.", "H.C.A."},
 
-    { 0x3A, 0.0,  "Reserved", "Reserved" },
-    { 0x3B, 0.0,  "Reserved", "Reserved" },
-    { 0x3C, 0.0,  "Reserved", "Reserved" },
-    { 0x3D, 0.0,  "Reserved", "Reserved" },
+    {0x3A, 0.0, "Reserved", "Reserved"},
+    {0x3B, 0.0, "Reserved", "Reserved"},
+    {0x3C, 0.0, "Reserved", "Reserved"},
+    {0x3D, 0.0, "Reserved", "Reserved"},
 
-    { 0x3E, 1.0e0,  "", "historic" },
+    {0x3E, 1.0e0, "", "historic"},
 
-    { 0x3F, 1.0e0,  "", "No units" },
+    {0x3F, 1.0e0, "", "No units"},
 
-/* end of array */
-    { 0xFFFF, 0.0, "", "" },
+    /* end of array */
+    {0xFFFF, 0.0, "", ""},
 };
 
 //------------------------------------------------------------------------------
 /// Register a function for receive events.
 //------------------------------------------------------------------------------
-void
-mbus_register_recv_event(mbus_handle * handle, void (*event)(unsigned char src_type, const char *buff, size_t len))
+void mbus_register_recv_event(mbus_handle *handle, void (*event)(unsigned char src_type, const char *buff, size_t len))
 {
     handle->recv_event = event;
 }
@@ -759,8 +753,7 @@ mbus_register_recv_event(mbus_handle * handle, void (*event)(unsigned char src_t
 //------------------------------------------------------------------------------
 /// Register a function for send events.
 //------------------------------------------------------------------------------
-void
-mbus_register_send_event(mbus_handle * handle, void (*event)(unsigned char src_type, const char *buff, size_t len))
+void mbus_register_send_event(mbus_handle *handle, void (*event)(unsigned char src_type, const char *buff, size_t len))
 {
     handle->send_event = event;
 }
@@ -768,8 +761,7 @@ mbus_register_send_event(mbus_handle * handle, void (*event)(unsigned char src_t
 //------------------------------------------------------------------------------
 /// Register a function for the scan progress.
 //------------------------------------------------------------------------------
-void
-mbus_register_scan_progress(mbus_handle * handle, void (*event)(mbus_handle * handle, const char *mask))
+void mbus_register_scan_progress(mbus_handle *handle, void (*event)(mbus_handle *handle, const char *mask))
 {
     handle->scan_progress = event;
 }
@@ -777,8 +769,7 @@ mbus_register_scan_progress(mbus_handle * handle, void (*event)(mbus_handle * ha
 //------------------------------------------------------------------------------
 /// Register a function for the found events.
 //------------------------------------------------------------------------------
-void
-mbus_register_found_event(mbus_handle * handle, void (*event)(mbus_handle * handle, mbus_frame *frame))
+void mbus_register_found_event(mbus_handle *handle, void (*event)(mbus_handle *handle, mbus_frame *frame))
 {
     handle->found_event = event;
 }
@@ -795,22 +786,22 @@ int mbus_fixed_normalize(int medium_unit, long medium_value, char **unit_out, do
 
     switch (medium_unit)
     {
-        case 0x00:
-            *unit_out = strdup("h,m,s"); /*  todo convert to unix time... */
-            *quantity_out = strdup("Time");
-            break;
-        case 0x01:
-            *unit_out = strdup("D,M,Y"); /*  todo convert to unix time... */
-            *quantity_out = strdup("Time");
-            break;
+    case 0x00:
+        *unit_out = strdup("h,m,s"); /*  todo convert to unix time... */
+        *quantity_out = strdup("Time");
+        break;
+    case 0x01:
+        *unit_out = strdup("D,M,Y"); /*  todo convert to unix time... */
+        *quantity_out = strdup("Time");
+        break;
 
     default:
-        for(int i=0; fixed_table[i].vif < 0xfff; ++i)
+        for (int i = 0; fixed_table[i].vif < 0xfff; ++i)
         {
             if (fixed_table[i].vif == medium_unit)
             {
                 *unit_out = strdup(fixed_table[i].unit);
-                *value_out = ((double) (medium_value)) * fixed_table[i].exponent;
+                *value_out = ((double)(medium_value)) * fixed_table[i].exponent;
                 *quantity_out = strdup(fixed_table[i].quantity);
                 return 0;
             }
@@ -824,7 +815,6 @@ int mbus_fixed_normalize(int medium_unit, long medium_value, char **unit_out, do
 
     return -2;
 }
-
 
 int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real, char **value_out_str, int *value_out_str_size)
 {
@@ -847,178 +837,179 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
 
         switch (record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_DATA)
         {
-            case 0x00: /* no data */
-                if ((*value_out_str = (char*) malloc(1)) == NULL)
+        case 0x00: /* no data */
+            if ((*value_out_str = (char *)malloc(1)) == NULL)
+            {
+                MBUS_ERROR("Unable to allocate memory");
+                return -1;
+            }
+            *value_out_str[0] = '\0';
+            *value_out_str_size = 0;
+            result = 0;
+            break;
+
+        case 0x01: /* 1 byte integer (8 bit) */
+            result = mbus_data_int_decode(record->data, 1, &value_out_int);
+            *value_out_real = value_out_int;
+            break;
+
+        case 0x02: /* 2 byte integer (16 bit) */
+            // E110 1100  Time Point (date)
+            if (vif == 0x6C)
+            {
+                mbus_data_tm_decode(&time, record->data, 2);
+                if ((*value_out_str = (char *)malloc(11)) == NULL)
                 {
                     MBUS_ERROR("Unable to allocate memory");
                     return -1;
                 }
-                *value_out_str[0] = '\0';
-                *value_out_str_size = 0;
+                *value_out_str_size = snprintf(*value_out_str, 11, "%04d-%02d-%02d",
+                                               (time.tm_year + 1900),
+                                               (time.tm_mon + 1),
+                                               time.tm_mday);
                 result = 0;
-                break;
-
-            case 0x01: /* 1 byte integer (8 bit) */
-                result = mbus_data_int_decode(record->data, 1, &value_out_int);
-                *value_out_real = value_out_int;
-                break;
-
-            case 0x02: /* 2 byte integer (16 bit) */
-                // E110 1100  Time Point (date)
-                if (vif == 0x6C)
-                {
-                    mbus_data_tm_decode(&time, record->data, 2);
-                    if ((*value_out_str = (char*) malloc(11)) == NULL)
-                    {
-                        MBUS_ERROR("Unable to allocate memory");
-                        return -1;
-                    }
-                    *value_out_str_size = snprintf(*value_out_str, 11, "%04d-%02d-%02d",
-                                                 (time.tm_year + 1900),
-                                                 (time.tm_mon + 1),
-                                                  time.tm_mday);
-                    result = 0;
-                }
-                else  // normal integer
-                {
-                    result = mbus_data_int_decode(record->data, 2, &value_out_int);
-                    *value_out_real = value_out_int;
-                }
-                break;
-
-            case 0x03: /* 3 byte integer (24 bit) */
-                result = mbus_data_int_decode(record->data, 3, &value_out_int);
-                *value_out_real = value_out_int;
-                break;
-
-            case 0x04: /* 4 byte integer (32 bit) */
-                // E110 1101  Time Point (date/time)
-                // E011 0000  Start (date/time) of tariff
-                // E111 0000  Date and time of battery change
-                if ( (vif == 0x6D) ||
-                    ((record->drh.vib.vif == 0xFD) && (vife == 0x30)) ||
-                    ((record->drh.vib.vif == 0xFD) && (vife == 0x70)))
-                {
-                    mbus_data_tm_decode(&time, record->data, 4);
-                    if ((*value_out_str = (char*) malloc(21)) == NULL)
-                    {
-                        MBUS_ERROR("Unable to allocate memory");
-                        return -1;
-                    }
-                    *value_out_str_size = snprintf(*value_out_str, 21, "%04d-%02d-%02dT%02d:%02d:%02dZ",
-                                                 (time.tm_year + 1900),
-                                                 (time.tm_mon + 1),
-                                                  time.tm_mday,
-                                                  time.tm_hour,
-                                                  time.tm_min,
-                                                  time.tm_sec);
-                    result = 0;
-                }
-                else  // normal integer
-                {
-                    result = mbus_data_int_decode(record->data, 4, &value_out_int);
-                    *value_out_real = value_out_int;
-                }
-                break;
-
-            case 0x05: /* 32b real */
-                *value_out_real = mbus_data_float_decode(record->data);
-                result = 0;
-                break;
-
-            case 0x06: /* 6 byte integer (48 bit) */
-                // E110 1101  Time Point (date/time)
-                // E011 0000  Start (date/time) of tariff
-                // E111 0000  Date and time of battery change
-                if ( (vif == 0x6D) ||
-                    ((record->drh.vib.vif == 0xFD) && (vife == 0x30)) ||
-                    ((record->drh.vib.vif == 0xFD) && (vife == 0x70)))
-                {
-                    mbus_data_tm_decode(&time, record->data, 6);
-                    if ((*value_out_str = (char*) malloc(21)) == NULL)
-                    {
-                        MBUS_ERROR("Unable to allocate memory");
-                        return -1;
-                    }
-                    *value_out_str_size = snprintf(*value_out_str, 21, "%04d-%02d-%02dT%02d:%02d:%02dZ",
-                                                 (time.tm_year + 1900),
-                                                 (time.tm_mon + 1),
-                                                  time.tm_mday,
-                                                  time.tm_hour,
-                                                  time.tm_min,
-                                                  time.tm_sec);
-                    result = 0;
-                }
-                else  // normal integer
-                {
-                    result = mbus_data_long_long_decode(record->data, 6, &value_out_long_long);
-                    *value_out_real = value_out_long_long;
-                }
-                break;
-
-            case 0x07: /* 8 byte integer (64 bit) */
-                result = mbus_data_long_long_decode(record->data, 8, &value_out_long_long);
-                *value_out_real = value_out_long_long;
-                break;
-
-            case 0x09: /* 2 digit BCD (8 bit) */
-                *value_out_real = mbus_data_bcd_decode(record->data, 1);
-                result = 0;
-                break;
-
-            case 0x0A: /* 4 digit BCD (16 bit) */
-                *value_out_real = mbus_data_bcd_decode(record->data, 2);
-                result = 0;
-                break;
-
-            case 0x0B: /* 6 digit BCD (24 bit) */
-                *value_out_real = mbus_data_bcd_decode(record->data, 3);
-                result = 0;
-                break;
-
-            case 0x0C: /* 8 digit BCD (32 bit) */
-                *value_out_real = mbus_data_bcd_decode(record->data, 4);
-                result = 0;
-                break;
-
-            case 0x0D: /* variable length */
+            }
+            else // normal integer
             {
-                if (record->data_len <= 0xBF) {
-                    if ((*value_out_str = (char*) malloc(record->data_len + 1)) == NULL)
-                    {
-                        MBUS_ERROR("Unable to allocate memory");
-                        return -1;
-                    }
-                    *value_out_str_size = record->data_len;
-                    mbus_data_str_decode((unsigned char*)(*value_out_str), record->data, record->data_len);
-                    result = 0;
-                    break;
+                result = mbus_data_int_decode(record->data, 2, &value_out_int);
+                *value_out_real = value_out_int;
+            }
+            break;
+
+        case 0x03: /* 3 byte integer (24 bit) */
+            result = mbus_data_int_decode(record->data, 3, &value_out_int);
+            *value_out_real = value_out_int;
+            break;
+
+        case 0x04: /* 4 byte integer (32 bit) */
+            // E110 1101  Time Point (date/time)
+            // E011 0000  Start (date/time) of tariff
+            // E111 0000  Date and time of battery change
+            if ((vif == 0x6D) ||
+                ((record->drh.vib.vif == 0xFD) && (vife == 0x30)) ||
+                ((record->drh.vib.vif == 0xFD) && (vife == 0x70)))
+            {
+                mbus_data_tm_decode(&time, record->data, 4);
+                if ((*value_out_str = (char *)malloc(21)) == NULL)
+                {
+                    MBUS_ERROR("Unable to allocate memory");
+                    return -1;
                 }
-                result = -2;
-                MBUS_ERROR("Non ASCII variable length not implemented yet\n");
+                *value_out_str_size = snprintf(*value_out_str, 21, "%04d-%02d-%02dT%02d:%02d:%02dZ",
+                                               (time.tm_year + 1900),
+                                               (time.tm_mon + 1),
+                                               time.tm_mday,
+                                               time.tm_hour,
+                                               time.tm_min,
+                                               time.tm_sec);
+                result = 0;
+            }
+            else // normal integer
+            {
+                result = mbus_data_int_decode(record->data, 4, &value_out_int);
+                *value_out_real = value_out_int;
+            }
+            break;
+
+        case 0x05: /* 32b real */
+            *value_out_real = mbus_data_float_decode(record->data);
+            result = 0;
+            break;
+
+        case 0x06: /* 6 byte integer (48 bit) */
+            // E110 1101  Time Point (date/time)
+            // E011 0000  Start (date/time) of tariff
+            // E111 0000  Date and time of battery change
+            if ((vif == 0x6D) ||
+                ((record->drh.vib.vif == 0xFD) && (vife == 0x30)) ||
+                ((record->drh.vib.vif == 0xFD) && (vife == 0x70)))
+            {
+                mbus_data_tm_decode(&time, record->data, 6);
+                if ((*value_out_str = (char *)malloc(21)) == NULL)
+                {
+                    MBUS_ERROR("Unable to allocate memory");
+                    return -1;
+                }
+                *value_out_str_size = snprintf(*value_out_str, 21, "%04d-%02d-%02dT%02d:%02d:%02dZ",
+                                               (time.tm_year + 1900),
+                                               (time.tm_mon + 1),
+                                               time.tm_mday,
+                                               time.tm_hour,
+                                               time.tm_min,
+                                               time.tm_sec);
+                result = 0;
+            }
+            else // normal integer
+            {
+                result = mbus_data_long_long_decode(record->data, 6, &value_out_long_long);
+                *value_out_real = value_out_long_long;
+            }
+            break;
+
+        case 0x07: /* 8 byte integer (64 bit) */
+            result = mbus_data_long_long_decode(record->data, 8, &value_out_long_long);
+            *value_out_real = value_out_long_long;
+            break;
+
+        case 0x09: /* 2 digit BCD (8 bit) */
+            *value_out_real = mbus_data_bcd_decode(record->data, 1);
+            result = 0;
+            break;
+
+        case 0x0A: /* 4 digit BCD (16 bit) */
+            *value_out_real = mbus_data_bcd_decode(record->data, 2);
+            result = 0;
+            break;
+
+        case 0x0B: /* 6 digit BCD (24 bit) */
+            *value_out_real = mbus_data_bcd_decode(record->data, 3);
+            result = 0;
+            break;
+
+        case 0x0C: /* 8 digit BCD (32 bit) */
+            *value_out_real = mbus_data_bcd_decode(record->data, 4);
+            result = 0;
+            break;
+
+        case 0x0D: /* variable length */
+        {
+            if (record->data_len <= 0xBF)
+            {
+                if ((*value_out_str = (char *)malloc(record->data_len + 1)) == NULL)
+                {
+                    MBUS_ERROR("Unable to allocate memory");
+                    return -1;
+                }
+                *value_out_str_size = record->data_len;
+                mbus_data_str_decode((unsigned char *)(*value_out_str), record->data, record->data_len);
+                result = 0;
                 break;
             }
+            result = -2;
+            MBUS_ERROR("Non ASCII variable length not implemented yet\n");
+            break;
+        }
 
-            case 0x0E: /* 12 digit BCD (40 bit) */
-                *value_out_real = mbus_data_bcd_decode(record->data, 6);
-                result = 0;
-                break;
+        case 0x0E: /* 12 digit BCD (40 bit) */
+            *value_out_real = mbus_data_bcd_decode(record->data, 6);
+            result = 0;
+            break;
 
-            case 0x0F: /* Special functions */
-                if ((*value_out_str = (char*) malloc(3 * record->data_len + 1)) == NULL)
-                {
-                    MBUS_ERROR("Unable to allocate memory");
-                    return -1;
-                }
-                *value_out_str_size = 3 * record->data_len;
-                mbus_data_bin_decode((unsigned char*)(*value_out_str), record->data, record->data_len, (3 * record->data_len + 1));
-                result = 0;
-                break;
+        case 0x0F: /* Special functions */
+            if ((*value_out_str = (char *)malloc(3 * record->data_len + 1)) == NULL)
+            {
+                MBUS_ERROR("Unable to allocate memory");
+                return -1;
+            }
+            *value_out_str_size = 3 * record->data_len;
+            mbus_data_bin_decode((unsigned char *)(*value_out_str), record->data, record->data_len, (3 * record->data_len + 1));
+            result = 0;
+            break;
 
-            default:
-                result = -2;
-                MBUS_ERROR("Unknown DIF (0x%.2x)", record->drh.dib.dif);
-                break;
+        default:
+            result = -2;
+            MBUS_ERROR("Unknown DIF (0x%.2x)", record->drh.dib.dif);
+            break;
         }
     }
     else
@@ -1030,8 +1021,7 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
     return result;
 }
 
-int
-mbus_vif_unit_normalize(int vif, double value, char **unit_out, double *value_out, char **quantity_out)
+int mbus_vif_unit_normalize(int vif, double value, char **unit_out, double *value_out, char **quantity_out)
 {
     int i;
     unsigned newVif = vif & 0xF7F; /* clear extension bit */
@@ -1044,7 +1034,7 @@ mbus_vif_unit_normalize(int vif, double value, char **unit_out, double *value_ou
         return -1;
     }
 
-    for(i=0; vif_table[i].vif < 0xfff; ++i)
+    for (i = 0; vif_table[i].vif < 0xfff; ++i)
     {
         if (vif_table[i].vif == newVif)
         {
@@ -1062,9 +1052,7 @@ mbus_vif_unit_normalize(int vif, double value, char **unit_out, double *value_ou
     return -1;
 }
 
-
-int
-mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **unit_out, double *value_out, char **quantity_out)
+int mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **unit_out, double *value_out, char **quantity_out)
 {
     int code;
 
@@ -1090,7 +1078,9 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
             MBUS_ERROR("%s: Error mbus_vif_unit_normalize\n", __PRETTY_FUNCTION__);
             return -1;
         }
-    } else {
+    }
+    else
+    {
         if (vib->vif == 0xFB) /* second type of VIF extention: see table 8.4.4 b */
         {
             if (vib->nvife == 0)
@@ -1127,45 +1117,44 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
 
     if ((vib->vif & MBUS_DIB_VIF_EXTENSION_BIT) &&
         (vib->vif != 0xFD) &&
-        (vib->vif != 0xFB))                       /* codes for VIF extention: see table 8.4.5 */
+        (vib->vif != 0xFB)) /* codes for VIF extention: see table 8.4.5 */
     {
         code = (vib->vife[0]) & 0x7f;
         switch (code)
         {
-            case 0x70:
-            case 0x71:
-            case 0x72:
-            case 0x73:
-            case 0x74:
-            case 0x75:
-            case 0x76:
-            case 0x77: /* Multiplicative correction factor: 10^nnn-6 */
-                *value_out *= pow(10.0, (vib->vife[0] & 0x07) - 6);
-                break;
+        case 0x70:
+        case 0x71:
+        case 0x72:
+        case 0x73:
+        case 0x74:
+        case 0x75:
+        case 0x76:
+        case 0x77: /* Multiplicative correction factor: 10^nnn-6 */
+            *value_out *= pow(10.0, (vib->vife[0] & 0x07) - 6);
+            break;
 
-            case 0x78:
-            case 0x79:
-            case 0x7A:
-            case 0x7B: /* Additive correction constant: 10^nn-3 unit of VIF (offset) */
-                *value_out += pow(10.0, (vib->vife[0] & 0x03) - 3);
-                break;
+        case 0x78:
+        case 0x79:
+        case 0x7A:
+        case 0x7B: /* Additive correction constant: 10^nn-3 unit of VIF (offset) */
+            *value_out += pow(10.0, (vib->vife[0] & 0x03) - 3);
+            break;
 
-            case 0x7D: /* Multiplicative correction factor: 10^3 */
-                *value_out *= 1000.0;
-                break;
+        case 0x7D: /* Multiplicative correction factor: 10^3 */
+            *value_out *= 1000.0;
+            break;
         }
     }
 
     return 0;
 }
 
-
 mbus_record *
 mbus_record_new()
 {
-    mbus_record * record;
+    mbus_record *record;
 
-    if (!(record = (mbus_record *) malloc(sizeof(mbus_record))))
+    if (!(record = (mbus_record *)malloc(sizeof(mbus_record))))
     {
         MBUS_ERROR("%s: memory allocation error\n", __PRETTY_FUNCTION__);
         return NULL;
@@ -1182,13 +1171,11 @@ mbus_record_new()
     return record;
 }
 
-
-void
-mbus_record_free(mbus_record * rec)
+void mbus_record_free(mbus_record *rec)
 {
     if (rec)
     {
-        if (! rec->is_numeric)
+        if (!rec->is_numeric)
         {
             free((rec->value).str_val.value);
             (rec->value).str_val.value = NULL;
@@ -1215,12 +1202,11 @@ mbus_record_free(mbus_record * rec)
     }
 }
 
-
 mbus_record *
 mbus_parse_fixed_record(char status_byte, char medium_unit, unsigned char *data)
 {
     long value = 0;
-    mbus_record * record = NULL;
+    mbus_record *record = NULL;
 
     if (!(record = mbus_record_new()))
     {
@@ -1229,7 +1215,7 @@ mbus_parse_fixed_record(char status_byte, char medium_unit, unsigned char *data)
     }
 
     /* shared/static memory - get own copy */
-    record->function_medium = strdup(mbus_data_fixed_function((int)status_byte));  /* stored / actual */
+    record->function_medium = strdup(mbus_data_fixed_function((int)status_byte)); /* stored / actual */
 
     if (record->function_medium == NULL)
     {
@@ -1259,15 +1245,14 @@ mbus_parse_fixed_record(char status_byte, char medium_unit, unsigned char *data)
     return record;
 }
 
-
 mbus_record *
 mbus_parse_variable_record(mbus_data_record *data)
 {
-    mbus_record * record = NULL;
-    double value_out_real    = 0.0;  /**< raw value */
-    char * value_out_str     = NULL;
-    int    value_out_str_size = 0;
-    double real_val         = 0.0;  /**< normalized value */
+    mbus_record *record = NULL;
+    double value_out_real = 0.0; /**< raw value */
+    char *value_out_str = NULL;
+    int value_out_str_size = 0;
+    double real_val = 0.0; /**< normalized value */
 
     if (data == NULL)
     {
@@ -1388,7 +1373,7 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
 
     if (data)
     {
-        buff = (char*) malloc(buff_size);
+        buff = (char *)malloc(buff_size);
 
         if (buff == NULL)
             return NULL;
@@ -1406,7 +1391,7 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
             if ((buff_size - len) < 1024)
             {
                 buff_size *= 2;
-                new_buff = (char*) realloc(buff,buff_size);
+                new_buff = (char *)realloc(buff, buff_size);
 
                 if (new_buff == NULL)
                 {
@@ -1439,7 +1424,6 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
 
                 mbus_str_xml_encode(str_encoded, norm_record->quantity, sizeof(str_encoded));
                 len += snprintf(&buff[len], buff_size - len, "        <Quantity>%s</Quantity>\n", str_encoded);
-
 
                 if (norm_record->is_numeric)
                 {
@@ -1497,7 +1481,7 @@ mbus_context_serial(const char *device)
     mbus_serial_data *serial_data;
     char error_str[128];
 
-    if ((handle = (mbus_handle *) malloc(sizeof(mbus_handle))) == NULL)
+    if ((handle = (mbus_handle *)malloc(sizeof(mbus_handle))) == NULL)
     {
         MBUS_ERROR("%s: Failed to allocate handle.\n", __PRETTY_FUNCTION__);
         return NULL;
@@ -1525,6 +1509,7 @@ mbus_context_serial(const char *device)
     handle->send_event = NULL;
     handle->scan_progress = NULL;
     handle->found_event = NULL;
+    handle->custom_timeout = 4;
 
     if ((serial_data->device = strdup(device)) == NULL)
     {
@@ -1545,7 +1530,7 @@ mbus_context_tcp(const char *host, uint16_t port)
     mbus_tcp_data *tcp_data;
     char error_str[128];
 
-    if ((handle = (mbus_handle *) malloc(sizeof(mbus_handle))) == NULL)
+    if ((handle = (mbus_handle *)malloc(sizeof(mbus_handle))) == NULL)
     {
         MBUS_ERROR("%s: Failed to allocate handle.\n", __PRETTY_FUNCTION__);
         return NULL;
@@ -1587,8 +1572,7 @@ mbus_context_tcp(const char *host, uint16_t port)
     return handle;
 }
 
-void
-mbus_context_free(mbus_handle * handle)
+void mbus_context_free(mbus_handle *handle)
 {
     if (handle)
     {
@@ -1597,8 +1581,7 @@ mbus_context_free(mbus_handle * handle)
     }
 }
 
-int
-mbus_connect(mbus_handle * handle)
+int mbus_connect(mbus_handle *handle)
 {
     if (handle == NULL)
     {
@@ -1609,8 +1592,7 @@ mbus_connect(mbus_handle * handle)
     return handle->open(handle);
 }
 
-int
-mbus_disconnect(mbus_handle * handle)
+int mbus_disconnect(mbus_handle *handle)
 {
     if (handle == NULL)
     {
@@ -1621,8 +1603,7 @@ mbus_disconnect(mbus_handle * handle)
     return handle->close(handle);
 }
 
-int
-mbus_context_set_option(mbus_handle * handle, mbus_context_option option, long value)
+int mbus_context_set_option(mbus_handle *handle, mbus_context_option option, long value)
 {
     if (handle == NULL)
     {
@@ -1632,36 +1613,42 @@ mbus_context_set_option(mbus_handle * handle, mbus_context_option option, long v
 
     switch (option)
     {
-        case MBUS_OPTION_MAX_DATA_RETRY:
-            if ((value >= 0) && (value <= 9))
-            {
-                handle->max_data_retry = value;
-                return 0;
-            }
-            break;
-        case MBUS_OPTION_MAX_SEARCH_RETRY:
-            if ((value >= 0) && (value <= 9))
-            {
-                handle->max_search_retry = value;
-                return 0;
-            }
-            break;
-        case MBUS_OPTION_PURGE_FIRST_FRAME:
-            if ((value == MBUS_FRAME_PURGE_NONE) ||
-                (value == MBUS_FRAME_PURGE_M2S)  ||
-                (value == MBUS_FRAME_PURGE_S2M))
-            {
-                handle->purge_first_frame = value;
-                return 0;
-            }
-            break;
+    case MBUS_OPTION_MAX_DATA_RETRY:
+        if ((value >= 0) && (value <= 9))
+        {
+            handle->max_data_retry = value;
+            return 0;
+        }
+        break;
+    case MBUS_OPTION_MAX_SEARCH_RETRY:
+        if ((value >= 0) && (value <= 9))
+        {
+            handle->max_search_retry = value;
+            return 0;
+        }
+        break;
+    case MBUS_OPTION_PURGE_FIRST_FRAME:
+        if ((value == MBUS_FRAME_PURGE_NONE) ||
+            (value == MBUS_FRAME_PURGE_M2S) ||
+            (value == MBUS_FRAME_PURGE_S2M))
+        {
+            handle->purge_first_frame = value;
+            return 0;
+        }
+        break;
+    case MBUS_OPTION_CUSTOM_TIMEOUT:
+        if ((value >= 0) && (value <= 60))
+        {
+            handle->custom_timeout = value;
+            return 0;
+        }
+        break;
     }
 
     return -1; // unable to set option
 }
 
-int
-mbus_recv_frame(mbus_handle * handle, mbus_frame *frame)
+int mbus_recv_frame(mbus_handle *handle, mbus_frame *frame)
 {
     int result = 0;
 
@@ -1681,14 +1668,14 @@ mbus_recv_frame(mbus_handle * handle, mbus_frame *frame)
 
     switch (mbus_frame_direction(frame))
     {
-        case MBUS_CONTROL_MASK_DIR_M2S:
-            if (handle->purge_first_frame == MBUS_FRAME_PURGE_M2S)
-                result = handle->recv(handle, frame);  // purge echo and retry
-            break;
-        case MBUS_CONTROL_MASK_DIR_S2M:
-            if (handle->purge_first_frame == MBUS_FRAME_PURGE_S2M)
-                result = handle->recv(handle, frame);  // purge echo and retry
-            break;
+    case MBUS_CONTROL_MASK_DIR_M2S:
+        if (handle->purge_first_frame == MBUS_FRAME_PURGE_M2S)
+            result = handle->recv(handle, frame); // purge echo and retry
+        break;
+    case MBUS_CONTROL_MASK_DIR_S2M:
+        if (handle->purge_first_frame == MBUS_FRAME_PURGE_S2M)
+            result = handle->recv(handle, frame); // purge echo and retry
+        break;
     }
 
     if (frame != NULL)
@@ -1721,8 +1708,7 @@ int mbus_purge_frames(mbus_handle *handle)
     return received;
 }
 
-int
-mbus_send_frame(mbus_handle * handle, mbus_frame *frame)
+int mbus_send_frame(mbus_handle *handle, mbus_frame *frame)
 {
     if (handle == NULL)
     {
@@ -1738,14 +1724,13 @@ mbus_send_frame(mbus_handle * handle, mbus_frame *frame)
 // a slave to be the active secondary addressed slave if the secondary address
 // matches that of the slave.
 //------------------------------------------------------------------------------
-int
-mbus_send_select_frame(mbus_handle * handle, const char *secondary_addr_str)
+int mbus_send_select_frame(mbus_handle *handle, const char *secondary_addr_str)
 {
     mbus_frame *frame;
 
     frame = mbus_frame_new(MBUS_FRAME_TYPE_LONG);
 
-    if (mbus_frame_select_secondary_pack(frame, (char*) secondary_addr_str) == -1)
+    if (mbus_frame_select_secondary_pack(frame, (char *)secondary_addr_str) == -1)
     {
         MBUS_ERROR("%s: Failed to pack selection mbus frame.\n", __PRETTY_FUNCTION__);
         mbus_frame_free(frame);
@@ -1767,8 +1752,7 @@ mbus_send_select_frame(mbus_handle * handle, const char *secondary_addr_str)
 // send a user data packet from master to slave: the packet let the
 // adressed slave(s) switch to the given baudrate
 //------------------------------------------------------------------------------
-int
-mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, long baudrate)
+int mbus_send_switch_baudrate_frame(mbus_handle *handle, int address, long baudrate)
 {
     int retval = 0;
     int control_information = 0;
@@ -1782,31 +1766,31 @@ mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, long baudrate
 
     switch (baudrate)
     {
-      case 300:
+    case 300:
         control_information = MBUS_CONTROL_INFO_SET_BAUDRATE_300;
         break;
-      case 600:
+    case 600:
         control_information = MBUS_CONTROL_INFO_SET_BAUDRATE_600;
         break;
-      case 1200:
+    case 1200:
         control_information = MBUS_CONTROL_INFO_SET_BAUDRATE_1200;
         break;
-      case 2400:
+    case 2400:
         control_information = MBUS_CONTROL_INFO_SET_BAUDRATE_2400;
         break;
-      case 4800:
+    case 4800:
         control_information = MBUS_CONTROL_INFO_SET_BAUDRATE_4800;
         break;
-      case 9600:
+    case 9600:
         control_information = MBUS_CONTROL_INFO_SET_BAUDRATE_9600;
         break;
-      case 19200:
+    case 19200:
         control_information = MBUS_CONTROL_INFO_SET_BAUDRATE_19200;
         break;
-      case 38400:
+    case 38400:
         control_information = MBUS_CONTROL_INFO_SET_BAUDRATE_38400;
         break;
-      default:
+    default:
         MBUS_ERROR("%s: invalid baudrate %ld\n", __PRETTY_FUNCTION__, baudrate);
         return -1;
     }
@@ -1837,8 +1821,7 @@ mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, long baudrate
 // send a user data packet from master to slave: the packet resets
 // the application layer in the slave
 //------------------------------------------------------------------------------
-int
-mbus_send_application_reset_frame(mbus_handle * handle, int address, int subcode)
+int mbus_send_application_reset_frame(mbus_handle *handle, int address, int subcode)
 {
     int retval = 0;
     mbus_frame *frame;
@@ -1887,12 +1870,10 @@ mbus_send_application_reset_frame(mbus_handle * handle, int address, int subcode
     return retval;
 }
 
-
 //------------------------------------------------------------------------------
 // send a request packet to from master to slave
 //------------------------------------------------------------------------------
-int
-mbus_send_request_frame(mbus_handle * handle, int address)
+int mbus_send_request_frame(mbus_handle *handle, int address)
 {
     int retval = 0;
     mbus_frame *frame;
@@ -1927,8 +1908,7 @@ mbus_send_request_frame(mbus_handle * handle, int address)
 //------------------------------------------------------------------------------
 // send a user data packet from master to slave
 //------------------------------------------------------------------------------
-int
-mbus_send_user_data_frame(mbus_handle * handle, int address, const unsigned char *data, size_t data_size)
+int mbus_send_user_data_frame(mbus_handle *handle, int address, const unsigned char *data, size_t data_size)
 {
     int retval = 0;
     mbus_frame *frame;
@@ -1978,11 +1958,10 @@ mbus_send_user_data_frame(mbus_handle * handle, int address, const unsigned char
 //------------------------------------------------------------------------------
 // send a request from master to slave in order to change the primary address
 //------------------------------------------------------------------------------
-int
-mbus_set_primary_address(mbus_handle * handle, int old_address, int new_address)
+int mbus_set_primary_address(mbus_handle *handle, int old_address, int new_address)
 {
     /* primary address record, see chapter 6.4.2 */
-    unsigned char buffer[3] = { 0x01, 0x7A, new_address };
+    unsigned char buffer[3] = {0x01, 0x7A, new_address};
 
     if (mbus_is_primary_address(new_address) == 0)
     {
@@ -1992,11 +1971,11 @@ mbus_set_primary_address(mbus_handle * handle, int old_address, int new_address)
 
     switch (new_address)
     {
-        case MBUS_ADDRESS_NETWORK_LAYER:
-        case MBUS_ADDRESS_BROADCAST_REPLY:
-        case MBUS_ADDRESS_BROADCAST_NOREPLY:
-            MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, new_address);
-            return -1;
+    case MBUS_ADDRESS_NETWORK_LAYER:
+    case MBUS_ADDRESS_BROADCAST_REPLY:
+    case MBUS_ADDRESS_BROADCAST_NOREPLY:
+        MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, new_address);
+        return -1;
     }
 
     return mbus_send_user_data_frame(handle, old_address, buffer, sizeof(buffer));
@@ -2006,8 +1985,7 @@ mbus_set_primary_address(mbus_handle * handle, int old_address, int new_address)
 // send a request from master to slave and collect the reply (replies)
 // from the slave.
 //------------------------------------------------------------------------------
-int
-mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int max_frames)
+int mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int max_frames)
 {
     int retval = 0, more_frames = 1, retry = 0;
     mbus_frame_data reply_data;
@@ -2036,7 +2014,7 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
 
     frame->control = MBUS_CONTROL_MASK_REQ_UD2 |
                      MBUS_CONTROL_MASK_DIR_M2S |
-                     MBUS_CONTROL_MASK_FCV     |
+                     MBUS_CONTROL_MASK_FCV |
                      MBUS_CONTROL_MASK_FCB;
 
     frame->address = address;
@@ -2167,12 +2145,10 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
     return retval;
 }
 
-
 //------------------------------------------------------------------------------
 // send a data request packet to from master to slave and optional purge response
 //------------------------------------------------------------------------------
-int
-mbus_send_ping_frame(mbus_handle *handle, int address, char purge_response)
+int mbus_send_ping_frame(mbus_handle *handle, int address, char purge_response)
 {
     int retval = 0;
     mbus_frame *frame;
@@ -2191,8 +2167,8 @@ mbus_send_ping_frame(mbus_handle *handle, int address, char purge_response)
         return -1;
     }
 
-    frame->control  = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
-    frame->address  = address;
+    frame->control = MBUS_CONTROL_MASK_SND_NKE | MBUS_CONTROL_MASK_DIR_M2S;
+    frame->address = address;
 
     if (mbus_send_frame(handle, frame) == -1)
     {
@@ -2213,8 +2189,7 @@ mbus_send_ping_frame(mbus_handle *handle, int address, char purge_response)
 //------------------------------------------------------------------------------
 // Select a device using the supplied secondary address  (mask).
 //------------------------------------------------------------------------------
-int
-mbus_select_secondary_address(mbus_handle * handle, const char *mask)
+int mbus_select_secondary_address(mbus_handle *handle, const char *mask)
 {
     int ret;
     mbus_frame reply;
@@ -2269,8 +2244,7 @@ mbus_select_secondary_address(mbus_handle * handle, const char *mask)
 // Probe for the presence of a device(s) using the supplied secondary address
 // (mask).
 //------------------------------------------------------------------------------
-int
-mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matching_addr)
+int mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matching_addr)
 {
     int ret, i;
     mbus_frame reply;
@@ -2334,7 +2308,7 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
 
                 if (handle->found_event)
                 {
-                    handle->found_event(handle,&reply);
+                    handle->found_event(handle, &reply);
                 }
 
                 return MBUS_PROBE_SINGLE;
@@ -2356,8 +2330,7 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
     return ret;
 }
 
-
-int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * reply)
+int mbus_read_slave(mbus_handle *handle, mbus_address *address, mbus_frame *reply)
 {
     if (handle == NULL || address == NULL)
     {
@@ -2432,8 +2405,7 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
 //------------------------------------------------------------------------------
 // Iterate over all address masks according to the M-Bus probe algorithm.
 //------------------------------------------------------------------------------
-int
-mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
+int mbus_scan_2nd_address_range(mbus_handle *handle, int pos, char *addr_mask)
 {
     int i, i_start, i_end, probe_ret;
     char *mask, matching_mask[17];
@@ -2465,20 +2437,20 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
     {
         // mask[pos] is a wildcard -> enumerate all 0..9 at this position
         i_start = 0;
-        i_end   = 9;
+        i_end = 9;
     }
     else
     {
         if (pos < 15)
         {
             // mask[pos] is not a wildcard -> don't iterate, recursively check pos+1
-            mbus_scan_2nd_address_range(handle, pos+1, mask);
+            mbus_scan_2nd_address_range(handle, pos + 1, mask);
         }
         else
         {
             // .. except if we're at the last pos (==15) and this isn't a wildcard we still need to send the probe
             i_start = (int)(mask[pos] - '0');
-            i_end   = (int)(mask[pos] - '0');
+            i_end = (int)(mask[pos] - '0');
         }
     }
 
@@ -2487,10 +2459,10 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
     {
         for (i = i_start; i <= i_end; i++)
         {
-            mask[pos] = '0'+i;
+            mask[pos] = '0' + i;
 
             if (handle->scan_progress)
-                handle->scan_progress(handle,mask);
+                handle->scan_progress(handle, mask);
 
             probe_ret = mbus_probe_secondary_address(handle, mask, matching_mask);
 
@@ -2504,11 +2476,11 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
             else if (probe_ret == MBUS_PROBE_COLLISION)
             {
                 // collision, more than one device matching, restrict the search mask further
-                mbus_scan_2nd_address_range(handle, pos+1, mask);
+                mbus_scan_2nd_address_range(handle, pos + 1, mask);
             }
             else if (probe_ret == MBUS_PROBE_NOTHING)
             {
-                 // nothing... move on to next address mask
+                // nothing... move on to next address mask
             }
             else // MBUS_PROBE_ERROR
             {
@@ -2528,7 +2500,7 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
 // - whitespaces will be ignored
 //------------------------------------------------------------------------------
 size_t
-mbus_hex2bin(unsigned char * dst, size_t dst_len, const unsigned char * src, size_t src_len)
+mbus_hex2bin(unsigned char *dst, size_t dst_len, const unsigned char *src, size_t src_len)
 {
     size_t i, result = 0;
     unsigned long val;
@@ -2542,7 +2514,7 @@ mbus_hex2bin(unsigned char * dst, size_t dst_len, const unsigned char * src, siz
     memset(buf, 0, sizeof(buf));
     memset(dst, 0, dst_len);
 
-    for (i = 0; i+1 < src_len; i++)
+    for (i = 0; i + 1 < src_len; i++)
     {
         // ignore whitespace
         if (isspace(src[i]))
@@ -2563,7 +2535,7 @@ mbus_hex2bin(unsigned char * dst, size_t dst_len, const unsigned char * src, siz
         if (result >= dst_len)
             break;
 
-        dst[result++] = (unsigned char) val;
+        dst[result++] = (unsigned char)val;
     }
 
     return result;

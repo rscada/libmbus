@@ -28,7 +28,7 @@
 
 // FIXME: PROMENA ZA CEKANJE PREKO VPN-a
 // TREBA DA SE DODA DA MOZE DA SE PODESAVA AKO JE POTREBNO
-static int tcp_timeout_sec = 17;
+static int tcp_timeout_sec = 4;
 static int tcp_timeout_usec = 0;
 
 //------------------------------------------------------------------------------
@@ -92,8 +92,10 @@ int mbus_tcp_connect(mbus_handle *handle)
     }
 
     // Set a timeout
-    time_out.tv_sec = tcp_timeout_sec;   // seconds
-    time_out.tv_usec = tcp_timeout_usec; // microseconds
+    // time_out.tv_sec = tcp_timeout_sec;   // seconds
+    // time_out.tv_usec = tcp_timeout_usec; // microseconds
+    time_out.tv_sec = handle->custom_timeout; // seconds
+    time_out.tv_usec = tcp_timeout_usec;      // microseconds
     setsockopt(handle->fd, SOL_SOCKET, SO_SNDTIMEO, &time_out, sizeof(time_out));
     setsockopt(handle->fd, SOL_SOCKET, SO_RCVTIMEO, &time_out, sizeof(time_out));
 

@@ -18,8 +18,7 @@ static int debug = 0;
 //------------------------------------------------------------------------------
 // Execution starts here:
 //------------------------------------------------------------------------------
-int
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
     mbus_frame reply;
     mbus_frame_data reply_data;
@@ -28,6 +27,7 @@ main(int argc, char **argv)
     char *host, *addr_str, matching_addr[16], *xml_result;
     int address;
     long port;
+    int timeout_ud2 = 17; // default timeout in seconds for data request function, later it will be taken from command arrgs.
 
     memset((void *)&reply, 0, sizeof(mbus_frame));
     memset((void *)&reply_data, 0, sizeof(mbus_frame_data));
@@ -61,10 +61,16 @@ main(int argc, char **argv)
 
     if ((handle = mbus_context_tcp(host, port)) == NULL)
     {
-        fprintf(stderr, "Could not initialize M-Bus context: %s\n",  mbus_error_str());
+        fprintf(stderr, "Could not initialize M-Bus context: %s\n", mbus_error_str());
         return 1;
     }
-    
+
+    if (mbus_context_set_option(handle, MBUS_OPTION_CUSTOM_TIMEOUT, timeout_ud2) == -1)
+    {
+        fprintf(stderr, "Failed to set custom timeout\n");
+        return 1;
+    }
+
     if (debug)
     {
         mbus_register_send_event(handle, &mbus_dump_send_event);
@@ -159,6 +165,3 @@ main(int argc, char **argv)
     mbus_context_free(handle);
     return 0;
 }
-
-
-

@@ -31,7 +31,7 @@ int ping_address(mbus_handle *handle, mbus_frame *reply, int address)
 
         if (mbus_send_ping_frame(handle, address, 0) == -1)
         {
-            fprintf(stderr,"Scan failed. Could not send ping frame: %s\n", mbus_error_str());
+            fprintf(stderr, "Scan failed. Could not send ping frame: %s\n", mbus_error_str());
             return MBUS_RECV_RESULT_ERROR;
         }
 
@@ -49,14 +49,14 @@ int ping_address(mbus_handle *handle, mbus_frame *reply, int address)
 //------------------------------------------------------------------------------
 // Primary addressing scanning of mbus devices.
 //------------------------------------------------------------------------------
-int
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
     mbus_handle *handle;
     char *host;
     int address, retries = 0;
     long port;
     int ret;
+    int timeout_for_scan = 5; // default timeout in seconds for scan function, later it will be taken from command arrgs.
 
     if (argc == 3)
     {
@@ -84,7 +84,7 @@ main(int argc, char **argv)
     }
     else
     {
-        fprintf(stderr,"usage: %s [-d] [-r RETRIES] host port\n", argv[0]);
+        fprintf(stderr, "usage: %s [-d] [-r RETRIES] host port\n", argv[0]);
         return 0;
     }
 
@@ -96,25 +96,31 @@ main(int argc, char **argv)
 
     if ((handle = mbus_context_tcp(host, port)) == NULL)
     {
-        fprintf(stderr,"Scan failed: Could not initialize M-Bus context: %s\n",  mbus_error_str());
+        fprintf(stderr, "Scan failed: Could not initialize M-Bus context: %s\n", mbus_error_str());
         return 1;
     }
-    
+
     if (debug)
     {
         mbus_register_send_event(handle, &mbus_dump_send_event);
         mbus_register_recv_event(handle, &mbus_dump_recv_event);
     }
 
+    if (mbus_context_set_option(handle, MBUS_OPTION_CUSTOM_TIMEOUT, timeout_for_scan) == -1)
+    {
+        fprintf(stderr, "Failed to set custom timeout\n");
+        return 1;
+    }
+
     if (mbus_connect(handle) == -1)
     {
-        fprintf(stderr,"Scan failed: Could not setup connection to M-bus gateway: %s\n", mbus_error_str());
+        fprintf(stderr, "Scan failed: Could not setup connection to M-bus gateway: %s\n", mbus_error_str());
         return 1;
     }
 
     if (mbus_context_set_option(handle, MBUS_OPTION_MAX_SEARCH_RETRY, retries) == -1)
     {
-        fprintf(stderr,"Failed to set retry count\n");
+        fprintf(stderr, "Failed to set retry count\n");
         return 1;
     }
 
@@ -157,4 +163,3 @@ main(int argc, char **argv)
     mbus_context_free(handle);
     return 0;
 }
-
