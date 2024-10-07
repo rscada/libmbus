@@ -56,7 +56,7 @@ int main(int argc, char **argv)
     int address, retries = 0;
     long port;
     int ret;
-    int timeout_for_scan = 5; // default timeout in seconds for scan function, later it will be taken from command arrgs.
+    int timeout_for_scan = 4; // default timeout in seconds for scan function, later it will be taken from command arrgs.
 
     if (argc == 3)
     {

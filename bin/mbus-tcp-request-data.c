@@ -27,7 +27,7 @@ int main(int argc, char **argv)
     char *host, *addr_str, matching_addr[16], *xml_result;
     int address;
     long port;
-    int timeout_ud2 = 17; // default timeout in seconds for data request function, later it will be taken from command arrgs.
+    int timeout_ud2 = 10; // default timeout in seconds for data request function, later it will be taken from command arrgs.
 
     memset((void *)&reply, 0, sizeof(mbus_frame));
     memset((void *)&reply_data, 0, sizeof(mbus_frame_data));
