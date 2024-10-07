@@ -46,10 +46,26 @@ int main(int argc, char **argv)
         addr_str = argv[4];
         debug = 1;
     }
+    else if (argc == 6 && strcmp(argv[1], "-t") == 0)
+    {
+        timeout_ud2 = atol(argv[2]);
+        host = argv[3];
+        port = atol(argv[4]);
+        addr_str = argv[5];
+    }
+    else if (argc == 7 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-t") == 0)
+    {
+        debug = 1;
+        timeout_ud2 = atol(argv[3]);
+        host = argv[4];
+        port = atol(argv[5]);
+        addr_str = argv[6];
+    }
     else
     {
-        fprintf(stderr, "usage: %s [-d] host port mbus-address\n", argv[0]);
-        fprintf(stderr, "    optional flag -d for debug printout\n");
+        fprintf(stderr, "usage: %s [-d] [-t TIMEOUT] host port mbus-address\n", argv[0]);
+        fprintf(stderr, "\toptional flag -d for debug printout\n");
+        fprintf(stderr, "\toptional flag -t for setting custom timeout value\n");
         return 0;
     }
 

@@ -75,6 +75,19 @@ int main(int argc, char **argv)
         host = argv[3];
         port = atol(argv[4]);
     }
+    else if (argc == 5 && strcmp(argv[1], "-t") == 0)
+    {
+        timeout_for_scan = atoi(argv[2]);
+        host = argv[3];
+        port = atol(argv[4]);
+    }
+    else if (argc == 6 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-t") == 0)
+    {
+        debug = 1;
+        timeout_for_scan = atoi(argv[3]);
+        host = argv[4];
+        port = atol(argv[5]);
+    }
     else if (argc == 6 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-r") == 0)
     {
         debug = 1;
@@ -82,9 +95,24 @@ int main(int argc, char **argv)
         host = argv[4];
         port = atol(argv[5]);
     }
+    else if (argc == 7 && strcmp(argv[1], "-r") == 0 && strcmp(argv[3], "-t") == 0)
+    {
+        retries = atoi(argv[3]);
+        timeout_for_scan = atoi(argv[4]);
+        host = argv[5];
+        port = atol(argv[6]);
+    }
+    else if (argc == 8 && strcmp(argv[1], "-d") == 0 && strcmp(argv[2], "-r") == 0 && strcmp(argv[4], "-t") == 0)
+    {
+        debug = 1;
+        retries = atoi(argv[3]);
+        timeout_for_scan = atoi(argv[5]);
+        host = argv[6];
+        port = atol(argv[7]);
+    }
     else
     {
-        fprintf(stderr, "usage: %s [-d] [-r RETRIES] host port\n", argv[0]);
+        fprintf(stderr, "usage: %s [-d] [-r RETRIES] [-t TIMEOUT] host port\n", argv[0]);
         return 0;
     }
 
