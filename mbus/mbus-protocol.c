@@ -805,6 +805,7 @@ mbus_data_bin_decode(unsigned char *dst, const unsigned char *src, size_t len, s
 void
 mbus_data_tm_decode(struct tm *t, unsigned char *t_data, size_t t_data_size)
 {
+    int year, hundred_year;
     if (t == NULL)
     {
         return;
@@ -844,8 +845,14 @@ mbus_data_tm_decode(struct tm *t, unsigned char *t_data, size_t t_data_size)
                 t->tm_hour  = t_data[1] & 0x1F;
                 t->tm_mday  = t_data[2] & 0x1F;
                 t->tm_mon   = (t_data[3] & 0x0F) - 1;
-                t->tm_year  = 100 + (((t_data[2] & 0xE0) >> 5) |
+                year = (((t_data[2] & 0xE0) >> 5) |
                               ((t_data[3] & 0xF0) >> 1));
+                hundred_year = (t_data[1] & 0x60) >> 5;
+                if (hundred_year == 0 && year <= 80)  //  compatibility with old meters with a circular two digit date
+                {
+                    hundred_year = 1;
+                }
+                t->tm_year  = 100 * hundred_year + year;
                 t->tm_isdst = (t_data[1] & 0x80) ? 1 : 0;  // day saving time
             }
         }
