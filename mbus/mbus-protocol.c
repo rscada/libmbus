@@ -3383,9 +3383,14 @@ mbus_data_record_decode(mbus_data_record *record)
                 break;
 
             case 0x0D: // variable length
-                if (record->data_len <= 0xBF)
+                if (record->data[0] <= 0xBF)
                 {
-                    mbus_data_str_decode(buff, record->data, record->data_len);
+                    mbus_data_str_decode(buff, &record->data[1], record->data_len - 1);
+                    break;
+                }
+                else
+                {
+                    mbus_data_bin_decode(buff, &record->data[1], record->data_len - 1, sizeof(buff));
                     break;
                 }
                 /*@fallthrough@*/
@@ -3954,15 +3959,21 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             if ((record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_DATA) == 0x0D) // flag for variable length data
             {
                 if(frame->data[i] <= 0xBF)
-                    record->data_len = frame->data[i++];
-                else if(frame->data[i] >= 0xC0 && frame->data[i] <= 0xCF)
-                    record->data_len = (frame->data[i++] - 0xC0) * 2;
-                else if(frame->data[i] >= 0xD0 && frame->data[i] <= 0xDF)
-                    record->data_len = (frame->data[i++] - 0xD0) * 2;
+                    record->data_len = frame->data[i];
+                else if(frame->data[i] >= 0xC0 && frame->data[i] <= 0xC9)
+                    record->data_len = (frame->data[i] - 0xC0) * 2;
+                else if(frame->data[i] >= 0xD0 && frame->data[i] <= 0xD9)
+                    record->data_len = (frame->data[i] - 0xD0) * 2;
                 else if(frame->data[i] >= 0xE0 && frame->data[i] <= 0xEF)
-                    record->data_len = frame->data[i++] - 0xE0;
-                else if(frame->data[i] >= 0xF0 && frame->data[i] <= 0xFA)
-                    record->data_len = frame->data[i++] - 0xF0;
+                    record->data_len = frame->data[i] - 0xE0;
+                else if(frame->data[i] >= 0xF0 && frame->data[i] <= 0xF4)
+                    record->data_len = (frame->data[i] - 0xEC) * 4;
+                else if(frame->data[i] == 0xF5)
+                    record->data_len = 48;
+                else if(frame->data[i] == 0xF6)
+                    record->data_len = 64;
+                // keep the LVAR byte, which is required to determine the data type
+                record->data_len++;
             }
 
             if (i + record->data_len > frame->data_size)
