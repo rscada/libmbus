@@ -775,7 +775,7 @@ mbus_data_bin_decode(unsigned char *dst, const unsigned char *src, size_t len, s
     if (src && dst)
     {
         while((i < len) && ((pos+3) < max_len)) {
-            pos += snprintf(&dst[pos], max_len - pos, "%.2X ", src[i]);
+            pos += snprintf(&dst[pos], max_len - pos, "%.2X ", src[len - i - 1]);
             i++;
         }
 
