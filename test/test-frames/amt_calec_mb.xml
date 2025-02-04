@@ -58,7 +58,7 @@
         <Function>Instantaneous value</Function>
         <StorageNumber>0</StorageNumber>
         <Unit>Time Point (time &amp; date)</Unit>
-        <Value>2096-05-05T09:16:00</Value>
+        <Value>1996-05-05T09:16:00</Value>
     </DataRecord>
 
 </MBusData>
