@@ -13,7 +13,7 @@ Summary: 	Open source M-bus (Meter-Bus) library
 Name: 		libmbus
 Version: 	0.9.0
 Release: 	1
-Source:	 	https://github.com/rscada/%{name}/archive/%{version}.tar.gz
+Source:	 	https://github.com/marmaladelane/libmbus/archive/refs/heads/master.zip
 URL:		https://github.com/rscada/libmbus/
 License:	BSD
 Vendor:		Raditex Control AB
@@ -46,12 +46,15 @@ This package contains all necessary include files and libraries needed
 to compile and link applications which use the M-bus (Meter-Bus) library.
 
 %prep -q
-%setup -q
-# workaround to get it's build
+%setup -q -n libmbus-master
+# workaround to get it to build:
+libtoolize
+autoreconf || true
+automake --add-missing
 autoreconf
 
 %build
-./configure --prefix=/usr
+./configure --prefix=/usr --libdir=/usr/lib64
 make
 
 %install
@@ -64,11 +67,11 @@ rm -rf "%buildroot"
 
 %files
 %defattr (-,root,root)
-%doc COPYING README.md
+%doc /usr/share/doc/%{name}-%{version}
 %{_bindir}/mbus-serial-*
 %{_bindir}/mbus-tcp-*
 %{_libdir}/libmbus.so*
-%{_mandir}/man1/libmbus.1
+%{_mandir}/man1/libmbus.1.gz
 %{_mandir}/man1/mbus-*
 
 %files devel
