@@ -8,6 +8,8 @@
 //
 //------------------------------------------------------------------------------
 
+// NOTE: Custom timeouts in place by Miikka Kosonen, do not merge
+
 #include <unistd.h>
 #include <limits.h>
 #include <fcntl.h>
@@ -78,8 +80,8 @@ mbus_serial_connect(mbus_handle *handle)
     // For 2400Bd this means (330 + 11) / 2400 + 0.15 = 292 ms (added 11 bit periods to receive first byte).
     // I.e. timeout of 0.3s seems appropriate for 2400Bd.
 
-    term->c_cc[VTIME] = (cc_t) 3; // Timeout in 1/10 sec
-
+    term->c_cc[VTIME] = (cc_t) 10; // Timeout in 1/10 sec
+    // This used to be 3, increased  to 10 to try fix some communication issues / MK
     cfsetispeed(term, B2400);
     cfsetospeed(term, B2400);
 
@@ -131,7 +133,7 @@ mbus_serial_set_baudrate(mbus_handle *handle, long baudrate)
 
         case 2400:
             speed = B2400;
-            serial_data->t.c_cc[VTIME] = (cc_t) 3;  // Timeout in 1/10 sec
+            serial_data->t.c_cc[VTIME] = (cc_t) 10;  // Timeout in 1/10 sec. NOTE: Changed to 1 second = 10 in 2400 baud which is what I use, no downsides and fixes some communication issues on my site. (used to be 3)
             break;
 
         case 4800:

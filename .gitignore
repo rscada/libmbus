@@ -60,6 +60,7 @@ bin/mbus-tcp-scan
 bin/mbus-tcp-scan-secondary
 bin/mbus-tcp-select-secondary
 bin/mbus-tcp-application-reset
+bin/mbus-serial-raw-send
 !*.c
 
 # test binaries

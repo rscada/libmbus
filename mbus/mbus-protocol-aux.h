@@ -318,6 +318,11 @@ int mbus_send_user_data_frame(mbus_handle * handle, int address, const unsigned 
  */
 int mbus_set_primary_address(mbus_handle * handle, int old_address, int new_address);
 
+int mbus_send_custom_text(mbus_handle * handle, int address, const char *text);
+
+int mbus_send_global_aes128_key(mbus_handle * handle, int address, const char *key);
+
+
 /**
  * Sends a request and read replies until no more records available
  * or limit is reached.
