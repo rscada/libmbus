@@ -4098,11 +4098,15 @@ mbus_frame_pack(mbus_frame *frame, unsigned char *data, size_t data_size)
     {
         if (mbus_frame_calc_length(frame) == -1)
         {
+            snprintf(error_str, sizeof(error_str), "Length calculation of frame failed");
+
             return -2;
         }
 
         if (mbus_frame_calc_checksum(frame) == -1)
         {
+            snprintf(error_str, sizeof(error_str), "Checksum calculation of frame failed");
+
             return -3;
         }
 
@@ -4112,6 +4116,8 @@ mbus_frame_pack(mbus_frame *frame, unsigned char *data, size_t data_size)
 
                 if (data_size < MBUS_FRAME_ACK_BASE_SIZE)
                 {
+                    snprintf(error_str, sizeof(error_str), "data_size (%d) < MBUS_FRAME_ACK_BASE_SIZE (%d)", data_size, MBUS_FRAME_ACK_BASE_SIZE);
+
                     return -4;
                 }
 
@@ -4123,6 +4129,8 @@ mbus_frame_pack(mbus_frame *frame, unsigned char *data, size_t data_size)
 
                 if (data_size < MBUS_FRAME_SHORT_BASE_SIZE)
                 {
+                    snprintf(error_str, sizeof(error_str), "data_size (%d) < MBUS_FRAME_SHORT_BASE_SIZE (%d)", data_size, MBUS_FRAME_SHORT_BASE_SIZE);
+
                     return -4;
                 }
 
@@ -4138,6 +4146,8 @@ mbus_frame_pack(mbus_frame *frame, unsigned char *data, size_t data_size)
 
                 if (data_size < MBUS_FRAME_CONTROL_BASE_SIZE)
                 {
+                    snprintf(error_str, sizeof(error_str), "data_size (%d) < MBUS_FRAME_CONTROL_BASE_SIZE (%d)", data_size, MBUS_FRAME_CONTROL_BASE_SIZE);
+
                     return -4;
                 }
 
@@ -4159,6 +4169,8 @@ mbus_frame_pack(mbus_frame *frame, unsigned char *data, size_t data_size)
 
                 if (data_size < frame->data_size + MBUS_FRAME_LONG_BASE_SIZE)
                 {
+                    snprintf(error_str, sizeof(error_str), "data_size (%d) < frame->data_size + MBUS_FRAME_LONG_BASE_SIZE (%d + %d = %d)", data_size, frame->data_size, MBUS_FRAME_LONG_BASE_SIZE, frame->data_size + MBUS_FRAME_LONG_BASE_SIZE);
+
                     return -4;
                 }
 
@@ -4182,6 +4194,8 @@ mbus_frame_pack(mbus_frame *frame, unsigned char *data, size_t data_size)
                 return offset;
 
             default:
+                snprintf(error_str, sizeof(error_str), "frame->type (%d) in unknown.", frame->type);
+
                 return -5;
         }
     }
@@ -4330,7 +4344,7 @@ mbus_frame_print(mbus_frame *frame)
             return -2;
         }
 
-        printf("%s: Dumping M-Bus frame [type %d, %d bytes]: ", __PRETTY_FUNCTION__, iter->type, len);
+        printf("%s: Dumping M-Bus frame [type %s, %d bytes]: ", __PRETTY_FUNCTION__, mbus_frame_type_print(iter->type), len);
         for (i = 0; i < len; i++)
         {
             printf("%.2X ", data_buff[i]);
@@ -4339,6 +4353,43 @@ mbus_frame_print(mbus_frame *frame)
     }
 
     return 0;
+}
+
+//------------------------------------------------------------------------------
+/// Return a string containing the frame type
+//------------------------------------------------------------------------------
+const char *
+mbus_frame_type_print(const int type)
+{
+    static char buff[128];
+
+    switch (type)
+    {
+        case MBUS_FRAME_TYPE_ANY:
+            snprintf(buff, sizeof(buff), "Any");
+            break;
+
+        case MBUS_FRAME_TYPE_ACK:
+            snprintf(buff, sizeof(buff), "Ack");
+            break;
+
+        case MBUS_FRAME_TYPE_SHORT:
+            snprintf(buff, sizeof(buff), "Short");
+            break;
+
+        case MBUS_FRAME_TYPE_CONTROL:
+            snprintf(buff, sizeof(buff), "Control");
+            break;
+
+        case MBUS_FRAME_TYPE_LONG:
+            snprintf(buff, sizeof(buff), "Long");
+            break;
+
+        default:
+            snprintf(buff, sizeof(buff), "unknown");
+    }
+
+    return buff;
 }
 
 //------------------------------------------------------------------------------
@@ -4470,6 +4521,8 @@ mbus_data_variable_print(mbus_data_variable *data)
 
             printf("\n");
         }
+
+        return 0;
     }
 
     return -1;
@@ -4510,6 +4563,8 @@ mbus_data_fixed_print(mbus_data_fixed *data)
             mbus_data_int_decode(data->cnt2_val, 4, &val);
             printf("%s: Counter2 = %d\n", __PRETTY_FUNCTION__, val);
         }
+
+        return 0;
     }
 
     return -1;
@@ -4545,7 +4600,7 @@ mbus_data_error_print(int error)
 {
     printf("%s: Error = %d\n", __PRETTY_FUNCTION__, error);
 
-    return -1;
+    return 0;
 }
 
 
