@@ -15,36 +15,6 @@
 
 static int debug = 0;
 
-//
-// init slave to get really the beginning of the records
-//
-int
-init_slaves(mbus_handle *handle)
-{
-    if (debug)
-        printf("%s: debug: sending init frame #1\n", __PRETTY_FUNCTION__);
-
-    if (mbus_send_ping_frame(handle, MBUS_ADDRESS_NETWORK_LAYER, 1) == -1)
-    {
-        return 0;
-    }
-
-    //
-    // resend SND_NKE, maybe the first get lost
-    //
-
-    if (debug)
-        printf("%s: debug: sending init frame #2\n", __PRETTY_FUNCTION__);
-
-    if (mbus_send_ping_frame(handle, MBUS_ADDRESS_BROADCAST_NOREPLY, 1) == -1)
-    {
-        return 0;
-    }
-
-    return 1;
-}
-
-
 //------------------------------------------------------------------------------
 // Scan for devices using secondary addressing.
 //------------------------------------------------------------------------------
@@ -145,6 +115,8 @@ main(int argc, char **argv)
     if (mbus_connect(handle) == -1)
     {
         fprintf(stderr,"Failed to setup connection to M-bus gateway\n");
+        mbus_disconnect(handle);
+        mbus_context_free(handle);
         free(addr_mask);
         return 1;
     }
@@ -152,6 +124,8 @@ main(int argc, char **argv)
     if (mbus_serial_set_baudrate(handle, baudrate) == -1)
     {
         fprintf(stderr, "Failed to set baud rate.\n");
+        mbus_disconnect(handle);
+        mbus_context_free(handle);
         free(addr_mask);
         return 1;
     }
@@ -162,12 +136,17 @@ main(int argc, char **argv)
     if (frame == NULL)
     {
         fprintf(stderr, "Failed to allocate mbus frame.\n");
+        mbus_disconnect(handle);
+        mbus_context_free(handle);
         free(addr_mask);
         return 1;
     }
 
-    if (init_slaves(handle) == 0)
+    if (mbus_send_ping_frame(handle,MBUS_ADDRESS_NETWORK_LAYER, 1) == -1)
     {
+        fprintf(stderr,"Failed to init/de-select slave.\n");
+        mbus_disconnect(handle);
+        mbus_context_free(handle);
         free(addr_mask);
         return 1;
     }
