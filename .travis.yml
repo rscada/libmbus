@@ -10,6 +10,8 @@ os:
 
 script: 
   - ./build.sh
-  - cd test && make && ./generate-xml.sh test-frames
-  - cd test && make && ./generate-xml.sh test/error-frames || true
-  - cd test && make && ./generate-xml.sh test/unsupported-frames || true
+  - cd test && make && cd ..
+  - PROG=test/mbus_parse_hex
+  - test/generate-xml.sh test/test-frames $PROG
+  - test/generate-xml.sh test/error-frames $PROG || true
+  - test/generate-xml.sh test/unsupported-frames $PROG || true
