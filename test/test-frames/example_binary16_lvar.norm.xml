@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>0</Id>
+        <Manufacturer>INM</Manufacturer>
+        <Version>1</Version>
+        <ProductName></ProductName>
+        <Medium>Electricity</Medium>
+        <AccessNumber>0</AccessNumber>
+        <Status>00</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>-</Unit>
+        <Quantity>PW</Quantity>
+        <Value>17 3E D1 DC B3 1A B5 3D 01 93 A6 27 2A 5B 07 96</Value>
+    </DataRecord>
+
+</MBusData>

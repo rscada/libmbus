@@ -983,19 +983,30 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
 
             case 0x0D: /* variable length */
             {
-                if (record->data_len <= 0xBF) {
-                    if ((*value_out_str = (char*) malloc(record->data_len + 1)) == NULL)
+                if (record->data[0] <= 0xBF) /* ascii string */
+                {
+                    /* we create a buffer the size of data_len (minus 1 because we skip the LVAR byte, plus 1 for the terminating 0) */
+                    if ((*value_out_str = (char*) malloc(record->data_len)) == NULL)
                     {
                         MBUS_ERROR("Unable to allocate memory");
                         return -1;
                     }
-                    *value_out_str_size = record->data_len;
-                    mbus_data_str_decode((unsigned char*)(*value_out_str), record->data, record->data_len);
-                    result = 0;
+                    *value_out_str_size = record->data_len - 1;
+                    mbus_data_str_decode((unsigned char*)(*value_out_str), &record->data[1], record->data_len - 1);
+                }
+                else /* binary or BCD (printed as binary for now) */
+                {
+                    /* We create a buffer of 3 bytes per printed byte (2 nibbles + space), plus a terminating 0. We are not printing the LVAR byte value. */
+                    if ((*value_out_str = (char*) malloc(3 * (record->data_len - 1) + 1)) == NULL)
+                    {
+                        MBUS_ERROR("Unable to allocate memory");
+                        return -1;
+                    }
+                    *value_out_str_size = 3 * (record->data_len - 1);
+                    mbus_data_bin_decode((unsigned char*)(*value_out_str), &record->data[1], record->data_len - 1, 3 * (record->data_len - 1) + 1);
                     break;
                 }
-                result = -2;
-                MBUS_ERROR("Non ASCII variable length not implemented yet\n");
+                result = 0;
                 break;
             }
 

@@ -775,7 +775,7 @@ mbus_data_bin_decode(unsigned char *dst, const unsigned char *src, size_t len, s
     if (src && dst)
     {
         while((i < len) && ((pos+3) < max_len)) {
-            pos += snprintf(&dst[pos], max_len - pos, "%.2X ", src[i]);
+            pos += snprintf(&dst[pos], max_len - pos, "%.2X ", src[len - i - 1]);
             i++;
         }
 
@@ -805,6 +805,7 @@ mbus_data_bin_decode(unsigned char *dst, const unsigned char *src, size_t len, s
 void
 mbus_data_tm_decode(struct tm *t, unsigned char *t_data, size_t t_data_size)
 {
+    int year, hundred_year;
     if (t == NULL)
     {
         return;
@@ -844,8 +845,14 @@ mbus_data_tm_decode(struct tm *t, unsigned char *t_data, size_t t_data_size)
                 t->tm_hour  = t_data[1] & 0x1F;
                 t->tm_mday  = t_data[2] & 0x1F;
                 t->tm_mon   = (t_data[3] & 0x0F) - 1;
-                t->tm_year  = 100 + (((t_data[2] & 0xE0) >> 5) |
+                year = (((t_data[2] & 0xE0) >> 5) |
                               ((t_data[3] & 0xF0) >> 1));
+                hundred_year = (t_data[1] & 0x60) >> 5;
+                if (hundred_year == 0 && year <= 80)  //  compatibility with old meters with a circular two digit date
+                {
+                    hundred_year = 1;
+                }
+                t->tm_year  = 100 * hundred_year + year;
                 t->tm_isdst = (t_data[1] & 0x80) ? 1 : 0;  // day saving time
             }
         }
@@ -3289,8 +3296,16 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x09: // 2 digit BCD (8 bit)
 
-                int_val = (int)mbus_data_bcd_decode_hex(record->data, 1);
-                snprintf(buff, sizeof(buff), "%X", int_val);
+                if ((record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_FUNCTION) == 0x30)
+                {
+                    int_val = (int)mbus_data_bcd_decode_hex(record->data, 1);
+                    snprintf(buff, sizeof(buff), "%X", int_val);
+                }
+                else
+                {
+                    int_val = (int)mbus_data_bcd_decode(record->data, 1);
+                    snprintf(buff, sizeof(buff), "%d", int_val);
+                }
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 2 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
@@ -3299,8 +3314,16 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x0A: // 4 digit BCD (16 bit)
 
-                int_val = (int)mbus_data_bcd_decode_hex(record->data, 2);
-                snprintf(buff, sizeof(buff), "%X", int_val);
+                if ((record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_FUNCTION) == 0x30)
+                {
+                    int_val = (int)mbus_data_bcd_decode_hex(record->data, 2);
+                    snprintf(buff, sizeof(buff), "%X", int_val);
+                }
+                else
+                {
+                    int_val = (int)mbus_data_bcd_decode(record->data, 2);
+                    snprintf(buff, sizeof(buff), "%d", int_val);
+                }
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 4 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
@@ -3309,8 +3332,16 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x0B: // 6 digit BCD (24 bit)
 
-                int_val = (int)mbus_data_bcd_decode_hex(record->data, 3);
-                snprintf(buff, sizeof(buff), "%X", int_val);
+                if ((record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_FUNCTION) == 0x30)
+                {
+                    int_val = (int)mbus_data_bcd_decode_hex(record->data, 3);
+                    snprintf(buff, sizeof(buff), "%X", int_val);
+                }
+                else
+                {
+                    int_val = (int)mbus_data_bcd_decode(record->data, 3);
+                    snprintf(buff, sizeof(buff), "%d", int_val);
+                }
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 6 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
@@ -3319,8 +3350,16 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x0C: // 8 digit BCD (32 bit)
 
-                int_val = (int)mbus_data_bcd_decode_hex(record->data, 4);
-                snprintf(buff, sizeof(buff), "%X", int_val);
+                if ((record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_FUNCTION) == 0x30)
+                {
+                    int_val = (int)mbus_data_bcd_decode_hex(record->data, 4);
+                    snprintf(buff, sizeof(buff), "%X", int_val);
+                }
+                else
+                {
+                    int_val = (int)mbus_data_bcd_decode(record->data, 4);
+                    snprintf(buff, sizeof(buff), "%d", int_val);
+                }
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 8 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
@@ -3329,8 +3368,16 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x0E: // 12 digit BCD (48 bit)
 
-                long_long_val = mbus_data_bcd_decode_hex(record->data, 6);
-                snprintf(buff, sizeof(buff), "%llX", long_long_val);
+                if ((record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_FUNCTION) == 0x30)
+                {
+                    long_long_val = mbus_data_bcd_decode_hex(record->data, 6);
+                    snprintf(buff, sizeof(buff), "%llX", long_long_val);
+                }
+                else
+                {
+                    long_long_val = mbus_data_bcd_decode(record->data, 6);
+                    snprintf(buff, sizeof(buff), "%lld", long_long_val);
+                }
 
                 if (debug)
                     printf("%s: DIF 0x%.2x was decoded using 12 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
@@ -3343,9 +3390,14 @@ mbus_data_record_decode(mbus_data_record *record)
                 break;
 
             case 0x0D: // variable length
-                if (record->data_len <= 0xBF)
+                if (record->data[0] <= 0xBF)
                 {
-                    mbus_data_str_decode(buff, record->data, record->data_len);
+                    mbus_data_str_decode(buff, &record->data[1], record->data_len - 1);
+                    break;
+                }
+                else
+                {
+                    mbus_data_bin_decode(buff, &record->data[1], record->data_len - 1, sizeof(buff));
                     break;
                 }
                 /*@fallthrough@*/
@@ -3914,15 +3966,21 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             if ((record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_DATA) == 0x0D) // flag for variable length data
             {
                 if(frame->data[i] <= 0xBF)
-                    record->data_len = frame->data[i++];
-                else if(frame->data[i] >= 0xC0 && frame->data[i] <= 0xCF)
-                    record->data_len = (frame->data[i++] - 0xC0) * 2;
-                else if(frame->data[i] >= 0xD0 && frame->data[i] <= 0xDF)
-                    record->data_len = (frame->data[i++] - 0xD0) * 2;
+                    record->data_len = frame->data[i];
+                else if(frame->data[i] >= 0xC0 && frame->data[i] <= 0xC9)
+                    record->data_len = (frame->data[i] - 0xC0) * 2;
+                else if(frame->data[i] >= 0xD0 && frame->data[i] <= 0xD9)
+                    record->data_len = (frame->data[i] - 0xD0) * 2;
                 else if(frame->data[i] >= 0xE0 && frame->data[i] <= 0xEF)
-                    record->data_len = frame->data[i++] - 0xE0;
-                else if(frame->data[i] >= 0xF0 && frame->data[i] <= 0xFA)
-                    record->data_len = frame->data[i++] - 0xF0;
+                    record->data_len = frame->data[i] - 0xE0;
+                else if(frame->data[i] >= 0xF0 && frame->data[i] <= 0xF4)
+                    record->data_len = (frame->data[i] - 0xEC) * 4;
+                else if(frame->data[i] == 0xF5)
+                    record->data_len = 48;
+                else if(frame->data[i] == 0xF6)
+                    record->data_len = 64;
+                // keep the LVAR byte, which is required to determine the data type
+                record->data_len++;
             }
 
             if (i + record->data_len > frame->data_size)

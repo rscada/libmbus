@@ -12,11 +12,8 @@
 #include <limits.h>
 #include <fcntl.h>
 
-#include <sys/socket.h>
 #include <sys/types.h>
-
-#include <arpa/inet.h>
-#include <netinet/in.h>
+#include <sys/socket.h>
 #include <netdb.h>
 
 #include <stdio.h>
@@ -27,6 +24,7 @@
 #include "mbus-tcp.h"
 
 #define PACKET_BUFF_SIZE 2048
+#define MAX_PORT_SIZE 6 // Size of port number + NULL char
 
 static int tcp_timeout_sec = 4;
 static int tcp_timeout_usec = 0;
@@ -38,11 +36,11 @@ int
 mbus_tcp_connect(mbus_handle *handle)
 {
     char error_str[128], *host;
-    struct hostent *host_addr;
-    struct sockaddr_in s;
+    struct addrinfo hints, *servinfo, *p;
     struct timeval time_out;
     mbus_tcp_data *tcp_data;
-    uint16_t port;
+    char port[MAX_PORT_SIZE];
+    int status;
 
     if (handle == NULL)
         return -1;
@@ -52,34 +50,42 @@ mbus_tcp_connect(mbus_handle *handle)
         return -1;
 
     host = tcp_data->host;
-    port = tcp_data->port;
+    snprintf(port, MAX_PORT_SIZE, "%d", tcp_data->port);
 
-    //
-    // create the TCP connection
-    //
-    if ((handle->fd = socket(AF_INET,SOCK_STREAM, 0)) < 0)
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+
+    if ((status = getaddrinfo(host, port, &hints, &servinfo)) != 0)
     {
-        snprintf(error_str, sizeof(error_str), "%s: failed to setup a socket.", __PRETTY_FUNCTION__);
+        snprintf(error_str, sizeof(error_str), "%s: getaddrinfo: %s", __PRETTY_FUNCTION__, gai_strerror(status));
         mbus_error_str_set(error_str);
         return -1;
     }
 
-    s.sin_family = AF_INET;
-    s.sin_port = htons(port);
-
-    /* resolve hostname */
-    if ((host_addr = gethostbyname(host)) == NULL)
+    // loop through all the results and connect to the first we can
+    for (p = servinfo; p != NULL; p = p->ai_next)
     {
-        snprintf(error_str, sizeof(error_str), "%s: unknown host: %s", __PRETTY_FUNCTION__, host);
-        mbus_error_str_set(error_str);
-        return -1;
+        if ((handle->fd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1)
+        {
+            continue;
+        }
+
+        if (connect(handle->fd, p->ai_addr, p->ai_addrlen) == -1)
+        {
+            close(handle->fd);
+            continue;
+        }
+
+        break; // if we get here, we must have connected successfully
     }
 
-    memcpy((void *)(&s.sin_addr), (void *)(host_addr->h_addr), host_addr->h_length);
+    // Free addr info, we do not need it anymore
+    freeaddrinfo(servinfo);
 
-    if (connect(handle->fd, (struct sockaddr *)&s, sizeof(s)) < 0)
+    if (p == NULL)
     {
-        snprintf(error_str, sizeof(error_str), "%s: Failed to establish connection to %s:%d", __PRETTY_FUNCTION__, host, port);
+        snprintf(error_str, sizeof(error_str), "%s: Failed to establish connection to %s:%s", __PRETTY_FUNCTION__, host, port);
         mbus_error_str_set(error_str);
         return -1;
     }

@@ -65,7 +65,7 @@
         <StorageNumber>0</StorageNumber>
         <Unit>-</Unit>
         <Quantity>Time point (date &amp; time)</Quantity>
-        <Value>2096-05-05T09:16:00Z</Value>
+        <Value>1996-05-05T09:16:00Z</Value>
     </DataRecord>
 
 </MBusData>

@@ -305,7 +305,7 @@
         <Device>0</Device>
         <Unit>-</Unit>
         <Quantity>Time point (date &amp; time)</Quantity>
-        <Value>2127-01-01T00:00:00Z</Value>
+        <Value>2027-01-01T00:00:00Z</Value>
     </DataRecord>
 
     <DataRecord id="33">
