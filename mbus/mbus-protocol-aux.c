@@ -2444,7 +2444,7 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
 // Iterate over all address masks according to the M-Bus probe algorithm.
 //------------------------------------------------------------------------------
 int
-mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
+mbus_scan_2nd_address_range(mbus_handle * handle, int pos, const char *addr_mask)
 {
     int i, i_start, i_end, probe_ret;
     char *mask, matching_mask[17];
