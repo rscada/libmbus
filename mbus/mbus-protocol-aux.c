@@ -2484,6 +2484,10 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
         {
             // mask[pos] is not a wildcard -> don't iterate, recursively check pos+1
             mbus_scan_2nd_address_range(handle, pos+1, mask);
+
+            // Initialize to silence a false-positive compile warning on gcc
+            i_start = 0;
+            i_end = 0;
         }
         else
         {
