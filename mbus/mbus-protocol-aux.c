@@ -2524,6 +2524,7 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
             else // MBUS_PROBE_ERROR
             {
                 MBUS_ERROR("%s: Failed to probe secondary address [%s].\n", __PRETTY_FUNCTION__, mask);
+                free(mask);
                 return -1;
             }
         }
