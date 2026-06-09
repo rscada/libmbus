@@ -55,11 +55,6 @@ mbus_manufacturer_id(char *manufacturer)
     return (0x0421 <= id && id <= 0x6b5a) ? id : 0;
 }
 
-//------------------------------------------------------------------------------
-// internal data
-//------------------------------------------------------------------------------
-static mbus_slave_data slave_data[MBUS_MAX_PRIMARY_SLAVES];
-
 //
 //  trace callbacks
 //
@@ -97,21 +92,6 @@ void
 mbus_error_reset()
 {
     snprintf(error_str, sizeof(error_str), "no errors");
-}
-
-//------------------------------------------------------------------------------
-/// Return a pointer to the slave_data register. This register can be used for
-/// storing current slave status.
-//------------------------------------------------------------------------------
-mbus_slave_data *
-mbus_slave_data_get(size_t i)
-{
-    if (i < MBUS_MAX_PRIMARY_SLAVES)
-    {
-        return &slave_data[i];
-    }
-
-    return NULL;
 }
 
 //------------------------------------------------------------------------------
