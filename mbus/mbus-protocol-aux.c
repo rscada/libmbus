@@ -769,7 +769,7 @@ mbus_register_send_event(mbus_handle * handle, void (*event)(unsigned char src_t
 /// Register a function for the scan progress.
 //------------------------------------------------------------------------------
 void
-mbus_register_scan_progress(mbus_handle * handle, void (*event)(mbus_handle * handle, const char *mask))
+mbus_register_scan_progress(mbus_handle * handle, mbus_scan_progress_callback_ret (*event)(void * transparent, mbus_handle * handle, const char *mask))
 {
     handle->scan_progress = event;
 }
@@ -778,7 +778,7 @@ mbus_register_scan_progress(mbus_handle * handle, void (*event)(mbus_handle * ha
 /// Register a function for the found events.
 //------------------------------------------------------------------------------
 void
-mbus_register_found_event(mbus_handle * handle, void (*event)(mbus_handle * handle, mbus_frame *frame))
+mbus_register_found_event(mbus_handle * handle, void (*event)(void * transparent, mbus_handle * handle, mbus_frame *frame, const char *address))
 {
     handle->found_event = event;
 }
@@ -2281,7 +2281,7 @@ mbus_select_secondary_address(mbus_handle * handle, const char *mask)
 // (mask).
 //------------------------------------------------------------------------------
 int
-mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matching_addr)
+mbus_probe_secondary_address(void * transparent, mbus_handle *handle, const char *mask, char *matching_addr)
 {
     int ret, i;
     mbus_frame reply;
@@ -2345,7 +2345,7 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
 
                 if (handle->found_event)
                 {
-                    handle->found_event(handle,&reply);
+                    handle->found_event(transparent,handle,&reply,addr);
                 }
 
                 return MBUS_PROBE_SINGLE;
@@ -2444,7 +2444,7 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
 // Iterate over all address masks according to the M-Bus probe algorithm.
 //------------------------------------------------------------------------------
 int
-mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
+mbus_scan_2nd_address_range(void * transparent, mbus_handle * handle, int pos, char *addr_mask)
 {
     int i, i_start, i_end, probe_ret;
     char *mask, matching_mask[17];
@@ -2483,7 +2483,7 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
         if (pos < 15)
         {
             // mask[pos] is not a wildcard -> don't iterate, recursively check pos+1
-            mbus_scan_2nd_address_range(handle, pos+1, mask);
+            mbus_scan_2nd_address_range(transparent, handle, pos+1, mask);
         }
         else
         {
@@ -2500,10 +2500,14 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
         {
             mask[pos] = '0'+i;
 
-            if (handle->scan_progress)
-                handle->scan_progress(handle,mask);
+            if (handle->scan_progress) {
+                if (handle->scan_progress(transparent,handle,mask) != MBUS_SCAN_PROGRESS_CALLBACK_CONTINUE) {
+                    // Scan aborted by the user
+                    break;
+                }
+            }
 
-            probe_ret = mbus_probe_secondary_address(handle, mask, matching_mask);
+            probe_ret = mbus_probe_secondary_address(transparent, handle, mask, matching_mask);
 
             if (probe_ret == MBUS_PROBE_SINGLE)
             {
@@ -2515,7 +2519,7 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
             else if (probe_ret == MBUS_PROBE_COLLISION)
             {
                 // collision, more than one device matching, restrict the search mask further
-                mbus_scan_2nd_address_range(handle, pos+1, mask);
+                mbus_scan_2nd_address_range(transparent, handle, pos+1, mask);
             }
             else if (probe_ret == MBUS_PROBE_NOTHING)
             {

@@ -81,6 +81,18 @@ extern "C" {
 #define MBUS_FRAME_PURGE_NONE 0
 
 /**
+ * Return values for the MBus scan progress callback registered via
+ * mbus_register_scan_progress().
+ * Because mbus_scan_2nd_address_range() performs recursive calls, fully
+ * aborting the scan requires returning abort from each recursive level until
+ * the top‑level call completes.
+ */
+typedef enum _mbus_scan_progress_callback_ret {
+    MBUS_SCAN_PROGRESS_CALLBACK_CONTINUE = 0, /**< Continue the ongoing scan */
+    MBUS_SCAN_PROGRESS_CALLBACK_ABORT    = 1  /**< Abort the ongoing scan */
+} mbus_scan_progress_callback_ret;
+
+/**
  * Unified MBus handle type encapsulating either Serial or TCP gateway.
  */
 typedef struct _mbus_handle {
@@ -96,8 +108,8 @@ typedef struct _mbus_handle {
     void (*free_auxdata) (struct _mbus_handle *handle);
     void (*recv_event) (unsigned char src_type, const char *buff, size_t len);
     void (*send_event) (unsigned char src_type, const char *buff, size_t len);
-    void (*scan_progress) (struct _mbus_handle *handle, const char *mask);
-    void (*found_event) (struct _mbus_handle *handle, mbus_frame *frame);    
+    mbus_scan_progress_callback_ret (*scan_progress) (void *transparent, struct _mbus_handle *handle, const char *mask);
+    void (*found_event) (void *transparent, struct _mbus_handle *handle, mbus_frame *frame, const char *address);
     void *auxdata;
 } mbus_handle;
 
@@ -165,8 +177,8 @@ typedef enum _mbus_context_option {
 //
 void mbus_register_recv_event(mbus_handle *handle, void (*event)(unsigned char src_type, const char *buff, size_t len));
 void mbus_register_send_event(mbus_handle *handle, void (*event)(unsigned char src_type, const char *buff, size_t len));
-void mbus_register_scan_progress(mbus_handle *handle, void (*event)(mbus_handle *handle, const char *mask));
-void mbus_register_found_event(mbus_handle *handle, void (*event)(mbus_handle *handle, mbus_frame *frame));
+void mbus_register_scan_progress(mbus_handle *handle, mbus_scan_progress_callback_ret (*event)(void *transparent, mbus_handle *handle, const char *mask));
+void mbus_register_found_event(mbus_handle *handle, void (*event)(void *transparent, mbus_handle *handle, mbus_frame *frame, const char *address));
 
 /**
  * Allocate and initialize M-Bus serial context.
@@ -355,13 +367,14 @@ int mbus_select_secondary_address(mbus_handle * handle, const char *mask);
 /**
  * Probe/address slave by secondary address using "unified" handle
  *
+ * @param transparent   Transparent handle passed to callbacks
  * @param handle        Initialized handle
  * @param mask          Address/mask to probe
  * @param matching_addr Matched address (the buffer has tobe at least 16 bytes)
  *
  * @return See MBUS_PROBE_* constants
  */
-int mbus_probe_secondary_address(mbus_handle * handle, const char *mask, char *matching_addr);
+int mbus_probe_secondary_address(void * transparent, mbus_handle * handle, const char *mask, char *matching_addr);
 
 /**
  * Read data from given slave using "unified" handle and address types
@@ -490,13 +503,14 @@ char * mbus_frame_data_xml_normalized(mbus_frame_data *data);
  * Iterate over secondary addresses, send a probe package to all addresses matching
  * the given addresses mask.
  *
+ * @param transparent Transparent handle passed to callbacks
  * @param handle      Initialized handle
  * @param pos         current address
  * @param addr_mask   address mask to
  *
  * @return zero when OK
  */
-int mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask);
+int mbus_scan_2nd_address_range(void * transparent, mbus_handle * handle, int pos, char *addr_mask);
 
 /**
  * Convert a buffer with hex values into a buffer with binary values.

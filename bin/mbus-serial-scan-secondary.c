@@ -172,7 +172,7 @@ main(int argc, char **argv)
         return 1;
     }
 
-    mbus_scan_2nd_address_range(handle, 0, addr_mask);
+    mbus_scan_2nd_address_range(NULL, handle, 0, addr_mask);
 
     mbus_disconnect(handle);
     mbus_context_free(handle);
