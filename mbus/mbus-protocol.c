@@ -10,6 +10,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -3095,6 +3096,12 @@ mbus_vib_unit_lookup(mbus_value_information_block *vib)
         snprintf(buff, sizeof(buff), "%s %s", mbus_unit_prefix(n-6), vib->custom_vif);
         return buff;
     }
+    else if (vib->vif == 0xFC)
+    {
+        // custom VIF
+        snprintf(buff, sizeof(buff), "%s", vib->custom_vif);
+        return buff;
+    }
 
     return mbus_vif_unit_lookup(vib->vif); // no extention, use VIF
 }
@@ -3767,8 +3774,8 @@ mbus_data_fixed_parse(mbus_frame *frame, mbus_data_fixed *data)
 //------------------------------------------------------------------------------
 /// Parse the variable-length data of a M-Bus frame
 //------------------------------------------------------------------------------
-int
-mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
+static int
+mbus_data_variable_parse_internal(mbus_frame *frame, mbus_data_variable *data, bool wrong_variable_length_vif_placement, bool *variable_length_vif_with_extension)
 {
     mbus_data_record *record = NULL;
     size_t i, j;
@@ -3883,8 +3890,10 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
             // VIF
             record->drh.vib.vif = frame->data[i++];
+            bool variable_length_vif = (record->drh.vib.vif & MBUS_DIB_VIF_WITHOUT_EXTENSION) == 0x7C;
+            *variable_length_vif_with_extension = record->drh.vib.vif == 0xFC;
 
-            if ((record->drh.vib.vif & MBUS_DIB_VIF_WITHOUT_EXTENSION) == 0x7C)
+            if (variable_length_vif && wrong_variable_length_vif_placement)
             {
                 // variable length VIF in ASCII format
                 int var_vif_len;
@@ -3942,6 +3951,28 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 return -1;
             }
 
+            if (variable_length_vif && !wrong_variable_length_vif_placement)
+            {
+                // variable length VIF in ASCII format
+                int var_vif_len;
+                var_vif_len = frame->data[i++];
+                if (var_vif_len > MBUS_VALUE_INFO_BLOCK_CUSTOM_VIF_SIZE)
+                {
+                    mbus_data_record_free(record);
+                    snprintf(error_str, sizeof(error_str), "Too long variable length VIF.");
+                    return -1;
+                }
+
+                if (i + var_vif_len > frame->data_size)
+                {
+                    mbus_data_record_free(record);
+                    snprintf(error_str, sizeof(error_str), "Premature end of record at variable length VIF.");
+                    return -1;
+                }
+                mbus_data_str_decode(record->drh.vib.custom_vif, &(frame->data[i]), var_vif_len);
+                i += var_vif_len;
+            }
+
             // re-calculate data length, if of variable length type
             if ((record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_DATA) == 0x0D) // flag for variable length data
             {
@@ -3985,6 +4016,25 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
     }
 
     return -1;
+}
+
+//------------------------------------------------------------------------------
+/// Parse the variable-length data of a M-Bus frame
+//------------------------------------------------------------------------------
+int
+mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
+{
+    // Try with the specified placement of variable length VIF first
+    bool variable_length_vif_with_extension = false;
+    int ret = mbus_data_variable_parse_internal(frame, data, false, &variable_length_vif_with_extension);
+    if (!variable_length_vif_with_extension || ret == 0)
+    {
+        return ret;
+    }
+
+    // Make another attempt with the wrong placement when variable length VIF
+    // with extension is used (e.g. some ELV CMA10 use this wrong placement)
+    return mbus_data_variable_parse_internal(frame, data, true, &variable_length_vif_with_extension);
 }
 
 //------------------------------------------------------------------------------
