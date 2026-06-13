@@ -97,13 +97,6 @@ typedef struct _mbus_frame {
 
 } mbus_frame;
 
-typedef struct _mbus_slave_data {
-
-    int state_fcb;
-    int state_acd;
-
-} mbus_slave_data;
-
 #define NITEMS(x) (sizeof(x)/sizeof(x[0]))
 
 //
@@ -583,11 +576,6 @@ const char *mbus_data_record_value(mbus_data_record *record);
 //
 int mbus_frame_type(mbus_frame *frame);
 int mbus_frame_direction(mbus_frame *frame);
-
-//
-// Slave status data register.
-//
-mbus_slave_data *mbus_slave_data_get(size_t i);
 
 //
 // XML generating functions
