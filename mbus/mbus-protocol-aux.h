@@ -496,7 +496,7 @@ char * mbus_frame_data_xml_normalized(mbus_frame_data *data);
  *
  * @return zero when OK
  */
-int mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask);
+int mbus_scan_2nd_address_range(mbus_handle * handle, int pos, const char *addr_mask);
 
 /**
  * Convert a buffer with hex values into a buffer with binary values.
