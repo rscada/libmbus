@@ -1527,6 +1527,7 @@ mbus_context_serial(const char *device)
     handle->is_serial = 1;
     handle->purge_first_frame = MBUS_FRAME_PURGE_M2S;
     handle->auxdata = serial_data;
+    handle->userdata = NULL;
     handle->open = mbus_serial_connect;
     handle->close = mbus_serial_disconnect;
     handle->recv = mbus_serial_recv_frame;
@@ -1575,6 +1576,7 @@ mbus_context_tcp(const char *host, uint16_t port)
     handle->is_serial = 0;
     handle->purge_first_frame = MBUS_FRAME_PURGE_M2S;
     handle->auxdata = tcp_data;
+    handle->userdata = NULL;
     handle->open = mbus_tcp_connect;
     handle->close = mbus_tcp_disconnect;
     handle->recv = mbus_tcp_recv_frame;
@@ -1669,6 +1671,19 @@ mbus_context_set_option(mbus_handle * handle, mbus_context_option option, long v
     }
 
     return -1; // unable to set option
+}
+
+int
+mbus_context_set_userdata(mbus_handle * handle, void *userdata)
+{
+    if (handle == NULL)
+    {
+        MBUS_ERROR("%s: Invalid M-Bus handle to set userdata.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+
+    handle->userdata = userdata;
+    return 0;
 }
 
 int
