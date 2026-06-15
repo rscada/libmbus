@@ -645,6 +645,14 @@ const char *mbus_vif_unit_lookup(unsigned char vif);
 unsigned char mbus_dif_datalength_lookup(unsigned char dif);
 
 char *mbus_frame_get_secondary_address(mbus_frame *frame);
+
+/**
+ * Decodes the secondary addres into the given buffer.
+ * Note that mbus_frame_get_secondary_address() uses an internal static buffer
+ * which may not be desired in multi-threaded scenarios.
+ */
+char *mbus_frame_get_secondary_address_to_buffer(mbus_frame *frame, char *output_buffer, size_t output_buffer_size);
+
 int   mbus_frame_select_secondary_pack(mbus_frame *frame, char *address);
 
 int mbus_is_primary_address(int value);
