@@ -2331,7 +2331,8 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
 
             if (mbus_frame_type(&reply) == MBUS_FRAME_TYPE_LONG)
             {
-                char *addr = mbus_frame_get_secondary_address(&reply);
+                char addr_buffer[32];
+                char *addr = mbus_frame_get_secondary_address_to_buffer(&reply, addr_buffer, sizeof(addr_buffer));
 
                 if (addr == NULL)
                 {

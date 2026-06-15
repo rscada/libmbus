@@ -5164,8 +5164,20 @@ char *
 mbus_frame_get_secondary_address(mbus_frame *frame)
 {
     static char addr[32];
+    return mbus_frame_get_secondary_address_to_buffer(frame, addr, sizeof(addr));
+}
+
+char *
+mbus_frame_get_secondary_address_to_buffer(mbus_frame *frame, char *output_buffer, size_t output_buffer_size)
+{
     mbus_frame_data *data;
     unsigned long id;
+
+    if (output_buffer_size < 17)
+    {
+        snprintf(error_str, sizeof(error_str), "Output buffer size needs to be at least 17, got %zu.", output_buffer_size);
+        return NULL;
+    }
 
     if (frame == NULL || (data = mbus_frame_data_new()) == NULL)
     {
@@ -5190,7 +5202,7 @@ mbus_frame_get_secondary_address(mbus_frame *frame)
 
     id = (unsigned long) mbus_data_bcd_decode_hex(data->data_var.header.id_bcd, 4);
 
-    snprintf(addr, sizeof(addr), "%08lX%02X%02X%02X%02X",
+    snprintf(output_buffer, output_buffer_size, "%08lX%02X%02X%02X%02X",
              id,
              data->data_var.header.manufacturer[0],
              data->data_var.header.manufacturer[1],
@@ -5200,7 +5212,7 @@ mbus_frame_get_secondary_address(mbus_frame *frame)
     // free data
     mbus_frame_data_free(data);
 
-    return addr;
+    return output_buffer;
 }
 
 //------------------------------------------------------------------------------
