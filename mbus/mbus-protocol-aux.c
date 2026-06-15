@@ -783,6 +783,11 @@ mbus_register_found_event(mbus_handle * handle, void (*event)(mbus_handle * hand
     handle->found_event = event;
 }
 
+void mbus_register_abort_scan_check(mbus_handle *handle, bool (*abort_scan_check)(struct _mbus_handle *handle))
+{
+    handle->abort_scan_check = abort_scan_check;
+}
+
 int mbus_fixed_normalize(int medium_unit, long medium_value, char **unit_out, double *value_out, char **quantity_out)
 {
     medium_unit = medium_unit & 0x3F;
@@ -1537,6 +1542,7 @@ mbus_context_serial(const char *device)
     handle->send_event = NULL;
     handle->scan_progress = NULL;
     handle->found_event = NULL;
+    handle->abort_scan_check = NULL;
 
     if ((serial_data->device = strdup(device)) == NULL)
     {
@@ -1586,6 +1592,7 @@ mbus_context_tcp(const char *host, uint16_t port)
     handle->send_event = NULL;
     handle->scan_progress = NULL;
     handle->found_event = NULL;
+    handle->abort_scan_check = NULL;
 
     tcp_data->port = port;
     if ((tcp_data->host = strdup(host)) == NULL)
@@ -2459,8 +2466,8 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
 //------------------------------------------------------------------------------
 // Iterate over all address masks according to the M-Bus probe algorithm.
 //------------------------------------------------------------------------------
-int
-mbus_scan_2nd_address_range(mbus_handle * handle, int pos, const char *addr_mask)
+static int
+mbus_scan_2nd_address_range_internal(mbus_handle * handle, int pos, const char *addr_mask, bool *aborted)
 {
     int i, i_start, i_end, probe_ret;
     char *mask, matching_mask[17];
@@ -2499,7 +2506,13 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, const char *addr_mask
         if (pos < 15)
         {
             // mask[pos] is not a wildcard -> don't iterate, recursively check pos+1
-            mbus_scan_2nd_address_range(handle, pos+1, mask);
+            mbus_scan_2nd_address_range_internal(handle, pos+1, mask, aborted);
+
+            if (*aborted)
+            {
+                free(mask);
+                return 0;
+            }
 
             // Initialize to silence a false-positive compile warning on gcc
             i_start = 0;
@@ -2520,6 +2533,13 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, const char *addr_mask
         {
             mask[pos] = '0'+i;
 
+            if (handle->abort_scan_check && handle->abort_scan_check(handle))
+            {
+                *aborted = true; // To abort all recursive calls
+                free(mask);
+                return 0;
+            }
+
             if (handle->scan_progress)
                 handle->scan_progress(handle,mask);
 
@@ -2535,7 +2555,13 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, const char *addr_mask
             else if (probe_ret == MBUS_PROBE_COLLISION)
             {
                 // collision, more than one device matching, restrict the search mask further
-                mbus_scan_2nd_address_range(handle, pos+1, mask);
+                mbus_scan_2nd_address_range_internal(handle, pos+1, mask, aborted);
+
+                if (*aborted)
+                {
+                    free(mask);
+                    return 0;
+                }
             }
             else if (probe_ret == MBUS_PROBE_NOTHING)
             {
@@ -2552,6 +2578,13 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, const char *addr_mask
 
     free(mask);
     return 0;
+}
+
+int
+mbus_scan_2nd_address_range(mbus_handle * handle, int pos, const char *addr_mask)
+{
+    bool aborted = false;
+    return mbus_scan_2nd_address_range_internal(handle, pos, addr_mask, &aborted);
 }
 
 //------------------------------------------------------------------------------
