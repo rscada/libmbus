@@ -778,7 +778,7 @@ mbus_register_scan_progress(mbus_handle * handle, void (*event)(mbus_handle * ha
 /// Register a function for the found events.
 //------------------------------------------------------------------------------
 void
-mbus_register_found_event(mbus_handle * handle, void (*event)(mbus_handle * handle, mbus_frame *frame))
+mbus_register_found_event(mbus_handle * handle, void (*event)(mbus_handle * handle, mbus_frame *frame, const char *address))
 {
     handle->found_event = event;
 }
@@ -2368,7 +2368,7 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
 
                 if (handle->found_event)
                 {
-                    handle->found_event(handle,&reply);
+                    handle->found_event(handle,&reply,addr);
                 }
 
                 return MBUS_PROBE_SINGLE;
