@@ -99,6 +99,7 @@ typedef struct _mbus_handle {
     void (*scan_progress) (struct _mbus_handle *handle, const char *mask);
     void (*found_event) (struct _mbus_handle *handle, mbus_frame *frame);    
     void *auxdata;
+    void *userdata; /**< User‑managed pointer for callback context */
 } mbus_handle;
 
 /**
@@ -223,6 +224,16 @@ int mbus_disconnect(mbus_handle * handle);
  * @return Zero when successful.
  */
 int mbus_context_set_option(mbus_handle * handle, mbus_context_option option, long value);
+
+/**
+ * Set the user-managed data of a M-Bus context (e.g. for callback context).
+ *
+ * @param handle   Initialized handle
+ * @param userdata User‑managed pointer
+ *
+ * @return Zero when successful.
+ */
+int mbus_context_set_userdata(mbus_handle * handle, void *userdata);
 
 /**
  * Receives a frame using "unified" handle
