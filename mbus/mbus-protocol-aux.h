@@ -99,7 +99,7 @@ typedef struct _mbus_handle {
     void (*recv_event) (unsigned char src_type, const char *buff, size_t len);
     void (*send_event) (unsigned char src_type, const char *buff, size_t len);
     void (*scan_progress) (struct _mbus_handle *handle, const char *mask);
-    void (*found_event) (struct _mbus_handle *handle, mbus_frame *frame);    
+    void (*found_event) (struct _mbus_handle *handle, mbus_frame *frame, const char *address);
     bool (*abort_scan_check) (struct _mbus_handle *handle);
     void *auxdata;
     void *userdata; /**< User‑managed pointer for callback context */
@@ -170,7 +170,7 @@ typedef enum _mbus_context_option {
 void mbus_register_recv_event(mbus_handle *handle, void (*event)(unsigned char src_type, const char *buff, size_t len));
 void mbus_register_send_event(mbus_handle *handle, void (*event)(unsigned char src_type, const char *buff, size_t len));
 void mbus_register_scan_progress(mbus_handle *handle, void (*event)(mbus_handle *handle, const char *mask));
-void mbus_register_found_event(mbus_handle *handle, void (*event)(mbus_handle *handle, mbus_frame *frame));
+void mbus_register_found_event(mbus_handle *handle, void (*event)(mbus_handle *handle, mbus_frame *frame, const char *address));
 
 /**
  * Callback invoked prior to starting the next iteration of a scan.
