@@ -67,6 +67,8 @@
 
 #include "mbus-protocol.h"
 
+#include <stdbool.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -98,6 +100,7 @@ typedef struct _mbus_handle {
     void (*send_event) (unsigned char src_type, const char *buff, size_t len);
     void (*scan_progress) (struct _mbus_handle *handle, const char *mask);
     void (*found_event) (struct _mbus_handle *handle, mbus_frame *frame);    
+    bool (*abort_scan_check) (struct _mbus_handle *handle);
     void *auxdata;
     void *userdata; /**< User‑managed pointer for callback context */
 } mbus_handle;
@@ -168,6 +171,12 @@ void mbus_register_recv_event(mbus_handle *handle, void (*event)(unsigned char s
 void mbus_register_send_event(mbus_handle *handle, void (*event)(unsigned char src_type, const char *buff, size_t len));
 void mbus_register_scan_progress(mbus_handle *handle, void (*event)(mbus_handle *handle, const char *mask));
 void mbus_register_found_event(mbus_handle *handle, void (*event)(mbus_handle *handle, mbus_frame *frame));
+
+/**
+ * Callback invoked prior to starting the next iteration of a scan.
+ * Return true to abort the scan or false to continue.
+ */
+void mbus_register_abort_scan_check(mbus_handle *handle, bool (*abort_scan_check)(struct _mbus_handle *handle));
 
 /**
  * Allocate and initialize M-Bus serial context.
