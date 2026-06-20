@@ -1,0 +1,57 @@
+name: libmbus
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: build examples and tests
+      run: |
+        ./build.sh
+        cd test && make
+        cd ..
+
+    - name: generate test frames
+      run: |
+        PROG=test/mbus_parse_hex
+        ./test/generate-xml.sh test/test-frames $PROG
+        echo "NOTE: error-frames have about 30 parse errors, and unsupported-frames have 12"
+        ./test/generate-xml.sh test/error-frames $PROG || true
+        ./test/generate-xml.sh test/unsupported-frames $PROG || true
+
+    - name: install and run gcovr
+      run: sudo pip install gcovr && gcovr .
+
+  debian:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: install packages
+      run: |
+        sudo apt update -y
+        sudo apt install -y debhelper devscripts dh-autoreconf dpkg-dev fakeroot
+    - name: build debian package
+      run: |
+        ./build-deb.sh
+        sudo dpkg -i ../*.deb
+        ls /usr/lib
+
+#  doc:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: build doxygen documentation
+#      run: sudo apt install -y doxygen
+#      
+#    - name: build doxygen documentation
+#      run: |
+#        rm -rf build || true
+#        mkdir build
+#        cd build
+#        cmake .. -DLIBMBUS_BUILD_DOCS=ON
+#        cmake --build . --target doc
