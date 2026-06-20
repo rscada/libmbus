@@ -2,10 +2,12 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-%:
-	dh --with autoreconf $@
+execute_before_dh_autoreconf:
+	mkdir -p m4 libltdl/config
 
-.PHONY: override_dh_strip
+%:
+	dh $@ --with autoreconf
+
 override_dh_strip:
 	dh_strip --dbg-package=libmbus1-dbg
 
@@ -14,3 +16,5 @@ override_dh_strip:
 
 #override_dh_usrlocal:
 #	echo "dh_usrlocal does nothing"
+
+.PHONY: override_dh_strip execute_before_dh_autoreconf

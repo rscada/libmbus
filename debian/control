@@ -1,7 +1,7 @@
 Source: libmbus
-Priority: extra
+Priority: optional
 Maintainer: Robert Johansson <rob@raditex.nu>
-Build-Depends: debhelper (>= 7.0.50~), dh-autoreconf
+Build-Depends: debhelper (>= 7.0.50~)
 Standards-Version: 3.8.4
 Section: libs
 Homepage: http://www.rscada.se/libmbus
@@ -9,7 +9,7 @@ Homepage: http://www.rscada.se/libmbus
 Package: libmbus-dev
 Section: libdevel
 Architecture: any
-Depends: libmbus1 (= ${binary:Version}), libc6
+Depends: libmbus1 (= ${binary:Version}), ${misc:Depends}
 Description: FreeSCADA M-Bus Library Development files.
  A free and open-source library for M-Bus (Meter Bus) from the rSCADA project,
  including development files.
@@ -17,14 +17,14 @@ Description: FreeSCADA M-Bus Library Development files.
 Package: libmbus1
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libc6
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: FreeSCADA M-Bus Library.
  A free and open-source library for M-Bus (Meter Bus) from the rSCADA project.
 
 Package: libmbus1-dbg
 Architecture: any
 Section: debug
-Priority: extra
+Priority: optional
 Depends: libmbus1 (= ${binary:Version}), ${misc:Depends}
 Description: debugging symbols for libmbus1
  A free and open-source library for M-Bus (Meter Bus) from the rSCADA project,
