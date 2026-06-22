@@ -1,7 +1,7 @@
 Source: libmbus
 Priority: extra
 Maintainer: Robert Johansson <rob@raditex.nu>
-Build-Depends: debhelper (>= 7.0.50~), dh-autoreconf
+Build-Depends: debhelper-compat (= 13)
 Standards-Version: 3.8.4
 Section: libs
 Homepage: http://www.rscada.se/libmbus
