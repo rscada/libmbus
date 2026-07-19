@@ -1,5 +1,13 @@
 Release notes for libmbus
 
+Version 0.10.0 (2026-07-19):
+
+Thanks to Johvik for fixing a memory leak in secondary address scan, adding callback for aborting a secondary scan and improving multi-thread handling.
+Also thanks to Petr Kracík for adding IPv6 support.
+Extended support for VIF extensions (0xFB & 0xFD). Additionally the handling for datetime (type F), BCD and LVAR has been fixed.
+
+Many thanks to all the other contributers
+
 Version 0.9.0 (2019-02-22):
 
 Added support for negative BCD numbers (type A) and date time CP48 (type I),

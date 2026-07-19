@@ -10,14 +10,14 @@ dnl ----------------------------------------------------------------------------
 
 AC_CONFIG_MACRO_DIRS([m4])
 
-AC_INIT([libmbus], [0.9.0], [info@rscada.se], [libmbus], [http://www.rscada.se/libmbus/])
+AC_INIT([libmbus], [0.10.0], [info@rscada.se], [libmbus], [http://www.rscada.se/libmbus/])
 AM_INIT_AUTOMAKE([foreign -Wall])
 
 # fix for automake 1.11 & 1.12
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 LT_INIT
 
-LDFLAGS="$LDFLAGS -version-info 0:9:0"
+LDFLAGS="$LDFLAGS -version-info 0:10:0"
 
 dnl ----------------------
 dnl 
