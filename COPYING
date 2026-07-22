@@ -5,15 +5,18 @@ rSCADA
 http://www.rSCADA.se
 info@rscada.se
 
-The libmbus library is a component of rSCADA that is published as open source, and it is free for anyone to use as long as due credit it given to rSCADA and Raditex Control in derivative work based on the libmbus library. 
+The libmbus library is a component of rSCADA that is published as open source, and it is free for anyone to use as long as due credit it given to rSCADA and Raditex Control in derivative work based on the libmbus library.
 
 Main developer and maintainer:
+
+ * Stefan Wahren <libmbus@gmx.net>
+
+Former maintainer:
 
  * Robert Johansson <rob@raditex.nu>
 
 Contributers:
 
- * Stefan Wahren
  * Tomas Menzl
  * Milosz Jakubowski
  * Henry N.
