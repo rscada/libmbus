@@ -3889,7 +3889,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 // variable length VIF in ASCII format
                 int var_vif_len;
                 var_vif_len = frame->data[i++];
-                if (var_vif_len > MBUS_VALUE_INFO_BLOCK_CUSTOM_VIF_SIZE)
+                if (var_vif_len >= MBUS_VALUE_INFO_BLOCK_CUSTOM_VIF_SIZE)
                 {
                     mbus_data_record_free(record);
                     snprintf(error_str, sizeof(error_str), "Too long variable length VIF.");
@@ -4239,6 +4239,12 @@ mbus_frame_internal_pack(mbus_frame *frame, mbus_frame_data *frame_data)
             //
             for (record = frame_data->data_var.record; record; record = record->next)
             {
+                if (frame->data_size + 1 + record->drh.dib.ndife + 1 + record->drh.vib.nvife +
+                    record->data_len >= MBUS_FRAME_DATA_LENGTH)
+                {
+                    return -3;
+                }
+
                 // pack DIF
                 if (parse_debug)
                     printf("%s: packing DIF [%zu]", __PRETTY_FUNCTION__, frame->data_size);
