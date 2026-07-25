@@ -157,11 +157,14 @@ typedef struct _mbus_data_record_header {
 
 } mbus_data_record_header;
 
+#define MBUS_DATA_VARIABLE_HEADER_LENGTH 12
+#define MBUS_DATA_RECORD_SIZE (MBUS_FRAME_DATA_LENGTH - MBUS_DATA_VARIABLE_HEADER_LENGTH - 1)
+
 typedef struct _mbus_data_record {
 
     mbus_data_record_header drh;
 
-    unsigned char data[234];
+    unsigned char data[MBUS_DATA_RECORD_SIZE];
     size_t data_len;
 
     time_t timestamp;
@@ -190,8 +193,6 @@ typedef struct _mbus_data_variable_header {
     unsigned char signature[2];      // 00 00
 
 } mbus_data_variable_header;
-
-#define MBUS_DATA_VARIABLE_HEADER_LENGTH 12
 
 //
 // VARIABLE LENGTH DATA FORMAT
