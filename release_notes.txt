@@ -1,5 +1,10 @@
 Release notes for libmbus
 
+Version 0.10.2 (2026-07-28):
+---------------------------
+
+Thanks to Lennart Kindermann for reporting the build issue.
+
 Version 0.10.1 (2026-07-25):
 ---------------------------
 

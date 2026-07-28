@@ -10,7 +10,7 @@ dnl ----------------------------------------------------------------------------
 
 AC_CONFIG_MACRO_DIRS([m4])
 
-AC_INIT([libmbus], [0.10.1], [libmbus@gmx.net], [libmbus], [https://github.com/rscada/libmbus/])
+AC_INIT([libmbus], [0.10.2], [libmbus@gmx.net], [libmbus], [https://github.com/rscada/libmbus/])
 AM_INIT_AUTOMAKE([foreign -Wall])
 
 # fix for automake 1.11 & 1.12
