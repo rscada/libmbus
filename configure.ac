@@ -17,7 +17,7 @@ AM_INIT_AUTOMAKE([foreign -Wall])
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 LT_INIT
 
-LDFLAGS="$LDFLAGS -version-info 0:10:1"
+LDFLAGS="$LDFLAGS -version-info 0:10:0"
 
 dnl ----------------------
 dnl 
