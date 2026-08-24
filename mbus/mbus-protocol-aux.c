@@ -1422,6 +1422,13 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
             if ((buff_size - len) < MBUS_XML_RECORD_BUFFER)
             {
                 buff_size *= 2;
+                if (buff_size > MBUS_XML_BUFFER_MAX_SIZE)
+                {
+                    mbus_record_free(norm_record);
+                    free(buff);
+                    return NULL;
+                }
+
                 new_buff = (char*) realloc(buff,buff_size);
 
                 if (new_buff == NULL)

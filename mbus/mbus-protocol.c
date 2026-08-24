@@ -4753,6 +4753,12 @@ mbus_data_variable_xml(mbus_data_variable *data)
             if ((buff_size - len) < MBUS_XML_RECORD_BUFFER)
             {
                 buff_size *= 2;
+                if (buff_size > MBUS_XML_BUFFER_MAX_SIZE)
+                {
+                    free(buff);
+                    return NULL;
+                }
+
                 new_buff = (char*) realloc(buff,buff_size);
 
                 if (new_buff == NULL)
@@ -4987,6 +4993,13 @@ mbus_frame_xml(mbus_frame *frame)
                 if ((buff_size - len) < MBUS_XML_RECORD_BUFFER)
                 {
                     buff_size *= 2;
+                    if (buff_size > MBUS_XML_BUFFER_MAX_SIZE)
+                    {
+                        free(buff);
+                        mbus_data_record_free(frame_data.data_var.record);
+                        return NULL;
+                    }
+
                     new_buff = (char*) realloc(buff,buff_size);
 
                     if (new_buff == NULL)
@@ -5026,6 +5039,13 @@ mbus_frame_xml(mbus_frame *frame)
                     if ((buff_size - len) < MBUS_XML_RECORD_BUFFER)
                     {
                         buff_size *= 2;
+                        if (buff_size > MBUS_XML_BUFFER_MAX_SIZE)
+                        {
+                            free(buff);
+                            mbus_data_record_free(frame_data.data_var.record);
+                            return NULL;
+                        }
+
                         new_buff = (char*) realloc(buff,buff_size);
 
                         if (new_buff == NULL)

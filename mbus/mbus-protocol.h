@@ -519,6 +519,8 @@ unsigned int mbus_manufacturer_id(char *manufacturer);
 
 #define MBUS_XML_RECORD_BUFFER 4096
 
+#define MBUS_XML_BUFFER_MAX_SIZE (10 * 1024 * 1024)
+
 //
 // Event callback functions
 //
