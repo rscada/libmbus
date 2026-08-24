@@ -517,6 +517,8 @@ unsigned int mbus_manufacturer_id(char *manufacturer);
 // it is useful to attach the appropriate code page for postprocessing.
 #define MBUS_XML_PROCESSING_INSTRUCTION         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
 
+#define MBUS_XML_RECORD_BUFFER 4096
+
 //
 // Event callback functions
 //

@@ -4612,7 +4612,7 @@ mbus_str_xml_encode(unsigned char *dst, const unsigned char *src, size_t max_len
 char *
 mbus_data_variable_header_xml(mbus_data_variable_header *header)
 {
-    static char buff[8192];
+    static char buff[MBUS_XML_RECORD_BUFFER];
     char str_encoded[768];
     size_t len = 0;
 
@@ -4650,7 +4650,7 @@ mbus_data_variable_header_xml(mbus_data_variable_header *header)
 char *
 mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int frame_cnt, mbus_data_variable_header *header)
 {
-    static char buff[8192];
+    static char buff[MBUS_XML_RECORD_BUFFER];
     char str_encoded[768];
     size_t len = 0;
     struct tm * timeinfo;
@@ -4731,7 +4731,7 @@ mbus_data_variable_xml(mbus_data_variable *data)
 {
     mbus_data_record *record;
     char *buff = NULL, *new_buff;
-    size_t len = 0, buff_size = 8192;
+    size_t len = 0, buff_size = MBUS_XML_RECORD_BUFFER * 2;
     int i;
 
     if (data)
@@ -4750,7 +4750,7 @@ mbus_data_variable_xml(mbus_data_variable *data)
 
         for (record = data->record, i = 0; record; record = record->next, i++)
         {
-            if ((buff_size - len) < 1024)
+            if ((buff_size - len) < MBUS_XML_RECORD_BUFFER)
             {
                 buff_size *= 2;
                 new_buff = (char*) realloc(buff,buff_size);
@@ -4783,7 +4783,7 @@ mbus_data_fixed_xml(mbus_data_fixed *data)
 {
     char *buff = NULL;
     char str_encoded[256];
-    size_t len = 0, buff_size = 8192;
+    size_t len = 0, buff_size = MBUS_XML_RECORD_BUFFER * 2;
     int val;
 
     if (data)
@@ -4861,7 +4861,7 @@ mbus_data_error_xml(int error)
 {
     char *buff = NULL;
     char str_encoded[256];
-    size_t len = 0, buff_size = 8192;
+    size_t len = 0, buff_size = MBUS_XML_RECORD_BUFFER;
 
     buff = (char*) malloc(buff_size);
 
@@ -4923,7 +4923,7 @@ mbus_frame_xml(mbus_frame *frame)
     mbus_data_record *record;
     char *buff = NULL, *new_buff;
 
-    size_t len = 0, buff_size = 8192;
+    size_t len = 0, buff_size = MBUS_XML_RECORD_BUFFER * 2;
     int record_cnt = 0, frame_cnt;
 
     if (frame)
@@ -4984,7 +4984,7 @@ mbus_frame_xml(mbus_frame *frame)
             // record count as record ID in the XML output
             for (record = frame_data.data_var.record; record; record = record->next, record_cnt++)
             {
-                if ((buff_size - len) < 1024)
+                if ((buff_size - len) < MBUS_XML_RECORD_BUFFER)
                 {
                     buff_size *= 2;
                     new_buff = (char*) realloc(buff,buff_size);
@@ -5023,7 +5023,7 @@ mbus_frame_xml(mbus_frame *frame)
                 // record count as record ID in the XML output
                 for (record = frame_data.data_var.record; record; record = record->next, record_cnt++)
                 {
-                    if ((buff_size - len) < 1024)
+                    if ((buff_size - len) < MBUS_XML_RECORD_BUFFER)
                     {
                         buff_size *= 2;
                         new_buff = (char*) realloc(buff,buff_size);

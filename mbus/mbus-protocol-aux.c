@@ -1399,7 +1399,7 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
     mbus_record *norm_record;
     char *buff = NULL, *new_buff = NULL;
     char str_encoded[768] = "";
-    size_t len = 0, buff_size = 8192;
+    size_t len = 0, buff_size = MBUS_XML_RECORD_BUFFER * 2;
     size_t i;
 
     if (data)
@@ -1419,7 +1419,7 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
         {
             norm_record = mbus_parse_variable_record(record);
 
-            if ((buff_size - len) < 1024)
+            if ((buff_size - len) < MBUS_XML_RECORD_BUFFER)
             {
                 buff_size *= 2;
                 new_buff = (char*) realloc(buff,buff_size);
