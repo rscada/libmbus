@@ -73,7 +73,7 @@
         <StorageNumber>0</StorageNumber>
         <Unit></Unit>
         <Quantity></Quantity>
-        <Value>10 01 1F</Value>
+        <Value>1F 01 10</Value>
     </DataRecord>
 
 </MBusData>

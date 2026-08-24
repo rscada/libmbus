@@ -60,7 +60,7 @@
 
     <DataRecord id="6">
         <Function>Manufacturer specific</Function>
-        <Value>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 10</Value>
+        <Value>10 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</Value>
     </DataRecord>
 
 </MBusData>

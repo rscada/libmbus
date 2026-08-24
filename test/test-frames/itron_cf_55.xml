@@ -98,7 +98,7 @@
 
     <DataRecord id="12">
         <Function>Manufacturer specific</Function>
-        <Value>03 20</Value>
+        <Value>20 03</Value>
     </DataRecord>
 
 </MBusData>

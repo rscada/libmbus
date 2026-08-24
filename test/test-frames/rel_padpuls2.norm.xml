@@ -57,7 +57,7 @@
         <StorageNumber>0</StorageNumber>
         <Unit></Unit>
         <Quantity></Quantity>
-        <Value>43 01 01 00</Value>
+        <Value>00 01 01 43</Value>
     </DataRecord>
 
 </MBusData>

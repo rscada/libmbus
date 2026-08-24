@@ -127,7 +127,7 @@
         <StorageNumber>0</StorageNumber>
         <Unit></Unit>
         <Quantity></Quantity>
-        <Value>C4 09 01 01 12 00 01 01 01 07 57 26 80 00 CD 4E 08 04 07 A3 FF 03 57 26 80 00 04 04 0D 02 FF 0F 05 3C FF 62 E7 62 96 0A 89 0A 02 00 15 40 17 01 00 00 63 42</Value>
+        <Value>42 63 00 00 01 17 40 15 00 02 0A 89 0A 96 62 E7 62 FF 3C 05 0F FF 02 0D 04 04 00 80 26 57 03 FF A3 07 04 08 4E CD 00 80 26 57 07 01 01 01 00 12 01 01 09 C4</Value>
     </DataRecord>
 
 </MBusData>

@@ -70,7 +70,7 @@
 
     <DataRecord id="8">
         <Function>Manufacturer specific</Function>
-        <Value>00 01 75 13</Value>
+        <Value>13 75 01 00</Value>
     </DataRecord>
 
 </MBusData>

@@ -373,7 +373,7 @@
         <StorageNumber>0</StorageNumber>
         <Unit></Unit>
         <Quantity></Quantity>
-        <Value>03 02 00 00 23</Value>
+        <Value>23 00 00 02 03</Value>
     </DataRecord>
 
 </MBusData>
