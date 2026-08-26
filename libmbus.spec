@@ -11,7 +11,7 @@
 
 Summary: 	Open source M-bus (Meter-Bus) library
 Name: 		libmbus
-Version: 	0.10.2
+Version: 	0.10.3
 Release: 	1
 Source:	 	https://github.com/rscada/%{name}/archive/%{version}.tar.gz
 URL:		https://github.com/rscada/libmbus/
@@ -77,6 +77,9 @@ rm -rf "%buildroot"
 %{_libdir}/pkgconfig/libmbus.pc
 
 %changelog
+* Wed Aug 26 2026 Stefan Wahren <libmbus@gmx.net> - 0.10.3-1
+- bump version
+
 * Tue Jul 28 2026 Stefan Wahren <libmbus@gmx.net> - 0.10.2-1
 - bump version
 - update packager address

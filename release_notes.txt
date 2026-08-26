@@ -1,5 +1,11 @@
 Release notes for libmbus
 
+Version 0.10.3 (2026-08-26):
+---------------------------
+
+Thanks to Brian Willows and Adam Bedard (Security Researcher) for reporting the heap buffer overflows.
+These should be addressed with this security release.
+
 Version 0.10.2 (2026-07-28):
 ---------------------------
 

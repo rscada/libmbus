@@ -1,3 +1,11 @@
+libmbus (0.10.3) noble; urgency=high
+
+  * New official release
+    - fix several overflows
+    - update test-frames
+
+ -- Stefan Wahren <libmbus@gmx.net> Wed, 26 Aug 2026 11:11:00 +0200
+
 libmbus (0.10.2) noble; urgency=high
 
   * New official release
