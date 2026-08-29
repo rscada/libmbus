@@ -1558,6 +1558,8 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
             }
             else
             {
+                free(buff);
+                return NULL;
             }
 
             ret = snprintf(&buff[len], buff_size - len, "    </DataRecord>\n\n");
