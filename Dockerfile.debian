@@ -1,0 +1,17 @@
+# docker build . -f Dockerfile.debian -t deb_builder
+
+FROM ubuntu
+ENV DEBIAN_FRONTEND=noninteractiv
+
+RUN apt-get update -y && \
+    apt-get install -y gcc g++ make && \
+    apt-get install -y autoconf libtool
+
+# What package is debuild
+RUN apt-get install -y gnupg dput dh-make devscripts lintian
+COPY . /tmp
+RUN cd /tmp && \
+    ./build-deb.sh && \
+    ls -al . .. && \
+    cd .. && \
+    dpkg -i *.deb || true
