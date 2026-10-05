@@ -3827,7 +3827,8 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
             if ((record = mbus_data_record_new()) == NULL)
             {
-                // clean up...
+                mbus_data_record_free(data->record);
+                data->record = NULL;
                 return (-2);
             }
 
@@ -3873,6 +3874,8 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
                 if (record->drh.dib.ndife >= MBUS_DATA_INFO_BLOCK_DIFE_SIZE)
                 {
+                    mbus_data_record_free(data->record);
+                    data->record = NULL;
                     mbus_data_record_free(record);
                     snprintf(error_str, sizeof(error_str), "Too many DIFE.");
                     return -1;
@@ -3888,6 +3891,8 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
             if (i >= frame->data_size)
             {
+                mbus_data_record_free(data->record);
+                data->record = NULL;
                 mbus_data_record_free(record);
                 snprintf(error_str, sizeof(error_str), "Premature end of record at DIF.");
                 return -1;
@@ -3905,6 +3910,8 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 var_vif_len = frame->data[i++];
                 if (var_vif_len >= MBUS_VALUE_INFO_BLOCK_CUSTOM_VIF_SIZE)
                 {
+                    mbus_data_record_free(data->record);
+                    data->record = NULL;
                     mbus_data_record_free(record);
                     snprintf(error_str, sizeof(error_str), "Too long variable length VIF.");
                     return -1;
@@ -3912,6 +3919,8 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
                 if (i + var_vif_len > frame->data_size)
                 {
+                    mbus_data_record_free(data->record);
+                    data->record = NULL;
                     mbus_data_record_free(record);
                     snprintf(error_str, sizeof(error_str), "Premature end of record at variable length VIF.");
                     return -1;
@@ -3935,6 +3944,8 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
                     if (record->drh.vib.nvife >= MBUS_VALUE_INFO_BLOCK_VIFE_SIZE)
                     {
+                        mbus_data_record_free(data->record);
+                        data->record = NULL;
                         mbus_data_record_free(record);
                         snprintf(error_str, sizeof(error_str), "Too many VIFE.");
                         return -1;
@@ -3951,6 +3962,8 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
             if (i >= frame->data_size)
             {
+                mbus_data_record_free(data->record);
+                data->record = NULL;
                 mbus_data_record_free(record);
                 snprintf(error_str, sizeof(error_str), "Premature end of record at VIF.");
                 return -1;
@@ -3979,6 +3992,8 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
             if (i + record->data_len > frame->data_size)
             {
+                mbus_data_record_free(data->record);
+                data->record = NULL;
                 mbus_data_record_free(record);
                 snprintf(error_str, sizeof(error_str), "Premature end of record at data.");
                 return -1;
