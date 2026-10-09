@@ -4353,7 +4353,7 @@ int
 mbus_frame_print(mbus_frame *frame)
 {
     mbus_frame *iter;
-    unsigned char data_buff[256];
+    unsigned char data_buff[261];
     int len, i;
 
     if (frame == NULL)
@@ -4361,7 +4361,7 @@ mbus_frame_print(mbus_frame *frame)
 
     for (iter = frame; iter; iter = iter->next)
     {
-        if ((len = mbus_frame_pack(iter, data_buff, sizeof(data_buff))) == -1)
+        if ((len = mbus_frame_pack(iter, data_buff, sizeof(data_buff))) < 0)
         {
             return -2;
         }
