@@ -3886,7 +3886,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             }
             i++;
 
-            if (i > frame->data_size)
+            if (i >= frame->data_size)
             {
                 mbus_data_record_free(record);
                 snprintf(error_str, sizeof(error_str), "Premature end of record at DIF.");
@@ -3949,7 +3949,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 i++;
             }
 
-            if (i > frame->data_size)
+            if (i >= frame->data_size)
             {
                 mbus_data_record_free(record);
                 snprintf(error_str, sizeof(error_str), "Premature end of record at VIF.");
