@@ -3962,9 +3962,9 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 if(frame->data[i] <= 0xBF)
                     record->data_len = frame->data[i];
                 else if(frame->data[i] >= 0xC0 && frame->data[i] <= 0xC9)
-                    record->data_len = (frame->data[i] - 0xC0) * 2;
+                    record->data_len = frame->data[i] - 0xC0;
                 else if(frame->data[i] >= 0xD0 && frame->data[i] <= 0xD9)
-                    record->data_len = (frame->data[i] - 0xD0) * 2;
+                    record->data_len = frame->data[i] - 0xD0;
                 else if(frame->data[i] >= 0xE0 && frame->data[i] <= 0xEF)
                     record->data_len = frame->data[i] - 0xE0;
                 else if(frame->data[i] >= 0xF0 && frame->data[i] <= 0xF4)
