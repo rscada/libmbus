@@ -5396,6 +5396,7 @@ mbus_frame_xml(mbus_frame *frame)
             if (frame_data.data_var.record)
             {
                 mbus_data_record_free(frame_data.data_var.record);
+                frame_data.data_var.record = NULL;
             }
 
             frame_cnt++;
@@ -5450,6 +5451,7 @@ mbus_frame_xml(mbus_frame *frame)
                 if (frame_data.data_var.record)
                 {
                     mbus_data_record_free(frame_data.data_var.record);
+                    frame_data.data_var.record = NULL;
                 }
             }
 
