@@ -10,6 +10,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <limits.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -479,7 +480,7 @@ mbus_data_bcd_decode(unsigned char *bcd_data, size_t bcd_data_size)
     long long val = 0;
     size_t i;
 
-    if (bcd_data)
+    if (bcd_data && bcd_data_size <= 6)
     {
         for (i = bcd_data_size; i > 0; i--)
         {
@@ -516,7 +517,7 @@ mbus_data_bcd_decode_hex(unsigned char *bcd_data, size_t bcd_data_size)
     long long val = 0;
     size_t i;
 
-    if (bcd_data)
+    if (bcd_data && bcd_data_size <= 6)
     {
         for (i = bcd_data_size; i > 0; i--)
         {
@@ -3449,21 +3450,31 @@ mbus_data_record_value(mbus_data_record *record)
 long mbus_data_record_storage_number(mbus_data_record *record)
 {
     int bit_index = 0;
-    long result = 0;
+    uint64_t result = 0;
     int i;
 
     if (record)
     {
+        if (record->drh.dib.ndife > MBUS_DATA_INFO_BLOCK_DIFE_SIZE)
+        {
+            return -1;
+        }
+
         result |= (record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_STORAGE_NO) >> 6;
         bit_index++;
 
         for (i=0; i<record->drh.dib.ndife; i++)
         {
-            result |= (record->drh.dib.dife[i] & MBUS_DATA_RECORD_DIFE_MASK_STORAGE_NO) << bit_index;
+            result |= ((uint64_t)(record->drh.dib.dife[i] & MBUS_DATA_RECORD_DIFE_MASK_STORAGE_NO)) << bit_index;
             bit_index += 4;
         }
 
-        return result;
+        if (result > LONG_MAX)
+        {
+            return -1;
+        }
+
+        return (long)result;
     }
 
     return -1;
@@ -3478,8 +3489,13 @@ long mbus_data_record_tariff(mbus_data_record *record)
     long result = 0;
     int i;
 
-    if (record && (record->drh.dib.ndife > 0))
+    if (record)
     {
+        if (record->drh.dib.ndife == 0 || record->drh.dib.ndife > MBUS_DATA_INFO_BLOCK_DIFE_SIZE)
+        {
+            return -1;
+        }
+
         for (i=0; i<record->drh.dib.ndife; i++)
         {
             result |= ((record->drh.dib.dife[i] & MBUS_DATA_RECORD_DIFE_MASK_TARIFF) >> 4) << bit_index;
@@ -3501,8 +3517,13 @@ int mbus_data_record_device(mbus_data_record *record)
     int result = 0;
     int i;
 
-    if (record && (record->drh.dib.ndife > 0))
+    if (record)
     {
+        if (record->drh.dib.ndife == 0 || record->drh.dib.ndife > MBUS_DATA_INFO_BLOCK_DIFE_SIZE)
+        {
+            return -1;
+        }
+
         for (i=0; i<record->drh.dib.ndife; i++)
         {
             result |= ((record->drh.dib.dife[i] & MBUS_DATA_RECORD_DIFE_MASK_DEVICE) >> 6) << bit_index;
@@ -3827,7 +3848,8 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
             if ((record = mbus_data_record_new()) == NULL)
             {
-                // clean up...
+                mbus_data_record_free(data->record);
+                data->record = NULL;
                 return (-2);
             }
 
@@ -3873,6 +3895,8 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
                 if (record->drh.dib.ndife >= MBUS_DATA_INFO_BLOCK_DIFE_SIZE)
                 {
+                    mbus_data_record_free(data->record);
+                    data->record = NULL;
                     mbus_data_record_free(record);
                     snprintf(error_str, sizeof(error_str), "Too many DIFE.");
                     return -1;
@@ -3886,8 +3910,10 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             }
             i++;
 
-            if (i > frame->data_size)
+            if (i >= frame->data_size)
             {
+                mbus_data_record_free(data->record);
+                data->record = NULL;
                 mbus_data_record_free(record);
                 snprintf(error_str, sizeof(error_str), "Premature end of record at DIF.");
                 return -1;
@@ -3905,6 +3931,8 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 var_vif_len = frame->data[i++];
                 if (var_vif_len >= MBUS_VALUE_INFO_BLOCK_CUSTOM_VIF_SIZE)
                 {
+                    mbus_data_record_free(data->record);
+                    data->record = NULL;
                     mbus_data_record_free(record);
                     snprintf(error_str, sizeof(error_str), "Too long variable length VIF.");
                     return -1;
@@ -3912,6 +3940,8 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
                 if (i + var_vif_len > frame->data_size)
                 {
+                    mbus_data_record_free(data->record);
+                    data->record = NULL;
                     mbus_data_record_free(record);
                     snprintf(error_str, sizeof(error_str), "Premature end of record at variable length VIF.");
                     return -1;
@@ -3935,6 +3965,8 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
                     if (record->drh.vib.nvife >= MBUS_VALUE_INFO_BLOCK_VIFE_SIZE)
                     {
+                        mbus_data_record_free(data->record);
+                        data->record = NULL;
                         mbus_data_record_free(record);
                         snprintf(error_str, sizeof(error_str), "Too many VIFE.");
                         return -1;
@@ -3949,8 +3981,10 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 i++;
             }
 
-            if (i > frame->data_size)
+            if (i >= frame->data_size)
             {
+                mbus_data_record_free(data->record);
+                data->record = NULL;
                 mbus_data_record_free(record);
                 snprintf(error_str, sizeof(error_str), "Premature end of record at VIF.");
                 return -1;
@@ -3979,6 +4013,8 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
             if (i + record->data_len > frame->data_size)
             {
+                mbus_data_record_free(data->record);
+                data->record = NULL;
                 mbus_data_record_free(record);
                 snprintf(error_str, sizeof(error_str), "Premature end of record at data.");
                 return -1;
@@ -4253,6 +4289,17 @@ mbus_frame_internal_pack(mbus_frame *frame, mbus_frame_data *frame_data)
             //
             for (record = frame_data->data_var.record; record; record = record->next)
             {
+                if (record->data_len > MBUS_DATA_RECORD_SIZE)
+                {
+                    return -5;
+                }
+
+                if ((record->drh.dib.ndife > MBUS_DATA_INFO_BLOCK_DIFE_SIZE) ||
+                    (record->drh.vib.nvife > MBUS_VALUE_INFO_BLOCK_VIFE_SIZE))
+                {
+                    return -4;
+                }
+
                 if (frame->data_size + 1 + record->drh.dib.ndife + 1 + record->drh.vib.nvife +
                     record->data_len >= MBUS_FRAME_DATA_LENGTH)
                 {
@@ -4317,7 +4364,7 @@ int
 mbus_frame_print(mbus_frame *frame)
 {
     mbus_frame *iter;
-    unsigned char data_buff[256];
+    unsigned char data_buff[261];
     int len, i;
 
     if (frame == NULL)
@@ -4325,7 +4372,7 @@ mbus_frame_print(mbus_frame *frame)
 
     for (iter = frame; iter; iter = iter->next)
     {
-        if ((len = mbus_frame_pack(iter, data_buff, sizeof(data_buff))) == -1)
+        if ((len = mbus_frame_pack(iter, data_buff, sizeof(data_buff))) < 0)
         {
             return -2;
         }
@@ -4427,6 +4474,10 @@ mbus_data_variable_print(mbus_data_variable *data)
                 printf("%s: VENDOR DATA [size=%zu] = ", __PRETTY_FUNCTION__, record->data_len);
                 for (j = 0; j < record->data_len; j++)
                 {
+                    if (j >= MBUS_DATA_RECORD_SIZE)
+                    {
+                        break;
+                    }
                     printf("%.2X ", record->data[j]);
                 }
                 printf("\n");
@@ -4444,7 +4495,15 @@ mbus_data_variable_print(mbus_data_variable *data)
             // DIFE
             for (j = 0; j < record->drh.dib.ndife; j++)
             {
-                unsigned char dife = record->drh.dib.dife[j];
+                unsigned char dife;
+
+                if (j >= MBUS_DATA_INFO_BLOCK_DIFE_SIZE)
+                {
+                    printf("Invalid nDIFE = %zu\n", record->drh.dib.ndife);
+                    break;
+                }
+
+                dife = record->drh.dib.dife[j];
 
                 printf("DIFE[%zu]               = %.2X\n", j,  dife);
                 printf("DIFE[%zu].Extension     = %s\n",   j, (dife & MBUS_DATA_RECORD_DIFE_MASK_EXTENSION) ? "Yes" : "No");
@@ -4461,7 +4520,15 @@ mbus_data_variable_print(mbus_data_variable *data)
             // VIFE
             for (j = 0; j < record->drh.vib.nvife; j++)
             {
-                unsigned char vife = record->drh.vib.vife[j];
+                unsigned char vife;
+
+                if (j >= MBUS_VALUE_INFO_BLOCK_VIFE_SIZE)
+                {
+                    printf("Invalid nVIFE = %zu\n", record->drh.vib.nvife);
+                    break;
+                }
+
+                vife = record->drh.vib.vife[j];
 
                 printf("VIFE[%zu]           = %.2X\n", j,  vife);
                 printf("VIFE[%zu].Extension = %s\n",   j, (vife & MBUS_DIB_VIF_EXTENSION_BIT) ? "Yes" : "No");
@@ -4806,13 +4873,16 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
         if (record->timestamp > 0)
         {
             timeinfo = gmtime (&(record->timestamp));
-            strftime(timestamp,21,"%Y-%m-%dT%H:%M:%SZ",timeinfo);
-            ret = snprintf(&buff[len], sizeof(buff) - len,
-                           "        <Timestamp>%s</Timestamp>\n", timestamp);
-            if (ret < 0 || (size_t)ret >= sizeof(buff) - len)
-                return "";
+            if (timeinfo)
+            {
+                strftime(timestamp,21,"%Y-%m-%dT%H:%M:%SZ",timeinfo);
+                ret = snprintf(&buff[len], sizeof(buff) - len,
+                               "        <Timestamp>%s</Timestamp>\n", timestamp);
+                if (ret < 0 || (size_t)ret >= sizeof(buff) - len)
+                    return "";
 
-            len += ret;
+                len += ret;
+            }
         }
 
         ret = snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");
@@ -5341,6 +5411,7 @@ mbus_frame_xml(mbus_frame *frame)
             if (frame_data.data_var.record)
             {
                 mbus_data_record_free(frame_data.data_var.record);
+                frame_data.data_var.record = NULL;
             }
 
             frame_cnt++;
@@ -5395,6 +5466,7 @@ mbus_frame_xml(mbus_frame *frame)
                 if (frame_data.data_var.record)
                 {
                     mbus_data_record_free(frame_data.data_var.record);
+                    frame_data.data_var.record = NULL;
                 }
             }
 
