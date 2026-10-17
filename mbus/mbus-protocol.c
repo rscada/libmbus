@@ -3178,11 +3178,18 @@ mbus_data_record_decode(mbus_data_record *record)
                 // E110 1100  Time Point (date)
                 if (vif == 0x6C)
                 {
-                    mbus_data_tm_decode(&time, record->data, 2);
-                    snprintf(buff, sizeof(buff), "%04d-%02d-%02d",
-                                                 (time.tm_year + 1900),
-                                                 (time.tm_mon + 1),
-                                                  time.tm_mday);
+                    if (record->data[0] == 0xFF && record->data[1] == 0xFF)
+                    {
+                        buff[0] = '\0';
+                    }
+                    else
+                    {
+                        mbus_data_tm_decode(&time, record->data, 2);
+                        snprintf(buff, sizeof(buff), "%04d-%02d-%02d",
+                                                     (time.tm_year + 1900),
+                                                     (time.tm_mon + 1),
+                                                      time.tm_mday);
+                    }
                 }
                 else  // 2 byte integer
                 {
