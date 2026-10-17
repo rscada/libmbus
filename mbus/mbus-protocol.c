@@ -10,6 +10,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <limits.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -3454,7 +3455,7 @@ mbus_data_record_value(mbus_data_record *record)
 long mbus_data_record_storage_number(mbus_data_record *record)
 {
     int bit_index = 0;
-    long result = 0;
+    uint64_t result = 0;
     int i;
 
     if (record)
@@ -3469,11 +3470,16 @@ long mbus_data_record_storage_number(mbus_data_record *record)
 
         for (i=0; i<record->drh.dib.ndife; i++)
         {
-            result |= (record->drh.dib.dife[i] & MBUS_DATA_RECORD_DIFE_MASK_STORAGE_NO) << bit_index;
+            result |= ((uint64_t)(record->drh.dib.dife[i] & MBUS_DATA_RECORD_DIFE_MASK_STORAGE_NO)) << bit_index;
             bit_index += 4;
         }
 
-        return result;
+        if (result > LONG_MAX)
+        {
+            return -1;
+        }
+
+        return (long)result;
     }
 
     return -1;
