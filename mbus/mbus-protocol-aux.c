@@ -1366,6 +1366,7 @@ mbus_parse_variable_record(mbus_data_record *data)
         if (mbus_vib_unit_normalize(&(data->drh.vib), value_out_real, &(record->unit), &real_val, &(record->quantity)) != 0)
         {
             MBUS_ERROR("%s: problem with mbus_vib_unit_normalize\n", __PRETTY_FUNCTION__);
+            free(value_out_str);
             mbus_record_free(record);
             record = NULL;
             return NULL;
