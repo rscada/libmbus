@@ -3454,6 +3454,11 @@ long mbus_data_record_storage_number(mbus_data_record *record)
 
     if (record)
     {
+        if (record->drh.dib.ndife > MBUS_DATA_INFO_BLOCK_DIFE_SIZE)
+        {
+            return -1;
+        }
+
         result |= (record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_STORAGE_NO) >> 6;
         bit_index++;
 
@@ -3478,8 +3483,13 @@ long mbus_data_record_tariff(mbus_data_record *record)
     long result = 0;
     int i;
 
-    if (record && (record->drh.dib.ndife > 0))
+    if (record)
     {
+        if (record->drh.dib.ndife == 0 || record->drh.dib.ndife > MBUS_DATA_INFO_BLOCK_DIFE_SIZE)
+        {
+            return -1;
+        }
+
         for (i=0; i<record->drh.dib.ndife; i++)
         {
             result |= ((record->drh.dib.dife[i] & MBUS_DATA_RECORD_DIFE_MASK_TARIFF) >> 4) << bit_index;
@@ -3501,8 +3511,13 @@ int mbus_data_record_device(mbus_data_record *record)
     int result = 0;
     int i;
 
-    if (record && (record->drh.dib.ndife > 0))
+    if (record)
     {
+        if (record->drh.dib.ndife == 0 || record->drh.dib.ndife > MBUS_DATA_INFO_BLOCK_DIFE_SIZE)
+        {
+            return -1;
+        }
+
         for (i=0; i<record->drh.dib.ndife; i++)
         {
             result |= ((record->drh.dib.dife[i] & MBUS_DATA_RECORD_DIFE_MASK_DEVICE) >> 6) << bit_index;
@@ -4296,6 +4311,12 @@ mbus_frame_internal_pack(mbus_frame *frame, mbus_frame_data *frame_data)
             //
             for (record = frame_data->data_var.record; record; record = record->next)
             {
+                if ((record->drh.dib.ndife > MBUS_DATA_INFO_BLOCK_DIFE_SIZE) ||
+                    (record->drh.vib.nvife > MBUS_VALUE_INFO_BLOCK_VIFE_SIZE))
+                {
+                    return -4;
+                }
+
                 if (frame->data_size + 1 + record->drh.dib.ndife + 1 + record->drh.vib.nvife +
                     record->data_len >= MBUS_FRAME_DATA_LENGTH)
                 {
@@ -4487,7 +4508,15 @@ mbus_data_variable_print(mbus_data_variable *data)
             // DIFE
             for (j = 0; j < record->drh.dib.ndife; j++)
             {
-                unsigned char dife = record->drh.dib.dife[j];
+                unsigned char dife;
+
+                if (j >= MBUS_DATA_INFO_BLOCK_DIFE_SIZE)
+                {
+                    printf("Invalid nDIFE = %zu\n", record->drh.dib.ndife);
+                    break;
+                }
+
+                dife = record->drh.dib.dife[j];
 
                 printf("DIFE[%zu]               = %.2X\n", j,  dife);
                 printf("DIFE[%zu].Extension     = %s\n",   j, (dife & MBUS_DATA_RECORD_DIFE_MASK_EXTENSION) ? "Yes" : "No");
@@ -4504,7 +4533,15 @@ mbus_data_variable_print(mbus_data_variable *data)
             // VIFE
             for (j = 0; j < record->drh.vib.nvife; j++)
             {
-                unsigned char vife = record->drh.vib.vife[j];
+                unsigned char vife;
+
+                if (j >= MBUS_VALUE_INFO_BLOCK_VIFE_SIZE)
+                {
+                    printf("Invalid nVIFE = %zu\n", record->drh.vib.nvife);
+                    break;
+                }
+
+                vife = record->drh.vib.vife[j];
 
                 printf("VIFE[%zu]           = %.2X\n", j,  vife);
                 printf("VIFE[%zu].Extension = %s\n",   j, (vife & MBUS_DIB_VIF_EXTENSION_BIT) ? "Yes" : "No");
