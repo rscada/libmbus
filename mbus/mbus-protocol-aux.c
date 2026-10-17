@@ -872,16 +872,23 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
                 // E110 1100  Time Point (date)
                 if (vif == 0x6C)
                 {
-                    mbus_data_tm_decode(&time, record->data, 2);
                     if ((*value_out_str = (char*) malloc(11)) == NULL)
                     {
                         MBUS_ERROR("Unable to allocate memory");
                         return -1;
                     }
-                    *value_out_str_size = snprintf(*value_out_str, 11, "%04d-%02d-%02d",
-                                                 (time.tm_year + 1900),
-                                                 (time.tm_mon + 1),
-                                                  time.tm_mday);
+                    if (record->data[0] == 0xFF && record->data[1] == 0xFF)
+                    {
+                        (*value_out_str)[0] = '\0';
+                    }
+                    else
+                    {
+                        mbus_data_tm_decode(&time, record->data, 2);
+                        *value_out_str_size = snprintf(*value_out_str, 11, "%04d-%02d-%02d",
+                                                     (time.tm_year + 1900),
+                                                     (time.tm_mon + 1),
+                                                      time.tm_mday);
+                    }
                     result = 0;
                 }
                 else  // normal integer
