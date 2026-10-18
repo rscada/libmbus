@@ -481,6 +481,11 @@ mbus_data_bcd_decode(unsigned char *bcd_data, size_t bcd_data_size)
 
     if (bcd_data)
     {
+        if (bcd_data_size == 0 || bcd_data_size > 6)
+        {
+            return -1;
+        }
+
         for (i = bcd_data_size; i > 0; i--)
         {
             val = (val * 10);
@@ -516,7 +521,7 @@ mbus_data_bcd_decode_hex(unsigned char *bcd_data, size_t bcd_data_size)
     long long val = 0;
     size_t i;
 
-    if (bcd_data)
+    if (bcd_data && bcd_data_size <= 6)
     {
         for (i = bcd_data_size; i > 0; i--)
         {
