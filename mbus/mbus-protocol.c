@@ -4334,7 +4334,7 @@ mbus_frame_internal_pack(mbus_frame *frame, mbus_frame_data *frame_data)
                 }
 
                 if (frame->data_size + 1 + record->drh.dib.ndife + 1 + record->drh.vib.nvife +
-                    record->data_len >= MBUS_FRAME_DATA_LENGTH)
+                    record->data_len > MBUS_FRAME_DATA_LENGTH)
                 {
                     return -3;
                 }
