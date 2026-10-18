@@ -4529,6 +4529,9 @@ mbus_hex_dump(const char *label, const char *buff, size_t len)
     time ( &rawtime );
     timeinfo = gmtime ( &rawtime );
 
+    if (timeinfo == NULL)
+        return;
+
     strftime(timestamp,21,"%Y-%m-%d %H:%M:%SZ",timeinfo);
     fprintf(stderr, "[%s] %s (%03zu):", timestamp, label, len);
 
@@ -4806,13 +4809,16 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
         if (record->timestamp > 0)
         {
             timeinfo = gmtime (&(record->timestamp));
-            strftime(timestamp,21,"%Y-%m-%dT%H:%M:%SZ",timeinfo);
-            ret = snprintf(&buff[len], sizeof(buff) - len,
-                           "        <Timestamp>%s</Timestamp>\n", timestamp);
-            if (ret < 0 || (size_t)ret >= sizeof(buff) - len)
-                return "";
+            if (timeinfo)
+            {
+                strftime(timestamp,21,"%Y-%m-%dT%H:%M:%SZ",timeinfo);
+                ret = snprintf(&buff[len], sizeof(buff) - len,
+                               "        <Timestamp>%s</Timestamp>\n", timestamp);
+                if (ret < 0 || (size_t)ret >= sizeof(buff) - len)
+                    return "";
 
-            len += ret;
+                len += ret;
+            }
         }
 
         ret = snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");
