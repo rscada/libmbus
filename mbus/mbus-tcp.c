@@ -159,7 +159,7 @@ mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
         return -1;
     }
 
-    if ((len = mbus_frame_pack(frame, buff, sizeof(buff))) == -1)
+    if ((len = mbus_frame_pack(frame, buff, sizeof(buff))) < 0)
     {
         snprintf(error_str, sizeof(error_str), "%s: mbus_frame_pack failed\n", __PRETTY_FUNCTION__);
         mbus_error_str_set(error_str);
