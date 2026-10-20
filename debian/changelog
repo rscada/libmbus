@@ -1,3 +1,13 @@
+libmbus (0.10.4) noble; urgency=high
+
+  * New official release
+    - fix several security issues (out-of-bounds reads, double free,
+      memory leaks, NULL pointer deref, integer overflow)
+    - fix empty Type G dates
+    - fix LVAR length calculation for BCD numbers
+
+ -- Stefan Wahren <libmbus@gmx.net> Tue, 20 Oct 2026 11:18:00 +0200
+
 libmbus (0.10.3) noble; urgency=high
 
   * New official release

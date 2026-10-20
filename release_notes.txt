@@ -1,5 +1,12 @@
 Release notes for libmbus
 
+Version 0.10.4 (2026-10-20):
+----------------------------
+
+Thanks to Lee Pike & Tony Gair for reporting out-of-bounds access, memory leak and integer overflows.
+Thanks to johvik for final review and fixing LVAR length calculation for BCD numbers.
+Thanks to radixun fixing empty Type G dates.
+
 Version 0.10.3 (2026-08-26):
 ---------------------------
 
