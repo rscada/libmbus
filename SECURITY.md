@@ -6,7 +6,14 @@ If you believe you have found a security vulnerability in any GitHub-owned repos
 
 **Please do not report security vulnerabilities through public GitHub issues, discussions, or pull requests.**
 
-Instead, please send an email to libmbus[@]gmx.net
+In general there are two options to report security vulnerabilities:
+
+Option 1 - https://github.com/lategoodbye/libmbus/security/advisories
+
+This option is recommend, if you need a CVE request. Unfortunately it's not possible
+for the current maintainer to access the rscada account.
+
+Option 2 - send an email to libmbus[@]gmx.net
 
 Please include as much of the information listed below as you can to help us better understand and resolve the issue:
 
