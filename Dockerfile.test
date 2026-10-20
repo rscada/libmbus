@@ -1,0 +1,19 @@
+# docker build . -f Dockerfile.test -t test_builder
+
+FROM ubuntu
+ENV DEBIAN_FRONTEND=noninteractiv
+
+RUN apt update -y && \
+    apt install -y gcc g++ make && \
+    apt-get install -y autoconf libtool
+COPY . /tmp
+RUN cd /tmp && \
+    ./build.sh && \
+    cd test && \
+    make && \
+    ./generate-xml.sh  test-frames/ ./mbus_parse_hex
+
+RUN cd /tmp && \
+    echo "NOTE: error-frames have about 30 parse errors, and unsupported-frames have 12" && \
+    ./test/generate-xml.sh test/error-frames || true ; \
+    ./test/generate-xml.sh test/unsupported-frames || true
