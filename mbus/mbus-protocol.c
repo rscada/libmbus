@@ -3886,7 +3886,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             }
             i++;
 
-            if (i > frame->data_size)
+            if (i >= frame->data_size)
             {
                 mbus_data_record_free(record);
                 snprintf(error_str, sizeof(error_str), "Premature end of record at DIF.");
@@ -3959,6 +3959,13 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             // re-calculate data length, if of variable length type
             if ((record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_DATA) == 0x0D) // flag for variable length data
             {
+                if (i >= frame->data_size)
+                {
+                    mbus_data_record_free(record);
+                    snprintf(error_str, sizeof(error_str), "Premature end of record at LVAR.");
+                    return -1;
+                }
+
                 if(frame->data[i] <= 0xBF)
                     record->data_len = frame->data[i];
                 else if(frame->data[i] >= 0xC0 && frame->data[i] <= 0xC9)
