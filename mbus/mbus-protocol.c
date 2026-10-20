@@ -3866,7 +3866,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
             // read DIF extensions
             record->drh.dib.ndife = 0;
-            while ((i < frame->data_size) &&
+            while ((i + 1 < frame->data_size) &&
                    (frame->data[i] & MBUS_DIB_DIF_EXTENSION_BIT))
             {
                 unsigned char dife;
@@ -3902,6 +3902,16 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
             {
                 // variable length VIF in ASCII format
                 int var_vif_len;
+
+                if (i >= frame->data_size)
+                {
+                    mbus_data_record_free(data->record);
+                    data->record = NULL;
+                    mbus_data_record_free(record);
+                    snprintf(error_str, sizeof(error_str), "Premature end of record at VIF.");
+                    return -1;
+                }
+
                 var_vif_len = frame->data[i++];
                 if (var_vif_len >= MBUS_VALUE_INFO_BLOCK_CUSTOM_VIF_SIZE)
                 {
@@ -3925,10 +3935,19 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
             if (record->drh.vib.vif & MBUS_DIB_VIF_EXTENSION_BIT)
             {
+                if (i >= frame->data_size)
+                {
+                    mbus_data_record_free(data->record);
+                    data->record = NULL;
+                    mbus_data_record_free(record);
+                    snprintf(error_str, sizeof(error_str), "Premature end of record at VIF.");
+                    return -1;
+                }
+
                 record->drh.vib.vife[0] = frame->data[i];
                 record->drh.vib.nvife++;
 
-                while ((i < frame->data_size) &&
+                while ((i + 1 < frame->data_size) &&
                        (frame->data[i] & MBUS_DIB_VIF_EXTENSION_BIT))
                 {
                     unsigned char vife;
