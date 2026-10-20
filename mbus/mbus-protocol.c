@@ -4322,6 +4322,11 @@ mbus_frame_internal_pack(mbus_frame *frame, mbus_frame_data *frame_data)
             //
             for (record = frame_data->data_var.record; record; record = record->next)
             {
+                if (record->data_len > MBUS_DATA_RECORD_SIZE)
+                {
+                    return -5;
+                }
+
                 if ((record->drh.dib.ndife > MBUS_DATA_INFO_BLOCK_DIFE_SIZE) ||
                     (record->drh.vib.nvife > MBUS_VALUE_INFO_BLOCK_VIFE_SIZE))
                 {
@@ -4502,6 +4507,11 @@ mbus_data_variable_print(mbus_data_variable *data)
                 printf("%s: VENDOR DATA [size=%zu] = ", __PRETTY_FUNCTION__, record->data_len);
                 for (j = 0; j < record->data_len; j++)
                 {
+                    if (j >= MBUS_DATA_RECORD_SIZE)
+                    {
+                        printf("Data size too long\n");
+                        break;
+                    }
                     printf("%.2X ", record->data[j]);
                 }
                 printf("\n");
