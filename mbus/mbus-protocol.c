@@ -17,7 +17,14 @@
 #include "mbus-protocol.h"
 
 static int parse_debug = 0, debug = 0;
-static char error_str[512];
+/* Per thread, like the function-static buffers the normalized-XML render
+ * fills (mbus_data_variable_header_xml and the three lookups it calls,
+ * mbus_data_record_function, mbus_data_fixed_medium, mbus_data_fixed_unit
+ * and mbus_data_fixed_function): a reason recorded here, or a string
+ * rendered there, belongs to the thread whose call wrote it, so contexts
+ * driven from different threads never read each other's. The pointer
+ * mbus_error_str() returns is the calling thread's array. */
+static __thread char error_str[512];
 
 #define NITEMS(x) (sizeof(x)/sizeof(x[0]))
 
@@ -890,7 +897,7 @@ mbus_data_manufacturer_encode(unsigned char *m_data, unsigned char *m_code)
 const char *
 mbus_decode_manufacturer(unsigned char byte1, unsigned char byte2)
 {
-    static char m_str[4];
+    static __thread char m_str[4];
 
     int m_id;
 
@@ -910,7 +917,7 @@ mbus_decode_manufacturer(unsigned char byte1, unsigned char byte2)
 const char *
 mbus_data_product_name(mbus_data_variable_header *header)
 {
-    static char buff[128];
+    static __thread char buff[128];
     unsigned int manufacturer;
 
     memset(buff, 0, sizeof(buff));
@@ -1393,7 +1400,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
 const char *
 mbus_data_fixed_medium(mbus_data_fixed *data)
 {
-    static char buff[256];
+    static __thread char buff[256];
 
     if (data)
     {
@@ -1504,7 +1511,7 @@ mbus_data_fixed_medium(mbus_data_fixed *data)
 const char *
 mbus_data_fixed_unit(int medium_unit_byte)
 {
-    static char buff[256];
+    static __thread char buff[256];
 
     switch (medium_unit_byte & 0x3F)
     {
@@ -1776,7 +1783,7 @@ mbus_data_fixed_unit(int medium_unit_byte)
 const char *
 mbus_data_variable_medium_lookup(unsigned char medium)
 {
-    static char buff[256];
+    static __thread char buff[256];
 
     switch (medium)
     {
@@ -3554,7 +3561,7 @@ int mbus_data_record_device(mbus_data_record *record)
 const char *
 mbus_data_record_function(mbus_data_record *record)
 {
-    static char buff[128];
+    static __thread char buff[128];
 
     if (record)
     {
@@ -3593,7 +3600,7 @@ mbus_data_record_function(mbus_data_record *record)
 const char *
 mbus_data_fixed_function(int status)
 {
-    static char buff[128];
+    static __thread char buff[128];
 
     snprintf(buff, sizeof(buff), "%s",
             (status & MBUS_DATA_FIXED_STATUS_DATE_MASK) == MBUS_DATA_FIXED_STATUS_DATE_STORED ?
@@ -4746,7 +4753,7 @@ mbus_str_xml_encode(unsigned char *dst, const unsigned char *src, size_t max_len
 char *
 mbus_data_variable_header_xml(mbus_data_variable_header *header)
 {
-    static char buff[MBUS_XML_RECORD_BUFFER];
+    static __thread char buff[MBUS_XML_RECORD_BUFFER];
     char str_encoded[768];
     size_t len = 0;
     int ret;
