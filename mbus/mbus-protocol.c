@@ -3108,12 +3108,21 @@ mbus_vib_unit_lookup(mbus_value_information_block *vib)
         snprintf(buff, sizeof(buff), "%s", vib->custom_vif);
         return buff;
     }
-    else if (vib->vif == 0xFC && (vib->vife[0] & 0x78) == 0x70)
+    else if (vib->vif == 0xFC)
     {
-        // custom VIF
-        n = (vib->vife[0] & 0x07);
-        snprintf(buff, sizeof(buff), "%s %s", mbus_unit_prefix(n-6), vib->custom_vif);
-        return buff;
+        // custom VIF with extensions
+        if ((vib->vife[0] & 0x78) == 0x70)
+        {
+            // E111 0nnn Multiplicative correction factor
+            n = (vib->vife[0] & 0x07);
+            snprintf(buff, sizeof(buff), "%s %s", mbus_unit_prefix(n-6), vib->custom_vif);
+            return buff;
+        }
+        else
+        {
+            snprintf(buff, sizeof(buff), "%s (with unsupported extensions)", vib->custom_vif);
+            return buff;
+        }
     }
 
     return mbus_vif_unit_lookup(vib->vif); // no extention, use VIF
