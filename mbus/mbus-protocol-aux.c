@@ -2300,6 +2300,7 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
         {
             // free's up the whole list
             mbus_data_record_free(reply_data.data_var.record);
+            reply_data.data_var.record = NULL;
         }
     }
 
