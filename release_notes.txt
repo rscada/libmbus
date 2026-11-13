@@ -1,5 +1,10 @@
 Release notes for libmbus
 
+Version 0.10.5 (2026-11-13):
+----------------------------
+
+Thanks to Gabe Dijkstra for reporting the double free.
+
 Version 0.10.4 (2026-10-20):
 ----------------------------
 

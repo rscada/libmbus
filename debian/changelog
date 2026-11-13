@@ -1,3 +1,10 @@
+libmbus (0.10.5) noble; urgency=high
+
+  * New official release
+    - fix double free
+
+ -- Stefan Wahren <libmbus@gmx.net> Fri, 13 Nov 2026 18:04:00 +0100
+
 libmbus (0.10.4) noble; urgency=high
 
   * New official release
