@@ -17,11 +17,16 @@ AM_INIT_AUTOMAKE([foreign -Wall])
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 LT_INIT
 
-LDFLAGS="$LDFLAGS -version-info 0:10:0"
-
 dnl ----------------------
 dnl 
 AC_PROG_CC
+
+dnl socket(), connect() and getaddrinfo() are in libsocket on some systems (QNX)
+AC_SEARCH_LIBS([socket], [socket])
+AC_SEARCH_LIBS([getaddrinfo], [socket])
+
+dnl after the link tests: the compiler itself does not know this libtool option
+LDFLAGS="$LDFLAGS -version-info 0:10:0"
 
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile mbus/Makefile test/Makefile bin/Makefile libmbus.pc])
