@@ -586,7 +586,6 @@ int mbus_frame_direction(mbus_frame *frame);
 // XML generating functions
 //
 int   mbus_str_xml_encode(unsigned char *dst, const unsigned char *src, size_t max_len);
-char *mbus_data_xml(mbus_frame_data *data);
 char *mbus_data_variable_xml(mbus_data_variable *data);
 char *mbus_data_fixed_xml(mbus_data_fixed *data);
 char *mbus_data_error_xml(int error);

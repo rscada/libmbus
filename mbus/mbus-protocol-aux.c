@@ -788,7 +788,7 @@ void mbus_register_abort_scan_check(mbus_handle *handle, bool (*abort_scan_check
     handle->abort_scan_check = abort_scan_check;
 }
 
-int mbus_fixed_normalize(int medium_unit, long medium_value, char **unit_out, double *value_out, char **quantity_out)
+int mbus_data_fixed_normalize(int medium_unit, long medium_value, char **unit_out, double *value_out, char **quantity_out)
 {
     medium_unit = medium_unit & 0x3F;
 
@@ -1272,9 +1272,9 @@ mbus_parse_fixed_record(char status_byte, char medium_unit, unsigned char *data)
 
     record->unit = NULL;
     record->is_numeric = 1;
-    if (0 != mbus_fixed_normalize(medium_unit, value, &(record->unit), &(record->value.real_val), &(record->quantity)))
+    if (0 != mbus_data_fixed_normalize(medium_unit, value, &(record->unit), &(record->value.real_val), &(record->quantity)))
     {
-        MBUS_ERROR("Problem with mbus_fixed_normalize.\n");
+        MBUS_ERROR("Problem with mbus_data_fixed_normalize.\n");
         mbus_record_free(record);
         return NULL;
     }

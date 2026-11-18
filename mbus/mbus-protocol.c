@@ -174,7 +174,7 @@ mbus_frame_free(mbus_frame *frame)
 //------------------------------------------------------------------------------
 /// Caclulate the checksum of the M-Bus frame. Internal.
 //------------------------------------------------------------------------------
-unsigned char
+static unsigned char
 calc_checksum(mbus_frame *frame)
 {
     size_t i;
@@ -250,7 +250,7 @@ mbus_frame_calc_checksum(mbus_frame *frame)
 ///
 /// Calculate the values of the lengths fields in the M-Bus frame. Internal.
 ///
-unsigned char
+static unsigned char
 calc_length(const mbus_frame *frame)
 {
     assert(frame != NULL);
